@@ -49,10 +49,7 @@ export function LandingScreen() {
     
     try {
       const reps = await lookupRepresentatives(zipCode);
-      setRepresentatives(reps.map(rep => ({
-        ...rep,
-        photo: '/placeholder.svg'
-      })));
+      setRepresentatives(reps);
       
       if (reps.length === 1) {
         setSelectedRep(reps[0]);
@@ -223,7 +220,7 @@ export function LandingScreen() {
                   </div>
                   {selectedRep?.id === rep.id && (
                     <Badge variant="secondary" className="ml-2">
-                      Selected
+                      My Rep
                     </Badge>
                   )}
                 </CardContent>
