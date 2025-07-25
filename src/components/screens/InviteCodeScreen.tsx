@@ -51,7 +51,7 @@ export function InviteCodeScreen() {
             <Mail className="w-8 h-8 text-primary-foreground" />
           </div>
           <CardTitle className="text-2xl font-bold text-foreground">
-            Civic Postcards
+            InkImpact
           </CardTitle>
           <CardDescription className="text-muted-foreground">
             Send handwritten postcards to your representatives

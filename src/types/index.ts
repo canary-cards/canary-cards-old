@@ -5,7 +5,8 @@ export interface Representative {
   city: string;
   state: string;
   photo?: string;
-  address?: string;
+  party: string;
+  type: string;
 }
 
 export interface UserInfo {

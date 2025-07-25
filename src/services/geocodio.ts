@@ -1,22 +1,5 @@
 const GEOCODIO_API_KEY = '6656cff3963f38cf8398fc7dc38368dc968cdf6';
 
-export interface GeocodioRepresentative {
-  name: string;
-  role: string;
-  party: string;
-  district?: string;
-  office: {
-    address: string;
-    city: string;
-    state: string;
-    zip: string;
-  };
-  contact?: {
-    url?: string;
-    phone?: string;
-  };
-}
-
 export interface GeocodioResponse {
   input: {
     address_components: {
@@ -24,21 +7,30 @@ export interface GeocodioResponse {
     };
   };
   results: Array<{
+    address_components: {
+      city: string;
+      state: string;
+      zip: string;
+    };
     fields: {
       congressional_districts: Array<{
         name: string;
         district_number: number;
+        current_legislators: Array<{
+          type: string;
+          bio: {
+            first_name: string;
+            last_name: string;
+            party: string;
+            photo_url?: string;
+          };
+          contact: {
+            url?: string;
+            phone?: string;
+            address?: string;
+          };
+        }>;
       }>;
-      state_legislative_districts: {
-        house: Array<{
-          name: string;
-          district_number: string;
-        }>;
-        senate: Array<{
-          name: string; 
-          district_number: string;
-        }>;
-      };
     };
   }>;
 }
@@ -46,7 +38,7 @@ export interface GeocodioResponse {
 export async function lookupRepresentatives(zipCode: string) {
   try {
     const response = await fetch(
-      `https://api.geocod.io/v1.7/geocode?q=${zipCode}&fields=cd,stateleg&api_key=${GEOCODIO_API_KEY}`
+      `https://api.geocod.io/v1.9/geocode?q=${zipCode}&fields=cd&api_key=${GEOCODIO_API_KEY}`
     );
     
     if (!response.ok) {
@@ -66,20 +58,28 @@ export async function lookupRepresentatives(zipCode: string) {
       district?: string;
       city: string;
       state: string;
+      photo?: string;
+      party: string;
       type: string;
     }> = [];
     
-    // Congressional Districts
+    // Extract House Representatives only
     if (result.fields?.congressional_districts) {
-      result.fields.congressional_districts.forEach((cd, index) => {
-        representatives.push({
-          id: `cd-${index}`,
-          name: `Representative - ${cd.name}`,
-          district: `District ${cd.district_number}`,
-          city: 'Washington',
-          state: 'DC',
-          type: 'congressional'
-        });
+      result.fields.congressional_districts.forEach((cd) => {
+        cd.current_legislators
+          .filter(legislator => legislator.type === 'representative')
+          .forEach((rep, index) => {
+            representatives.push({
+              id: `rep-${cd.district_number}-${index}`,
+              name: `${rep.bio.first_name} ${rep.bio.last_name}`,
+              district: cd.district_number === 0 ? 'At Large' : `District ${cd.district_number}`,
+              city: result.address_components.city,
+              state: result.address_components.state,
+              photo: rep.bio.photo_url,
+              party: rep.bio.party,
+              type: 'representative'
+            });
+          });
       });
     }
     
@@ -93,7 +93,7 @@ export async function lookupRepresentatives(zipCode: string) {
 export async function validateAddress(address: string) {
   try {
     const response = await fetch(
-      `https://api.geocod.io/v1.7/geocode?q=${encodeURIComponent(address)}&api_key=${GEOCODIO_API_KEY}`
+      `https://api.geocod.io/v1.9/geocode?q=${encodeURIComponent(address)}&api_key=${GEOCODIO_API_KEY}`
     );
     
     if (!response.ok) {
