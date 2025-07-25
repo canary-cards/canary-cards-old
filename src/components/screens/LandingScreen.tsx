@@ -208,7 +208,7 @@ export function LandingScreen() {
                     </p>
                   </div>
                   {selectedRep?.id === rep.id && (
-                    <Badge variant="default" className="ml-2 text-xs">
+                    <Badge variant="secondary" className="ml-2 text-xs bg-green-100 text-green-800 border-green-200">
                       My Rep
                     </Badge>
                   )}
