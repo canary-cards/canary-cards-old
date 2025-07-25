@@ -68,25 +68,44 @@ export function ReturnAddressScreen() {
   const filterAddressSuggestions = (suggestions: AddressSuggestion[], targetZip: string) => {
     // First, separate street addresses from generic city/state results
     const streetAddresses = suggestions.filter(suggestion => {
-      const hasStreetNumber = /^\d+\s/.test(suggestion.formatted_address);
-      const hasStreetName = suggestion.formatted_address.includes(' ') && 
-                           !suggestion.formatted_address.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/);
-      const matchesZip = suggestion.components.zip === targetZip || 
-                        suggestion.formatted_address.includes(targetZip);
+      const formatted = suggestion.formatted_address;
       
-      return hasStreetNumber && hasStreetName && matchesZip;
+      // Check if this is a street address (has house number and street name)
+      const hasHouseNumber = /^\d+\s/.test(formatted);
+      const hasStreetName = formatted.includes(' ') && 
+                           !formatted.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/); // Not just "City, ST ZIP"
+      
+      // Check if it's in the target zip code
+      const matchesZip = suggestion.components?.zip === targetZip || 
+                        formatted.includes(targetZip);
+      
+      // Additional check: should not be a generic result like "Sacramento, CA 95831"
+      const isNotGenericCity = !formatted.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/);
+      
+      return hasHouseNumber && hasStreetName && matchesZip && isNotGenericCity;
     });
 
     const genericResults = suggestions.filter(suggestion => {
-      const isGeneric = suggestion.formatted_address.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/);
-      const matchesZip = suggestion.components.zip === targetZip || 
-                        suggestion.formatted_address.includes(targetZip);
+      const formatted = suggestion.formatted_address;
       
-      return isGeneric && matchesZip;
+      // Generic city/state/zip pattern
+      const isGenericCity = formatted.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/);
+      const matchesZip = suggestion.components?.zip === targetZip || 
+                        formatted.includes(targetZip);
+      
+      return isGenericCity && matchesZip;
     });
 
-    // Prioritize street addresses, fallback to generic if no street addresses found
-    return streetAddresses.length > 0 ? streetAddresses : genericResults;
+    // If we have street addresses, show only those. Otherwise, show nothing
+    // (don't show generic city results when user is typing a house number)
+    if (streetAddresses.length > 0) {
+      return streetAddresses;
+    }
+    
+    // Only show generic results if the query doesn't look like it's trying to be a house number
+    const queryLooksLikeHouseNumber = /^\d+/.test(streetAddress.trim());
+    
+    return queryLooksLikeHouseNumber ? [] : genericResults;
   };
 
   const handleAddressInputChange = (value: string) => {
