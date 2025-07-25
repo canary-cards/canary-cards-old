@@ -54,18 +54,20 @@ export function ReturnAddressScreen() {
       const suggestions = await searchAddresses(query, zipCode);
       
       // Filter and prioritize suggestions
-      const filteredSuggestions = filterAddressSuggestions(suggestions, zipCode);
+      const filteredSuggestions = filterAddressSuggestions(suggestions, zipCode, query);
       
       setAddressSuggestions(filteredSuggestions);
       setShowSuggestions(filteredSuggestions.length > 0);
     } catch (error) {
       console.error('Address search failed:', error);
+      setAddressSuggestions([]);
+      setShowSuggestions(false);
     } finally {
       setIsSearching(false);
     }
   };
 
-  const filterAddressSuggestions = (suggestions: AddressSuggestion[], targetZip: string) => {
+  const filterAddressSuggestions = (suggestions: AddressSuggestion[], targetZip: string, query: string) => {
     // First, separate street addresses from generic city/state results
     const streetAddresses = suggestions.filter(suggestion => {
       const formatted = suggestion.formatted_address;
@@ -96,14 +98,13 @@ export function ReturnAddressScreen() {
       return isGenericCity && matchesZip;
     });
 
-    // If we have street addresses, show only those. Otherwise, show nothing
-    // (don't show generic city results when user is typing a house number)
+    // If we have street addresses, show only those
     if (streetAddresses.length > 0) {
       return streetAddresses;
     }
     
     // Only show generic results if the query doesn't look like it's trying to be a house number
-    const queryLooksLikeHouseNumber = /^\d+/.test(streetAddress.trim());
+    const queryLooksLikeHouseNumber = /^\d+/.test(query.trim());
     
     return queryLooksLikeHouseNumber ? [] : genericResults;
   };
