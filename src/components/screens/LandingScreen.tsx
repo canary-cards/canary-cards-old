@@ -9,7 +9,8 @@ import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
-import { MapPin, Users, Bot, PenTool } from 'lucide-react';
+import { MapPin, Users, Bot, PenTool, ArrowRight } from 'lucide-react';
+import heroImage from '@/assets/civic-hero-mobile.jpg';
 
 export function LandingScreen() {
   const { state, dispatch } = useAppContext();
@@ -80,63 +81,41 @@ export function LandingScreen() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-4 max-w-2xl">
         <ProgressIndicator currentStep={1} totalSteps={5} />
         
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        {/* Mobile-First Hero Section */}
+        <div className="text-center mb-6">
+          {/* Hero Image */}
+          <div className="w-full h-48 mb-4 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
+            <img 
+              src={heroImage} 
+              alt="Make your voice heard with digital postcards"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
             Make Your Voice Heard
           </h1>
-          <p className="text-lg text-muted-foreground mb-6">
-            Send personalized, handwritten postcards to your representatives
+          <p className="text-sm md:text-base text-muted-foreground mb-4">
+            Send handwritten postcards to your representatives
           </p>
           
-          {/* Social Validation Counter */}
-          <Card className="max-w-md mx-auto mb-8">
-            <CardContent className="flex items-center justify-center p-4">
-              <Users className="w-5 h-5 text-secondary mr-2" />
-              <span className="text-sm">
-                This week, <strong className="text-primary">{socialCounter} people</strong> sent personalized postcards to their representatives
-              </span>
-            </CardContent>
-          </Card>
+          {/* Compact Social Proof */}
+          <div className="inline-flex items-center gap-2 px-3 py-2 bg-primary/5 rounded-full text-xs md:text-sm mb-6">
+            <Users className="w-4 h-4 text-primary" />
+            <span><strong className="text-primary">{socialCounter}</strong> postcards sent this week</span>
+          </div>
         </div>
 
-        {/* Key Messaging */}
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
-          <Card className="p-6">
-            <div className="flex items-start space-x-3">
-              <PenTool className="w-6 h-6 text-secondary mt-1 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold mb-2">Real Impact</h3>
-                <p className="text-sm text-muted-foreground">
-                  Less than 50 personalized messages are enough to get a congressperson's attention, according to the bipartisan Congressional Management Foundation.
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-start space-x-3">
-              <Bot className="w-6 h-6 text-secondary mt-1 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold mb-2">Handwritten by Robots</h3>
-                <p className="text-sm text-muted-foreground">
-                  We use robots to handwrite with real pen and paper what you write here and send it to your congressperson.
-                </p>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Zip Code Form */}
-        <Card className="max-w-md mx-auto">
-          <CardContent className="p-6">
+        {/* Primary CTA - Zip Code Form (Above the fold) */}
+        <Card className="mb-6 border-primary/20 shadow-sm">
+          <CardContent className="p-4 md:p-6">
             <form onSubmit={handleZipSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="zipCode" className="text-base font-medium">
-                  Enter your zip code to find your representative
+                <Label htmlFor="zipCode" className="text-sm md:text-base font-medium">
+                  Enter your zip code to get started
                 </Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -149,7 +128,7 @@ export function LandingScreen() {
                       setZipCode(e.target.value);
                       setSearchError('');
                     }}
-                    className="pl-10"
+                    className="pl-10 h-12 text-center text-lg md:text-base"
                     maxLength={5}
                   />
                 </div>
@@ -167,10 +146,20 @@ export function LandingScreen() {
               
               <Button 
                 type="submit" 
-                className="w-full h-12"
+                className="w-full h-12 text-base font-medium"
                 disabled={isSearching || !zipCode}
               >
-                {isSearching ? 'Finding Representatives...' : 'Find My Representative'}
+                {isSearching ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
+                    Finding Your Rep...
+                  </>
+                ) : (
+                  <>
+                    Find My Representative
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </>
+                )}
               </Button>
             </form>
           </CardContent>
@@ -178,31 +167,31 @@ export function LandingScreen() {
 
         {/* Representatives Results */}
         {isSearching && (
-          <div className="max-w-md mx-auto mt-6">
-            <Skeleton className="h-24 w-full" />
+          <div className="mb-6">
+            <Skeleton className="h-20 w-full rounded-xl" />
           </div>
         )}
 
         {representatives.length > 0 && !isSearching && (
-          <div className="max-w-md mx-auto mt-6 space-y-4">
+          <div className="mb-6 space-y-4">
             {representatives.length > 1 && (
-              <p className="text-center text-sm text-muted-foreground">
-                Hey, it looks like there are actually two representatives in your zip code. Please select one:
+              <p className="text-center text-sm text-muted-foreground px-4">
+                Multiple representatives found. Select yours:
               </p>
             )}
             
             {representatives.map((rep) => (
               <Card 
                 key={rep.id} 
-                className={`cursor-pointer transition-all duration-200 slide-in ${
+                className={`cursor-pointer transition-all duration-200 ${
                   selectedRep?.id === rep.id 
-                    ? 'ring-2 ring-primary bg-primary/5' 
-                    : 'hover:shadow-md'
+                    ? 'ring-2 ring-primary bg-primary/5 border-primary/50' 
+                    : 'hover:shadow-md border-border/50'
                 }`}
                 onClick={() => handleRepSelect(rep)}
               >
                 <CardContent className="flex items-center p-4">
-                  <div className="w-16 h-16 rounded-full bg-muted mr-4 flex-shrink-0 overflow-hidden">
+                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-muted mr-3 md:mr-4 flex-shrink-0 overflow-hidden">
                     <img 
                       src={rep.photo} 
                       alt={rep.name}
@@ -212,15 +201,15 @@ export function LandingScreen() {
                       }}
                     />
                   </div>
-                  <div className="flex-grow">
-                    <h3 className="font-semibold">{rep.name}</h3>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="flex-grow min-w-0">
+                    <h3 className="font-semibold text-sm md:text-base truncate">{rep.name}</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground truncate">
                       {rep.district} • {rep.city}, {rep.state}
                     </p>
                   </div>
                   {selectedRep?.id === rep.id && (
-                    <Badge variant="secondary" className="ml-2">
-                      My Rep
+                    <Badge variant="default" className="ml-2 text-xs">
+                      Selected
                     </Badge>
                   )}
                 </CardContent>
@@ -230,13 +219,37 @@ export function LandingScreen() {
             {selectedRep && (
               <Button 
                 onClick={handleContinue}
-                className="w-full h-12 mt-4"
+                className="w-full h-12 text-base font-medium"
               >
                 Continue
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             )}
           </div>
         )}
+
+        {/* Compact Value Props - Below the fold */}
+        <div className="space-y-3 mt-8">
+          <div className="flex items-start gap-3 p-3 rounded-xl bg-muted/30">
+            <PenTool className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="font-medium text-sm mb-1">Real Impact</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Less than 50 personalized messages get a congressperson's attention.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 p-3 rounded-xl bg-muted/30">
+            <Bot className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="font-medium text-sm mb-1">Handwritten by Robots</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                We use robots to handwrite with real pen and paper.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
