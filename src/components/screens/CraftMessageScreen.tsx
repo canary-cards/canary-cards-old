@@ -144,59 +144,32 @@ export function CraftMessageScreen() {
     const rep = state.postcardData.representative;
     const userInfo = state.postcardData.userInfo;
     
-    // Create a more detailed but concise message based on user input
+    // Create a concise message under 500 characters
     const concerns = input.toLowerCase();
-    let expandedMessage = '';
+    let message = '';
     
-    // Expand on common concerns with concise but detailed language
+    // Generate very brief, focused content
     if (concerns.includes('healthcare') || concerns.includes('health')) {
-      expandedMessage += 'I am concerned about healthcare accessibility and costs in our community. ';
-      if (concerns.includes('cost')) {
-        expandedMessage += 'Rising medical costs strain families like mine. ';
-      }
-      expandedMessage += 'Everyone deserves affordable healthcare. ';
+      message = 'Healthcare costs are straining families in our district. Please support affordable healthcare legislation.';
+    } else if (concerns.includes('climate') || concerns.includes('environment')) {
+      message = 'Climate action is urgent. Please support environmental protection policies for our future.';
+    } else if (concerns.includes('education') || concerns.includes('school')) {
+      message = 'Our schools need better funding. Please prioritize education investment for our children.';
+    } else if (concerns.includes('transportation') || concerns.includes('traffic') || concerns.includes('roads')) {
+      message = 'Transportation infrastructure needs improvement. Better roads and transit benefit everyone.';
+    } else if (concerns.includes('housing') || concerns.includes('rent') || concerns.includes('mortgage')) {
+      message = 'Housing affordability is a crisis. Please support policies for affordable housing options.';
+    } else {
+      // Keep it very short for general concerns
+      message = `I'm concerned about: ${input.slice(0, 100)}. Please address these important community issues.`;
     }
     
-    if (concerns.includes('climate') || concerns.includes('environment')) {
-      expandedMessage += 'Climate change requires immediate action. ';
-      expandedMessage += 'Please support environmental legislation for future generations. ';
-    }
-    
-    if (concerns.includes('education') || concerns.includes('school')) {
-      expandedMessage += 'Our schools need stronger support and funding. ';
-      if (concerns.includes('funding')) {
-        expandedMessage += 'Insufficient funding impacts our children\'s education quality. ';
-      }
-      expandedMessage += 'Education investment secures our community\'s future. ';
-    }
-    
-    if (concerns.includes('transportation') || concerns.includes('traffic') || concerns.includes('roads')) {
-      expandedMessage += 'Transportation infrastructure needs improvement. ';
-      expandedMessage += 'Better transit and roads benefit all constituents. ';
-    }
-    
-    if (concerns.includes('housing') || concerns.includes('rent') || concerns.includes('mortgage')) {
-      expandedMessage += 'Housing affordability affects working families throughout our district. ';
-      expandedMessage += 'We need policies supporting homeownership and affordable rentals. ';
-    }
-    
-    // If no specific keywords matched, create a general but concise expansion
-    if (!expandedMessage) {
-      expandedMessage = `I want to address important concerns: ${input}. `;
-      expandedMessage += 'These issues impact our daily lives and community wellbeing. ';
-    }
-    
-    return `Dear ${rep?.name || 'Representative'},
+    return `Dear ${rep?.name || 'Rep.'},
 
-As your constituent from ${userInfo?.city}, ${userInfo?.state}, I am writing about important community concerns.
+${message}
 
-${expandedMessage}
+Thank you for your service.
 
-I would appreciate your attention to these matters and welcome discussing how we can address these challenges. Your leadership would make a meaningful difference for families like mine.
-
-Thank you for your service to our district.
-
-Respectfully,
 ${userInfo?.firstName} ${userInfo?.lastName}
 ${userInfo?.city}, ${userInfo?.state}`;
   };
