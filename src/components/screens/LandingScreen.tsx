@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { Representative } from '../../types';
+import { lookupRepresentatives } from '../../services/geocodio';
 import { MapPin, Users, Bot, PenTool } from 'lucide-react';
 
 export function LandingScreen() {
@@ -46,36 +47,21 @@ export function LandingScreen() {
     setIsSearching(true);
     setSearchError('');
     
-    // Simulate API call to Geocodio
-    setTimeout(() => {
-      // Mock representatives data
-      const mockReps: Representative[] = [
-        {
-          id: '1',
-          name: 'John Smith',
-          district: '5th District',
-          city: 'Washington',
-          state: 'DC',
-          photo: '/placeholder.svg'
-        },
-        // Randomly add a second rep for some zip codes
-        ...(Math.random() > 0.7 ? [{
-          id: '2',
-          name: 'Jane Doe',
-          district: '6th District',
-          city: 'Washington',
-          state: 'DC',
-          photo: '/placeholder.svg'
-        }] : [])
-      ];
+    try {
+      const reps = await lookupRepresentatives(zipCode);
+      setRepresentatives(reps.map(rep => ({
+        ...rep,
+        photo: '/placeholder.svg'
+      })));
       
-      setRepresentatives(mockReps);
-      setIsSearching(false);
-      
-      if (mockReps.length === 1) {
-        setSelectedRep(mockReps[0]);
+      if (reps.length === 1) {
+        setSelectedRep(reps[0]);
       }
-    }, 1500);
+    } catch (error) {
+      setSearchError(error instanceof Error ? error.message : 'Failed to lookup representatives. Please try again.');
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const handleRepSelect = (rep: Representative) => {
