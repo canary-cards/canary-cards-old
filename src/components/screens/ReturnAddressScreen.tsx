@@ -52,13 +52,41 @@ export function ReturnAddressScreen() {
     setIsSearching(true);
     try {
       const suggestions = await searchAddresses(query, zipCode);
-      setAddressSuggestions(suggestions);
-      setShowSuggestions(suggestions.length > 0);
+      
+      // Filter and prioritize suggestions
+      const filteredSuggestions = filterAddressSuggestions(suggestions, zipCode);
+      
+      setAddressSuggestions(filteredSuggestions);
+      setShowSuggestions(filteredSuggestions.length > 0);
     } catch (error) {
       console.error('Address search failed:', error);
     } finally {
       setIsSearching(false);
     }
+  };
+
+  const filterAddressSuggestions = (suggestions: AddressSuggestion[], targetZip: string) => {
+    // First, separate street addresses from generic city/state results
+    const streetAddresses = suggestions.filter(suggestion => {
+      const hasStreetNumber = /^\d+\s/.test(suggestion.formatted_address);
+      const hasStreetName = suggestion.formatted_address.includes(' ') && 
+                           !suggestion.formatted_address.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/);
+      const matchesZip = suggestion.components.zip === targetZip || 
+                        suggestion.formatted_address.includes(targetZip);
+      
+      return hasStreetNumber && hasStreetName && matchesZip;
+    });
+
+    const genericResults = suggestions.filter(suggestion => {
+      const isGeneric = suggestion.formatted_address.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/);
+      const matchesZip = suggestion.components.zip === targetZip || 
+                        suggestion.formatted_address.includes(targetZip);
+      
+      return isGeneric && matchesZip;
+    });
+
+    // Prioritize street addresses, fallback to generic if no street addresses found
+    return streetAddresses.length > 0 ? streetAddresses : genericResults;
   };
 
   const handleAddressInputChange = (value: string) => {
