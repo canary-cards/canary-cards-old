@@ -2,18 +2,14 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
-import { ArrowLeft, Wand2, ChevronDown, Edit3 } from 'lucide-react';
+import { ArrowLeft, Wand2, Edit3 } from 'lucide-react';
 
 export function ReviewEditScreen() {
   const { state, dispatch } = useAppContext();
   const [editedMessage, setEditedMessage] = useState(state.postcardData.draftMessage || '');
   const [isRegenerating, setIsRegenerating] = useState(false);
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [tone, setTone] = useState('professional');
-  const [length, setLength] = useState('medium');
 
   const charCount = editedMessage.length;
   const maxChars = 500;
@@ -23,40 +19,24 @@ export function ReviewEditScreen() {
     
     // Mock AI regeneration
     setTimeout(() => {
-      const variations = [
-        state.postcardData.draftMessage,
-        generateVariation(state.postcardData.originalMessage || '', 'casual'),
-        generateVariation(state.postcardData.originalMessage || '', 'formal'),
-        generateVariation(state.postcardData.originalMessage || '', 'urgent')
-      ];
+      const originalMessage = state.postcardData.originalMessage || '';
+      const rep = state.postcardData.representative;
+      const userInfo = state.postcardData.userInfo;
       
-      const randomVariation = variations[Math.floor(Math.random() * variations.length)];
-      setEditedMessage(randomVariation || '');
+      const regeneratedMessage = `Dear ${rep?.name || 'Representative'},
+
+As your constituent from ${userInfo?.city}, ${userInfo?.state}, I wanted to share my concerns with you.
+
+${originalMessage}
+
+I believe these issues are important for our community and would appreciate your attention to them. Thank you for your service and for representing our interests.
+
+Sincerely,
+${userInfo?.firstName} ${userInfo?.lastName}`;
+      
+      setEditedMessage(regeneratedMessage);
       setIsRegenerating(false);
     }, 2000);
-  };
-
-  const generateVariation = (originalMessage: string, style: string): string => {
-    const rep = state.postcardData.representative;
-    const userInfo = state.postcardData.userInfo;
-    
-    const intros = {
-      casual: `Hi ${rep?.name || 'Representative'},`,
-      formal: `Dear Honorable ${rep?.name || 'Representative'},`,
-      urgent: `Dear ${rep?.name || 'Representative'}, I urgently need your attention on`,
-    };
-
-    const outros = {
-      casual: `Thanks for listening!\n${userInfo?.firstName} ${userInfo?.lastName}`,
-      formal: `I respectfully request your consideration of these matters.\n\nSincerely,\n${userInfo?.firstName} ${userInfo?.lastName}`,
-      urgent: `Please act quickly on these pressing issues.\n\nUrgently yours,\n${userInfo?.firstName} ${userInfo?.lastName}`,
-    };
-
-    return `${intros[style as keyof typeof intros]}
-
-As a constituent from ${userInfo?.city}, ${userInfo?.state}, ${originalMessage}
-
-${outros[style as keyof typeof outros]}`;
   };
 
   const handleContinue = () => {
@@ -102,45 +82,6 @@ ${outros[style as keyof typeof outros]}`;
                   maxLength={maxChars}
                 />
               </div>
-
-              {/* Advanced Editing Options */}
-              <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
-                <CollapsibleTrigger asChild>
-                  <Button variant="ghost" className="w-full justify-between p-0 h-auto">
-                    <span className="text-sm text-primary">Advanced editing options</span>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="space-y-4 pt-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Tone</label>
-                      <select 
-                        value={tone}
-                        onChange={(e) => setTone(e.target.value)}
-                        className="w-full p-2 rounded-lg border border-border bg-background"
-                      >
-                        <option value="professional">Professional</option>
-                        <option value="casual">Casual</option>
-                        <option value="formal">Formal</option>
-                        <option value="urgent">Urgent</option>
-                      </select>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Length</label>
-                      <select 
-                        value={length}
-                        onChange={(e) => setLength(e.target.value)}
-                        className="w-full p-2 rounded-lg border border-border bg-background"
-                      >
-                        <option value="short">Short</option>
-                        <option value="medium">Medium</option>
-                        <option value="long">Detailed</option>
-                      </select>
-                    </div>
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
 
               <div className="flex gap-3">
                 <Button
