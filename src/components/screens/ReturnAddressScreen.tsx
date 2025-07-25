@@ -1,74 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
-import { UserInfo } from '../../types';
-import { MapPin, CheckCircle, ArrowLeft } from 'lucide-react';
-import { validateAddress } from '../../services/geocodio';
+import { MapPin, ArrowLeft } from 'lucide-react';
+import { searchAddresses } from '../../services/geocodio';
+
+interface AddressSuggestion {
+  formatted_address: string;
+  components: {
+    city?: string;
+    state?: string;
+    zip?: string;
+  };
+}
 
 export function ReturnAddressScreen() {
   const { state, dispatch } = useAppContext();
-  const [userInfo, setUserInfo] = useState<UserInfo>({
-    firstName: '',
-    lastName: '',
-    streetAddress: '',
-    city: '',
-    state: '',
-    zipCode: '',
-  });
-  const [isValidating, setIsValidating] = useState(false);
-  const [validationError, setValidationError] = useState('');
-  const [isValid, setIsValid] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+  const [addressSuggestions, setAddressSuggestions] = useState<AddressSuggestion[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout>();
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleInputChange = (field: keyof UserInfo, value: string) => {
-    setUserInfo(prev => ({ ...prev, [field]: value }));
-    setValidationError('');
-    setIsValid(false);
+  const zipCode = state.postcardData.zipCode || '';
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleAddressSearch = async (query: string) => {
+    if (query.length < 3) {
+      setAddressSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const suggestions = await searchAddresses(query, zipCode);
+      setAddressSuggestions(suggestions);
+      setShowSuggestions(suggestions.length > 0);
+    } catch (error) {
+      console.error('Address search failed:', error);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
-  const handleAddressValidation = async (address: string) => {
-    if (!address.trim()) return;
+  const handleAddressInputChange = (value: string) => {
+    setStreetAddress(value);
     
-    setIsValidating(true);
-    try {
-      const result = await validateAddress(address);
-      const components = result.components;
-      
-      setUserInfo(prev => ({
-        ...prev,
-        streetAddress: address,
-        city: components.city || '',
-        state: components.state || '',
-        zipCode: components.zip || '',
-      }));
-      
-      // Check if zip matches representative's district
-      if (components.zip !== state.postcardData.zipCode) {
-        setValidationError(
-          `The address you entered doesn't appear to be in ${state.postcardData.representative?.name}'s district. Please verify your address.`
-        );
-      } else {
-        setIsValid(true);
-      }
-    } catch (error) {
-      setValidationError('Unable to validate this address. Please check and try again.');
-    } finally {
-      setIsValidating(false);
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
     }
+    
+    searchTimeoutRef.current = setTimeout(() => {
+      handleAddressSearch(value);
+    }, 300);
+  };
+
+  const handleSuggestionClick = (suggestion: AddressSuggestion) => {
+    setStreetAddress(suggestion.formatted_address);
+    setShowSuggestions(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const isFormComplete = Object.values(userInfo).every(value => value.trim() !== '');
-    
-    if (!isFormComplete) {
-      setValidationError('Please fill in all required fields');
+    if (!firstName.trim() || !lastName.trim() || !streetAddress.trim()) {
       return;
     }
+
+    const userInfo = {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      streetAddress: streetAddress.trim(),
+      city: '', // Will be populated from selected address
+      state: '', // Will be populated from selected address
+      zipCode: zipCode
+    };
 
     dispatch({ 
       type: 'UPDATE_POSTCARD_DATA', 
@@ -81,6 +104,8 @@ export function ReturnAddressScreen() {
     dispatch({ type: 'SET_STEP', payload: 2 });
   };
 
+  const isFormComplete = firstName.trim() && lastName.trim() && streetAddress.trim();
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
@@ -90,10 +115,10 @@ export function ReturnAddressScreen() {
           <CardContent className="p-8">
             <div className="text-center mb-8">
               <h1 className="text-2xl font-bold text-foreground mb-2">
-                Enter Your Information
+                Return Address Information
               </h1>
               <p className="text-muted-foreground">
-                Representatives read letters from their constituents. We need to prove to them that you are one.
+                We need your return address for the postcard so your representative knows where it came from.
               </p>
             </div>
 
@@ -104,8 +129,8 @@ export function ReturnAddressScreen() {
                   <Input
                     id="firstName"
                     type="text"
-                    value={userInfo.firstName}
-                    onChange={(e) => handleInputChange('firstName', e.target.value)}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                     className="input-warm"
                     required
                   />
@@ -116,82 +141,56 @@ export function ReturnAddressScreen() {
                   <Input
                     id="lastName"
                     type="text"
-                    value={userInfo.lastName}
-                    onChange={(e) => handleInputChange('lastName', e.target.value)}
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                     className="input-warm"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 relative" ref={inputRef}>
                 <Label htmlFor="streetAddress">Street Address *</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="streetAddress"
                     type="text"
-                    placeholder="123 Main Street"
-                    value={userInfo.streetAddress}
-                    onChange={(e) => handleInputChange('streetAddress', e.target.value)}
-                    onBlur={(e) => handleAddressValidation(e.target.value)}
+                    placeholder="Start typing your address..."
+                    value={streetAddress}
+                    onChange={(e) => handleAddressInputChange(e.target.value)}
+                    onFocus={() => {
+                      if (addressSuggestions.length > 0) {
+                        setShowSuggestions(true);
+                      }
+                    }}
                     className="input-warm pl-10"
+                    autoComplete="off"
                     required
                   />
-                  {isValid && (
-                    <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary" />
-                  )}
                 </div>
-                {isValidating && (
-                  <p className="text-sm text-muted-foreground">
-                    Validating address...
-                  </p>
+                
+                {showSuggestions && (
+                  <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                    {isSearching ? (
+                      <div className="p-3 text-sm text-muted-foreground">
+                        Searching addresses...
+                      </div>
+                    ) : (
+                      addressSuggestions.map((suggestion, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          className="w-full text-left p-3 hover:bg-accent hover:text-accent-foreground border-b border-border last:border-b-0 transition-colors"
+                          onClick={() => handleSuggestionClick(suggestion)}
+                        >
+                          <div className="text-sm">{suggestion.formatted_address}</div>
+                        </button>
+                      ))
+                    )}
+                  </div>
                 )}
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="city">City</Label>
-                  <Input
-                    id="city"
-                    type="text"
-                    value={userInfo.city}
-                    onChange={(e) => handleInputChange('city', e.target.value)}
-                    className="input-warm"
-                    readOnly={isValid}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="state">State</Label>
-                  <Input
-                    id="state"
-                    type="text"
-                    value={userInfo.state}
-                    onChange={(e) => handleInputChange('state', e.target.value)}
-                    className="input-warm"
-                    readOnly={isValid}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="zipCode">ZIP Code</Label>
-                  <Input
-                    id="zipCode"
-                    type="text"
-                    value={userInfo.zipCode}
-                    onChange={(e) => handleInputChange('zipCode', e.target.value)}
-                    className="input-warm"
-                    readOnly={isValid}
-                  />
-                </div>
-              </div>
-
-              {validationError && (
-                <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl">
-                  <p className="text-sm text-destructive">{validationError}</p>
-                </div>
-              )}
 
               <div className="flex gap-4 pt-4">
                 <Button
@@ -207,7 +206,7 @@ export function ReturnAddressScreen() {
                 <Button
                   type="submit"
                   className="flex-1 button-warm h-12"
-                  disabled={!Object.values(userInfo).every(value => value.trim() !== '')}
+                  disabled={!isFormComplete}
                 >
                   Continue
                 </Button>

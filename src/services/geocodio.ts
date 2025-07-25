@@ -90,6 +90,33 @@ export async function lookupRepresentatives(zipCode: string) {
   }
 }
 
+export async function searchAddresses(query: string, zipCode?: string) {
+  try {
+    const searchQuery = zipCode ? `${query}, ${zipCode}` : query;
+    const response = await fetch(
+      `https://api.geocod.io/v1.9/geocode?q=${encodeURIComponent(searchQuery)}&limit=5&api_key=${GEOCODIO_API_KEY}`
+    );
+    
+    if (!response.ok) {
+      throw new Error('Failed to search addresses');
+    }
+    
+    const data = await response.json();
+    
+    if (!data.results) {
+      return [];
+    }
+    
+    return data.results.map((result: any) => ({
+      formatted_address: result.formatted_address,
+      components: result.address_components
+    }));
+  } catch (error) {
+    console.error('Address search error:', error);
+    return [];
+  }
+}
+
 export async function validateAddress(address: string) {
   try {
     const response = await fetch(
