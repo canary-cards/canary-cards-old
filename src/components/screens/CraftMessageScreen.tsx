@@ -5,14 +5,18 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { Mic, MicOff, ArrowLeft, Wand2, Type } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 export function CraftMessageScreen() {
   const { state, dispatch } = useAppContext();
+  const { toast } = useToast();
   const [message, setMessage] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [isDrafting, setIsDrafting] = useState(false);
   const [inputMethod, setInputMethod] = useState<'text' | 'voice'>('text');
   const [recordingTime, setRecordingTime] = useState(0);
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -60,18 +64,51 @@ export function CraftMessageScreen() {
   };
 
   const transcribeAudio = async (audioBlob: Blob) => {
-    // Mock transcription for demo - in real app would use OpenAI Whisper API
-    setTimeout(() => {
-      const mockTranscriptions = [
-        "I'm concerned about climate change and want to see more investment in renewable energy in our district.",
-        "Healthcare costs are rising and I hope you'll support legislation to make healthcare more affordable.",
-        "Public transportation in our area needs improvement, especially for seniors and disabled residents.",
-        "I'm worried about education funding cuts and hope you'll prioritize our local schools."
-      ];
+    setIsTranscribing(true);
+    
+    try {
+      // Convert audio blob to base64
+      const arrayBuffer = await audioBlob.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+      let binary = '';
+      const chunkSize = 0x8000;
       
-      const randomTranscription = mockTranscriptions[Math.floor(Math.random() * mockTranscriptions.length)];
-      setMessage(randomTranscription);
-    }, 1500);
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.length));
+        binary += String.fromCharCode.apply(null, Array.from(chunk));
+      }
+      
+      const base64Audio = btoa(binary);
+
+      // Call Supabase edge function
+      const { data, error } = await supabase.functions.invoke('transcribe-audio', {
+        body: { audio: base64Audio }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.text) {
+        setMessage(data.text);
+        toast({
+          title: "Transcription complete",
+          description: "Your voice has been transcribed successfully.",
+        });
+      } else {
+        throw new Error('No transcription received');
+      }
+
+    } catch (error) {
+      console.error('Transcription error:', error);
+      toast({
+        title: "Transcription failed",
+        description: "Please try recording again or use the text input instead.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTranscribing(false);
+    }
   };
 
   const formatTime = (seconds: number) => {
@@ -226,7 +263,16 @@ ${userInfo?.firstName} ${userInfo?.lastName}`;
                   </div>
                 </div>
 
-                {message && (
+                {isTranscribing && (
+                  <div className="p-4 bg-muted/50 rounded-xl">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                      <p className="text-sm text-muted-foreground">Transcribing your voice...</p>
+                    </div>
+                  </div>
+                )}
+
+                {message && !isTranscribing && (
                   <div className="p-4 bg-muted/50 rounded-xl">
                     <p className="text-sm text-muted-foreground mb-2">Transcribed:</p>
                     <p className="text-sm">{message}</p>
