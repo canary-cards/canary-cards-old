@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
@@ -26,7 +27,7 @@ export function ReturnAddressScreen() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
 
   const zipCode = state.postcardData.zipCode || '';
 
@@ -152,10 +153,9 @@ export function ReturnAddressScreen() {
               <div className="space-y-2 relative" ref={inputRef}>
                 <Label htmlFor="streetAddress">Return Address *</Label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
+                  <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                  <Textarea
                     id="streetAddress"
-                    type="text"
                     placeholder="Start typing your address..."
                     value={streetAddress}
                     onChange={(e) => handleAddressInputChange(e.target.value)}
@@ -164,9 +164,19 @@ export function ReturnAddressScreen() {
                         setShowSuggestions(true);
                       }
                     }}
-                    className="input-warm pl-10"
+                    className="input-warm pl-10 min-h-[48px] resize-none"
                     autoComplete="off"
                     required
+                    rows={1}
+                    style={{
+                      height: 'auto',
+                      minHeight: '48px'
+                    }}
+                    onInput={(e) => {
+                      const target = e.target as HTMLTextAreaElement;
+                      target.style.height = 'auto';
+                      target.style.height = Math.max(48, target.scrollHeight) + 'px';
+                    }}
                   />
                 </div>
                 
