@@ -118,7 +118,7 @@ export function ReturnAddressScreen() {
                 Return Address Information
               </h1>
               <p className="text-muted-foreground">
-                We need your return address for the postcard so your representative knows where it came from.
+                We need your return address for the postcard so your representative knows it came from a constituent.
               </p>
             </div>
 
