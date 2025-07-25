@@ -150,7 +150,7 @@ export function ReturnAddressScreen() {
               </div>
 
               <div className="space-y-2 relative" ref={inputRef}>
-                <Label htmlFor="streetAddress">Street Address *</Label>
+                <Label htmlFor="streetAddress">Return Address *</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
