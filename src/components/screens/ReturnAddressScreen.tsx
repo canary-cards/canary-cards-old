@@ -153,7 +153,7 @@ export function ReturnAddressScreen() {
               <div className="space-y-2 relative" ref={inputRef}>
                 <Label htmlFor="streetAddress">Return Address *</Label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                  <MapPin className="absolute left-3 top-4 w-4 h-4 text-muted-foreground" />
                   <Textarea
                     id="streetAddress"
                     placeholder="Start typing your address..."
@@ -164,18 +164,23 @@ export function ReturnAddressScreen() {
                         setShowSuggestions(true);
                       }
                     }}
-                    className="input-warm pl-10 min-h-[48px] resize-none"
+                    className="input-warm pl-10 py-3 resize-none overflow-hidden"
                     autoComplete="off"
                     required
                     rows={1}
                     style={{
                       height: 'auto',
-                      minHeight: '48px'
+                      minHeight: '48px',
+                      lineHeight: '1.5'
                     }}
                     onInput={(e) => {
                       const target = e.target as HTMLTextAreaElement;
                       target.style.height = 'auto';
-                      target.style.height = Math.max(48, target.scrollHeight) + 'px';
+                      const scrollHeight = target.scrollHeight;
+                      const lineHeight = parseInt(getComputedStyle(target).lineHeight);
+                      const paddingTop = parseInt(getComputedStyle(target).paddingTop);
+                      const paddingBottom = parseInt(getComputedStyle(target).paddingBottom);
+                      target.style.height = Math.max(48, scrollHeight + paddingTop + paddingBottom) + 'px';
                     }}
                   />
                 </div>
