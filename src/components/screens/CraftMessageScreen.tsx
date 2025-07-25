@@ -141,20 +141,66 @@ export function CraftMessageScreen() {
   };
 
   const generateDraftMessage = (input: string): string => {
-    // Mock AI generation
     const rep = state.postcardData.representative;
     const userInfo = state.postcardData.userInfo;
     
+    // Create a more detailed and structured message based on user input
+    const concerns = input.toLowerCase();
+    let expandedMessage = '';
+    
+    // Expand on common concerns with more detailed language
+    if (concerns.includes('healthcare') || concerns.includes('health')) {
+      expandedMessage += 'I am deeply concerned about healthcare accessibility and affordability in our community. ';
+      if (concerns.includes('cost')) {
+        expandedMessage += 'The rising costs of medical care are putting enormous strain on families like mine. ';
+      }
+      expandedMessage += 'I believe everyone deserves access to quality, affordable healthcare. ';
+    }
+    
+    if (concerns.includes('climate') || concerns.includes('environment')) {
+      expandedMessage += 'Climate change and environmental protection are critical issues that require immediate action. ';
+      expandedMessage += 'I urge you to support legislation that addresses these urgent environmental challenges for future generations. ';
+    }
+    
+    if (concerns.includes('education') || concerns.includes('school')) {
+      expandedMessage += 'Our education system needs strengthened support and adequate funding. ';
+      if (concerns.includes('funding')) {
+        expandedMessage += 'Insufficient school funding is directly impacting the quality of education our children receive. ';
+      }
+      expandedMessage += 'Investing in education is investing in our community\'s future. ';
+    }
+    
+    if (concerns.includes('transportation') || concerns.includes('traffic') || concerns.includes('roads')) {
+      expandedMessage += 'Transportation infrastructure in our area needs significant improvement. ';
+      expandedMessage += 'Better public transit and road maintenance would benefit all constituents and boost our local economy. ';
+    }
+    
+    if (concerns.includes('housing') || concerns.includes('rent') || concerns.includes('mortgage')) {
+      expandedMessage += 'The housing affordability crisis is affecting working families throughout our district. ';
+      expandedMessage += 'We need policies that support both homeownership opportunities and affordable rental options. ';
+    }
+    
+    // If no specific keywords matched, create a general but thoughtful expansion
+    if (!expandedMessage) {
+      expandedMessage = `I wanted to bring to your attention some important concerns that affect me and my neighbors: ${input}. `;
+      expandedMessage += 'These issues have a real impact on our daily lives and the wellbeing of our community. ';
+      expandedMessage += 'I believe addressing these concerns should be a priority for our district. ';
+    }
+    
     return `Dear ${rep?.name || 'Representative'},
 
-As your constituent from ${userInfo?.city}, ${userInfo?.state}, I wanted to share my concerns with you.
+I hope this message finds you well. As your constituent from ${userInfo?.city}, ${userInfo?.state}, I am writing to share some important concerns that affect our community.
 
-${input}
+${expandedMessage}
 
-I believe these issues are important for our community and would appreciate your attention to them. Thank you for your service and for representing our interests.
+I would greatly appreciate your attention to these matters and would welcome the opportunity to discuss how we can work together to address these challenges. Your leadership on these issues would make a meaningful difference for families like mine.
 
-Sincerely,
-${userInfo?.firstName} ${userInfo?.lastName}`;
+Thank you for your time and for your continued service to our district. I look forward to your response and to seeing positive action on these important issues.
+
+Respectfully,
+${userInfo?.firstName} ${userInfo?.lastName}
+${userInfo?.streetAddress}
+${userInfo?.city}, ${userInfo?.state} ${userInfo?.zipCode}`;
   };
 
   const goBack = () => {
