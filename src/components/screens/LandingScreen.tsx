@@ -209,7 +209,7 @@ export function LandingScreen() {
                   </div>
                   {selectedRep?.id === rep.id && (
                     <Badge variant="default" className="ml-2 text-xs">
-                      Selected
+                      My Rep
                     </Badge>
                   )}
                 </CardContent>
