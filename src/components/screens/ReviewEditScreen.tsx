@@ -119,10 +119,10 @@ ${userInfo?.firstName} ${userInfo?.lastName}`;
                 <Button
                   onClick={handleContinue}
                   disabled={!editedMessage.trim() || charCount > maxChars}
-                  className="flex-1 button-warm h-12"
+                  className="flex-1 button-warm h-12 text-sm sm:text-base"
                 >
-                  <Edit3 className="w-4 h-4 mr-2" />
-                  Looks Good, Continue
+                  <Edit3 className="w-4 h-4 mr-1 sm:mr-2 flex-shrink-0" />
+                  <span className="truncate">Looks Good, Continue</span>
                 </Button>
               </div>
             </div>
