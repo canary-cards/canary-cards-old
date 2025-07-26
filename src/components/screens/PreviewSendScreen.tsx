@@ -123,14 +123,14 @@ export function PreviewSendScreen() {
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Left side - Return address */}
-                    <div className="space-y-1 text-sm">
+                    <div className="space-y-1 text-xs">
                       <p className="font-medium">{userInfo?.firstName} {userInfo?.lastName}</p>
                       <p>{userInfo?.streetAddress}</p>
                       <p>{userInfo?.city}, {userInfo?.state} {userInfo?.zipCode}</p>
                     </div>
                     
                     {/* Right side - Representative address */}
-                    <div className="space-y-1 text-sm">
+                    <div className="space-y-1 text-xs">
                       <p className="font-medium">{rep?.name}</p>
                       <p>{rep?.address || "U.S. House of Representatives"}</p>
                       {!rep?.address && <p>Washington, DC 20515</p>}
