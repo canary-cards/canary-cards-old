@@ -132,8 +132,8 @@ export function PreviewSendScreen() {
                     {/* Right side - Representative address */}
                     <div className="space-y-1 text-sm">
                       <p className="font-medium">{rep?.name}</p>
-                      <p>U.S. House of Representatives</p>
-                      <p>Washington, DC 20515</p>
+                      <p>{rep?.address || "U.S. House of Representatives"}</p>
+                      {!rep?.address && <p>Washington, DC 20515</p>}
                     </div>
                   </div>
                   

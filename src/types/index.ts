@@ -7,6 +7,7 @@ export interface Representative {
   photo?: string;
   party: string;
   type: string;
+  address?: string;
 }
 
 export interface UserInfo {

@@ -61,6 +61,7 @@ export async function lookupRepresentatives(zipCode: string) {
       photo?: string;
       party: string;
       type: string;
+      address?: string;
     }> = [];
     
     // Extract House Representatives only
@@ -77,7 +78,8 @@ export async function lookupRepresentatives(zipCode: string) {
               state: result.address_components.state,
               photo: rep.bio.photo_url,
               party: rep.bio.party,
-              type: 'representative'
+              type: 'representative',
+              address: rep.contact?.address
             });
           });
       });
@@ -116,6 +118,7 @@ export async function lookupRepresentativesAndSenators(zipCode: string) {
       photo?: string;
       party: string;
       type: string;
+      address?: string;
     }> = [];
     
     // Extract all legislators (representatives and senators)
@@ -132,7 +135,8 @@ export async function lookupRepresentativesAndSenators(zipCode: string) {
             state: result.address_components.state,
             photo: legislator.bio.photo_url,
             party: legislator.bio.party,
-            type: legislator.type
+            type: legislator.type,
+            address: legislator.contact?.address
           });
         });
       });
