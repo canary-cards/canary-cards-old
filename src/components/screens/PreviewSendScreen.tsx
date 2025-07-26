@@ -153,7 +153,7 @@ export function PreviewSendScreen() {
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-3">
                   <Zap className="w-4 h-4 text-primary" />
-                  <h3 className="text-sm font-medium text-foreground">Amplify your impact</h3>
+                  <h3 className="font-semibold text-foreground">Amplify your impact</h3>
                 </div>
                 <p className="text-xs text-muted-foreground mb-4">
                   Send your message to all your representatives to maximize your voice in government
