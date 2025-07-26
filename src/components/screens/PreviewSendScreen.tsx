@@ -159,7 +159,7 @@ export function PreviewSendScreen() {
                   <Zap className="w-4 h-4 text-primary" />
                   <h3 className="font-semibold text-foreground">Amplify your impact</h3>
                 </div>
-                <p className="text-xs text-muted-foreground mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Send your message to all your representatives to maximize your voice in government
                 </p>
                 
@@ -221,7 +221,7 @@ export function PreviewSendScreen() {
                                 <span className="font-medium">Single Postcard</span>
                                 <span className="font-bold text-lg">${singlePrice}</span>
                               </div>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-xs text-muted-foreground">
                                 Send to Rep. {rep?.name.split(' ').slice(-1)[0]}
                               </p>
                             </Label>
@@ -245,7 +245,7 @@ export function PreviewSendScreen() {
                                   </Badge>
                                 </div>
                               </div>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-xs text-muted-foreground">
                                 Send to Reps. {rep ? rep.name.split(' ').slice(-1)[0] : 'Representative'}{senators.length > 0 ? `, ${senators.map(s => s.name.split(' ').slice(-1)[0]).join(', and ')}` : ''}
                               </p>
                             </Label>
