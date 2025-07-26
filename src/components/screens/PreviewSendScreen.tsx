@@ -10,7 +10,7 @@ import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { ArrowLeft, Mail, CreditCard, Shield, Clock, Heart, Users, Zap } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { lookupSenators } from '@/services/geocodio';
+import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
 
 export function PreviewSendScreen() {
@@ -32,11 +32,11 @@ export function PreviewSendScreen() {
 
   // Fetch senators when component mounts
   useEffect(() => {
-    const fetchSenators = async () => {
-      if (userInfo?.state) {
+    const fetchSenatorsFromZip = async () => {
+      if (userInfo?.zipCode) {
         setLoadingSenators(true);
         try {
-          const stateSenators = await lookupSenators(userInfo.state);
+          const { senators: stateSenators } = await lookupRepresentativesAndSenators(userInfo.zipCode);
           setSenators(stateSenators);
         } catch (error) {
           console.error('Failed to fetch senators:', error);
@@ -46,8 +46,8 @@ export function PreviewSendScreen() {
       }
     };
 
-    fetchSenators();
-  }, [userInfo?.state]);
+    fetchSenatorsFromZip();
+  }, [userInfo?.zipCode]);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -163,13 +163,16 @@ export function PreviewSendScreen() {
                   {/* House Representative */}
                   {rep && (
                     <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-                      <CardContent className="p-3 text-center">
-                        <Avatar className="w-8 h-8 mx-auto mb-2">
-                          <AvatarImage src={rep.photo} alt={rep.name} />
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                            {rep.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
+                      <CardContent className="p-2 text-center">
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-primary/10">
+                          {rep.photo ? (
+                            <img src={rep.photo} alt={rep.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
+                              {rep.name.split(' ').map(n => n[0]).join('')}
+                            </div>
+                          )}
+                        </div>
                         <h4 className="font-medium text-xs text-foreground leading-tight mb-1">{rep.name}</h4>
                         <p className="text-xs text-muted-foreground">House</p>
                       </CardContent>
@@ -180,15 +183,15 @@ export function PreviewSendScreen() {
                   {loadingSenators ? (
                     <>
                       <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
-                        <CardContent className="p-3 text-center">
-                          <div className="w-8 h-8 bg-muted rounded-full mx-auto mb-2 animate-pulse" />
+                        <CardContent className="p-2 text-center">
+                          <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 animate-pulse" />
                           <div className="h-3 bg-muted rounded mx-auto mb-1 animate-pulse" />
                           <div className="h-3 bg-muted rounded w-12 mx-auto animate-pulse" />
                         </CardContent>
                       </Card>
                       <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
-                        <CardContent className="p-3 text-center">
-                          <div className="w-8 h-8 bg-muted rounded-full mx-auto mb-2 animate-pulse" />
+                        <CardContent className="p-2 text-center">
+                          <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 animate-pulse" />
                           <div className="h-3 bg-muted rounded mx-auto mb-1 animate-pulse" />
                           <div className="h-3 bg-muted rounded w-12 mx-auto animate-pulse" />
                         </CardContent>
@@ -197,13 +200,16 @@ export function PreviewSendScreen() {
                   ) : (
                     senators.slice(0, 2).map((senator) => (
                       <Card key={senator.id} className="bg-gradient-to-br from-secondary/5 to-secondary/10 border-secondary/20">
-                        <CardContent className="p-3 text-center">
-                          <Avatar className="w-8 h-8 mx-auto mb-2">
-                            <AvatarImage src={senator.photo} alt={senator.name} />
-                            <AvatarFallback className="bg-secondary/10 text-secondary text-xs">
-                              {senator.name.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
+                        <CardContent className="p-2 text-center">
+                          <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-secondary/10">
+                            {senator.photo ? (
+                              <img src={senator.photo} alt={senator.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-secondary text-xs font-medium">
+                                {senator.name.split(' ').map(n => n[0]).join('')}
+                              </div>
+                            )}
+                          </div>
                           <h4 className="font-medium text-xs text-foreground leading-tight mb-1">{senator.name}</h4>
                           <p className="text-xs text-muted-foreground">Senate</p>
                         </CardContent>
