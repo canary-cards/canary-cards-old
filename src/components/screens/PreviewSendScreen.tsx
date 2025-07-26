@@ -278,13 +278,13 @@ export function PreviewSendScreen() {
 
               {/* Payment Button */}
               <div className="space-y-4">
-                <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} className="w-full h-14 button-warm text-lg">
+                <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} className="w-full h-12 sm:h-14 button-warm text-sm sm:text-base md:text-lg">
                   {isProcessing ? <>
-                      <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-3" />
-                      Processing Payment...
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2 sm:mr-3" />
+                      <span className="truncate">Processing Payment...</span>
                     </> : <>
-                      <CreditCard className="w-5 h-5 mr-3" />
-                      {sendOption === 'single' ? `Send My Postcard - $${singlePrice}` : `Send My 3 Postcards - $${triplePrice}`}
+                      <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
+                      <span className="truncate">{sendOption === 'single' ? `Send My Postcard - $${singlePrice}` : `Send My 3 Postcards - $${triplePrice}`}</span>
                     </>}
                 </Button>
                 
