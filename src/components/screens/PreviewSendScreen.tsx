@@ -141,11 +141,9 @@ export function PreviewSendScreen() {
                     </div>
                   </div>
                   
-                  <div className="mt-6 p-4 bg-background/80 rounded-lg">
+                  <div className="p-4 bg-background/80 rounded-lg">
                     <p className="text-xs text-muted-foreground mb-2">Message (handwritten style):</p>
-                    <div className="text-sm leading-relaxed" style={{
-                    fontFamily: 'Georgia, serif'
-                  }}>
+                    <div className="text-sm leading-relaxed font-caveat">
                       {finalMessage}
                     </div>
                   </div>
