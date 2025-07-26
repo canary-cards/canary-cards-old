@@ -36,9 +36,10 @@ serve(async (req) => {
       throw new Error("Invalid send option");
     }
 
-    // Create checkout session
+    // Create checkout session with Apple Pay and Google Pay enabled
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
+      payment_method_types: ['card', 'apple_pay', 'google_pay'],
       line_items: [
         {
           price_data: {
