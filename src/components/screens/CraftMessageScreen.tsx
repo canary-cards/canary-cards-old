@@ -117,6 +117,35 @@ export function CraftMessageScreen() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const convertListToSentence = (input: string): string => {
+    // Check if input looks like a list (comma-separated, bullet points, or line breaks)
+    const isListLike = input.includes(',') || input.includes('•') || input.includes('-') || 
+                       input.includes('\n') || input.match(/^\d+\./) || input.includes(';');
+    
+    if (!isListLike) {
+      return input; // Return as-is if it's already a sentence
+    }
+    
+    // Clean up the input and convert to sentence format
+    let cleanedInput = input
+      .replace(/[•\-*]/g, '') // Remove bullet points
+      .replace(/^\d+\.\s*/gm, '') // Remove numbered list markers
+      .replace(/\n+/g, ', ') // Replace line breaks with commas
+      .replace(/[,;]+/g, ', ') // Normalize multiple commas/semicolons
+      .replace(/,\s*,/g, ',') // Remove duplicate commas
+      .trim();
+    
+    // Remove trailing comma if present
+    cleanedInput = cleanedInput.replace(/,\s*$/, '');
+    
+    // If it doesn't end with punctuation, add a period
+    if (!cleanedInput.match(/[.!?]$/)) {
+      cleanedInput += '.';
+    }
+    
+    return cleanedInput;
+  };
+
   const handleDraftMessage = async () => {
     if (!message.trim()) {
       alert('Please enter your concerns first');
@@ -144,8 +173,11 @@ export function CraftMessageScreen() {
     const rep = state.postcardData.representative;
     const userInfo = state.postcardData.userInfo;
     
+    // Convert lists to full sentences if needed
+    const processedInput = convertListToSentence(input);
+    
     // Create a concise message under 500 characters
-    const concerns = input.toLowerCase();
+    const concerns = processedInput.toLowerCase();
     let message = '';
     
     // Generate very brief, focused content
@@ -160,8 +192,8 @@ export function CraftMessageScreen() {
     } else if (concerns.includes('housing') || concerns.includes('rent') || concerns.includes('mortgage')) {
       message = 'Housing affordability is a crisis. Please support policies for affordable housing options.';
     } else {
-      // Keep it very short for general concerns
-      message = `I'm concerned about: ${input.slice(0, 100)}. Please address these important community issues.`;
+      // Use the processed input for general concerns
+      message = `I'm concerned about ${processedInput.slice(0, 100)}. Please address these important community issues.`;
     }
     
     return `Dear ${rep?.name || 'Rep.'},
