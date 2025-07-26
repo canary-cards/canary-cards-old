@@ -299,10 +299,10 @@ export function PreviewSendScreen() {
                 </div>
               </div>
 
-              <div className="flex gap-4 pt-4 border-t">
-                <Button type="button" variant="outline" onClick={goBack} className="button-warm">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
+              <div className="flex gap-2 sm:gap-4 pt-4 border-t">
+                <Button type="button" variant="outline" onClick={goBack} className="button-warm flex-shrink-0 px-3 sm:px-4">
+                  <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+                  <span className="text-sm sm:text-base">Back</span>
                 </Button>
               </div>
             </div>
