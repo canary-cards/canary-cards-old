@@ -258,7 +258,7 @@ export function PreviewSendScreen() {
                                 </div>
                               </div>
                               <p className="text-sm text-muted-foreground">
-                                Send to all 3 of your representatives (House Rep + 2 Senators)
+                                Send to {rep ? rep.name.split(' ')[0] : 'your rep'}{senators.length > 0 ? `, ${senators.map(s => s.name.split(' ')[0]).join(', and ')}` : ', and your senators'}
                               </p>
                             </Label>
                           </div>
