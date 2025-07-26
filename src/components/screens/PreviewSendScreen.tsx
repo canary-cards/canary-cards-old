@@ -117,74 +117,6 @@ export function PreviewSendScreen() {
               </p>
             </div>
 
-            {/* Representatives Cards */}
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <Zap className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold text-foreground">Amplify your impact</h3>
-              </div>
-              <p className="text-sm text-muted-foreground mb-4">
-                Send your message to all your representatives to maximize your voice in government
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {rep && (
-                  <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-                    <CardContent className="p-4 text-center">
-                      <Avatar className="w-12 h-12 mx-auto mb-2">
-                        <AvatarImage src={rep.photo} alt={rep.name} />
-                        <AvatarFallback className="bg-primary/10 text-primary text-sm">
-                          {rep.name.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <h4 className="font-medium text-sm text-foreground">{rep.name}</h4>
-                      <p className="text-xs text-muted-foreground">House Rep</p>
-                      <Badge variant="outline" className="text-xs mt-1">
-                        {rep.party}
-                      </Badge>
-                    </CardContent>
-                  </Card>
-                )}
-                
-                {loadingSenators ? (
-                  <>
-                    <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
-                      <CardContent className="p-4 text-center">
-                        <div className="w-12 h-12 bg-muted rounded-full mx-auto mb-2 animate-pulse" />
-                        <div className="h-4 bg-muted rounded mx-auto mb-1 animate-pulse" />
-                        <div className="h-3 bg-muted rounded w-16 mx-auto animate-pulse" />
-                      </CardContent>
-                    </Card>
-                    <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
-                      <CardContent className="p-4 text-center">
-                        <div className="w-12 h-12 bg-muted rounded-full mx-auto mb-2 animate-pulse" />
-                        <div className="h-4 bg-muted rounded mx-auto mb-1 animate-pulse" />
-                        <div className="h-3 bg-muted rounded w-16 mx-auto animate-pulse" />
-                      </CardContent>
-                    </Card>
-                  </>
-                ) : (
-                  senators.map((senator) => (
-                    <Card key={senator.id} className="bg-gradient-to-br from-secondary/5 to-secondary/10 border-secondary/20">
-                      <CardContent className="p-4 text-center">
-                        <Avatar className="w-12 h-12 mx-auto mb-2">
-                          <AvatarImage src={senator.photo} alt={senator.name} />
-                          <AvatarFallback className="bg-secondary/10 text-secondary text-sm">
-                            {senator.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <h4 className="font-medium text-sm text-foreground">{senator.name}</h4>
-                        <p className="text-xs text-muted-foreground">Senator</p>
-                        <Badge variant="outline" className="text-xs mt-1">
-                          {senator.party}
-                        </Badge>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </div>
-            </div>
-
             {/* Postcard Preview */}
             <div className="mb-8">
               <Card className="bg-gradient-to-br from-card to-muted/30 border-2">
@@ -217,6 +149,70 @@ export function PreviewSendScreen() {
 
             {/* Send Options */}
             <div className="space-y-6">
+              {/* Representatives Mini-Cards - Above send options */}
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-4 h-4 text-primary" />
+                  <h3 className="text-sm font-medium text-foreground">Amplify your impact</h3>
+                </div>
+                <p className="text-xs text-muted-foreground mb-4">
+                  Send your message to all your representatives to maximize your voice in government
+                </p>
+                
+                <div className="grid grid-cols-3 gap-2">
+                  {/* House Representative */}
+                  {rep && (
+                    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                      <CardContent className="p-3 text-center">
+                        <Avatar className="w-8 h-8 mx-auto mb-2">
+                          <AvatarImage src={rep.photo} alt={rep.name} />
+                          <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                            {rep.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <h4 className="font-medium text-xs text-foreground leading-tight mb-1">{rep.name}</h4>
+                        <p className="text-xs text-muted-foreground">House</p>
+                      </CardContent>
+                    </Card>
+                  )}
+                  
+                  {/* Senators */}
+                  {loadingSenators ? (
+                    <>
+                      <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
+                        <CardContent className="p-3 text-center">
+                          <div className="w-8 h-8 bg-muted rounded-full mx-auto mb-2 animate-pulse" />
+                          <div className="h-3 bg-muted rounded mx-auto mb-1 animate-pulse" />
+                          <div className="h-3 bg-muted rounded w-12 mx-auto animate-pulse" />
+                        </CardContent>
+                      </Card>
+                      <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
+                        <CardContent className="p-3 text-center">
+                          <div className="w-8 h-8 bg-muted rounded-full mx-auto mb-2 animate-pulse" />
+                          <div className="h-3 bg-muted rounded mx-auto mb-1 animate-pulse" />
+                          <div className="h-3 bg-muted rounded w-12 mx-auto animate-pulse" />
+                        </CardContent>
+                      </Card>
+                    </>
+                  ) : (
+                    senators.slice(0, 2).map((senator) => (
+                      <Card key={senator.id} className="bg-gradient-to-br from-secondary/5 to-secondary/10 border-secondary/20">
+                        <CardContent className="p-3 text-center">
+                          <Avatar className="w-8 h-8 mx-auto mb-2">
+                            <AvatarImage src={senator.photo} alt={senator.name} />
+                            <AvatarFallback className="bg-secondary/10 text-secondary text-xs">
+                              {senator.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <h4 className="font-medium text-xs text-foreground leading-tight mb-1">{senator.name}</h4>
+                          <p className="text-xs text-muted-foreground">Senate</p>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              </div>
+
               <div>
                 <h3 className="font-semibold mb-4">Choose your send option:</h3>
                 <RadioGroup value={sendOption} onValueChange={(value: 'single' | 'triple') => setSendOption(value)}>
