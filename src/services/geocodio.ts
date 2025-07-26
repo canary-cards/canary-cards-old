@@ -90,6 +90,59 @@ export async function lookupRepresentatives(zipCode: string) {
   }
 }
 
+export async function lookupSenators(state: string) {
+  try {
+    const response = await fetch(
+      `https://api.geocod.io/v1.9/geocode?q=${state}&fields=cd&api_key=${GEOCODIO_API_KEY}`
+    );
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch senators');
+    }
+    
+    const data: GeocodioResponse = await response.json();
+    
+    if (!data.results || data.results.length === 0) {
+      throw new Error('No results found for this state');
+    }
+    
+    const result = data.results[0];
+    const senators: Array<{
+      id: string;
+      name: string;
+      city: string;
+      state: string;
+      photo?: string;
+      party: string;
+      type: string;
+    }> = [];
+    
+    // Extract Senators only
+    if (result.fields?.congressional_districts) {
+      result.fields.congressional_districts.forEach((cd) => {
+        cd.current_legislators
+          .filter(legislator => legislator.type === 'senator')
+          .forEach((senator, index) => {
+            senators.push({
+              id: `senator-${result.address_components.state}-${index}`,
+              name: `${senator.bio.first_name} ${senator.bio.last_name}`,
+              city: result.address_components.city,
+              state: result.address_components.state,
+              photo: senator.bio.photo_url,
+              party: senator.bio.party,
+              type: 'senator'
+            });
+          });
+      });
+    }
+    
+    return senators;
+  } catch (error) {
+    console.error('Geocodio API error:', error);
+    throw new Error('Unable to lookup senators. Please try again.');
+  }
+}
+
 export async function searchAddresses(query: string, zipCode?: string) {
   try {
     const searchQuery = zipCode ? `${query}, ${zipCode}` : query;
