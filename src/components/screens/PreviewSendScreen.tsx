@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { ArrowLeft, Mail, CreditCard, Shield, Clock, Heart } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 export function PreviewSendScreen() {
   const { state, dispatch } = useAppContext();
@@ -39,20 +40,30 @@ export function PreviewSendScreen() {
     }
 
     setIsProcessing(true);
-    
-    // Mock payment processing
-    setTimeout(() => {
+    setEmailError('');
+
+    try {
+      // Call Stripe payment function
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: { sendOption, email }
+      });
+
+      if (error) throw error;
+
+      // Update app state before redirecting
       dispatch({ 
         type: 'UPDATE_POSTCARD_DATA', 
         payload: { sendOption, email }
       });
-      
-      // In real app, would integrate with Stripe here
+
+      // Redirect to Stripe checkout
+      window.open(data.url, '_blank');
+    } catch (error) {
+      console.error('Payment error:', error);
+      setEmailError('Payment failed. Please try again.');
+    } finally {
       setIsProcessing(false);
-      
-      // Navigate to success screen
-      dispatch({ type: 'SET_STEP', payload: 7 });
-    }, 3000);
+    }
   };
 
   const goBack = () => {
