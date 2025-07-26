@@ -114,7 +114,7 @@ export function LandingScreen() {
           <CardContent className="p-4 md:p-6">
             <form onSubmit={handleZipSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="zipCode" className="text-sm md:text-base font-medium">
+                <Label htmlFor="zipCode" className="text-sm md:text-base font-medium text-center block">
                   Enter your zip code to get started
                 </Label>
                 <div className="relative">
