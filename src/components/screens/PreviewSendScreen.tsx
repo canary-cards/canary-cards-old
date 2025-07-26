@@ -222,7 +222,7 @@ export function PreviewSendScreen() {
                                 <span className="font-bold text-lg">${singlePrice}</span>
                               </div>
                               <p className="text-sm text-muted-foreground">
-                                Send to {rep?.name}
+                                Send to Rep. {rep?.name.split(' ').slice(-1)[0]}
                               </p>
                             </Label>
                           </div>
@@ -246,7 +246,7 @@ export function PreviewSendScreen() {
                                 </div>
                               </div>
                               <p className="text-sm text-muted-foreground">
-                                Send to all 3 of your representatives (House Rep + 2 Senators)
+                                Send to Reps. {rep ? rep.name.split(' ').slice(-1)[0] : 'Representative'}{senators.length > 0 ? `, ${senators.map(s => s.name.split(' ').slice(-1)[0]).join(', and ')}` : ''}
                               </p>
                             </Label>
                           </div>
