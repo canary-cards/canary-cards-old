@@ -105,21 +105,21 @@ ${userInfo?.firstName} ${userInfo?.lastName}`;
                 </Button>
               </div>
 
-              <div className="flex gap-4 pt-4">
+              <div className="flex gap-2 sm:gap-4 pt-4">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={goBack}
-                  className="button-warm"
+                  className="button-warm h-12 px-3 sm:px-4 flex-shrink-0"
                 >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
+                  <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+                  <span className="text-sm sm:text-base">Back</span>
                 </Button>
                 
                 <Button
                   onClick={handleContinue}
                   disabled={!editedMessage.trim() || charCount > maxChars}
-                  className="flex-1 button-warm h-12 text-sm sm:text-base"
+                  className="flex-1 button-warm h-12 text-sm sm:text-base min-w-0"
                 >
                   <Edit3 className="w-4 h-4 mr-1 sm:mr-2 flex-shrink-0" />
                   <span className="truncate">Looks Good, Continue</span>
