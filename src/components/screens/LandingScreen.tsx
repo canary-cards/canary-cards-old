@@ -128,7 +128,8 @@ export function LandingScreen() {
                       setZipCode(e.target.value);
                       setSearchError('');
                     }}
-                    className="pl-10 h-12 text-center text-lg md:text-base"
+                    className="pl-10 pr-10 h-12 text-center text-lg md:text-base"
+                    style={{ textAlign: 'center', paddingLeft: '2.5rem', paddingRight: '2.5rem' }}
                     maxLength={5}
                   />
                 </div>
