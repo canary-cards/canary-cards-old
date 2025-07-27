@@ -41,16 +41,16 @@ export function RobotWritingAnimation({
       {/* Animation Container */}
       <div className="relative bg-card rounded-lg p-6 border shadow-sm">
         <svg
-          viewBox="0 0 800 600"
+          viewBox="0 0 800 300"
           className="w-full h-auto"
           style={{ animationPlayState: isPlaying ? 'running' : 'paused' }}
         >
           {/* Background Desk */}
           <rect
             x="50"
-            y="400"
+            y="200"
             width="700"
-            height="150"
+            height="75"
             fill="hsl(var(--muted))"
             rx="8"
           />
@@ -58,9 +58,9 @@ export function RobotWritingAnimation({
           {/* Postcard */}
           <rect
             x="300"
-            y="320"
+            y="160"
             width="200"
-            height="140"
+            height="110"
             fill="hsl(var(--background))"
             stroke="hsl(var(--border))"
             strokeWidth="2"
@@ -73,9 +73,9 @@ export function RobotWritingAnimation({
             <line
               key={i}
               x1="315"
-              y1={340 + i * 20}
+              y1={175 + i * 15}
               x2="485"
-              y2={340 + i * 20}
+              y2={175 + i * 15}
               stroke="hsl(var(--muted-foreground))"
               strokeWidth="1"
               opacity="0.3"
@@ -87,7 +87,7 @@ export function RobotWritingAnimation({
             {/* Head */}
             <rect
               x="120"
-              y="180"
+              y="90"
               width="80"
               height="60"
               fill="hsl(var(--primary))"
@@ -95,20 +95,20 @@ export function RobotWritingAnimation({
             />
             
             {/* Eyes */}
-            <circle cx="140" cy="200" r="6" fill="hsl(var(--background))" />
-            <circle cx="180" cy="200" r="6" fill="hsl(var(--background))" />
-            <circle cx="140" cy="200" r="3" fill="hsl(var(--foreground))" />
-            <circle cx="180" cy="200" r="3" fill="hsl(var(--foreground))" />
+            <circle cx="140" cy="110" r="6" fill="hsl(var(--background))" />
+            <circle cx="180" cy="110" r="6" fill="hsl(var(--background))" />
+            <circle cx="140" cy="110" r="3" fill="hsl(var(--foreground))" />
+            <circle cx="180" cy="110" r="3" fill="hsl(var(--foreground))" />
             
             {/* Mouth */}
-            <rect x="155" y="215" width="10" height="4" fill="hsl(var(--background))" rx="2" />
+            <rect x="155" y="125" width="10" height="4" fill="hsl(var(--background))" rx="2" />
             
             {/* Body */}
             <rect
               x="110"
-              y="240"
+              y="150"
               width="100"
-              height="120"
+              height="60"
               fill="hsl(var(--primary))"
               rx="12"
             />
@@ -116,9 +116,9 @@ export function RobotWritingAnimation({
             {/* Chest Panel */}
             <rect
               x="130"
-              y="260"
+              y="160"
               width="60"
-              height="40"
+              height="30"
               fill="hsl(var(--muted))"
               rx="4"
             />
@@ -126,9 +126,9 @@ export function RobotWritingAnimation({
             {/* Static Arm (Left) */}
             <rect
               x="90"
-              y="260"
+              y="160"
               width="20"
-              height="60"
+              height="40"
               fill="hsl(var(--primary))"
               rx="10"
             />
@@ -138,29 +138,29 @@ export function RobotWritingAnimation({
               {/* Upper Arm */}
               <rect
                 x="210"
-                y="260"
+                y="160"
                 width="20"
-                height="60"
+                height="40"
                 fill="hsl(var(--primary))"
                 rx="10"
-                style={{ transformOrigin: '220px 260px' }}
+                style={{ transformOrigin: '220px 160px' }}
               />
               
               {/* Lower Arm */}
               <rect
                 x="230"
-                y="300"
+                y="190"
                 width="15"
-                height="50"
+                height="30"
                 fill="hsl(var(--primary))"
                 rx="7"
-                style={{ transformOrigin: '220px 320px' }}
+                style={{ transformOrigin: '220px 200px' }}
               />
               
               {/* Hand */}
               <circle
                 cx="245"
-                cy="340"
+                cy="210"
                 r="8"
                 fill="hsl(var(--primary))"
               />
@@ -168,9 +168,9 @@ export function RobotWritingAnimation({
               {/* Pen */}
               <line
                 x1="245"
-                y1="340"
+                y1="210"
                 x2="260"
-                y2="355"
+                y2="225"
                 stroke="hsl(var(--foreground))"
                 strokeWidth="3"
                 strokeLinecap="round"
@@ -178,16 +178,16 @@ export function RobotWritingAnimation({
             </g>
             
             {/* Legs */}
-            <rect x="130" y="360" width="15" height="40" fill="hsl(var(--primary))" rx="7" />
-            <rect x="175" y="360" width="15" height="40" fill="hsl(var(--primary))" rx="7" />
+            <rect x="130" y="210" width="15" height="20" fill="hsl(var(--primary))" rx="7" />
+            <rect x="175" y="210" width="15" height="20" fill="hsl(var(--primary))" rx="7" />
           </g>
           
           {/* Writing Text */}
           <g className="writing-text">
             <text
               x="320"
-              y="355"
-              fontSize="12"
+              y="185"
+              fontSize="10"
               fill="hsl(var(--foreground))"
               fontFamily="cursive"
               className={cn("writing-line-1", isPlaying && "animate-write")}
@@ -196,8 +196,8 @@ export function RobotWritingAnimation({
             </text>
             <text
               x="320"
-              y="375"
-              fontSize="10"
+              y="200"
+              fontSize="8"
               fill="hsl(var(--foreground))"
               fontFamily="cursive"
               className={cn("writing-line-2", isPlaying && "animate-write")}
@@ -206,8 +206,8 @@ export function RobotWritingAnimation({
             </text>
             <text
               x="320"
-              y="395"
-              fontSize="10"
+              y="215"
+              fontSize="8"
               fill="hsl(var(--foreground))"
               fontFamily="cursive"
               className={cn("writing-line-3", isPlaying && "animate-write")}
@@ -216,8 +216,8 @@ export function RobotWritingAnimation({
             </text>
             <text
               x="320"
-              y="415"
-              fontSize="10"
+              y="230"
+              fontSize="8"
               fill="hsl(var(--foreground))"
               fontFamily="cursive"
               className={cn("writing-line-4", isPlaying && "animate-write")}
@@ -226,8 +226,8 @@ export function RobotWritingAnimation({
             </text>
             <text
               x="320"
-              y="435"
-              fontSize="10"
+              y="245"
+              fontSize="8"
               fill="hsl(var(--foreground))"
               fontFamily="cursive"
               className={cn("writing-line-5", isPlaying && "animate-write")}
@@ -239,9 +239,9 @@ export function RobotWritingAnimation({
           {/* Completion Sparkles */}
           {isComplete && (
             <g className="completion-sparkles animate-fade-in">
-              <circle cx="520" cy="340" r="3" fill="hsl(var(--primary))" className="animate-pulse" />
-              <circle cx="530" cy="360" r="2" fill="hsl(var(--accent))" className="animate-pulse" style={{ animationDelay: '0.2s' }} />
-              <circle cx="540" cy="350" r="2.5" fill="hsl(var(--primary))" className="animate-pulse" style={{ animationDelay: '0.4s' }} />
+              <circle cx="520" cy="210" r="3" fill="hsl(var(--primary))" className="animate-pulse" />
+              <circle cx="530" cy="230" r="2" fill="hsl(var(--accent))" className="animate-pulse" style={{ animationDelay: '0.2s' }} />
+              <circle cx="540" cy="220" r="2.5" fill="hsl(var(--primary))" className="animate-pulse" style={{ animationDelay: '0.4s' }} />
             </g>
           )}
         </svg>
