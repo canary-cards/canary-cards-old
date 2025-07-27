@@ -63,9 +63,23 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
-			fontFamily: {
-				caveat: ['Caveat', 'cursive'],
-			},
+		fontFamily: {
+			sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+			caveat: ['Caveat', 'cursive'],
+		},
+		fontSize: {
+			'h1': ['2.5rem', { lineHeight: '1.2', fontWeight: '700' }],    // 40px - Primary headlines
+			'h2': ['2rem', { lineHeight: '1.3', fontWeight: '600' }],     // 32px - Section headers
+			'h3': ['1.5rem', { lineHeight: '1.4', fontWeight: '600' }],   // 24px - Subsections
+			'body': ['1rem', { lineHeight: '1.5', fontWeight: '400' }],   // 16px - Main content
+			'small': ['0.875rem', { lineHeight: '1.4', fontWeight: '400' }], // 14px - Helper text
+		},
+		fontWeight: {
+			'regular': '400',
+			'medium': '500',
+			'semibold': '600',
+			'bold': '700',
+		},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
