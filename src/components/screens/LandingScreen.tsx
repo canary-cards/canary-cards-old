@@ -11,7 +11,7 @@ import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
 import { MapPin, Users, Bot, PenTool, ArrowRight } from 'lucide-react';
 import { ThemeToggle } from '../ThemeToggle';
-import heroImage from '@/assets/civic-hero-mobile.jpg';
+import { RobotWritingAnimation } from '../RobotWritingAnimation';
 
 export function LandingScreen() {
   const { state, dispatch } = useAppContext();
@@ -90,13 +90,9 @@ export function LandingScreen() {
         
         {/* Mobile-First Hero Section */}
         <div className="text-center mb-6">
-          {/* Hero Image */}
-          <div className="w-full h-48 mb-4 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
-            <img 
-              src={heroImage} 
-              alt="Make your voice heard with digital postcards"
-              className="w-full h-full object-cover"
-            />
+          {/* Robot Writing Animation */}
+          <div className="w-full mb-4">
+            <RobotWritingAnimation autoPlay={true} className="max-w-lg mx-auto" />
           </div>
           
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">

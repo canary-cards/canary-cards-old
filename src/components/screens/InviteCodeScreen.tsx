@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAppContext } from '../../context/AppContext';
 import { CheckCircle, Mail } from 'lucide-react';
 import { ThemeToggle } from '../ThemeToggle';
-import { RobotWritingAnimation } from '../RobotWritingAnimation';
 
 export function InviteCodeScreen() {
   const { state, dispatch } = useAppContext();
@@ -46,77 +45,63 @@ export function InviteCodeScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col lg:flex-row items-center justify-center p-4 gap-8">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
-      
-      {/* Robot Animation - Hidden on mobile, shown on larger screens */}
-      <div className="hidden lg:block lg:w-1/2 max-w-2xl">
-        <RobotWritingAnimation autoPlay={true} />
-      </div>
-      
-      {/* Login Card */}
-      <div className="w-full lg:w-1/2 max-w-md">
-        <Card>
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-              <Mail className="w-8 h-8 text-primary-foreground" />
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 w-16 h-16 bg-primary rounded-full flex items-center justify-center">
+            <Mail className="w-8 h-8 text-primary-foreground" />
+          </div>
+          <CardTitle className="text-2xl font-bold text-foreground">
+            InkImpact
+          </CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Send handwritten postcards to your representatives
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="inviteCode">Invite Code</Label>
+              <Input
+                id="inviteCode"
+                type="text"
+                placeholder="Enter your invite code"
+                value={inviteCode}
+                onChange={(e) => handleInputChange(e.target.value)}
+                className={showError ? 'border-destructive shake' : ''}
+                autoComplete="off"
+              />
+              {showError && (
+                <p className="text-sm text-destructive">
+                  That invite code isn't valid. Try again.
+                </p>
+              )}
             </div>
-            <CardTitle className="text-2xl font-bold text-foreground">
-              InkImpact
-            </CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Send handwritten postcards to your representatives
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="inviteCode">Invite Code</Label>
-                <Input
-                  id="inviteCode"
-                  type="text"
-                  placeholder="Enter your invite code"
-                  value={inviteCode}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  className={showError ? 'border-destructive shake' : ''}
-                  autoComplete="off"
-                />
-                {showError && (
-                  <p className="text-sm text-destructive">
-                    That invite code isn't valid. Try again.
-                  </p>
-                )}
-              </div>
-              
-              <Button 
-                type="submit" 
-                className="w-full h-12"
-                disabled={state.isLoading}
-              >
-                {state.isLoading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
-                    Validating...
-                  </>
-                ) : (
-                  'Enter Invite Code'
-                )}
-              </Button>
-            </form>
             
-            <div className="mt-6 text-center text-sm text-muted-foreground">
-              <p>This app is invite-only to ensure quality engagement</p>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Mobile Robot Animation - Shown below card on mobile */}
-        <div className="lg:hidden mt-8">
-          <RobotWritingAnimation autoPlay={true} className="max-w-sm mx-auto" />
-        </div>
-      </div>
+            <Button 
+              type="submit" 
+              className="w-full h-12"
+              disabled={state.isLoading}
+            >
+              {state.isLoading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
+                  Validating...
+                </>
+              ) : (
+                'Enter Invite Code'
+              )}
+            </Button>
+          </form>
+          
+          <div className="mt-6 text-center text-sm text-muted-foreground">
+            <p>This app is invite-only to ensure quality engagement</p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
