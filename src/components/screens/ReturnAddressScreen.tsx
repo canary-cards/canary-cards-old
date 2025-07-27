@@ -26,7 +26,6 @@ export function ReturnAddressScreen() {
   const [addressSuggestions, setAddressSuggestions] = useState<AddressSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [bestMatch, setBestMatch] = useState<string>('');
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
   const inputRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +46,6 @@ export function ReturnAddressScreen() {
     if (query.length < 3) {
       setAddressSuggestions([]);
       setShowSuggestions(false);
-      setBestMatch('');
       return;
     }
 
@@ -60,47 +58,18 @@ export function ReturnAddressScreen() {
       
       setAddressSuggestions(filteredSuggestions);
       setShowSuggestions(filteredSuggestions.length > 0);
-      
-      // Auto-fill with the best match if we have one
-      if (filteredSuggestions.length > 0) {
-        const bestAddress = filteredSuggestions[0].formatted_address;
-        setBestMatch(bestAddress);
-        // Auto-fill if this is a high-quality street address match
-        const isCompleteStreetAddress = /^\d+\s+.+\s+(St|Ave|Rd|Dr|Ln|Blvd|Way|Ct|Pl|Cir|Pkwy|Ter)/i.test(bestAddress);
-        if (isCompleteStreetAddress) {
-          setStreetAddress(bestAddress);
-        }
-      } else {
-        setBestMatch('');
-      }
     } catch (error) {
       console.error('Address search failed:', error);
       setAddressSuggestions([]);
       setShowSuggestions(false);
-      setBestMatch('');
     } finally {
       setIsSearching(false);
     }
   };
 
   const filterAddressSuggestions = (suggestions: AddressSuggestion[], targetZip: string, query: string) => {
-    // Separate complete street addresses from partial/generic results
-    const completeAddresses = suggestions.filter(suggestion => {
-      const formatted = suggestion.formatted_address;
-      
-      // Check if this is a complete street address with high accuracy
-      const hasHouseNumber = /^\d+\s/.test(formatted);
-      const hasStreetSuffix = /\s+(St|Ave|Rd|Dr|Ln|Blvd|Way|Ct|Pl|Cir|Pkwy|Ter|Street|Avenue|Road|Drive|Lane|Boulevard|Circle|Parkway|Terrace)/i.test(formatted);
-      const hasCityState = /,\s*[A-Z]{2}\s*\d{5}/.test(formatted);
-      
-      // Check if it's in the target zip code
-      const matchesZip = suggestion.components?.zip === targetZip || 
-                        formatted.includes(targetZip);
-      
-      return hasHouseNumber && hasStreetSuffix && hasCityState && matchesZip;
-    });
-
-    const partialStreetAddresses = suggestions.filter(suggestion => {
+    // First, separate street addresses from generic city/state results
+    const streetAddresses = suggestions.filter(suggestion => {
       const formatted = suggestion.formatted_address;
       
       // Check if this is a street address (has house number and street name)
@@ -115,7 +84,7 @@ export function ReturnAddressScreen() {
       // Additional check: should not be a generic result like "Sacramento, CA 95831"
       const isNotGenericCity = !formatted.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/);
       
-      return hasHouseNumber && hasStreetName && matchesZip && isNotGenericCity && !completeAddresses.includes(suggestion);
+      return hasHouseNumber && hasStreetName && matchesZip && isNotGenericCity;
     });
 
     const genericResults = suggestions.filter(suggestion => {
@@ -129,13 +98,9 @@ export function ReturnAddressScreen() {
       return isGenericCity && matchesZip;
     });
 
-    // Prioritize complete addresses first, then partial street addresses
-    if (completeAddresses.length > 0) {
-      return completeAddresses.concat(partialStreetAddresses);
-    }
-    
-    if (partialStreetAddresses.length > 0) {
-      return partialStreetAddresses;
+    // If we have street addresses, show only those
+    if (streetAddresses.length > 0) {
+      return streetAddresses;
     }
     
     // Only show generic results if the query doesn't look like it's trying to be a house number
@@ -158,7 +123,6 @@ export function ReturnAddressScreen() {
 
   const handleSuggestionClick = (suggestion: AddressSuggestion) => {
     setStreetAddress(suggestion.formatted_address);
-    setBestMatch(suggestion.formatted_address);
     setShowSuggestions(false);
   };
 
