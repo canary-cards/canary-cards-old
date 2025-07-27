@@ -10,6 +10,7 @@ import { ProgressIndicator } from '../ProgressIndicator';
 import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
 import { MapPin, Users, Bot, PenTool, ArrowRight } from 'lucide-react';
+import { ThemeToggle } from '../ThemeToggle';
 import heroImage from '@/assets/civic-hero-mobile.jpg';
 
 export function LandingScreen() {
@@ -82,7 +83,10 @@ export function LandingScreen() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-4 max-w-2xl">
-        <ProgressIndicator currentStep={1} totalSteps={5} />
+        <div className="flex justify-between items-center mb-4">
+          <ProgressIndicator currentStep={1} totalSteps={5} />
+          <ThemeToggle />
+        </div>
         
         {/* Mobile-First Hero Section */}
         <div className="text-center mb-6">
