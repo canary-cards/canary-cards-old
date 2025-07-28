@@ -43,7 +43,7 @@ export function ReturnAddressScreen() {
   }, []);
 
   const handleAddressSearch = async (query: string) => {
-    if (query.length < 3) {
+    if (query.length < 2) {
       setAddressSuggestions([]);
       setShowSuggestions(false);
       return;
@@ -212,23 +212,24 @@ export function ReturnAddressScreen() {
                         setShowSuggestions(true);
                       }
                     }}
-                    className="input-warm pl-10 py-3 resize-none overflow-hidden"
+                    className="input-warm pl-10 py-3 resize-none overflow-hidden min-h-[44px]"
                     autoComplete="off"
                     required
                     rows={1}
                     style={{
-                      height: 'auto',
-                      minHeight: '48px',
-                      lineHeight: '1.5'
+                      height: '44px'
                     }}
                     onInput={(e) => {
                       const target = e.target as HTMLTextAreaElement;
+                      const minHeight = 44;
                       target.style.height = 'auto';
                       const scrollHeight = target.scrollHeight;
-                      const lineHeight = parseInt(getComputedStyle(target).lineHeight);
-                      const paddingTop = parseInt(getComputedStyle(target).paddingTop);
-                      const paddingBottom = parseInt(getComputedStyle(target).paddingBottom);
-                      target.style.height = Math.max(48, scrollHeight + paddingTop + paddingBottom) + 'px';
+                      // Only expand if content actually needs more space
+                      if (scrollHeight > minHeight) {
+                        target.style.height = scrollHeight + 'px';
+                      } else {
+                        target.style.height = minHeight + 'px';
+                      }
                     }}
                   />
                 </div>
