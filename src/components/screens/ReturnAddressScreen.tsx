@@ -68,7 +68,10 @@ export function ReturnAddressScreen() {
   };
 
   const filterAddressSuggestions = (suggestions: AddressSuggestion[], targetZip: string, query: string) => {
-    // First, separate street addresses from generic city/state results
+    // For short queries (3-5 chars), be more permissive
+    const isShortQuery = query.length <= 5;
+    
+    // Separate complete street addresses from other results
     const streetAddresses = suggestions.filter(suggestion => {
       const formatted = suggestion.formatted_address;
       
@@ -77,14 +80,59 @@ export function ReturnAddressScreen() {
       const hasStreetName = formatted.includes(' ') && 
                            !formatted.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/); // Not just "City, ST ZIP"
       
-      // Check if it's in the target zip code
-      const matchesZip = suggestion.components?.zip === targetZip || 
-                        formatted.includes(targetZip);
+      // For short queries, be more flexible with zip code matching
+      let matchesZip = false;
+      if (isShortQuery) {
+        // Allow nearby zip codes or any result that contains the street name
+        const resultZip = suggestion.components?.zip;
+        if (resultZip) {
+          matchesZip = resultZip === targetZip || 
+                      Math.abs(parseInt(resultZip) - parseInt(targetZip)) <= 10;
+        } else {
+          // If no zip in components, check if formatted address contains target zip
+          matchesZip = formatted.includes(targetZip);
+        }
+      } else {
+        // For longer queries, be more strict
+        matchesZip = suggestion.components?.zip === targetZip || 
+                    formatted.includes(targetZip);
+      }
       
       // Additional check: should not be a generic result like "Sacramento, CA 95831"
       const isNotGenericCity = !formatted.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/);
       
       return hasHouseNumber && hasStreetName && matchesZip && isNotGenericCity;
+    });
+
+    // Get partial street matches (streets without house numbers but containing query)
+    const partialStreetMatches = suggestions.filter(suggestion => {
+      const formatted = suggestion.formatted_address.toLowerCase();
+      const queryLower = query.toLowerCase();
+      
+      // Check if it's a street name match (contains the query but isn't just a city)
+      const containsQuery = formatted.includes(queryLower.replace(/^\d+\s*/, '').trim());
+      const isStreetResult = formatted.includes('way') || formatted.includes('street') || 
+                            formatted.includes('ave') || formatted.includes('blvd') ||
+                            formatted.includes('rd') || formatted.includes('dr') ||
+                            formatted.includes('ln') || formatted.includes('ct');
+      const isNotGenericCity = !formatted.match(/^[^,]+,\s*[a-z]{2}\s*\d{5}$/);
+      
+      // Check zip proximity for short queries
+      let matchesZip = false;
+      if (isShortQuery) {
+        const resultZip = suggestion.components?.zip;
+        if (resultZip) {
+          matchesZip = resultZip === targetZip || 
+                      Math.abs(parseInt(resultZip) - parseInt(targetZip)) <= 10;
+        } else {
+          matchesZip = formatted.includes(targetZip);
+        }
+      } else {
+        matchesZip = suggestion.components?.zip === targetZip || 
+                    formatted.includes(targetZip);
+      }
+      
+      return containsQuery && isStreetResult && isNotGenericCity && matchesZip;
     });
 
     const genericResults = suggestions.filter(suggestion => {
@@ -98,15 +146,19 @@ export function ReturnAddressScreen() {
       return isGenericCity && matchesZip;
     });
 
-    // If we have street addresses, show only those
+    // Priority order: complete street addresses, then partial matches, then generic if nothing else
     if (streetAddresses.length > 0) {
       return streetAddresses;
+    }
+    
+    if (partialStreetMatches.length > 0) {
+      return partialStreetMatches;
     }
     
     // Only show generic results if the query doesn't look like it's trying to be a house number
     const queryLooksLikeHouseNumber = /^\d+/.test(query.trim());
     
-    return queryLooksLikeHouseNumber ? [] : genericResults;
+    return queryLooksLikeHouseNumber ? [] : genericResults.slice(0, 2); // Limit generic results
   };
 
   const handleAddressInputChange = (value: string) => {

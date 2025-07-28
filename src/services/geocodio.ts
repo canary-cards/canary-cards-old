@@ -155,22 +155,77 @@ export async function lookupRepresentativesAndSenators(zipCode: string) {
 
 export async function searchAddresses(query: string, zipCode?: string) {
   try {
-    const searchQuery = zipCode ? `${query}, ${zipCode}` : query;
-    const response = await fetch(
-      `https://api.geocod.io/v1.9/geocode?q=${encodeURIComponent(searchQuery)}&limit=5&api_key=${GEOCODIO_API_KEY}`
+    const suggestions: any[] = [];
+    
+    // Strategy 1: Search with zip code constraint (original)
+    if (zipCode) {
+      const searchQuery = `${query}, ${zipCode}`;
+      const response = await fetch(
+        `https://api.geocod.io/v1.9/geocode?q=${encodeURIComponent(searchQuery)}&limit=5&api_key=${GEOCODIO_API_KEY}`
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.results) {
+          suggestions.push(...data.results);
+        }
+      }
+    }
+    
+    // Strategy 2: If we don't have good results and query looks like a street name, try broader search
+    const hasResults = suggestions.some(result => 
+      result.address_components?.number && 
+      result.address_components?.street &&
+      result.formatted_address.toLowerCase().includes(query.toLowerCase())
     );
     
-    if (!response.ok) {
-      throw new Error('Failed to search addresses');
+    if (!hasResults && query.length >= 3) {
+      // Extract potential street name from query (remove house numbers)
+      const streetQuery = query.replace(/^\d+\s*/, '').trim();
+      
+      if (streetQuery.length >= 3) {
+        // Search for just the street name in the city/state if we have zip code context
+        let broadSearchQuery = streetQuery;
+        if (zipCode) {
+          // Try to include city context from zip code
+          broadSearchQuery = `${streetQuery}, Sacramento, CA`;
+        }
+        
+        const response = await fetch(
+          `https://api.geocod.io/v1.9/geocode?q=${encodeURIComponent(broadSearchQuery)}&limit=10&api_key=${GEOCODIO_API_KEY}`
+        );
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.results) {
+            // Filter results to prioritize those in or near the target zip code
+            const filteredResults = data.results.filter((result: any) => {
+              if (!zipCode) return true;
+              
+              const resultZip = result.address_components?.zip;
+              if (resultZip === zipCode) return true;
+              
+              // Allow nearby zip codes (basic proximity check)
+              if (resultZip && zipCode) {
+                const zipDiff = Math.abs(parseInt(resultZip) - parseInt(zipCode));
+                return zipDiff <= 10; // Allow zip codes within 10 of the target
+              }
+              
+              return false;
+            });
+            
+            suggestions.push(...filteredResults);
+          }
+        }
+      }
     }
     
-    const data = await response.json();
+    // Remove duplicates and return formatted results
+    const uniqueSuggestions = suggestions.filter((suggestion, index, self) => 
+      index === self.findIndex(s => s.formatted_address === suggestion.formatted_address)
+    );
     
-    if (!data.results) {
-      return [];
-    }
-    
-    return data.results.map((result: any) => ({
+    return uniqueSuggestions.map((result: any) => ({
       formatted_address: result.formatted_address,
       components: result.address_components
     }));
