@@ -103,8 +103,8 @@ export function LandingScreen() {
       {/* Shared Link Banner */}
       {showSharedDialog && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-primary text-primary-foreground px-4 py-3 shadow-md">
-          <div className="container mx-auto flex items-center justify-between max-w-2xl">
-            <div className="flex items-center gap-2">
+          <div className="container mx-auto max-w-2xl relative">
+            <div className="flex items-center justify-center gap-2">
               <Heart className="h-4 w-4 text-primary-foreground/80" />
               <span className="text-sm font-medium">
                 Shared with you by <strong>{sharedByName}</strong>
@@ -112,7 +112,7 @@ export function LandingScreen() {
             </div>
             <button
               onClick={() => setShowSharedDialog(false)}
-              className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-lg leading-none"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-lg leading-none"
             >
               ✕
             </button>
