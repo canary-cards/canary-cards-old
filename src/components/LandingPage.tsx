@@ -1,9 +1,16 @@
 import React from 'react';
 import { Button } from './ui/button';
 import { ThemeToggle } from './ThemeToggle';
+import { useAppContext } from '../context/AppContext';
 import { Search, User, ShoppingBag } from 'lucide-react';
 
 export function LandingPage() {
+  const { dispatch } = useAppContext();
+
+  const handleStartWriting = () => {
+    dispatch({ type: 'SET_STEP', payload: 1 });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50 dark:from-slate-900 dark:to-emerald-950">
       {/* Navigation Header */}
@@ -53,6 +60,7 @@ export function LandingPage() {
           
           <Button 
             size="lg" 
+            onClick={handleStartWriting}
             className="bg-foreground text-background hover:bg-foreground/90 px-8 py-6 text-base font-medium rounded-sm transition-all duration-300 hover:shadow-lg"
           >
             Start Writing →
