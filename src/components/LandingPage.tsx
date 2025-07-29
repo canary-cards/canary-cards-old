@@ -40,58 +40,68 @@ export function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <main className="flex items-center justify-between max-w-7xl mx-auto px-6 py-16 min-h-[80vh]">
-        {/* Left Content */}
-        <div className="flex-1 max-w-xl">
-          <p className="text-sm text-muted-foreground mb-4 tracking-wide uppercase">Civic Engagement</p>
-          
-          <h1 className="text-6xl md:text-7xl font-light leading-tight mb-8 text-foreground">
-            Handwritten
-            <br />
-            <span className="font-normal">Postcards</span>
-            <br />
-            <span className="font-light">to Your Reps</span>
-          </h1>
-          
-          <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-md">
-            Send authentic, handwritten postcards to your elected representatives. 
-            Real ink, real impact, delivered directly to their offices.
-          </p>
-          
-          <Button 
-            size="lg" 
-            onClick={handleStartWriting}
-            className="bg-foreground text-background hover:bg-foreground/90 px-8 py-6 text-base font-medium rounded-sm transition-all duration-300 hover:shadow-lg"
-          >
-            Start Writing →
-          </Button>
-        </div>
+      <main className="relative max-w-7xl mx-auto px-6 py-16 min-h-[80vh]">
+        {/* Mobile Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10 md:hidden rounded-2xl"
+          style={{
+            backgroundImage: `url('/lovable-uploads/4a28f90c-fcc7-44c5-8ba8-0dd0d56a5a9d.png')`
+          }}
+        ></div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between md:min-h-[60vh]">
+          {/* Content */}
+          <div className="flex-1 max-w-xl text-center md:text-left">
+            <p className="text-sm text-muted-foreground mb-4 tracking-wide uppercase">Civic Engagement</p>
+            
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-light leading-tight mb-8 text-foreground">
+              Handwritten
+              <br />
+              <span className="font-normal">Postcards</span>
+              <br />
+              <span className="font-light">to Your Reps</span>
+            </h1>
+            
+            <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-md mx-auto md:mx-0">
+              Send authentic, handwritten postcards to your elected representatives. 
+              Real ink, real impact, delivered directly to their offices.
+            </p>
+            
+            <Button 
+              size="lg" 
+              onClick={handleStartWriting}
+              className="bg-foreground text-background hover:bg-foreground/90 px-8 py-6 text-base font-medium rounded-sm transition-all duration-300 hover:shadow-lg"
+            >
+              Start Writing →
+            </Button>
+          </div>
 
-        {/* Right Content - Machine Image */}
-        <div className="flex-1 relative">
-          <div className="relative">
-            {/* Background decorative elements */}
-            <div className="absolute -top-10 -right-10 w-64 h-64 bg-emerald-200/30 dark:bg-emerald-800/20 rounded-full blur-3xl"></div>
-            <div className="absolute top-20 -left-10 w-48 h-48 bg-slate-200/40 dark:bg-slate-700/20 rounded-full blur-2xl"></div>
-            
-            {/* Machine Image */}
-            <div className="relative z-10 transform rotate-2 hover:rotate-0 transition-transform duration-500">
-              <img 
-                src="/lovable-uploads/4a28f90c-fcc7-44c5-8ba8-0dd0d56a5a9d.png"
-                alt="Automated handwriting machine creating personalized postcards"
-                className="w-full max-w-lg mx-auto rounded-2xl shadow-2xl border border-border/20"
-              />
-            </div>
-            
-            {/* Floating elements */}
-            <div className="absolute top-16 right-12 bg-card/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-border/20 transform rotate-6 hover:rotate-3 transition-transform duration-300">
-              <p className="text-xs text-muted-foreground mb-1">Real Handwriting</p>
-              <p className="text-sm font-medium">Authentic • Personal</p>
-            </div>
-            
-            <div className="absolute bottom-20 left-8 bg-card/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-border/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-              <p className="text-xs text-muted-foreground mb-1">Direct Delivery</p>
-              <p className="text-sm font-medium">To Representatives</p>
+          {/* Desktop Image */}
+          <div className="hidden md:block flex-1 relative">
+            <div className="relative">
+              {/* Background decorative elements */}
+              <div className="absolute -top-10 -right-10 w-64 h-64 bg-emerald-200/30 dark:bg-emerald-800/20 rounded-full blur-3xl"></div>
+              <div className="absolute top-20 -left-10 w-48 h-48 bg-slate-200/40 dark:bg-slate-700/20 rounded-full blur-2xl"></div>
+              
+              {/* Machine Image */}
+              <div className="relative z-10 transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                <img 
+                  src="/lovable-uploads/4a28f90c-fcc7-44c5-8ba8-0dd0d56a5a9d.png"
+                  alt="Automated handwriting machine creating personalized postcards"
+                  className="w-full max-w-lg mx-auto rounded-2xl shadow-2xl border border-border/20"
+                />
+              </div>
+              
+              {/* Floating elements */}
+              <div className="absolute top-16 right-12 bg-card/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-border/20 transform rotate-6 hover:rotate-3 transition-transform duration-300">
+                <p className="text-xs text-muted-foreground mb-1">Real Handwriting</p>
+                <p className="text-sm font-medium">Authentic • Personal</p>
+              </div>
+              
+              <div className="absolute bottom-20 left-8 bg-card/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-border/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                <p className="text-xs text-muted-foreground mb-1">Direct Delivery</p>
+                <p className="text-sm font-medium">To Representatives</p>
+              </div>
             </div>
           </div>
         </div>
