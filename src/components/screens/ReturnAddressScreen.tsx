@@ -1,49 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { MapPin, ArrowLeft } from 'lucide-react';
-import { searchAddresses } from '../../services/geocodio';
+import { searchAddressAutocomplete, GooglePlacesAddressPrediction } from '../../services/googlePlaces';
 
-interface AddressSuggestion {
-  formatted_address: string;
-  components: {
-    city?: string;
-    state?: string;
-    zip?: string;
-  };
-}
+// Interface removed - now using GooglePlacesAddressPrediction from service
 
 export function ReturnAddressScreen() {
   const { state, dispatch } = useAppContext();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
-  const [addressSuggestions, setAddressSuggestions] = useState<AddressSuggestion[]>([]);
+  const [addressSuggestions, setAddressSuggestions] = useState<GooglePlacesAddressPrediction[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
-  const inputRef = useRef<HTMLDivElement>(null);
 
   const zipCode = state.postcardData.zipCode || '';
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
-        setShowSuggestions(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   const handleAddressSearch = async (query: string) => {
-    if (query.length < 2) {
+    if (query.length < 3) {
       setAddressSuggestions([]);
       setShowSuggestions(false);
       return;
@@ -51,13 +32,9 @@ export function ReturnAddressScreen() {
 
     setIsSearching(true);
     try {
-      const suggestions = await searchAddresses(query, zipCode);
-      
-      // Filter and prioritize suggestions
-      const filteredSuggestions = filterAddressSuggestions(suggestions, zipCode, query);
-      
-      setAddressSuggestions(filteredSuggestions);
-      setShowSuggestions(filteredSuggestions.length > 0);
+      const suggestions = await searchAddressAutocomplete(query);
+      setAddressSuggestions(suggestions);
+      setShowSuggestions(suggestions.length > 0);
     } catch (error) {
       console.error('Address search failed:', error);
       setAddressSuggestions([]);
@@ -65,100 +42,6 @@ export function ReturnAddressScreen() {
     } finally {
       setIsSearching(false);
     }
-  };
-
-  const filterAddressSuggestions = (suggestions: AddressSuggestion[], targetZip: string, query: string) => {
-    // For short queries (3-5 chars), be more permissive
-    const isShortQuery = query.length <= 5;
-    
-    // Separate complete street addresses from other results
-    const streetAddresses = suggestions.filter(suggestion => {
-      const formatted = suggestion.formatted_address;
-      
-      // Check if this is a street address (has house number and street name)
-      const hasHouseNumber = /^\d+\s/.test(formatted);
-      const hasStreetName = formatted.includes(' ') && 
-                           !formatted.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/); // Not just "City, ST ZIP"
-      
-      // For short queries, be more flexible with zip code matching
-      let matchesZip = false;
-      if (isShortQuery) {
-        // Allow nearby zip codes or any result that contains the street name
-        const resultZip = suggestion.components?.zip;
-        if (resultZip) {
-          matchesZip = resultZip === targetZip || 
-                      Math.abs(parseInt(resultZip) - parseInt(targetZip)) <= 10;
-        } else {
-          // If no zip in components, check if formatted address contains target zip
-          matchesZip = formatted.includes(targetZip);
-        }
-      } else {
-        // For longer queries, be more strict
-        matchesZip = suggestion.components?.zip === targetZip || 
-                    formatted.includes(targetZip);
-      }
-      
-      // Additional check: should not be a generic result like "Sacramento, CA 95831"
-      const isNotGenericCity = !formatted.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/);
-      
-      return hasHouseNumber && hasStreetName && matchesZip && isNotGenericCity;
-    });
-
-    // Get partial street matches (streets without house numbers but containing query)
-    const partialStreetMatches = suggestions.filter(suggestion => {
-      const formatted = suggestion.formatted_address.toLowerCase();
-      const queryLower = query.toLowerCase();
-      
-      // Check if it's a street name match (contains the query but isn't just a city)
-      const containsQuery = formatted.includes(queryLower.replace(/^\d+\s*/, '').trim());
-      const isStreetResult = formatted.includes('way') || formatted.includes('street') || 
-                            formatted.includes('ave') || formatted.includes('blvd') ||
-                            formatted.includes('rd') || formatted.includes('dr') ||
-                            formatted.includes('ln') || formatted.includes('ct');
-      const isNotGenericCity = !formatted.match(/^[^,]+,\s*[a-z]{2}\s*\d{5}$/);
-      
-      // Check zip proximity for short queries
-      let matchesZip = false;
-      if (isShortQuery) {
-        const resultZip = suggestion.components?.zip;
-        if (resultZip) {
-          matchesZip = resultZip === targetZip || 
-                      Math.abs(parseInt(resultZip) - parseInt(targetZip)) <= 10;
-        } else {
-          matchesZip = formatted.includes(targetZip);
-        }
-      } else {
-        matchesZip = suggestion.components?.zip === targetZip || 
-                    formatted.includes(targetZip);
-      }
-      
-      return containsQuery && isStreetResult && isNotGenericCity && matchesZip;
-    });
-
-    const genericResults = suggestions.filter(suggestion => {
-      const formatted = suggestion.formatted_address;
-      
-      // Generic city/state/zip pattern
-      const isGenericCity = formatted.match(/^[^,]+,\s*[A-Z]{2}\s*\d{5}$/);
-      const matchesZip = suggestion.components?.zip === targetZip || 
-                        formatted.includes(targetZip);
-      
-      return isGenericCity && matchesZip;
-    });
-
-    // Priority order: complete street addresses, then partial matches, then generic if nothing else
-    if (streetAddresses.length > 0) {
-      return streetAddresses;
-    }
-    
-    if (partialStreetMatches.length > 0) {
-      return partialStreetMatches;
-    }
-    
-    // Only show generic results if the query doesn't look like it's trying to be a house number
-    const queryLooksLikeHouseNumber = /^\d+/.test(query.trim());
-    
-    return queryLooksLikeHouseNumber ? [] : genericResults.slice(0, 2); // Limit generic results
   };
 
   const handleAddressInputChange = (value: string) => {
@@ -173,8 +56,8 @@ export function ReturnAddressScreen() {
     }, 300);
   };
 
-  const handleSuggestionClick = (suggestion: AddressSuggestion) => {
-    setStreetAddress(suggestion.formatted_address);
+  const handleSuggestionClick = (suggestion: GooglePlacesAddressPrediction) => {
+    setStreetAddress(suggestion.description);
     setShowSuggestions(false);
   };
 
@@ -250,11 +133,11 @@ export function ReturnAddressScreen() {
                 </div>
               </div>
 
-              <div className="space-y-2 relative" ref={inputRef}>
+              <div className="space-y-2 relative">
                 <Label htmlFor="streetAddress">Return Address *</Label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-4 w-4 h-4 text-muted-foreground" />
-                  <Textarea
+                  <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground z-10" />
+                  <Input
                     id="streetAddress"
                     placeholder="Start typing your address..."
                     value={streetAddress}
@@ -264,46 +147,46 @@ export function ReturnAddressScreen() {
                         setShowSuggestions(true);
                       }
                     }}
-                    className="input-warm pl-10 py-3 resize-none overflow-hidden min-h-[44px]"
+                    className="input-warm pl-10"
                     autoComplete="off"
                     required
-                    rows={1}
-                    style={{
-                      height: '44px'
-                    }}
-                    onInput={(e) => {
-                      const target = e.target as HTMLTextAreaElement;
-                      const minHeight = 44;
-                      target.style.height = 'auto';
-                      const scrollHeight = target.scrollHeight;
-                      // Only expand if content actually needs more space
-                      if (scrollHeight > minHeight) {
-                        target.style.height = scrollHeight + 'px';
-                      } else {
-                        target.style.height = minHeight + 'px';
-                      }
-                    }}
                   />
                 </div>
                 
                 {showSuggestions && (
-                  <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
-                    {isSearching ? (
-                      <div className="p-3 text-sm text-muted-foreground">
-                        Searching addresses...
-                      </div>
-                    ) : (
-                      addressSuggestions.map((suggestion, index) => (
-                        <button
-                          key={index}
-                          type="button"
-                          className="w-full text-left p-3 hover:bg-accent hover:text-accent-foreground border-b border-border last:border-b-0 transition-colors"
-                          onClick={() => handleSuggestionClick(suggestion)}
-                        >
-                          <div className="text-sm">{suggestion.formatted_address}</div>
-                        </button>
-                      ))
-                    )}
+                  <div className="absolute top-full left-0 right-0 z-50 mt-1">
+                    <Command className="rounded-xl border border-border shadow-lg bg-background">
+                      <CommandList className="max-h-48">
+                        {isSearching ? (
+                          <div className="p-3 text-sm text-muted-foreground">
+                            Searching addresses...
+                          </div>
+                        ) : (
+                          <>
+                            {addressSuggestions.length === 0 ? (
+                              <CommandEmpty>No addresses found</CommandEmpty>
+                            ) : (
+                              addressSuggestions.map((suggestion, index) => (
+                                <CommandItem
+                                  key={suggestion.place_id || index}
+                                  onSelect={() => handleSuggestionClick(suggestion)}
+                                  className="cursor-pointer"
+                                >
+                                  <div>
+                                    <div className="font-medium text-sm">
+                                      {suggestion.structured_formatting.main_text}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">
+                                      {suggestion.structured_formatting.secondary_text}
+                                    </div>
+                                  </div>
+                                </CommandItem>
+                              ))
+                            )}
+                          </>
+                        )}
+                      </CommandList>
+                    </Command>
                   </div>
                 )}
               </div>
