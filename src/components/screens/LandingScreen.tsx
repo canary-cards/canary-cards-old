@@ -100,28 +100,27 @@ export function LandingScreen() {
 
   return (
     <>
-      {/* Shared Link Dialog */}
-      <AlertDialog open={showSharedDialog} onOpenChange={setShowSharedDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <Heart className="h-5 w-5 text-red-500" />
-              Shared with you!
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              <strong>{sharedByName}</strong> shared InkImpact with you! 
-              They believe in making our voices heard through handwritten postcards to elected representatives.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setShowSharedDialog(false)}>
-              Get Started
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Shared Link Banner */}
+      {showSharedDialog && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-primary text-primary-foreground px-4 py-3 shadow-md">
+          <div className="container mx-auto flex items-center justify-between max-w-2xl">
+            <div className="flex items-center gap-2">
+              <Heart className="h-4 w-4 text-primary-foreground/80" />
+              <span className="text-sm font-medium">
+                Shared with you by <strong>{sharedByName}</strong>
+              </span>
+            </div>
+            <button
+              onClick={() => setShowSharedDialog(false)}
+              className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-lg leading-none"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
-      <div className="min-h-screen bg-background">
+      <div className={`min-h-screen bg-background ${showSharedDialog ? 'pt-16' : ''}`}>
       <div className="container mx-auto px-4 py-4 max-w-2xl">
         {/* Branding Section */}
         <div className="flex justify-between items-center mb-6">
