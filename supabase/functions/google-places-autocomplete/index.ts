@@ -18,20 +18,47 @@ serve(async (req) => {
       throw new Error('Google Places API key not found')
     }
 
-    const url = new URL('https://maps.googleapis.com/maps/api/place/autocomplete/json')
-    url.searchParams.set('input', input)
-    url.searchParams.set('types', types)
-    url.searchParams.set('key', apiKey)
+    // Use the new Places API (New) endpoint for autocomplete suggestions
+    const url = 'https://places.googleapis.com/v1/places:autocomplete'
     
-    if (componentRestrictions?.country) {
-      url.searchParams.set('components', `country:${componentRestrictions.country}`)
+    const requestBody = {
+      input: input,
+      includedPrimaryTypes: ['street_address'],
+      locationRestriction: {
+        countryCode: componentRestrictions?.country || 'US'
+      }
     }
 
-    const response = await fetch(url.toString())
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey
+      },
+      body: JSON.stringify(requestBody)
+    })
+    
+    if (!response.ok) {
+      throw new Error(`Google Places API error: ${response.status} ${response.statusText}`)
+    }
+    
     const data = await response.json()
 
+    // Transform the new API response to match the expected format
+    const transformedData = {
+      predictions: data.suggestions?.map((suggestion: any) => ({
+        place_id: suggestion.placePrediction?.place || suggestion.place_id,
+        description: suggestion.placePrediction?.text?.text || suggestion.description,
+        structured_formatting: {
+          main_text: suggestion.placePrediction?.structuredFormat?.mainText?.text || suggestion.structured_formatting?.main_text || '',
+          secondary_text: suggestion.placePrediction?.structuredFormat?.secondaryText?.text || suggestion.structured_formatting?.secondary_text || ''
+        }
+      })) || [],
+      status: 'OK'
+    }
+
     return new Response(
-      JSON.stringify(data),
+      JSON.stringify(transformedData),
       { 
         headers: { 
           ...corsHeaders, 
