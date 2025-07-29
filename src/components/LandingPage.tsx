@@ -43,7 +43,7 @@ export function LandingPage() {
       <main className="flex items-center justify-between max-w-7xl mx-auto px-6 py-16 min-h-[80vh]">
         {/* Left Content */}
         <div className="flex-1 max-w-xl">
-          <p className="text-sm text-muted-foreground mb-4 tracking-wide uppercase">Civic Engagement</p>
+          
           
           <h1 className="text-6xl md:text-7xl font-light leading-tight mb-8 text-foreground">
             Handwritten

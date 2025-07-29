@@ -149,9 +149,6 @@ export function LandingScreen() {
             </p>
           </div>
           
-          <h1 className="text-2xl md:text-3xl font-light text-foreground mb-2">
-            Make Your Voice Heard
-          </h1>
           
           {/* Compact Social Proof */}
           <div className="inline-flex items-center gap-2 px-3 py-2 bg-primary/5 rounded-full text-xs md:text-sm mb-6">
