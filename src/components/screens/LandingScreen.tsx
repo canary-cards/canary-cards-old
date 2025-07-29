@@ -9,7 +9,7 @@ import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
-import { MapPin, Users, Bot, PenTool, ArrowRight } from 'lucide-react';
+import { MapPin, Users, Bot, PenTool, ArrowRight, Mail } from 'lucide-react';
 import { ThemeToggle } from '../ThemeToggle';
 import heroImage from '@/assets/civic-hero-mobile.jpg';
 
@@ -83,7 +83,14 @@ export function LandingScreen() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-4 max-w-2xl">
-        <div className="flex justify-end items-center mb-4">
+        {/* Branding Section */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+              <Mail className="w-5 h-5 text-primary-foreground" />
+            </div>
+            <h1 className="text-xl font-bold text-foreground">InkImpact</h1>
+          </div>
           <ThemeToggle />
         </div>
         
