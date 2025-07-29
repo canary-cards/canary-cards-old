@@ -9,15 +9,28 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log('Edge function called - draft-postcard-message');
+  console.log('OpenAI API Key exists:', !!openAIApiKey);
+  console.log('Request method:', req.method);
+
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { userInput, repName, userInfo } = await req.json();
+    const requestBody = await req.json();
+    console.log('Request body received:', requestBody);
+    
+    const { userInput, repName, userInfo } = requestBody;
+
+    if (!openAIApiKey) {
+      console.error('OpenAI API key is missing');
+      throw new Error('OpenAI API key not configured');
+    }
 
     if (!userInput || !repName || !userInfo) {
+      console.error('Missing required fields:', { userInput: !!userInput, repName: !!repName, userInfo: !!userInfo });
       throw new Error('Missing required fields: userInput, repName, or userInfo');
     }
 

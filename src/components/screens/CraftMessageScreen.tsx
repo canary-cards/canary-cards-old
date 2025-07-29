@@ -155,6 +155,12 @@ export function CraftMessageScreen() {
     setIsDrafting(true);
     
     try {
+      console.log('Starting message draft with:', {
+        userInput: message,
+        repName: state.postcardData.representative?.name,
+        userInfo: state.postcardData.userInfo
+      });
+
       const { data, error } = await supabase.functions.invoke('draft-postcard-message', {
         body: {
           userInput: message,
@@ -163,8 +169,16 @@ export function CraftMessageScreen() {
         }
       });
 
+      console.log('Supabase function response:', { data, error });
+
       if (error) {
+        console.error('Supabase function error:', error);
         throw error;
+      }
+
+      if (!data?.draftMessage) {
+        console.error('No draft message in response:', data);
+        throw new Error('No draft message received from AI');
       }
 
       dispatch({ 
@@ -184,7 +198,7 @@ export function CraftMessageScreen() {
       console.error('Error drafting message:', error);
       toast({
         title: "Drafting failed",
-        description: "Please try again or contact support if the issue persists.",
+        description: `Error: ${error.message || 'Please try again or contact support if the issue persists.'}`,
         variant: "destructive",
       });
     } finally {
