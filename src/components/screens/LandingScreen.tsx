@@ -5,11 +5,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
-import { MapPin, Users, Bot, PenTool, ArrowRight, Mail } from 'lucide-react';
+import { MapPin, Users, Bot, PenTool, ArrowRight, Mail, Heart } from 'lucide-react';
 import { ThemeToggle } from '../ThemeToggle';
 import heroImage from '@/assets/civic-hero-mobile.jpg';
 
@@ -21,6 +22,23 @@ export function LandingScreen() {
   const [searchError, setSearchError] = useState('');
   const [selectedRep, setSelectedRep] = useState<Representative | null>(null);
   const [socialCounter, setSocialCounter] = useState(47);
+  const [showSharedDialog, setShowSharedDialog] = useState(false);
+  const [sharedByName, setSharedByName] = useState('');
+
+  // Check for shared link on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedBy = urlParams.get('shared_by');
+    
+    if (sharedBy) {
+      setSharedByName(decodeURIComponent(sharedBy));
+      setShowSharedDialog(true);
+      
+      // Clean up URL without causing navigation
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, []);
 
   // Animate the social counter
   useEffect(() => {
@@ -81,7 +99,29 @@ export function LandingScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      {/* Shared Link Dialog */}
+      <AlertDialog open={showSharedDialog} onOpenChange={setShowSharedDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Heart className="h-5 w-5 text-red-500" />
+              Shared with you!
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              <strong>{sharedByName}</strong> shared InkImpact with you! 
+              They believe in making our voices heard through handwritten postcards to elected representatives.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowSharedDialog(false)}>
+              Get Started
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-4 max-w-2xl">
         {/* Branding Section */}
         <div className="flex justify-between items-center mb-6">
@@ -265,5 +305,6 @@ export function LandingScreen() {
         </div>
       </div>
     </div>
+    </>
   );
 }

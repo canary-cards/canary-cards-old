@@ -2,12 +2,17 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Mail, ArrowLeft } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { CheckCircle, Mail, ArrowLeft, Copy, Share2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [showConfetti, setShowConfetti] = useState(false);
+  const [shareableName, setShareableName] = useState('');
+  const [shareableLink, setShareableLink] = useState('');
+  const { toast } = useToast();
 
   useEffect(() => {
     // Show confetti animation
@@ -15,6 +20,31 @@ export default function PaymentSuccess() {
     const timer = setTimeout(() => setShowConfetti(false), 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  const generateShareableLink = () => {
+    if (shareableName.trim()) {
+      const link = `${window.location.origin}/?shared_by=${encodeURIComponent(shareableName.trim())}`;
+      setShareableLink(link);
+    }
+  };
+
+  const copyShareableLink = async () => {
+    if (shareableLink) {
+      try {
+        await navigator.clipboard.writeText(shareableLink);
+        toast({
+          title: "Link copied!",
+          description: "Share this link with friends and family.",
+        });
+      } catch (err) {
+        toast({
+          title: "Failed to copy",
+          description: "Please copy the link manually.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-4">
@@ -63,6 +93,62 @@ export default function PaymentSuccess() {
           <div className="flex items-center gap-2 text-sm text-muted-foreground bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
             <Mail className="h-4 w-4" />
             <span>You'll receive a confirmation email shortly</span>
+          </div>
+
+          {/* Shareable Link Section */}
+          <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <Share2 className="h-4 w-4" />
+              <span>Share with Friends & Family</span>
+            </div>
+            
+            <div className="space-y-3">
+              <div>
+                <label htmlFor="shareable-name" className="text-xs text-muted-foreground block mb-1">
+                  Your name (for sharing):
+                </label>
+                <Input
+                  id="shareable-name"
+                  type="text"
+                  placeholder="Enter your name"
+                  value={shareableName}
+                  onChange={(e) => setShareableName(e.target.value)}
+                  className="text-sm"
+                />
+              </div>
+              
+              <Button 
+                onClick={generateShareableLink}
+                disabled={!shareableName.trim()}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                Generate Share Link
+              </Button>
+              
+              {shareableLink && (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input
+                      value={shareableLink}
+                      readOnly
+                      className="text-xs"
+                    />
+                    <Button
+                      onClick={copyShareableLink}
+                      size="sm"
+                      variant="outline"
+                    >
+                      <Copy className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Share this link to encourage others to contact their representatives!
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="space-y-3">
