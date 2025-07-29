@@ -83,8 +83,7 @@ export function LandingScreen() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-4 max-w-2xl">
-        <div className="flex justify-between items-center mb-4">
-          <ProgressIndicator currentStep={1} totalSteps={5} />
+        <div className="flex justify-end items-center mb-4">
           <ThemeToggle />
         </div>
         
