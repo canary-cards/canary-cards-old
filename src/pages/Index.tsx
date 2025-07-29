@@ -1,11 +1,11 @@
 import React from 'react';
 import { AppProvider } from '../context/AppContext';
-import { CivicPostcardApp } from '../components/CivicPostcardApp';
+import { LandingPage } from '../components/LandingPage';
 
 const Index = () => {
   return (
     <AppProvider>
-      <CivicPostcardApp />
+      <LandingPage />
     </AppProvider>
   );
 };
