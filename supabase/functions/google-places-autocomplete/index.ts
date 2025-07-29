@@ -26,22 +26,46 @@ serve(async (req) => {
     // Use the new Places API (New) with correct field structure
     const url = 'https://places.googleapis.com/v1/places:autocomplete'
     
-    // Build the request body with zip code location bias if provided
+    // Build the request body with proper location bias for zip code
     const requestBody: any = {
-      input: zipCode ? `${input}, ${zipCode}` : input, // Include zip code in the query for better relevance
-      includedPrimaryTypes: ['street_address'],
-      regionCode: componentRestrictions?.country || 'US'
+      input: input,
+      includedPrimaryTypes: ['street_address', 'route', 'subpremise', 'premise'],
+      includedRegionCodes: ['US'],
+      languageCode: 'en',
+      regionCode: 'US',
+      includeQueryPredictions: false
     }
 
-    // If zip code is provided, add location bias to prioritize results in that area
+    // If zip code is provided, get coordinates and use for location bias
     if (zipCode) {
-      // Use the zip code as a location bias to prioritize nearby results
-      requestBody.input = `${input}, ${zipCode}`
-      requestBody.locationBias = {
-        rectangle: {
-          low: { latitude: 0, longitude: 0 }, // Will be ignored due to zip code in input
-          high: { latitude: 0, longitude: 0 }  // Will be ignored due to zip code in input
+      try {
+        // Get coordinates for the zip code using Geocodio API
+        const geocodioKey = Deno.env.get('GeoCodioKey')
+        if (geocodioKey) {
+          console.log('Getting coordinates for zip code:', zipCode)
+          const geocodioResponse = await fetch(`https://api.geocod.io/v1.9/geocode?q=${zipCode}&api_key=${geocodioKey}`)
+          const geocodioData = await geocodioResponse.json()
+          
+          if (geocodioData.results && geocodioData.results.length > 0) {
+            const location = geocodioData.results[0].location
+            console.log('Found coordinates:', location)
+            
+            // Use circle location bias with actual coordinates
+            requestBody.locationBias = {
+              circle: {
+                center: {
+                  latitude: location.lat,
+                  longitude: location.lng
+                },
+                radius: 25000.0 // 25km radius around the zip code center
+              }
+            }
+          }
         }
+      } catch (geocodioError) {
+        console.warn('Failed to get coordinates for zip code:', geocodioError)
+        // Fall back to including zip code in input
+        requestBody.input = `${input}, ${zipCode}`
       }
     }
 
