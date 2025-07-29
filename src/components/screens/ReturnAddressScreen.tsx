@@ -148,20 +148,10 @@ export function ReturnAddressScreen() {
                         setShowSuggestions(true);
                       }
                     }}
-                    className="input-warm pl-10 resize-none overflow-hidden"
+                    className="input-warm pl-10 resize-none"
                     autoComplete="off"
                     required
-                    rows={1}
-                    style={{
-                      height: 'auto',
-                      minHeight: '2.5rem',
-                      maxHeight: 'none'
-                    }}
-                    onInput={(e) => {
-                      const target = e.target as HTMLTextAreaElement;
-                      target.style.height = 'auto';
-                      target.style.height = Math.max(target.scrollHeight, 40) + 'px';
-                    }}
+                    rows={2}
                   />
                 </div>
                 
