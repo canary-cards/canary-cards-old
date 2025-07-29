@@ -40,9 +40,18 @@ export function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <main className="flex items-center justify-between max-w-7xl mx-auto px-6 py-16 min-h-[80vh]">
+      <main className="flex flex-col md:flex-row items-center justify-between max-w-7xl mx-auto px-6 py-16 min-h-[80vh] relative">
+        {/* Mobile Background Image */}
+        <div className="absolute inset-0 md:hidden">
+          <img 
+            src="/lovable-uploads/4a28f90c-fcc7-44c5-8ba8-0dd0d56a5a9d.png"
+            alt="Automated handwriting machine creating personalized postcards"
+            className="w-full h-full object-cover opacity-50 rounded-2xl"
+          />
+        </div>
+        
         {/* Left Content */}
-        <div className="flex-1 max-w-xl">
+        <div className="flex-1 max-w-xl relative z-10">
           <p className="text-sm text-muted-foreground mb-4 tracking-wide uppercase">Civic Engagement</p>
           
           <h1 className="text-6xl md:text-7xl font-light leading-tight mb-8 text-foreground">
@@ -68,7 +77,7 @@ export function LandingPage() {
         </div>
 
         {/* Right Content - Machine Image */}
-        <div className="flex-1 relative">
+        <div className="flex-1 relative hidden md:block">
           <div className="relative">
             {/* Background decorative elements */}
             <div className="absolute -top-10 -right-10 w-64 h-64 bg-emerald-200/30 dark:bg-emerald-800/20 rounded-full blur-3xl"></div>
