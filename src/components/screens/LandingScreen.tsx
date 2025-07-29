@@ -99,10 +99,10 @@ export function LandingScreen() {
           {/* Hero Text */}
           <div className="w-full mb-4 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5">
             <p className="text-xs text-muted-foreground mb-2 tracking-wide uppercase">Civic Engagement</p>
-            <h2 className="text-2xl md:text-3xl font-bold leading-tight mb-4 text-foreground">
-              <span className="font-bold">Handwritten</span> <span className="font-normal">Postcards</span>
+            <h2 className="text-2xl md:text-3xl font-light leading-tight mb-4 text-foreground">
+              <span className="font-light">Handwritten</span> <span className="font-bold">Postcards</span>
               <br />
-              <span className="font-bold">to Your Reps</span>
+              <span className="font-light">to Your Reps</span>
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Send authentic, handwritten postcards to your elected representatives. 
