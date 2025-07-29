@@ -223,7 +223,7 @@ export function CraftMessageScreen() {
                 What's on Your Mind?
               </h1>
               <p className="text-muted-foreground">
-                <em>Make this personal and relevant to you!</em> You don't need to write the whole message. Just list your main concerns, and AI will take it from there. You'll have a chance to edit afterwards.
+                Make this personal and relevant to you! You don't need to write the whole message. Just list your main concerns, and AI will take it from there. You'll have a chance to edit afterwards.
               </p>
             </div>
 
