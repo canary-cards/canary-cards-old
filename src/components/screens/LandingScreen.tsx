@@ -11,7 +11,7 @@ import { ProgressIndicator } from '../ProgressIndicator';
 import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
 import { MapPin, Users, Bot, PenTool, ArrowRight, Mail, Heart } from 'lucide-react';
-import { ThemeToggle } from '../ThemeToggle';
+
 import heroImage from '@/assets/civic-hero-mobile.jpg';
 
 export function LandingScreen() {
@@ -130,7 +130,7 @@ export function LandingScreen() {
             </div>
             <h1 className="text-xl font-bold text-foreground">InkImpact</h1>
           </div>
-          <ThemeToggle />
+          
         </div>
         
         {/* Mobile-First Hero Section */}

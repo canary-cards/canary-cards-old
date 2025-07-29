@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
 import { CheckCircle, Mail } from 'lucide-react';
-import { ThemeToggle } from '../ThemeToggle';
+
 
 export function InviteCodeScreen() {
   const { state, dispatch } = useAppContext();
@@ -46,9 +46,6 @@ export function InviteCodeScreen() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 w-16 h-16 bg-primary rounded-full flex items-center justify-center">

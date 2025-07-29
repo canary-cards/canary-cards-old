@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
-import { ThemeToggle } from './ThemeToggle';
+
 import { useAppContext } from '../context/AppContext';
 import { Search, User, ShoppingBag } from 'lucide-react';
 
@@ -34,7 +34,7 @@ export function LandingPage() {
             <span className="text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Services</span>
             <span className="text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Account</span>
             <Search className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
-            <ThemeToggle />
+            
           </div>
         </nav>
       </header>
