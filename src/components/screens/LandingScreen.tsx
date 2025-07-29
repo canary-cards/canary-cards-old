@@ -123,12 +123,12 @@ export function LandingScreen() {
       <div className={`min-h-screen bg-background ${showSharedDialog ? 'pt-16' : ''}`}>
       <div className="container mx-auto px-4 py-4 max-w-2xl">
         {/* Branding Section */}
-        <div className="flex justify-center items-center mb-6">
-          <div className="flex items-center gap-3 bg-primary px-4 py-2 rounded-full">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <Mail className="w-5 h-5 text-white" />
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+              <Mail className="w-5 h-5 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-bold text-white">InkImpact</h1>
+            <h1 className="text-xl font-bold text-foreground">InkImpact</h1>
           </div>
           
         </div>
