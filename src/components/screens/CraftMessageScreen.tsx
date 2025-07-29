@@ -154,57 +154,44 @@ export function CraftMessageScreen() {
 
     setIsDrafting(true);
     
-    // Mock AI drafting - in real app would use OpenAI/Claude API
-    setTimeout(() => {
-      const draftMessage = generateDraftMessage(message);
+    try {
+      const { data, error } = await supabase.functions.invoke('draft-postcard-message', {
+        body: {
+          userInput: message,
+          repName: state.postcardData.representative?.name || 'Representative',
+          userInfo: state.postcardData.userInfo
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
       dispatch({ 
         type: 'UPDATE_POSTCARD_DATA', 
         payload: { 
           originalMessage: message,
-          draftMessage 
+          draftMessage: data.draftMessage 
         }
       });
       dispatch({ type: 'SET_STEP', payload: 5 });
+      
+      toast({
+        title: "Message drafted!",
+        description: "Your personalized postcard message has been created.",
+      });
+    } catch (error) {
+      console.error('Error drafting message:', error);
+      toast({
+        title: "Drafting failed",
+        description: "Please try again or contact support if the issue persists.",
+        variant: "destructive",
+      });
+    } finally {
       setIsDrafting(false);
-    }, 3000);
-  };
-
-  const generateDraftMessage = (input: string): string => {
-    const rep = state.postcardData.representative;
-    const userInfo = state.postcardData.userInfo;
-    
-    // Convert lists to full sentences if needed
-    const processedInput = convertListToSentence(input);
-    
-    // Create a concise message under 500 characters
-    const concerns = processedInput.toLowerCase();
-    let message = '';
-    
-    // Generate very brief, focused content
-    if (concerns.includes('healthcare') || concerns.includes('health')) {
-      message = 'Healthcare costs are straining families in our district. Please support affordable healthcare legislation.';
-    } else if (concerns.includes('climate') || concerns.includes('environment')) {
-      message = 'Climate action is urgent. Please support environmental protection policies for our future.';
-    } else if (concerns.includes('education') || concerns.includes('school')) {
-      message = 'Our schools need better funding. Please prioritize education investment for our children.';
-    } else if (concerns.includes('transportation') || concerns.includes('traffic') || concerns.includes('roads')) {
-      message = 'Transportation infrastructure needs improvement. Better roads and transit benefit everyone.';
-    } else if (concerns.includes('housing') || concerns.includes('rent') || concerns.includes('mortgage')) {
-      message = 'Housing affordability is a crisis. Please support policies for affordable housing options.';
-    } else {
-      // Use the processed input for general concerns
-      message = `I'm concerned about ${processedInput.slice(0, 100)}. Please address these important community issues.`;
     }
-    
-    return `Dear ${rep?.name || 'Rep.'},
-
-${message}
-
-Thank you for your service.
-
-${userInfo?.firstName} ${userInfo?.lastName}
-${userInfo?.city}, ${userInfo?.state}`;
   };
+
 
   const goBack = () => {
     dispatch({ type: 'SET_STEP', payload: 3 });
