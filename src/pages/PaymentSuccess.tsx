@@ -10,23 +10,35 @@ export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [showConfetti, setShowConfetti] = useState(false);
-  const [shareableName, setShareableName] = useState('');
   const [shareableLink, setShareableLink] = useState('');
   const { toast } = useToast();
+
+  // Get user's first name from localStorage (stored during the flow)
+  const getUserFirstName = () => {
+    try {
+      const storedData = localStorage.getItem('postcardData');
+      if (storedData) {
+        const data = JSON.parse(storedData);
+        return data.userInfo?.firstName || 'Friend';
+      }
+    } catch (error) {
+      console.error('Error getting user data:', error);
+    }
+    return 'Friend';
+  };
 
   useEffect(() => {
     // Show confetti animation
     setShowConfetti(true);
     const timer = setTimeout(() => setShowConfetti(false), 3000);
+    
+    // Generate shareable link automatically
+    const firstName = getUserFirstName();
+    const link = `${window.location.origin}/?shared_by=${encodeURIComponent(firstName)}`;
+    setShareableLink(link);
+    
     return () => clearTimeout(timer);
   }, []);
-
-  const generateShareableLink = () => {
-    if (shareableName.trim()) {
-      const link = `${window.location.origin}/?shared_by=${encodeURIComponent(shareableName.trim())}`;
-      setShareableLink(link);
-    }
-  };
 
   const copyShareableLink = async () => {
     if (shareableLink) {
@@ -103,51 +115,24 @@ export default function PaymentSuccess() {
             </div>
             
             <div className="space-y-3">
-              <div>
-                <label htmlFor="shareable-name" className="text-xs text-muted-foreground block mb-1">
-                  Your name (for sharing):
-                </label>
+              <div className="flex gap-2">
                 <Input
-                  id="shareable-name"
-                  type="text"
-                  placeholder="Enter your name"
-                  value={shareableName}
-                  onChange={(e) => setShareableName(e.target.value)}
-                  className="text-sm"
+                  value={shareableLink}
+                  readOnly
+                  className="text-xs"
                 />
+                <Button
+                  onClick={copyShareableLink}
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Copy className="h-3 w-3" />
+                  Share
+                </Button>
               </div>
-              
-              <Button 
-                onClick={generateShareableLink}
-                disabled={!shareableName.trim()}
-                variant="outline"
-                size="sm"
-                className="w-full"
-              >
-                Generate Share Link
-              </Button>
-              
-              {shareableLink && (
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <Input
-                      value={shareableLink}
-                      readOnly
-                      className="text-xs"
-                    />
-                    <Button
-                      onClick={copyShareableLink}
-                      size="sm"
-                      variant="outline"
-                    >
-                      <Copy className="h-3 w-3" />
-                    </Button>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Share this link to encourage others to contact their representatives!
-                  </p>
-                </div>
-              )}
+              <p className="text-xs text-muted-foreground">
+                Share this link to encourage others to contact their representatives!
+              </p>
             </div>
           </div>
 

@@ -88,6 +88,14 @@ export function PreviewSendScreen() {
         }
       });
 
+      // Store the complete postcard data to localStorage for access after payment
+      const completePostcardData = {
+        ...state.postcardData,
+        sendOption,
+        email
+      };
+      localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
+
       // Redirect to Stripe checkout
       window.open(data.url, '_blank');
     } catch (error) {
