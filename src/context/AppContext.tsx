@@ -9,7 +9,7 @@ type AppAction =
   | { type: 'RESET_STATE' };
 
 const initialState: AppState = {
-  currentStep: 0,
+  currentStep: 2,
   postcardData: {},
   isLoading: false,
   error: null,

@@ -28,7 +28,7 @@ export function CivicPostcardApp() {
       case 7:
         return <SuccessScreen />;
       default:
-        return <InviteCodeScreen />;
+        return <LandingScreen />;
     }
   };
 
