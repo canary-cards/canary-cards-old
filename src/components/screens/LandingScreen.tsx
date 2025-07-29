@@ -113,9 +113,6 @@ export function LandingScreen() {
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
             Make Your Voice Heard
           </h1>
-          <p className="text-sm md:text-base text-muted-foreground mb-4">
-            Send handwritten postcards to your representatives
-          </p>
           
           {/* Compact Social Proof */}
           <div className="inline-flex items-center gap-2 px-3 py-2 bg-primary/5 rounded-full text-xs md:text-sm mb-6">
