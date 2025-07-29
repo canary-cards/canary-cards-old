@@ -95,7 +95,7 @@ export function LandingScreen() {
         </div>
         
         {/* Mobile-First Hero Section */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-3">
           {/* Hero Text */}
           <div className="w-full mb-4 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5">
             <p className="text-xs text-muted-foreground mb-2 tracking-wide uppercase">Civic Engagement</p>
