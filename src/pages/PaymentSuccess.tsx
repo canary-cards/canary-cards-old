@@ -13,13 +13,20 @@ export default function PaymentSuccess() {
   const [shareableLink, setShareableLink] = useState('');
   const { toast } = useToast();
 
-  // Get user's first name from localStorage (stored during the flow)
-  const getUserFirstName = () => {
+  // Get user's name from localStorage (stored during the flow)
+  const getUserName = () => {
     try {
       const storedData = localStorage.getItem('postcardData');
       if (storedData) {
         const data = JSON.parse(storedData);
-        return data.userInfo?.firstName || 'Friend';
+        const firstName = data.userInfo?.firstName;
+        const lastName = data.userInfo?.lastName;
+        
+        if (firstName && lastName) {
+          return `${firstName} ${lastName.charAt(0)}.`;
+        } else if (firstName) {
+          return firstName;
+        }
       }
     } catch (error) {
       console.error('Error getting user data:', error);
@@ -33,8 +40,8 @@ export default function PaymentSuccess() {
     const timer = setTimeout(() => setShowConfetti(false), 3000);
     
     // Generate shareable link automatically
-    const firstName = getUserFirstName();
-    const link = `${window.location.origin}/?shared_by=${encodeURIComponent(firstName)}`;
+    const userName = getUserName();
+    const link = `${window.location.origin}/?shared_by=${encodeURIComponent(userName)}`;
     setShareableLink(link);
     
     return () => clearTimeout(timer);
