@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
@@ -137,7 +138,7 @@ export function ReturnAddressScreen() {
                 <Label htmlFor="streetAddress">Return Address *</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground z-10" />
-                  <Input
+                  <Textarea
                     id="streetAddress"
                     placeholder="Start typing your address..."
                     value={streetAddress}
@@ -147,9 +148,19 @@ export function ReturnAddressScreen() {
                         setShowSuggestions(true);
                       }
                     }}
-                    className="input-warm pl-10"
+                    className="input-warm pl-10 min-h-[2.5rem] resize-none"
                     autoComplete="off"
                     required
+                    rows={1}
+                    style={{
+                      height: 'auto',
+                      minHeight: '2.5rem'
+                    }}
+                    onInput={(e) => {
+                      const target = e.target as HTMLTextAreaElement;
+                      target.style.height = 'auto';
+                      target.style.height = target.scrollHeight + 'px';
+                    }}
                   />
                 </div>
                 
