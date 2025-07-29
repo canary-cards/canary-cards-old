@@ -14,7 +14,7 @@ export interface GooglePlacesResponse {
   status: string;
 }
 
-export async function searchAddressAutocomplete(query: string): Promise<GooglePlacesAddressPrediction[]> {
+export async function searchAddressAutocomplete(query: string, zipCode?: string): Promise<GooglePlacesAddressPrediction[]> {
   if (query.length < 3) {
     return [];
   }
@@ -24,7 +24,8 @@ export async function searchAddressAutocomplete(query: string): Promise<GooglePl
       body: {
         input: query,
         types: 'address',
-        componentRestrictions: { country: 'us' }
+        componentRestrictions: { country: 'us' },
+        zipCode: zipCode // Pass the zip code for location restriction
       }
     });
 

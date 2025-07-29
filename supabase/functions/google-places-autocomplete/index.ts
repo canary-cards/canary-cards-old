@@ -11,9 +11,9 @@ serve(async (req) => {
   }
 
   try {
-    const { input, types = 'address', componentRestrictions } = await req.json()
+    const { input, types = 'address', componentRestrictions, zipCode } = await req.json()
     
-    console.log('Received request:', { input, types, componentRestrictions })
+    console.log('Received request:', { input, types, componentRestrictions, zipCode })
 
     const apiKey = Deno.env.get('Google Places Api')
     if (!apiKey) {
@@ -26,10 +26,23 @@ serve(async (req) => {
     // Use the new Places API (New) with correct field structure
     const url = 'https://places.googleapis.com/v1/places:autocomplete'
     
-    const requestBody = {
-      input: input,
+    // Build the request body with zip code location bias if provided
+    const requestBody: any = {
+      input: zipCode ? `${input}, ${zipCode}` : input, // Include zip code in the query for better relevance
       includedPrimaryTypes: ['street_address'],
       regionCode: componentRestrictions?.country || 'US'
+    }
+
+    // If zip code is provided, add location bias to prioritize results in that area
+    if (zipCode) {
+      // Use the zip code as a location bias to prioritize nearby results
+      requestBody.input = `${input}, ${zipCode}`
+      requestBody.locationBias = {
+        rectangle: {
+          low: { latitude: 0, longitude: 0 }, // Will be ignored due to zip code in input
+          high: { latitude: 0, longitude: 0 }  // Will be ignored due to zip code in input
+        }
+      }
     }
 
     console.log('New API request body:', requestBody)

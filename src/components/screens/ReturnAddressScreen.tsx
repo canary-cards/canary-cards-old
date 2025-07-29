@@ -32,7 +32,7 @@ export function ReturnAddressScreen() {
 
     setIsSearching(true);
     try {
-      const suggestions = await searchAddressAutocomplete(query);
+      const suggestions = await searchAddressAutocomplete(query, zipCode);
       setAddressSuggestions(suggestions);
       setShowSuggestions(suggestions.length > 0);
     } catch (error) {
