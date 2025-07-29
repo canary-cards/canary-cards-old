@@ -90,13 +90,20 @@ export function LandingScreen() {
         
         {/* Mobile-First Hero Section */}
         <div className="text-center mb-6">
-          {/* Hero Image */}
-          <div className="w-full h-48 mb-4 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
-            <img 
-              src={heroImage} 
-              alt="Make your voice heard with digital postcards"
-              className="w-full h-full object-cover"
-            />
+          {/* Hero Text */}
+          <div className="w-full mb-4 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5">
+            <p className="text-xs text-muted-foreground mb-2 tracking-wide uppercase">Civic Engagement</p>
+            <h2 className="text-2xl md:text-3xl font-light leading-tight mb-4 text-foreground">
+              Handwritten
+              <br />
+              <span className="font-normal">Postcards</span>
+              <br />
+              <span className="font-light">to Your Reps</span>
+            </h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Send authentic, handwritten postcards to your elected representatives. 
+              Real ink, real impact, delivered directly to their offices.
+            </p>
           </div>
           
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
