@@ -36,13 +36,10 @@ serve(async (req) => {
       throw new Error("Invalid send option");
     }
 
-    // Create checkout session with payment methods including mobile wallets
+    // Create checkout session
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
       payment_method_types: ['card'],
-      automatic_payment_methods: {
-        enabled: true,
-      },
       line_items: [
         {
           price_data: {
