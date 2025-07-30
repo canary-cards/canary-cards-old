@@ -20,32 +20,52 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
 
   useEffect(() => {
     const initializeCheckout = async () => {
+      let stripe = null;
       try {
-        const stripe = await stripePromise;
+        console.log('EmbeddedCheckout: Starting initialization with clientSecret:', clientSecret ? 'present' : 'missing');
+        
+        stripe = await stripePromise;
         if (!stripe) {
           throw new Error('Stripe failed to load');
         }
+        console.log('EmbeddedCheckout: Stripe loaded successfully');
 
+        if (!clientSecret) {
+          throw new Error('Client secret is missing');
+        }
+
+        console.log('EmbeddedCheckout: Initializing embedded checkout...');
         const checkoutInstance = await stripe.initEmbeddedCheckout({
           clientSecret,
         });
+        console.log('EmbeddedCheckout: Checkout instance created successfully');
 
         setCheckout(checkoutInstance);
         checkoutInstance.mount('#embedded-checkout');
+        console.log('EmbeddedCheckout: Checkout mounted to DOM');
         setLoading(false);
-      } catch (err) {
-        console.error('Failed to initialize Stripe checkout:', err);
-        setError('Failed to load payment form. Please try again.');
+      } catch (err: any) {
+        console.error('EmbeddedCheckout: Failed to initialize Stripe checkout:', err);
+        console.error('EmbeddedCheckout: Error details:', {
+          message: err.message,
+          clientSecret: clientSecret ? 'present' : 'missing',
+          stripeLoaded: !!stripe
+        });
+        setError(`Failed to load payment form: ${err.message}`);
         setLoading(false);
       }
     };
 
+    console.log('EmbeddedCheckout: useEffect triggered, clientSecret:', clientSecret ? 'present' : 'missing');
     if (clientSecret) {
       initializeCheckout();
+    } else {
+      console.log('EmbeddedCheckout: No clientSecret provided, skipping initialization');
     }
 
     return () => {
       if (checkout) {
+        console.log('EmbeddedCheckout: Unmounting checkout');
         checkout.unmount();
       }
     };
