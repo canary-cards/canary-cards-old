@@ -38,7 +38,53 @@ export default function PaymentSuccess() {
     const userName = getUserName();
     const link = `${window.location.origin}/?shared_by=${encodeURIComponent(userName)}`;
     setShareableLink(link);
+    
+    // Confetti effect
+    showConfetti();
   }, []);
+
+  const showConfetti = () => {
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
+    for (let i = 0; i < 50; i++) {
+      createConfettiPiece(colors[Math.floor(Math.random() * colors.length)]);
+    }
+  };
+
+  const createConfettiPiece = (color: string) => {
+    const confetti = document.createElement('div');
+    confetti.style.cssText = `
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: ${color};
+      left: ${Math.random() * 100}vw;
+      top: -10px;
+      z-index: 1000;
+      border-radius: 50%;
+      animation: confetti-fall ${Math.random() * 3 + 2}s linear forwards;
+    `;
+    
+    document.body.appendChild(confetti);
+    
+    // Add CSS animation
+    if (!document.querySelector('#confetti-style')) {
+      const style = document.createElement('style');
+      style.id = 'confetti-style';
+      style.textContent = `
+        @keyframes confetti-fall {
+          to {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    setTimeout(() => {
+      confetti.remove();
+    }, 5000);
+  };
 
   const copyShareableLink = async () => {
     if (shareableLink) {
