@@ -162,12 +162,11 @@ export function LandingScreen() {
                     type="number"
                     inputMode="numeric"
                     pattern="[0-9]{5}"
-                    min="10000"
-                    max="99999"
                     placeholder="12345"
                     value={zipCode}
                     onChange={(e) => {
-                      setZipCode(e.target.value);
+                      const value = e.target.value.replace(/\D/g, '').slice(0, 5);
+                      setZipCode(value);
                       setSearchError('');
                     }}
                     className="pl-10 pr-10 h-12 text-center text-lg md:text-base"
