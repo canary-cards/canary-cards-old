@@ -126,7 +126,7 @@ export function LandingScreen() {
           <div className="w-full mb-4 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5">
             
             <h2 className="text-2xl md:text-3xl font-bold leading-tight mb-3 text-foreground">
-              Make Your Voice Heard in Washington
+              Make Your Voice Heard in Washington D.C.
             </h2>
             <p className="text-base text-muted-foreground mb-2 leading-relaxed">
               You craft a postcard, robots handwrite and mail it, your rep reads it
