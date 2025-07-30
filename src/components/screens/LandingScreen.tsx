@@ -10,7 +10,7 @@ import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
-import { MapPin, Users, Bot, PenTool, ArrowRight, Mail, Heart } from 'lucide-react';
+import { MapPin, Users, Bot, PenTool, ArrowRight, Mail, Heart, Coffee, Shield } from 'lucide-react';
 
 import heroImage from '@/assets/civic-hero-mobile.jpg';
 
@@ -198,6 +198,18 @@ export function LandingScreen() {
             </form>
           </CardContent>
         </Card>
+
+        {/* Trust Indicators */}
+        <div className="text-center space-y-1 mb-6 text-xs text-muted-foreground">
+          <div className="flex items-center justify-center gap-2">
+            <Coffee className="w-3 h-3" />
+            <span>Costs about the same as a latte</span>
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <Shield className="w-3 h-3" />
+            <span>Secure payments powered by Stripe</span>
+          </div>
+        </div>
 
         {/* Representatives Results */}
         {isSearching && (
