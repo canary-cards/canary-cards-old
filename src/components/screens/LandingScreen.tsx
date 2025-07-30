@@ -134,10 +134,15 @@ export function LandingScreen() {
           </div>
 
           {/* Impact Card */}
-          <div className="w-full mb-4 p-4 rounded-xl bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/30 dark:border-green-800/30 relative overflow-hidden">
-            {/* Corner Badge */}
-            <div className="absolute -top-1 -right-1 bg-green-600 text-white text-xs font-medium px-3 py-1 rounded-bl-lg shadow-md">
-              Real Impact
+          <div className="w-full mb-4 p-4 rounded-xl bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/30 dark:border-green-800/30 relative">
+            {/* Sticky Note */}
+            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-yellow-200 to-yellow-300 rotate-3 transform translate-x-8 -translate-y-8 shadow-lg z-10">
+              {/* Folded corner */}
+              <div className="absolute top-0 right-0 w-3 h-3 bg-yellow-400 transform rotate-45 translate-x-1 -translate-y-1 shadow-sm"></div>
+              {/* Text */}
+              <div className="absolute inset-0 flex items-center justify-center transform -rotate-3">
+                <span className="text-xs font-medium text-gray-700 text-center leading-tight px-1">Real Impact</span>
+              </div>
             </div>
             <div className="text-sm text-foreground pr-8">
               <p className="font-medium mb-1">
