@@ -169,14 +169,14 @@ export function PreviewSendScreen() {
                     <div className="space-y-1 text-xs">
                       <p className="font-medium">{userInfo?.firstName} {userInfo?.lastName}</p>
                       <p>{userInfo?.streetAddress}</p>
-                      
+                      <p>{userInfo?.city}, {userInfo?.state} {userInfo?.zipCode}</p>
                     </div>
                     
                     {/* Right side - Representative address */}
                     <div className="space-y-1 text-xs">
                       <p className="font-medium">{rep?.name}</p>
-                      <p>U.S. House of Representatives</p>
-                      <p>Washington, DC 20515</p>
+                      <p>{rep?.address || 'U.S. House of Representatives'}</p>
+                      {!rep?.address && <p>Washington, DC 20515</p>}
                     </div>
                   </div>
                   
