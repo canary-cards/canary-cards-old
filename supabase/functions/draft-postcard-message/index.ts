@@ -55,14 +55,13 @@ serve(async (req) => {
             - Respectful and constructive
             
             Format the message as a proper postcard with:
-            Dear [Rep Name],
+            Dear Rep. [Rep Last Name],
             
             [Personal message based on their input]
             
-            Thank you for your service.
+            Sincerely, [First Name] [Last Name] [City]
             
-            [First Name] [Last Name]
-            [City], [State]
+            Do not include any address information in the postcard.
             
             Make each message unique and personalized based on the specific concerns they share. Avoid generic templates.`
           },
