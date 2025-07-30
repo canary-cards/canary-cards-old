@@ -20,25 +20,18 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
 
   useEffect(() => {
     const initializeCheckout = async () => {
-      let stripe = null;
       try {
         console.log('EmbeddedCheckout: Starting initialization with clientSecret:', clientSecret ? 'present' : 'missing');
         
-        stripe = await stripePromise;
-        if (!stripe) {
-          throw new Error('Stripe failed to load');
-        }
-        console.log('EmbeddedCheckout: Stripe loaded successfully');
-
         if (!clientSecret) {
           throw new Error('Client secret is missing');
         }
 
-        // Wait for DOM element to be available
-        const checkoutElement = document.getElementById('embedded-checkout');
-        if (!checkoutElement) {
-          throw new Error('Checkout container element not found in DOM');
+        const stripe = await stripePromise;
+        if (!stripe) {
+          throw new Error('Stripe failed to load');
         }
+        console.log('EmbeddedCheckout: Stripe loaded successfully');
 
         console.log('EmbeddedCheckout: Initializing embedded checkout...');
         const checkoutInstance = await stripe.initEmbeddedCheckout({
@@ -47,17 +40,22 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         console.log('EmbeddedCheckout: Checkout instance created successfully');
 
         setCheckout(checkoutInstance);
-        checkoutInstance.mount('#embedded-checkout');
-        console.log('EmbeddedCheckout: Checkout mounted to DOM');
         setLoading(false);
+        
+        // Mount after state is updated and component re-renders
+        setTimeout(() => {
+          const checkoutElement = document.getElementById('embedded-checkout');
+          if (checkoutElement) {
+            checkoutInstance.mount('#embedded-checkout');
+            console.log('EmbeddedCheckout: Checkout mounted to DOM');
+          } else {
+            console.error('EmbeddedCheckout: Mount element not found after render');
+            setError('Failed to mount payment form');
+          }
+        }, 50);
+        
       } catch (err: any) {
         console.error('EmbeddedCheckout: Failed to initialize Stripe checkout:', err);
-        console.error('EmbeddedCheckout: Error details:', {
-          message: err.message,
-          clientSecret: clientSecret ? 'present' : 'missing',
-          stripeLoaded: !!stripe,
-          domElementExists: !!document.getElementById('embedded-checkout')
-        });
         setError(`Failed to load payment form: ${err.message}`);
         setLoading(false);
       }
@@ -65,12 +63,11 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
 
     console.log('EmbeddedCheckout: useEffect triggered, clientSecret:', clientSecret ? 'present' : 'missing');
     if (clientSecret) {
-      // Use setTimeout to ensure DOM is rendered
-      setTimeout(() => {
-        initializeCheckout();
-      }, 100);
+      initializeCheckout();
     } else {
       console.log('EmbeddedCheckout: No clientSecret provided, skipping initialization');
+      setError('No payment session provided');
+      setLoading(false);
     }
 
     return () => {
