@@ -53,6 +53,7 @@ export function LandingScreen() {
 
     setIsSearching(true);
     setSearchError('');
+    setShowSharedDialog(false); // Hide the shared banner when user starts searching
     
     try {
       const reps = await lookupRepresentatives(zipCode);
