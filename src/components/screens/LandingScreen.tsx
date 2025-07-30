@@ -21,7 +21,6 @@ export function LandingScreen() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState('');
   const [selectedRep, setSelectedRep] = useState<Representative | null>(null);
-  const [socialCounter, setSocialCounter] = useState(47);
   const [showSharedDialog, setShowSharedDialog] = useState(false);
   const [sharedByName, setSharedByName] = useState('');
 
@@ -38,18 +37,6 @@ export function LandingScreen() {
       const newUrl = window.location.pathname;
       window.history.replaceState({}, '', newUrl);
     }
-  }, []);
-
-  // Animate the social counter
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSocialCounter(prev => {
-        const change = Math.random() > 0.8 ? (Math.random() > 0.5 ? 1 : -1) : 0;
-        return Math.max(40, prev + change);
-      });
-    }, 5000);
-    
-    return () => clearInterval(interval);
   }, []);
 
   const validateZipCode = (zip: string) => {
@@ -138,22 +125,20 @@ export function LandingScreen() {
           {/* Hero Text */}
           <div className="w-full mb-4 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5">
             
-            <h2 className="text-2xl md:text-3xl font-light leading-tight mb-4 text-foreground">
-              <span className="font-light">Handwritten</span> <span className="font-bold">Postcards</span>
-              <br />
-              <span className="font-light">to Your Reps</span>
+            <h2 className="text-2xl md:text-3xl font-bold leading-tight mb-3 text-foreground">
+              Make Your Voice Heard in Washington
             </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Send authentic, handwritten postcards to your elected representatives. 
-              Real ink, real impact, delivered directly to their offices.
+            <p className="text-base text-muted-foreground mb-4 leading-relaxed">
+              You craft a postcard, robots handwrite and mail it, your rep reads it
             </p>
-          </div>
-          
-          
-          {/* Compact Social Proof */}
-          <div className="inline-flex items-center gap-2 px-3 py-2 bg-primary/5 rounded-full text-xs md:text-sm mb-6">
-            <Users className="w-4 h-4 text-primary" />
-            <span><strong className="text-primary">{socialCounter}</strong> postcards sent this week</span>
+            <div className="text-sm text-foreground">
+              <p className="font-medium mb-1">
+                Just 50 personalized postcards can influence a congressperson's vote
+              </p>
+              <p className="text-xs text-muted-foreground italic">
+                — Congressional Management Foundation study
+              </p>
+            </div>
           </div>
         </div>
 
