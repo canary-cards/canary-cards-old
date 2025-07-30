@@ -39,7 +39,7 @@ serve(async (req) => {
     // Create embedded checkout session
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
-      payment_method_types: ['card', 'link'],
+      payment_method_types: ['card'],
       line_items: [
         {
           price_data: {
@@ -56,6 +56,11 @@ serve(async (req) => {
       mode: "payment",
       ui_mode: "embedded",
       return_url: `${req.headers.get("origin")}/payment-return?session_id={CHECKOUT_SESSION_ID}`,
+      // Enable automatic payment methods including Apple Pay
+      automatic_payment_methods: {
+        enabled: true,
+        allow_redirects: 'never'
+      },
       metadata: {
         send_option: sendOption,
         user_email: email
