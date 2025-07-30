@@ -56,20 +56,10 @@ export function LandingScreen() {
     
     try {
       const reps = await lookupRepresentatives(zipCode);
+      setRepresentatives(reps);
       
-      if (reps.length > 0) {
-        // Auto-select the first representative and proceed to next step
-        const selectedRep = reps[0];
-        dispatch({ 
-          type: 'UPDATE_POSTCARD_DATA', 
-          payload: { 
-            zipCode, 
-            representative: selectedRep 
-          }
-        });
-        dispatch({ type: 'SET_STEP', payload: 3 });
-      } else {
-        setSearchError('No representatives found for this zip code. Please try a different zip code.');
+      if (reps.length === 1) {
+        setSelectedRep(reps[0]);
       }
     } catch (error) {
       setSearchError(error instanceof Error ? error.message : 'Failed to lookup representatives. Please try again.');
