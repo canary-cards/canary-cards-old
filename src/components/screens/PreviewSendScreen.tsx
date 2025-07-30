@@ -101,8 +101,8 @@ export function PreviewSendScreen() {
       localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 
       console.log('Redirecting to Stripe:', data.url);
-      // Redirect to Stripe checkout
-      window.open(data.url, '_blank');
+      // Redirect to Stripe checkout (using location.href to avoid popup blocking on mobile)
+      window.location.href = data.url;
     } catch (error) {
       console.error('Payment error:', error);
       setEmailError('Payment failed. Please try again.');
