@@ -134,9 +134,7 @@ export function LandingScreen() {
           </div>
 
           {/* Impact Card */}
-          <div className="w-full mb-4 p-4 rounded-xl bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/30 dark:border-green-800/30 relative overflow-hidden">
-            {/* Corner Ribbon */}
-            <div className="absolute top-0 right-0 w-16 h-full bg-green-600 transform translate-x-8 rotate-45 origin-top-right shadow-lg"></div>
+          <div className="w-full mb-4 p-4 rounded-xl bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/30 dark:border-green-800/30 relative">
             <div className="text-sm text-foreground text-center">
               <p className="font-medium mb-1">
                 Just 50 personalized postcards can influence a congressperson's vote
