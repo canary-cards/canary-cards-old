@@ -60,12 +60,15 @@ export function PreviewSendScreen() {
     }
   };
   const handlePayment = async () => {
+    console.log('Payment button clicked!');
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
+      console.log('Email validation failed:', email);
       return;
     }
     setIsProcessing(true);
     setEmailError('');
+    console.log('Calling create-payment with:', { sendOption, email });
     try {
       // Call Stripe payment function
       const {
@@ -77,6 +80,7 @@ export function PreviewSendScreen() {
           email
         }
       });
+      console.log('create-payment response:', { data, error });
       if (error) throw error;
 
       // Update app state before redirecting
@@ -96,6 +100,7 @@ export function PreviewSendScreen() {
       };
       localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 
+      console.log('Redirecting to Stripe:', data.url);
       // Redirect to Stripe checkout
       window.open(data.url, '_blank');
     } catch (error) {
@@ -116,7 +121,7 @@ export function PreviewSendScreen() {
   const allReps = rep ? [rep, ...senators] : senators;
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <ProgressIndicator currentStep={5} totalSteps={5} />
+        <ProgressIndicator currentStep={6} totalSteps={6} />
         
         <Card className="card-warm">
           <CardContent className="p-8">
