@@ -101,8 +101,17 @@ export function PreviewSendScreen() {
       localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 
       console.log('Redirecting to Stripe:', data.url);
-      // Redirect to Stripe checkout
-      window.open(data.url, '_blank');
+      
+      // Check if we're in Lovable preview environment
+      const isLovablePreview = window.location.hostname.includes('lovableproject.com') || window.location.hostname.includes('localhost');
+      
+      if (isLovablePreview) {
+        // In Lovable preview, open in new tab for testing
+        window.open(data.url, '_blank');
+      } else {
+        // On mobile/production, redirect current window to avoid popup blocking
+        window.location.href = data.url;
+      }
     } catch (error) {
       console.error('Payment error:', error);
       setEmailError('Payment failed. Please try again.');
