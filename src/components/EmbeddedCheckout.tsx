@@ -34,6 +34,12 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           throw new Error('Client secret is missing');
         }
 
+        // Wait for DOM element to be available
+        const checkoutElement = document.getElementById('embedded-checkout');
+        if (!checkoutElement) {
+          throw new Error('Checkout container element not found in DOM');
+        }
+
         console.log('EmbeddedCheckout: Initializing embedded checkout...');
         const checkoutInstance = await stripe.initEmbeddedCheckout({
           clientSecret,
@@ -49,7 +55,8 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         console.error('EmbeddedCheckout: Error details:', {
           message: err.message,
           clientSecret: clientSecret ? 'present' : 'missing',
-          stripeLoaded: !!stripe
+          stripeLoaded: !!stripe,
+          domElementExists: !!document.getElementById('embedded-checkout')
         });
         setError(`Failed to load payment form: ${err.message}`);
         setLoading(false);
@@ -58,7 +65,10 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
 
     console.log('EmbeddedCheckout: useEffect triggered, clientSecret:', clientSecret ? 'present' : 'missing');
     if (clientSecret) {
-      initializeCheckout();
+      // Use setTimeout to ensure DOM is rendered
+      setTimeout(() => {
+        initializeCheckout();
+      }, 100);
     } else {
       console.log('EmbeddedCheckout: No clientSecret provided, skipping initialization');
     }
