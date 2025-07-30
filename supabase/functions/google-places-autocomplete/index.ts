@@ -57,7 +57,7 @@ serve(async (req) => {
                   latitude: location.lat,
                   longitude: location.lng
                 },
-                radius: 25000.0 // 25km radius around the zip code center
+                radius: 12500.0 // 12.5km radius around the zip code center
               }
             }
           }
