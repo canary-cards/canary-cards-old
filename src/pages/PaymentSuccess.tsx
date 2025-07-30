@@ -168,13 +168,6 @@ export default function PaymentSuccess() {
             <Button asChild className="w-full">
               <Link to="/">Send Another Postcard</Link>
             </Button>
-            
-            <Button variant="outline" asChild className="w-full">
-              <Link to="/">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Link>
-            </Button>
           </div>
         </CardContent>
       </Card>
