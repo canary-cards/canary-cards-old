@@ -80,7 +80,7 @@ export default function PaymentSuccess() {
                 fontSize: `${Math.random() * 20 + 10}px`,
               }}
             >
-              🎉
+              •
             </div>
           ))}
         </div>
