@@ -261,29 +261,6 @@ export function LandingScreen() {
             )}
           </div>
         )}
-
-        {/* Compact Value Props - Below the fold */}
-        <div className="space-y-3 mt-8">
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-muted/30">
-            <PenTool className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-            <div>
-              <h3 className="font-medium text-sm mb-1">Real Impact</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Less than 50 personalized messages get a congressperson's attention.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-muted/30">
-            <Bot className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-            <div>
-              <h3 className="font-medium text-sm mb-1">Handwritten by Robots</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                We use robots to handwrite with real pen and paper.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     </>
