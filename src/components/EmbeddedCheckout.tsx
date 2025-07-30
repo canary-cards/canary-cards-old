@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
-const stripePromise = loadStripe('pk_test_51QfpgjLfDW9GopPwnyJ6LbKvOTEKWZ5LU5EwZN7pnvJME5sFbKovKNODUGHSfQlm76BIJ8zMaWwjZFfIShwFCBpT00mq0KlBuI');
+const stripePromise = loadStripe('YOUR_STRIPE_PUBLISHABLE_KEY_HERE');
 
 interface EmbeddedCheckoutProps {
   clientSecret: string;
