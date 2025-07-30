@@ -10,7 +10,7 @@ import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
-import { MapPin, Users, Bot, PenTool, ArrowRight, Mail, Heart } from 'lucide-react';
+import { MapPin, Users, Bot, PenTool, ArrowRight, Mail, Heart, TrendingUp } from 'lucide-react';
 
 import heroImage from '@/assets/civic-hero-mobile.jpg';
 
@@ -131,7 +131,14 @@ export function LandingScreen() {
             <p className="text-base text-muted-foreground mb-4 leading-relaxed">
               You craft a postcard, robots handwrite and mail it, your rep reads it
             </p>
-            <div className="text-sm text-foreground">
+          </div>
+
+          {/* Impact Card */}
+          <div className="w-full mb-4 p-4 rounded-xl bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/30 dark:border-green-800/30 relative">
+            <div className="absolute top-3 right-3">
+              <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
+            </div>
+            <div className="text-sm text-foreground pr-8">
               <p className="font-medium mb-1">
                 Just 50 personalized postcards can influence a congressperson's vote
               </p>
