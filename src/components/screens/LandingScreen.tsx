@@ -134,9 +134,10 @@ export function LandingScreen() {
           </div>
 
           {/* Impact Card */}
-          <div className="w-full mb-4 p-4 rounded-xl bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/30 dark:border-green-800/30 relative">
-            <div className="absolute top-3 right-3">
-              <Target className="w-4 h-4 text-green-600 dark:text-green-400" />
+          <div className="w-full mb-4 p-4 rounded-xl bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/30 dark:border-green-800/30 relative overflow-hidden">
+            {/* Corner Ribbon */}
+            <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-1 rotate-45 bg-green-600 px-6 py-1 shadow-lg">
+              <span className="text-white text-xs font-medium transform -rotate-45 block w-max">Real Impact</span>
             </div>
             <div className="text-sm text-foreground pr-8">
               <p className="font-medium mb-1">
