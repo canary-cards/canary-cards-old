@@ -39,7 +39,7 @@ serve(async (req) => {
     // Create embedded checkout session
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'apple_pay', 'google_pay'],
       line_items: [
         {
           price_data: {
