@@ -9,7 +9,6 @@ import { useToast } from '@/hooks/use-toast';
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
-  const [showConfetti, setShowConfetti] = useState(false);
   const [shareableLink, setShareableLink] = useState('');
   const { toast } = useToast();
 
@@ -35,16 +34,10 @@ export default function PaymentSuccess() {
   };
 
   useEffect(() => {
-    // Show confetti animation
-    setShowConfetti(true);
-    const timer = setTimeout(() => setShowConfetti(false), 3000);
-    
     // Generate shareable link automatically
     const userName = getUserName();
     const link = `${window.location.origin}/?shared_by=${encodeURIComponent(userName)}`;
     setShareableLink(link);
-    
-    return () => clearTimeout(timer);
   }, []);
 
   const copyShareableLink = async () => {
@@ -67,24 +60,6 @@ export default function PaymentSuccess() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-4">
-      {showConfetti && (
-        <div className="fixed inset-0 pointer-events-none z-50">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute animate-bounce"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
-                fontSize: `${Math.random() * 20 + 10}px`,
-              }}
-            >
-              •
-            </div>
-          ))}
-        </div>
-      )}
       
       <Card className="w-full max-w-md">
         <CardContent className="p-8 text-center space-y-6">
