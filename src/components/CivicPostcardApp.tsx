@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { LandingScreen } from './screens/LandingScreen';
 import { ReturnAddressScreen } from './screens/ReturnAddressScreen';
@@ -9,6 +9,11 @@ import { SuccessScreen } from './screens/SuccessScreen';
 
 export function CivicPostcardApp() {
   const { state } = useAppContext();
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [state.currentStep]);
 
   const renderCurrentScreen = () => {
     switch (state.currentStep) {
