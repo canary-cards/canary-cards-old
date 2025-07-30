@@ -36,7 +36,7 @@ serve(async (req) => {
       throw new Error("Invalid send option");
     }
 
-    // Create checkout session
+    // Create embedded checkout session
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
       payment_method_types: ['card'],
@@ -54,17 +54,20 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/payment-canceled`,
+      ui_mode: "embedded",
+      return_url: `${req.headers.get("origin")}/payment-return?session_id={CHECKOUT_SESSION_ID}`,
       metadata: {
         send_option: sendOption,
         user_email: email
       }
     });
 
-    console.log("Created Stripe session:", session.id, "for", email, "option:", sendOption);
+    console.log("Created Stripe embedded session:", session.id, "for", email, "option:", sendOption);
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    return new Response(JSON.stringify({ 
+      client_secret: session.client_secret,
+      session_id: session.id 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

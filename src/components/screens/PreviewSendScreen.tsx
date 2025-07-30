@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
+import { EmbeddedCheckout } from '../EmbeddedCheckout';
 import { ArrowLeft, Mail, CreditCard, Shield, Clock, Heart, Users, Zap } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
@@ -23,6 +24,8 @@ export function PreviewSendScreen() {
   const [emailError, setEmailError] = useState('');
   const [senators, setSenators] = useState<Representative[]>([]);
   const [loadingSenators, setLoadingSenators] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const singlePrice = 4.99;
   const triplePrice = 11.99;
   const savings = singlePrice * 3 - triplePrice;
@@ -83,7 +86,7 @@ export function PreviewSendScreen() {
       console.log('create-payment response:', { data, error });
       if (error) throw error;
 
-      // Update app state before redirecting
+      // Update app state 
       dispatch({
         type: 'UPDATE_POSTCARD_DATA',
         payload: {
@@ -100,24 +103,20 @@ export function PreviewSendScreen() {
       };
       localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 
-      console.log('Redirecting to Stripe:', data.url);
-      
-      // Check if we're in Lovable preview environment
-      const isLovablePreview = window.location.hostname.includes('lovableproject.com') || window.location.hostname.includes('localhost');
-      
-      if (isLovablePreview) {
-        // In Lovable preview, open in new tab for testing
-        window.open(data.url, '_blank');
-      } else {
-        // On mobile/production, redirect current window to avoid popup blocking
-        window.location.href = data.url;
-      }
+      // Show embedded checkout
+      setClientSecret(data.client_secret);
+      setShowCheckout(true);
     } catch (error) {
       console.error('Payment error:', error);
       setEmailError('Payment failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleBackFromCheckout = () => {
+    setShowCheckout(false);
+    setClientSecret(null);
   };
   const goBack = () => {
     dispatch({
@@ -128,6 +127,24 @@ export function PreviewSendScreen() {
 
   // All representatives for display
   const allReps = rep ? [rep, ...senators] : senators;
+
+  // Show embedded checkout if client secret is available
+  if (showCheckout && clientSecret) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8 max-w-2xl">
+          <ProgressIndicator currentStep={6} totalSteps={6} />
+          <EmbeddedCheckout 
+            clientSecret={clientSecret}
+            onBack={handleBackFromCheckout}
+            sendOption={sendOption}
+            amount={sendOption === 'single' ? singlePrice : triplePrice}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <ProgressIndicator currentStep={6} totalSteps={6} />
