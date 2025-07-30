@@ -44,17 +44,17 @@ ${userInfo?.firstName} ${userInfo?.lastName}`;
       type: 'UPDATE_POSTCARD_DATA', 
       payload: { finalMessage: editedMessage }
     });
-    dispatch({ type: 'SET_STEP', payload: 6 });
+    dispatch({ type: 'SET_STEP', payload: 5 });
   };
 
   const goBack = () => {
-    dispatch({ type: 'SET_STEP', payload: 4 });
+    dispatch({ type: 'SET_STEP', payload: 3 });
   };
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <ProgressIndicator currentStep={4} totalSteps={5} />
+        <ProgressIndicator currentStep={4} totalSteps={6} />
         
         <Card className="card-warm">
           <CardContent className="p-8">

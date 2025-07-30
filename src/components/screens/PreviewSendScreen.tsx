@@ -121,7 +121,7 @@ export function PreviewSendScreen() {
   const goBack = () => {
     dispatch({
       type: 'SET_STEP',
-      payload: 5
+      payload: 4
     });
   };
 
@@ -133,7 +133,7 @@ export function PreviewSendScreen() {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8 max-w-2xl">
-          <ProgressIndicator currentStep={6} totalSteps={6} />
+          <ProgressIndicator currentStep={5} totalSteps={6} />
           <EmbeddedCheckout 
             clientSecret={clientSecret}
             onBack={handleBackFromCheckout}
@@ -147,7 +147,7 @@ export function PreviewSendScreen() {
 
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <ProgressIndicator currentStep={6} totalSteps={6} />
+        <ProgressIndicator currentStep={5} totalSteps={6} />
         
         <Card className="card-warm">
           <CardContent className="p-8">
