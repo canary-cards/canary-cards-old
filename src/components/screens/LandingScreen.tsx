@@ -159,7 +159,7 @@ export function LandingScreen() {
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="zipCode"
-                    type="number"
+                    type="text"
                     inputMode="numeric"
                     pattern="[0-9]{5}"
                     placeholder="12345"
