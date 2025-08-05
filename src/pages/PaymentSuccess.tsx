@@ -3,13 +3,17 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Mail, ArrowLeft, Copy, Share2 } from 'lucide-react';
+import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [shareableLink, setShareableLink] = useState('');
+  const [postcardStatus, setPostcardStatus] = useState<'processing' | 'sending' | 'success' | 'error'>('processing');
+  const [sendingResults, setSendingResults] = useState<any>(null);
+  const [retryAttempts, setRetryAttempts] = useState(0);
   const { toast } = useToast();
 
   // Get user's name from localStorage (stored during the flow)
@@ -18,13 +22,17 @@ export default function PaymentSuccess() {
       const storedData = localStorage.getItem('postcardData');
       if (storedData) {
         const data = JSON.parse(storedData);
-        const firstName = data.userInfo?.firstName;
-        const lastName = data.userInfo?.lastName;
+        const fullName = data.userInfo?.fullName;
         
-        if (firstName && lastName) {
-          return `${firstName} ${lastName.charAt(0)}.`;
-        } else if (firstName) {
-          return firstName;
+        if (fullName) {
+          const nameParts = fullName.trim().split(' ');
+          if (nameParts.length >= 2) {
+            const firstName = nameParts[0];
+            const lastName = nameParts[nameParts.length - 1];
+            return `${firstName} ${lastName.charAt(0)}.`;
+          } else {
+            return nameParts[0];
+          }
         }
       }
     } catch (error) {
@@ -33,15 +41,82 @@ export default function PaymentSuccess() {
     return 'Friend';
   };
 
+  const sendPostcards = async () => {
+    try {
+      setPostcardStatus('sending');
+      console.log('Starting postcard sending process...');
+      
+      const storedData = localStorage.getItem('postcardData');
+      if (!storedData) {
+        throw new Error('No postcard data found');
+      }
+      
+      const postcardData = JSON.parse(storedData);
+      console.log('Sending postcard with data:', postcardData);
+      
+      const { data, error } = await supabase.functions.invoke('send-postcard', {
+        body: { postcardData }
+      });
+      
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
+      
+      console.log('Postcard sending results:', data);
+      setSendingResults(data);
+      
+      if (data.success) {
+        setPostcardStatus('success');
+        toast({
+          title: "Postcards sent successfully!",
+          description: `${data.summary.totalSent} postcard(s) sent to your representatives.`,
+        });
+      } else {
+        setPostcardStatus('error');
+        toast({
+          title: "Some postcards failed to send",
+          description: `${data.summary.totalSent} sent, ${data.summary.totalFailed} failed.`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Failed to send postcards:', error);
+      setPostcardStatus('error');
+      setSendingResults({ error: error.message });
+      toast({
+        title: "Failed to send postcards",
+        description: "Please try again or contact support if the issue persists.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const retryPostcardSending = async () => {
+    setRetryAttempts(prev => prev + 1);
+    await sendPostcards();
+  };
+
   useEffect(() => {
     // Generate shareable link automatically
     const userName = getUserName();
     const link = `${window.location.origin}/?shared_by=${encodeURIComponent(userName)}`;
     setShareableLink(link);
     
-    // Confetti effect
-    showConfetti();
+    // Start postcard sending process
+    const timer = setTimeout(() => {
+      sendPostcards();
+    }, 1500); // Short delay to show processing state
+    
+    return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    // Show confetti only when postcards are successfully sent
+    if (postcardStatus === 'success') {
+      showConfetti();
+    }
+  }, [postcardStatus]);
 
   const showConfetti = () => {
     const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
@@ -104,22 +179,87 @@ export default function PaymentSuccess() {
     }
   };
 
+  const getStatusIcon = () => {
+    switch (postcardStatus) {
+      case 'processing':
+      case 'sending':
+        return <Loader2 className="h-16 w-16 text-blue-500 animate-spin" />;
+      case 'success':
+        return <CheckCircle className="h-16 w-16 text-green-500" />;
+      case 'error':
+        return <AlertCircle className="h-16 w-16 text-red-500" />;
+      default:
+        return <CheckCircle className="h-16 w-16 text-green-500" />;
+    }
+  };
+
+  const getStatusTitle = () => {
+    switch (postcardStatus) {
+      case 'processing':
+        return 'Payment Processing...';
+      case 'sending':
+        return 'Sending Your Postcards...';
+      case 'success':
+        return 'Postcards Sent Successfully!';
+      case 'error':
+        return 'Postcard Sending Failed';
+      default:
+        return 'Payment Successful!';
+    }
+  };
+
+  const getStatusMessage = () => {
+    switch (postcardStatus) {
+      case 'processing':
+        return 'Your payment has been processed successfully. Preparing to send your postcards...';
+      case 'sending':
+        return 'Your postcards are being sent to your representatives. This may take a moment...';
+      case 'success':
+        return sendingResults?.summary 
+          ? `${sendingResults.summary.totalSent} postcard(s) sent successfully to your representatives.`
+          : 'Your postcards have been sent to your representatives and will be delivered soon.';
+      case 'error':
+        return 'There was an issue sending your postcards. You can retry or contact support.';
+      default:
+        return 'Your postcard is being processed and will be sent to your representative.';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-4">
       
       <Card className="w-full max-w-md">
         <CardContent className="p-8 text-center space-y-6">
           <div className="flex justify-center">
-            <CheckCircle className="h-16 w-16 text-green-500" />
+            {getStatusIcon()}
           </div>
           
           <div className="space-y-2">
             <h1 className="text-2xl font-bold text-foreground">
-              Payment Successful!
+              {getStatusTitle()}
             </h1>
             <p className="text-muted-foreground">
-              Your postcard is being processed and will be sent to your representative.
+              {getStatusMessage()}
             </p>
+          </div>
+
+          {/* Progress Indicator */}
+          <div className="flex items-center justify-center space-x-2 text-sm">
+            <div className={`flex items-center ${postcardStatus !== 'processing' ? 'text-green-600' : 'text-blue-600'}`}>
+              <CheckCircle className="h-4 w-4 mr-1" />
+              Payment Processing
+            </div>
+            <div className="text-muted-foreground">→</div>
+            <div className={`flex items-center ${postcardStatus === 'success' ? 'text-green-600' : postcardStatus === 'sending' ? 'text-blue-600' : 'text-muted-foreground'}`}>
+              {postcardStatus === 'sending' ? (
+                <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+              ) : postcardStatus === 'success' ? (
+                <CheckCircle className="h-4 w-4 mr-1" />
+              ) : (
+                <div className="h-4 w-4 mr-1 rounded-full border-2 border-muted-foreground/30" />
+              )}
+              Postcard Sending
+            </div>
           </div>
 
           {sessionId && (
@@ -130,42 +270,79 @@ export default function PaymentSuccess() {
             </div>
           )}
 
-          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
-            <Mail className="h-4 w-4" />
-            <span>You'll receive a confirmation email shortly</span>
-          </div>
+          {postcardStatus === 'success' && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
+              <Mail className="h-4 w-4" />
+              <span>You'll receive a confirmation email shortly</span>
+            </div>
+          )}
 
-          {/* Shareable Link Section */}
-          <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <Share2 className="h-4 w-4" />
-              <span>Share with Friends & Family</span>
-            </div>
-            
-            <div className="space-y-3">
-              <div className="flex gap-2">
-                <Input
-                  value={shareableLink}
-                  readOnly
-                  className="text-xs"
-                />
-                <Button
-                  onClick={copyShareableLink}
-                  size="sm"
-                  className="flex items-center gap-2"
-                >
-                  <Copy className="h-3 w-3" />
-                  Share
-                </Button>
+          {/* Error State with Retry */}
+          {postcardStatus === 'error' && (
+            <div className="space-y-4 p-4 bg-red-50 dark:bg-red-950 rounded-lg">
+              <div className="text-sm text-red-700 dark:text-red-300">
+                {sendingResults?.error || 'An error occurred while sending your postcards.'}
               </div>
-              <p className="text-xs text-muted-foreground">
-                Share this link to encourage others to contact their representatives!
-              </p>
+              <Button 
+                onClick={retryPostcardSending} 
+                variant="outline" 
+                size="sm"
+                disabled={retryAttempts >= 3}
+              >
+                {retryAttempts >= 3 ? 'Max retries reached' : `Retry (${retryAttempts}/3)`}
+              </Button>
             </div>
-          </div>
+          )}
+
+          {/* Sending Results Details */}
+          {postcardStatus === 'success' && sendingResults?.results && (
+            <div className="space-y-2 p-4 bg-green-50 dark:bg-green-950 rounded-lg">
+              <h4 className="text-sm font-medium text-green-800 dark:text-green-200">Postcards Sent:</h4>
+              {sendingResults.results.map((result: any, index: number) => (
+                <div key={index} className="text-xs text-green-700 dark:text-green-300">
+                  ✓ {result.recipient} ({result.type})
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Shareable Link Section - Only show when postcards are successfully sent */}
+          {postcardStatus === 'success' && (
+            <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <Share2 className="h-4 w-4" />
+                <span>Share with Friends & Family</span>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <Input
+                    value={shareableLink}
+                    readOnly
+                    className="text-xs"
+                  />
+                  <Button
+                    onClick={copyShareableLink}
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <Copy className="h-3 w-3" />
+                    Share
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Share this link to encourage others to contact their representatives!
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="space-y-3">
-            <Button asChild className="w-full">
+            <Button 
+              asChild 
+              className="w-full"
+              disabled={postcardStatus === 'processing' || postcardStatus === 'sending'}
+            >
               <Link to="/">Send Another Postcard</Link>
             </Button>
           </div>
