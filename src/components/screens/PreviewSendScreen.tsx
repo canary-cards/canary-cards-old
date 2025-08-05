@@ -99,7 +99,8 @@ export function PreviewSendScreen() {
       const completePostcardData = {
         ...state.postcardData,
         sendOption,
-        email
+        email,
+        senators: sendOption === 'triple' ? senators : undefined
       };
       localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 

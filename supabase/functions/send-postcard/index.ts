@@ -143,7 +143,10 @@ serve(async (req) => {
 
     // Send to representative
     try {
-      const repMessage = finalMessage.replace(/Rep\.\s+\w+/g, `Rep. ${representative.name.split(' ').pop()}`);
+      // Replace "Dear Rep." pattern with actual rep name, or use original message
+      const repMessage = finalMessage.includes('Dear Rep.') 
+        ? finalMessage.replace(/Dear Rep\.\s*\w*/g, `Dear Rep. ${representative.name.split(' ').pop()}`)
+        : finalMessage.replace(/Rep\.\s+\w+/g, `Rep. ${representative.name.split(' ').pop()}`);
       const repResult = await createPostcardOrder(representative, repMessage, 'representative');
       results.push({
         type: 'representative',
@@ -163,9 +166,16 @@ serve(async (req) => {
 
     // Send to senators if triple package
     if (sendOption === 'triple' && senators && senators.length > 0) {
+      console.log(`Sending to ${senators.length} senators for triple package`);
       for (const senator of senators) {
         try {
-          const senMessage = finalMessage.replace(/Rep\.\s+\w+/g, `Sen. ${senator.name.split(' ').pop()}`);
+          // Replace "Dear Rep." with "Dear Sen." for senators, or replace any Rep references with Sen
+          let senMessage = finalMessage;
+          if (finalMessage.includes('Dear Rep.')) {
+            senMessage = finalMessage.replace(/Dear Rep\.\s*\w*/g, `Dear Sen. ${senator.name.split(' ').pop()}`);
+          } else {
+            senMessage = finalMessage.replace(/Rep\.\s+\w+/g, `Sen. ${senator.name.split(' ').pop()}`);
+          }
           const senResult = await createPostcardOrder(senator, senMessage, 'senator');
           results.push({
             type: 'senator',
