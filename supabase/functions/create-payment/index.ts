@@ -68,15 +68,6 @@ serve(async (req) => {
       customer: customerId,
       customer_email: customerId ? undefined : email,
       payment_method_types: ['card', 'link'],
-      ...(firstName && lastName ? {
-        customer_creation: 'if_required',
-        custom_fields: [{
-          key: 'prefill_name',
-          label: { type: 'custom', custom: 'Name' },
-          type: 'text',
-          optional: false
-        }]
-      } : {}),
       line_items: [
         {
           price_data: {
