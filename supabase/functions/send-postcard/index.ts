@@ -46,10 +46,22 @@ serve(async (req) => {
       if (parts.length >= 3) {
         const streetAddress = parts[0];
         const city = parts[1];
-        const stateZip = parts[2].split(' ');
-        const state = stateZip[0];
-        const zip = stateZip[1] || '';
-        return { streetAddress, city, state, zip };
+        const stateZipPart = parts[2];
+        // Extract state and zip from "State ZIP" format
+        const stateZipMatch = stateZipPart.match(/^([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/);
+        if (stateZipMatch) {
+          const state = stateZipMatch[1];
+          const zip = stateZipMatch[2];
+          return { streetAddress, city, state, zip };
+        } else {
+          // Try to split by space and take last part as zip
+          const lastSpaceIndex = stateZipPart.lastIndexOf(' ');
+          if (lastSpaceIndex > 0) {
+            const state = stateZipPart.substring(0, lastSpaceIndex);
+            const zip = stateZipPart.substring(lastSpaceIndex + 1);
+            return { streetAddress, city, state, zip };
+          }
+        }
       }
       // Fallback - use the provided userInfo
       return {
@@ -90,7 +102,7 @@ serve(async (req) => {
       const orderData = {
         font: 'kletzien', // Default font as specified
         message: message,
-        image: '10353', // Default template as specified
+        image: 'white', // Use simple white background for professional appearance
         recipient_name: recipientName,
         recipient_address_one: recipientAddress.address_one,
         recipient_city: recipientAddress.city,
