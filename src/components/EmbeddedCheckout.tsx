@@ -19,6 +19,9 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+    let checkoutInstance: any = null;
+
     const initializeCheckout = async () => {
       try {
         console.log('EmbeddedCheckout: Starting initialization with clientSecret:', clientSecret ? 'present' : 'missing');
@@ -33,17 +36,37 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         }
         console.log('EmbeddedCheckout: Stripe loaded successfully');
 
+        // Only proceed if component is still mounted
+        if (!isMounted) {
+          console.log('EmbeddedCheckout: Component unmounted, aborting initialization');
+          return;
+        }
+
         console.log('EmbeddedCheckout: Initializing embedded checkout...');
-        const checkoutInstance = await stripe.initEmbeddedCheckout({
+        checkoutInstance = await stripe.initEmbeddedCheckout({
           clientSecret,
         });
         console.log('EmbeddedCheckout: Checkout instance created successfully');
+
+        // Only proceed if component is still mounted
+        if (!isMounted) {
+          console.log('EmbeddedCheckout: Component unmounted after creation, cleaning up');
+          if (checkoutInstance) {
+            checkoutInstance.unmount();
+          }
+          return;
+        }
 
         setCheckout(checkoutInstance);
         setLoading(false);
         
         // Mount after state is updated and component re-renders
         setTimeout(() => {
+          if (!isMounted || !checkoutInstance) {
+            console.log('EmbeddedCheckout: Component unmounted or no instance, skipping mount');
+            return;
+          }
+          
           const checkoutElement = document.getElementById('embedded-checkout');
           if (checkoutElement) {
             checkoutInstance.mount('#embedded-checkout');
@@ -56,8 +79,10 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         
       } catch (err: any) {
         console.error('EmbeddedCheckout: Failed to initialize Stripe checkout:', err);
-        setError(`Failed to load payment form: ${err.message}`);
-        setLoading(false);
+        if (isMounted) {
+          setError(`Failed to load payment form: ${err.message}`);
+          setLoading(false);
+        }
       }
     };
 
@@ -71,9 +96,23 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
     }
 
     return () => {
-      if (checkout) {
-        console.log('EmbeddedCheckout: Unmounting checkout');
-        checkout.unmount();
+      isMounted = false;
+      if (checkoutInstance) {
+        console.log('EmbeddedCheckout: Unmounting checkout instance');
+        try {
+          checkoutInstance.unmount();
+        } catch (error) {
+          console.log('EmbeddedCheckout: Error unmounting checkout:', error);
+        }
+        checkoutInstance = null;
+      }
+      if (checkout && checkout !== checkoutInstance) {
+        console.log('EmbeddedCheckout: Unmounting stored checkout instance');
+        try {
+          checkout.unmount();
+        } catch (error) {
+          console.log('EmbeddedCheckout: Error unmounting stored checkout:', error);
+        }
       }
     };
   }, [clientSecret]);
