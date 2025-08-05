@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,6 +23,10 @@ export function LandingScreen() {
   const [selectedRep, setSelectedRep] = useState<Representative | null>(null);
   const [showSharedDialog, setShowSharedDialog] = useState(false);
   const [sharedByName, setSharedByName] = useState('');
+
+  // Refs for auto-scrolling
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const continueButtonRef = useRef<HTMLButtonElement>(null);
 
   // Check for shared link on mount
   useEffect(() => {
@@ -68,6 +72,30 @@ export function LandingScreen() {
       setIsSearching(false);
     }
   };
+
+  // Auto-scroll when representatives are loaded
+  useEffect(() => {
+    if (representatives.length > 0 && resultsRef.current) {
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 300);
+    }
+  }, [representatives]);
+
+  // Auto-scroll when representative is selected
+  useEffect(() => {
+    if (selectedRep && continueButtonRef.current) {
+      setTimeout(() => {
+        continueButtonRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      }, 300);
+    }
+  }, [selectedRep]);
 
   const handleRepSelect = (rep: Representative) => {
     setSelectedRep(rep);
@@ -215,7 +243,7 @@ export function LandingScreen() {
         )}
 
         {representatives.length > 0 && !isSearching && (
-          <div className="mb-6 space-y-4">
+          <div ref={resultsRef} className="mb-6 space-y-4">
             {representatives.length > 1 && (
               <p className="text-center text-sm text-muted-foreground px-4">
                 Multiple representatives found. Select yours:
@@ -260,6 +288,7 @@ export function LandingScreen() {
             
             {selectedRep && (
               <Button 
+                ref={continueButtonRef}
                 onClick={handleContinue}
                 className="w-full h-12 text-base font-medium"
               >
