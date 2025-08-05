@@ -14,10 +14,19 @@ serve(async (req) => {
 
   try {
     // Parse request body
-    const { sendOption, email } = await req.json();
+    const { sendOption, email, fullName } = await req.json();
     
     if (!sendOption || !email) {
       throw new Error("Missing required fields: sendOption and email");
+    }
+
+    // Parse full name into first and last name for Stripe
+    let firstName = "";
+    let lastName = "";
+    if (fullName) {
+      const nameParts = fullName.trim().split(" ");
+      firstName = nameParts[0] || "";
+      lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
     }
 
     // Initialize Stripe
@@ -36,10 +45,38 @@ serve(async (req) => {
       throw new Error("Invalid send option");
     }
 
+    // Create or update Stripe customer with name information
+    let customerId;
+    const customers = await stripe.customers.list({ email, limit: 1 });
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id;
+      // Update existing customer with name if provided
+      if (fullName && (!customers.data[0].name || customers.data[0].name !== fullName)) {
+        await stripe.customers.update(customerId, { name: fullName });
+      }
+    } else if (fullName) {
+      // Create new customer with name
+      const customer = await stripe.customers.create({
+        email,
+        name: fullName
+      });
+      customerId = customer.id;
+    }
+
     // Create embedded checkout session
     const session = await stripe.checkout.sessions.create({
-      customer_email: email,
+      customer: customerId,
+      customer_email: customerId ? undefined : email,
       payment_method_types: ['card', 'link'],
+      ...(firstName && lastName ? {
+        customer_creation: 'if_required',
+        custom_fields: [{
+          key: 'prefill_name',
+          label: { type: 'custom', custom: 'Name' },
+          type: 'text',
+          optional: false
+        }]
+      } : {}),
       line_items: [
         {
           price_data: {
@@ -58,7 +95,8 @@ serve(async (req) => {
       return_url: `${req.headers.get("origin")}/payment-return?session_id={CHECKOUT_SESSION_ID}`,
       metadata: {
         send_option: sendOption,
-        user_email: email
+        user_email: email,
+        user_full_name: fullName || ""
       }
     });
 

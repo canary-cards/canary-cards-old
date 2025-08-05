@@ -80,7 +80,8 @@ export function PreviewSendScreen() {
       } = await supabase.functions.invoke('create-payment', {
         body: {
           sendOption,
-          email
+          email,
+          fullName: userInfo?.fullName
         }
       });
       console.log('create-payment response:', { data, error });
