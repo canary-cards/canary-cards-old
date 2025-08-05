@@ -55,11 +55,13 @@ serve(async (req) => {
             - Respectful and constructive
             
             Format the message as a proper postcard with:
-            Dear Rep. [Rep Last Name],
+            Dear Rep. [Representative Last Name],
             
             [Personal message based on their input]
             
-            Sincerely, [First Name] [Last Name] [City]
+            Sincerely, [Use the actual sender's full name and city from their address]
+            
+            IMPORTANT: Do NOT use placeholders like [First Name] or [City]. Use the actual sender information provided. Extract the city name from their street address.
             
             Do not include any address information in the postcard.
             
@@ -70,10 +72,10 @@ serve(async (req) => {
             content: `Please write a postcard message based on these concerns: "${userInput}"
             
             Representative: ${repName}
-            Sender: ${userInfo.firstName} ${userInfo.lastName}
-            Location: ${userInfo.city}, ${userInfo.state}
+            Sender name: ${userInfo.fullName}
+            Location: ${userInfo.streetAddress}
             
-            Make it personal and specific to their concerns.`
+            Make it personal and specific to their concerns. Use the actual sender name and extract the city from their address for the signature.`
           }
         ],
         temperature: 0.8, // Higher temperature for more creative/varied responses
