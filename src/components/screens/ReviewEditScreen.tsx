@@ -32,7 +32,7 @@ ${originalMessage}
 I believe these issues are important for our community and would appreciate your attention to them. Thank you for your service and for representing our interests.
 
 Sincerely,
-${userInfo?.firstName} ${userInfo?.lastName}`;
+${userInfo?.fullName}`;
       
       setEditedMessage(regeneratedMessage);
       setIsRegenerating(false);

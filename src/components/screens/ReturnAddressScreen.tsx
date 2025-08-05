@@ -14,8 +14,7 @@ import { searchAddressAutocomplete, GooglePlacesAddressPrediction } from '../../
 
 export function ReturnAddressScreen() {
   const { state, dispatch } = useAppContext();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
   const [addressSuggestions, setAddressSuggestions] = useState<GooglePlacesAddressPrediction[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -65,13 +64,12 @@ export function ReturnAddressScreen() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!firstName.trim() || !lastName.trim() || !streetAddress.trim()) {
+    if (!fullName.trim() || !streetAddress.trim()) {
       return;
     }
 
     const userInfo = {
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
+      fullName: fullName.trim(),
       streetAddress: streetAddress.trim(),
       city: '', // Will be populated from selected address
       state: '', // Will be populated from selected address
@@ -89,7 +87,7 @@ export function ReturnAddressScreen() {
     dispatch({ type: 'SET_STEP', payload: 1 });
   };
 
-  const isFormComplete = firstName.trim() && lastName.trim() && streetAddress.trim();
+  const isFormComplete = fullName.trim() && streetAddress.trim();
 
   return (
     <div className="min-h-screen bg-background">
@@ -108,30 +106,17 @@ export function ReturnAddressScreen() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name *</Label>
-                  <Input
-                    id="firstName"
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className="input-warm"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name *</Label>
-                  <Input
-                    id="lastName"
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className="input-warm"
-                    required
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="fullName">Full Name *</Label>
+                <Input
+                  id="fullName"
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Enter your full name"
+                  className="input-warm h-12 text-base"
+                  required
+                />
               </div>
 
               <div className="space-y-2 relative">

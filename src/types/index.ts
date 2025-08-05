@@ -11,8 +11,7 @@ export interface Representative {
 }
 
 export interface UserInfo {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   streetAddress: string;
   city: string;
   state: string;

@@ -167,7 +167,7 @@ export function PreviewSendScreen() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Left side - Return address */}
                     <div className="space-y-1 text-xs">
-                      <p className="font-medium">{userInfo?.firstName} {userInfo?.lastName}</p>
+                      <p className="font-medium">{userInfo?.fullName}</p>
                       <p>{userInfo?.streetAddress}</p>
                       <p>{userInfo?.city}, {userInfo?.state} {userInfo?.zipCode}</p>
                     </div>
