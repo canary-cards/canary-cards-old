@@ -196,7 +196,7 @@ export default function PaymentSuccess() {
   const getStatusTitle = () => {
     switch (postcardStatus) {
       case 'processing':
-        return 'Payment Processing...';
+        return 'Preparing Your Postcards...';
       case 'sending':
         return 'Sending Your Postcards...';
       case 'success':
@@ -204,14 +204,14 @@ export default function PaymentSuccess() {
       case 'error':
         return 'Postcard Sending Failed';
       default:
-        return 'Payment Successful!';
+        return 'Payment Complete!';
     }
   };
 
   const getStatusMessage = () => {
     switch (postcardStatus) {
       case 'processing':
-        return 'Your payment has been processed successfully. Preparing to send your postcards...';
+        return 'Payment completed successfully! Preparing to send your postcards...';
       case 'sending':
         return 'Your postcards are being sent to your representatives. This may take a moment...';
       case 'success':
@@ -221,7 +221,7 @@ export default function PaymentSuccess() {
       case 'error':
         return 'There was an issue sending your postcards. You can retry or contact support.';
       default:
-        return 'Your postcard is being processed and will be sent to your representative.';
+        return 'Payment complete! Your postcards are being processed.';
     }
   };
 
@@ -245,9 +245,9 @@ export default function PaymentSuccess() {
 
           {/* Progress Indicator */}
           <div className="flex items-center justify-center space-x-2 text-sm">
-            <div className={`flex items-center ${postcardStatus !== 'processing' ? 'text-green-600' : 'text-blue-600'}`}>
+            <div className="flex items-center text-green-600">
               <CheckCircle className="h-4 w-4 mr-1" />
-              Payment Processing
+              Payment Complete
             </div>
             <div className="text-muted-foreground">→</div>
             <div className={`flex items-center ${postcardStatus === 'success' ? 'text-green-600' : postcardStatus === 'sending' ? 'text-blue-600' : 'text-muted-foreground'}`}>
