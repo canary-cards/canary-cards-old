@@ -141,12 +141,29 @@ serve(async (req) => {
 
     const results = [];
 
+    // Helper function to replace user placeholders
+    const replaceUserPlaceholders = (message: string) => {
+      const nameParts = userInfo.fullName.split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+      const city = senderAddress.city || userInfo.city || '';
+      
+      return message
+        .replace(/\[First Name\]/g, firstName)
+        .replace(/\[Last Name\]/g, lastName)
+        .replace(/\[City\]/g, city);
+    };
+
     // Send to representative
     try {
       // Replace "Dear Rep." pattern with actual rep name, or use original message
-      const repMessage = finalMessage.includes('Dear Rep.') 
+      let repMessage = finalMessage.includes('Dear Rep.') 
         ? finalMessage.replace(/Dear Rep\.\s*\w*/g, `Dear Rep. ${representative.name.split(' ').pop()}`)
         : finalMessage.replace(/Rep\.\s+\w+/g, `Rep. ${representative.name.split(' ').pop()}`);
+      
+      // Replace user placeholders
+      repMessage = replaceUserPlaceholders(repMessage);
+      
       const repResult = await createPostcardOrder(representative, repMessage, 'representative');
       results.push({
         type: 'representative',
@@ -176,6 +193,10 @@ serve(async (req) => {
           } else {
             senMessage = finalMessage.replace(/Rep\.\s+\w+/g, `Sen. ${senator.name.split(' ').pop()}`);
           }
+          
+          // Replace user placeholders
+          senMessage = replaceUserPlaceholders(senMessage);
+          
           const senResult = await createPostcardOrder(senator, senMessage, 'senator');
           results.push({
             type: 'senator',
