@@ -129,7 +129,22 @@ export function PreviewSendScreen() {
   // All representatives for display
   const allReps = rep ? [rep, ...senators] : senators;
 
-  // No longer need separate checkout screen - embedding inline
+  // Show embedded checkout on separate screen if client secret is available
+  if (showCheckout && clientSecret) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8 max-w-2xl">
+          <ProgressIndicator currentStep={6} totalSteps={6} />
+          <EmbeddedCheckout 
+            clientSecret={clientSecret}
+            onBack={handleBackFromCheckout}
+            sendOption={sendOption}
+            amount={sendOption === 'single' ? singlePrice : triplePrice}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
@@ -323,24 +338,6 @@ export function PreviewSendScreen() {
                   </p>
                 </div>
               </div>
-
-              {/* Embedded Stripe Checkout - Show inline when checkout is ready */}
-              {showCheckout && clientSecret && (
-                <div className="mt-6 pt-6 border-t">
-                  <div className="text-center mb-4">
-                    <h3 className="text-lg font-semibold">Complete Your Payment</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {sendOption === 'single' ? 'Single postcard' : 'Triple postcard package'} - ${sendOption === 'single' ? singlePrice : triplePrice}
-                    </p>
-                  </div>
-                  <EmbeddedCheckout 
-                    clientSecret={clientSecret}
-                    onBack={handleBackFromCheckout}
-                    sendOption={sendOption}
-                    amount={sendOption === 'single' ? singlePrice : triplePrice}
-                  />
-                </div>
-              )}
 
               <div className="flex gap-2 sm:gap-4 pt-4 border-t">
                 <Button type="button" variant="outline" onClick={goBack} className="button-warm flex-shrink-0 px-3 sm:px-4">
