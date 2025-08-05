@@ -68,6 +68,11 @@ serve(async (req) => {
       customer: customerId,
       customer_email: customerId ? undefined : email,
       payment_method_types: ['card', 'link'],
+      ...(fullName ? {
+        customer_details: {
+          name: fullName,
+        },
+      } : {}),
       line_items: [
         {
           price_data: {
