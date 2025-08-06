@@ -14,15 +14,21 @@ export function SuccessScreen() {
 
   // Get the deployed app URL, not the Lovable editor URL
   const getAppUrl = () => {
-    // Always use the deployed app URL to avoid any access issues
-    // Replace 'xwsgyxlvxntgpochonwe' with your actual project ID if different
-    return 'https://xwsgyxlvxntgpochonwe.lovable.app';
+    // If we're in the Lovable editor, user needs to publish first
+    if (window.location.origin.includes('lovable.app') && window.location.pathname.includes('/edit/')) {
+      return null; // Will show a publish message instead
+    }
+    // For deployed app or custom domain, use current origin
+    return window.location.origin;
   };
 
   useEffect(() => {
     // Generate unique invite link
     const uniqueId = Math.random().toString(36).substring(2, 15);
-    setInviteLink(`${getAppUrl()}?invite=${uniqueId}`);
+    const appUrl = getAppUrl();
+    if (appUrl) {
+      setInviteLink(`${appUrl}?invite=${uniqueId}`);
+    }
     
     // Confetti effect
     showConfetti();

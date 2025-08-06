@@ -99,16 +99,23 @@ export default function PaymentSuccess() {
 
   // Get the deployed app URL, not the Lovable editor URL
   const getAppUrl = () => {
-    // Always use the deployed app URL to avoid any access issues
-    // Replace 'xwsgyxlvxntgpochonwe' with your actual project ID if different
-    return 'https://xwsgyxlvxntgpochonwe.lovable.app';
+    // If we're in the Lovable editor, user needs to publish first
+    if (window.location.origin.includes('lovable.app') && window.location.pathname.includes('/edit/')) {
+      return null; // Will show a publish message instead
+    }
+    // For deployed app or custom domain, use current origin
+    return window.location.origin;
   };
 
   useEffect(() => {
     // Generate shareable link automatically
     const userName = getUserName();
-    const link = `${getAppUrl()}/?shared_by=${encodeURIComponent(userName)}`;
-    setShareableLink(link);
+    const appUrl = getAppUrl();
+    if (appUrl) {
+      const link = `${appUrl}/?shared_by=${encodeURIComponent(userName)}`;
+      setShareableLink(link);
+    }
+    
     
     // Start postcard sending process
     const timer = setTimeout(() => {
@@ -313,8 +320,8 @@ export default function PaymentSuccess() {
             </div>
           )}
 
-          {/* Shareable Link Section - Only show when postcards are successfully sent */}
-          {postcardStatus === 'success' && (
+          {/* Shareable Link Section - Only show when postcards are successfully sent and app is deployed */}
+          {postcardStatus === 'success' && shareableLink && (
             <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <Share2 className="h-4 w-4" />
@@ -341,6 +348,19 @@ export default function PaymentSuccess() {
                   Share this link to encourage others to contact their representatives!
                 </p>
               </div>
+            </div>
+          )}
+
+          {/* Publish Message - Show when app is not deployed */}
+          {postcardStatus === 'success' && !shareableLink && (
+            <div className="space-y-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
+              <div className="flex items-center gap-2 text-sm font-medium text-blue-800 dark:text-blue-200">
+                <span>📢</span>
+                <span>Ready to Share</span>
+              </div>
+              <p className="text-sm text-blue-700 dark:text-blue-300">
+                Publish your project using the "Publish" button in the top right to get a shareable link for friends and family!
+              </p>
             </div>
           )}
 
