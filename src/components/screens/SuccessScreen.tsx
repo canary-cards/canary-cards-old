@@ -14,14 +14,9 @@ export function SuccessScreen() {
 
   // Get the deployed app URL, not the Lovable editor URL
   const getAppUrl = () => {
-    // Check if we're in the Lovable editor
-    if (window.location.origin.includes('lovable.app') && window.location.pathname.includes('/edit/')) {
-      // Use the deployed app URL instead
-      const projectId = window.location.pathname.split('/edit/')[1]?.split('/')[0];
-      return `https://${projectId}.lovable.app`;
-    }
-    // For deployed app or custom domain, use current origin
-    return window.location.origin;
+    // Always use the deployed app URL to avoid any access issues
+    // Replace 'xwsgyxlvxntgpochonwe' with your actual project ID if different
+    return 'https://xwsgyxlvxntgpochonwe.lovable.app';
   };
 
   useEffect(() => {
