@@ -12,10 +12,22 @@ export function SuccessScreen() {
   const [inviteLink, setInviteLink] = useState('');
   const [showAccountCreation, setShowAccountCreation] = useState(true);
 
+  // Get the deployed app URL, not the Lovable editor URL
+  const getAppUrl = () => {
+    // Check if we're in the Lovable editor
+    if (window.location.origin.includes('lovable.app') && window.location.pathname.includes('/edit/')) {
+      // Use the deployed app URL instead
+      const projectId = window.location.pathname.split('/edit/')[1]?.split('/')[0];
+      return `https://${projectId}.lovable.app`;
+    }
+    // For deployed app or custom domain, use current origin
+    return window.location.origin;
+  };
+
   useEffect(() => {
     // Generate unique invite link
     const uniqueId = Math.random().toString(36).substring(2, 15);
-    setInviteLink(`${window.location.origin}?invite=${uniqueId}`);
+    setInviteLink(`${getAppUrl()}?invite=${uniqueId}`);
     
     // Confetti effect
     showConfetti();

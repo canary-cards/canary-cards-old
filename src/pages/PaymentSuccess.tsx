@@ -97,10 +97,22 @@ export default function PaymentSuccess() {
     await sendPostcards();
   };
 
+  // Get the deployed app URL, not the Lovable editor URL
+  const getAppUrl = () => {
+    // Check if we're in the Lovable editor
+    if (window.location.origin.includes('lovable.app') && window.location.pathname.includes('/edit/')) {
+      // Use the deployed app URL instead
+      const projectId = window.location.pathname.split('/edit/')[1]?.split('/')[0];
+      return `https://${projectId}.lovable.app`;
+    }
+    // For deployed app or custom domain, use current origin
+    return window.location.origin;
+  };
+
   useEffect(() => {
     // Generate shareable link automatically
     const userName = getUserName();
-    const link = `${window.location.origin}/?shared_by=${encodeURIComponent(userName)}`;
+    const link = `${getAppUrl()}/?shared_by=${encodeURIComponent(userName)}`;
     setShareableLink(link);
     
     // Start postcard sending process
