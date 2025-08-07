@@ -70,20 +70,20 @@ ${userInfo?.fullName}`;
             <div className="space-y-6">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Edit3 className="w-4 h-4 text-muted-foreground" />
-                    <label className="text-sm font-medium">Your Message</label>
-                  </div>
+                  <label className="text-sm font-medium">Your Message</label>
                   <span className={`text-xs ${charCount > maxChars ? 'text-destructive' : 'text-muted-foreground'}`}>
                     {charCount}/{maxChars}
                   </span>
                 </div>
-                <Textarea
-                  value={editedMessage}
-                  onChange={(e) => setEditedMessage(e.target.value)}
-                  className="input-warm min-h-[300px] resize-none"
-                  maxLength={maxChars}
-                />
+                <div className="relative">
+                  <Textarea
+                    value={editedMessage}
+                    onChange={(e) => setEditedMessage(e.target.value)}
+                    className="input-warm min-h-[300px] resize-none pr-12"
+                    maxLength={maxChars}
+                  />
+                  <Edit3 className="w-4 h-4 text-muted-foreground absolute bottom-3 right-3 pointer-events-none" />
+                </div>
               </div>
 
               <div className="space-y-3 pt-4">
