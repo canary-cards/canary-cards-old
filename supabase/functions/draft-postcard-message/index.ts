@@ -29,9 +29,9 @@ serve(async (req) => {
       throw new Error('OpenAI API key not configured');
     }
 
-    if (!userInput || !repName || !userInfo) {
+    if (!userInput || !repName) {
       console.error('Missing required fields:', { userInput: !!userInput, repName: !!repName, userInfo: !!userInfo });
-      throw new Error('Missing required fields: userInput, repName, or userInfo');
+      throw new Error('Missing required fields: userInput or repName');
     }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -72,10 +72,10 @@ serve(async (req) => {
             content: `Please write a postcard message based on these concerns: "${userInput}"
             
             Representative: ${repName}
-            Sender name: ${userInfo.fullName}
-            Location: ${userInfo.streetAddress}
+            ${userInfo?.fullName ? `Sender name: ${userInfo.fullName}` : 'Sender name: [To be filled in later]'}
+            ${userInfo?.streetAddress ? `Location: ${userInfo.streetAddress}` : 'Location: [To be filled in later]'}
             
-            Make it personal and specific to their concerns. Use the actual sender name and extract the city from their address for the signature.`
+            Make it personal and specific to their concerns. ${userInfo?.fullName ? 'Use the actual sender name and extract the city from their address for the signature.' : 'Use placeholder "[Your Name]" and "[Your City]" for the signature since sender info is not yet available.'}`
           }
         ],
         temperature: 0.8, // Higher temperature for more creative/varied responses

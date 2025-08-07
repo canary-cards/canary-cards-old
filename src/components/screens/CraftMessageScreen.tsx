@@ -165,7 +165,7 @@ export function CraftMessageScreen() {
         body: {
           userInput: message,
           repName: state.postcardData.representative?.name || 'Representative',
-          userInfo: state.postcardData.userInfo
+          userInfo: state.postcardData.userInfo || { fullName: '', streetAddress: '', city: '', state: '', zipCode: '' }
         }
       });
 
@@ -188,7 +188,7 @@ export function CraftMessageScreen() {
           draftMessage: data.draftMessage 
         }
       });
-      dispatch({ type: 'SET_STEP', payload: 4 });
+      dispatch({ type: 'SET_STEP', payload: 3 });
       
       toast({
         title: "Message drafted!",
@@ -208,13 +208,13 @@ export function CraftMessageScreen() {
 
 
   const goBack = () => {
-    dispatch({ type: 'SET_STEP', payload: 2 });
+    dispatch({ type: 'SET_STEP', payload: 1 });
   };
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <ProgressIndicator currentStep={3} totalSteps={6} />
+        <ProgressIndicator currentStep={2} totalSteps={6} />
         
         <Card className="card-warm">
           <CardContent className="p-8">
