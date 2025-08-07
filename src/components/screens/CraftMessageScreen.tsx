@@ -315,7 +315,7 @@ export function CraftMessageScreen() {
                 )}
 
                 {!showAdditionalConcern && (
-                  <div className="-mt-2">
+                  <div className="-mt-3 -mb-2">
                     <button
                       type="button"
                       onClick={() => setShowAdditionalConcern(true)}
