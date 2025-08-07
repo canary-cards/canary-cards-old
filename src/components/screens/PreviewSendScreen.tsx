@@ -130,6 +130,19 @@ export function PreviewSendScreen() {
   // All representatives for display
   const allReps = rep ? [rep, ...senators] : senators;
 
+  // Replace placeholders in the message with actual user data
+  const replacePlaceholders = (message: string) => {
+    if (!message || !userInfo) return message;
+    
+    return message
+      .replace(/\[Your Name\]/g, userInfo.fullName || '')
+      .replace(/\[Your City\]/g, userInfo.city || '')
+      .replace(/\[Your State\]/g, userInfo.state || '')
+      .replace(/\[Your Full Name\]/g, userInfo.fullName || '');
+  };
+
+  const displayMessage = replacePlaceholders(finalMessage);
+
   // Show embedded checkout on separate screen if client secret is available
   if (showCheckout && clientSecret) {
     return (
@@ -185,7 +198,7 @@ export function PreviewSendScreen() {
                   <div className="p-4 bg-background/80 rounded-lg">
                     <p className="text-xs text-muted-foreground mb-2">Message (handwritten style):</p>
                     <div className="text-sm leading-relaxed font-caveat">
-                      {finalMessage}
+                      {displayMessage}
                     </div>
                     <div className="mt-4 text-right">
                       <div className="text-sm font-caveat text-foreground">
