@@ -241,12 +241,12 @@ export function CraftMessageScreen() {
         
         <Card className="card-warm">
           <CardContent className="p-6">
-            <div className="text-center mb-4">
-              <h1 className="text-xl font-bold text-foreground mb-3">
+            <div className="text-center mb-3">
+              <h1 className="text-xl font-bold text-foreground mb-2">
                 Make It Personal
               </h1>
               
-              <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800 mb-4">
+              <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800 mb-3 max-w-lg mx-auto">
                 <div className="flex items-start gap-2">
                   <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-white text-xs font-bold">i</span>
