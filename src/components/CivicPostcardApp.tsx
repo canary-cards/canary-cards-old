@@ -20,9 +20,9 @@ export function CivicPostcardApp() {
       case 1:
         return <LandingScreen />;
       case 2:
-        return <ReturnAddressScreen />;
-      case 3:
         return <CraftMessageScreen />;
+      case 3:
+        return <ReturnAddressScreen />;
       case 4:
         return <ReviewEditScreen />;
       case 5:
