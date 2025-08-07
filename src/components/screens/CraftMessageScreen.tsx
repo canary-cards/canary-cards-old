@@ -236,22 +236,22 @@ export function CraftMessageScreen() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-4 py-4 max-w-2xl">
         <ProgressIndicator currentStep={2} totalSteps={6} />
         
         <Card className="card-warm">
-          <CardContent className="p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-foreground mb-4">
+          <CardContent className="p-6">
+            <div className="text-center mb-4">
+              <h1 className="text-xl font-bold text-foreground mb-3">
                 Make It Personal
               </h1>
               
-              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-xl border border-blue-200 dark:border-blue-800 mb-6">
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-white text-sm font-bold">i</span>
+              <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800 mb-4">
+                <div className="flex items-start gap-2">
+                  <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-xs font-bold">i</span>
                   </div>
-                  <p className="text-blue-800 dark:text-blue-200 text-sm">
+                  <p className="text-blue-800 dark:text-blue-200 text-xs">
                     Representatives are <strong>15x more likely</strong> to respond to postcards that include personal stories and local impact. Share how issues affect you directly.
                   </p>
                 </div>
@@ -259,7 +259,7 @@ export function CraftMessageScreen() {
             </div>
 
             {/* Input Method Toggle */}
-            <div className="flex gap-2 mb-6 p-1 bg-muted rounded-xl">
+            <div className="flex gap-2 mb-4 p-1 bg-muted rounded-xl">
               <Button
                 type="button"
                 variant={inputMethod === 'text' ? 'default' : 'ghost'}
@@ -281,14 +281,14 @@ export function CraftMessageScreen() {
             </div>
 
             {inputMethod === 'text' ? (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">I'm concerned about:</label>
                   <Textarea
                     placeholder="Healthcare costs, climate change, education funding..."
                     value={concerns}
                     onChange={(e) => setConcerns(e.target.value)}
-                    className="input-warm min-h-[80px] resize-none"
+                    className="input-warm min-h-[60px] resize-none"
                   />
                 </div>
 
@@ -298,7 +298,7 @@ export function CraftMessageScreen() {
                     placeholder="As a parent of two children in public schools..."
                     value={personalImpact}
                     onChange={(e) => setPersonalImpact(e.target.value)}
-                    className="input-warm min-h-[100px] resize-none"
+                    className="input-warm min-h-[70px] resize-none"
                   />
                 </div>
 
@@ -309,7 +309,7 @@ export function CraftMessageScreen() {
                       placeholder="Another issue that matters to you..."
                       value={additionalConcern}
                       onChange={(e) => setAdditionalConcern(e.target.value)}
-                      className="input-warm min-h-[80px] resize-none"
+                      className="input-warm min-h-[60px] resize-none"
                     />
                   </div>
                 )}
@@ -325,34 +325,34 @@ export function CraftMessageScreen() {
                 )}
               </div>
             ) : (
-              <div className="space-y-6">
-                <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <p className="text-blue-800 dark:text-blue-200 font-medium mb-3">When you record, share:</p>
-                  <div className="space-y-2 text-blue-700 dark:text-blue-300">
-                    <p className="text-sm">1. What specific issue concerns you most</p>
-                    <p className="text-sm">2. How it personally affects you or your community</p>
+              <div className="space-y-4">
+                <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <p className="text-blue-800 dark:text-blue-200 font-medium mb-2 text-sm">When you record, share:</p>
+                  <div className="space-y-1 text-blue-700 dark:text-blue-300">
+                    <p className="text-xs">1. What specific issue concerns you most</p>
+                    <p className="text-xs">2. How it personally affects you or your community</p>
                   </div>
                 </div>
 
-                <div className="text-center space-y-4">
+                <div className="text-center space-y-3">
                   <Button
                     type="button"
                     onClick={isRecording ? stopRecording : startRecording}
-                    className={`w-24 h-24 rounded-full button-warm ${
+                    className={`w-20 h-20 rounded-full button-warm ${
                       isRecording ? 'bg-destructive hover:bg-destructive/90 recording-pulse' : 'bg-blue-600 hover:bg-blue-700'
                     }`}
                   >
                     {isRecording ? (
-                      <MicOff className="w-8 h-8" />
+                      <MicOff className="w-6 h-6" />
                     ) : (
-                      <Mic className="w-8 h-8" />
+                      <Mic className="w-6 h-6" />
                     )}
                   </Button>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     {isRecording ? (
                       <>
-                        <p className="text-sm font-medium text-destructive">
+                        <p className="text-xs font-medium text-destructive">
                           Recording... {formatTime(recordingTime)}
                         </p>
                         <p className="text-xs text-muted-foreground">
@@ -372,7 +372,7 @@ export function CraftMessageScreen() {
                       </>
                     ) : (
                       <>
-                        <p className="text-sm font-medium">
+                        <p className="text-xs font-medium">
                           Tap to start recording
                         </p>
                       </>
@@ -398,11 +398,11 @@ export function CraftMessageScreen() {
               </div>
             )}
 
-            <div className="space-y-3 pt-6">
+            <div className="space-y-2 pt-4">
               <Button
                 onClick={handleDraftMessage}
                 disabled={(!concerns.trim() && !personalImpact.trim()) || isDrafting}
-                className="w-full button-warm h-12"
+                className="w-full button-warm h-10"
               >
                 {isDrafting ? (
                   <>
@@ -421,7 +421,7 @@ export function CraftMessageScreen() {
                 variant="outline"
                 onClick={handleSkipAI}
                 disabled={!concerns.trim() && !personalImpact.trim()}
-                className="w-full button-warm h-12"
+                className="w-full button-warm h-10"
               >
                 Skip AI & Write Myself
               </Button>
@@ -430,7 +430,7 @@ export function CraftMessageScreen() {
                 type="button"
                 variant="ghost"
                 onClick={goBack}
-                className="w-full button-warm h-12"
+                className="w-full button-warm h-10"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
