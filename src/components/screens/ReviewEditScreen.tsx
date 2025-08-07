@@ -70,7 +70,10 @@ ${userInfo?.fullName}`;
             <div className="space-y-6">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium">Your Message</label>
+                  <div className="flex items-center gap-2">
+                    <Edit3 className="w-4 h-4 text-muted-foreground" />
+                    <label className="text-sm font-medium">Your Message</label>
+                  </div>
                   <span className={`text-xs ${charCount > maxChars ? 'text-destructive' : 'text-muted-foreground'}`}>
                     {charCount}/{maxChars}
                   </span>
@@ -89,7 +92,6 @@ ${userInfo?.fullName}`;
                   disabled={!editedMessage.trim() || charCount > maxChars}
                   className="w-full button-warm h-12 text-base"
                 >
-                  <Edit3 className="w-4 h-4 mr-2 flex-shrink-0" />
                   <span>Looks Good, Continue</span>
                 </Button>
                 
