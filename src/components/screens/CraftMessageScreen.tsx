@@ -247,11 +247,11 @@ export function CraftMessageScreen() {
               </h1>
               
               <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800 mb-3 max-w-lg mx-auto">
-                <div className="flex items-start gap-2">
-                  <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
                     <span className="text-white text-xs font-bold">i</span>
                   </div>
-                  <p className="text-blue-800 dark:text-blue-200 text-xs">
+                  <p className="text-blue-800 dark:text-blue-200 text-xs leading-tight">
                     Representatives are <strong>15x more likely</strong> to respond to postcards that include personal stories and local impact. Share how issues affect you directly.
                   </p>
                 </div>
