@@ -22,9 +22,9 @@ export function CivicPostcardApp() {
       case 2:
         return <CraftMessageScreen />;
       case 3:
-        return <ReturnAddressScreen />;
-      case 4:
         return <ReviewEditScreen />;
+      case 4:
+        return <ReturnAddressScreen />;
       case 5:
         return <PreviewSendScreen />;
       case 6:
