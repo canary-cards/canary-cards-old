@@ -11,10 +11,13 @@ import { useToast } from '@/hooks/use-toast';
 export function CraftMessageScreen() {
   const { state, dispatch } = useAppContext();
   const { toast } = useToast();
-  const [message, setMessage] = useState('');
+  const [concerns, setConcerns] = useState('');
+  const [personalImpact, setPersonalImpact] = useState('');
+  const [additionalConcern, setAdditionalConcern] = useState('');
+  const [showAdditionalConcern, setShowAdditionalConcern] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isDrafting, setIsDrafting] = useState(false);
-  const [inputMethod, setInputMethod] = useState<'text' | 'voice'>('voice');
+  const [inputMethod, setInputMethod] = useState<'text' | 'voice'>('text');
   const [recordingTime, setRecordingTime] = useState(0);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -90,7 +93,12 @@ export function CraftMessageScreen() {
       }
 
       if (data?.text) {
-        setMessage(data.text);
+        // Parse the transcribed text into concerns and personal impact
+        const transcribedText = data.text;
+        if (inputMethod === 'voice') {
+          // For voice input, put everything in concerns field initially
+          setConcerns(transcribedText);
+        }
         toast({
           title: "Transcription complete",
           description: "Your voice has been transcribed successfully.",
@@ -147,7 +155,9 @@ export function CraftMessageScreen() {
   };
 
   const handleDraftMessage = async () => {
-    if (!message.trim()) {
+    const combinedMessage = [concerns, personalImpact, additionalConcern].filter(Boolean).join('. ');
+    
+    if (!combinedMessage.trim()) {
       alert('Please enter your concerns first');
       return;
     }
@@ -156,14 +166,14 @@ export function CraftMessageScreen() {
     
     try {
       console.log('Starting message draft with:', {
-        userInput: message,
+        userInput: combinedMessage,
         repName: state.postcardData.representative?.name,
         userInfo: state.postcardData.userInfo
       });
 
       const { data, error } = await supabase.functions.invoke('draft-postcard-message', {
         body: {
-          userInput: message,
+          userInput: combinedMessage,
           repName: state.postcardData.representative?.name || 'Representative',
           userInfo: state.postcardData.userInfo || { fullName: '', streetAddress: '', city: '', state: '', zipCode: '' }
         }
@@ -184,7 +194,7 @@ export function CraftMessageScreen() {
       dispatch({ 
         type: 'UPDATE_POSTCARD_DATA', 
         payload: { 
-          originalMessage: message,
+          originalMessage: combinedMessage,
           draftMessage: data.draftMessage 
         }
       });
@@ -207,6 +217,19 @@ export function CraftMessageScreen() {
   };
 
 
+  const handleSkipAI = () => {
+    const combinedMessage = [concerns, personalImpact, additionalConcern].filter(Boolean).join('. ');
+    dispatch({ 
+      type: 'UPDATE_POSTCARD_DATA', 
+      payload: { 
+        originalMessage: combinedMessage,
+        draftMessage: combinedMessage,
+        finalMessage: combinedMessage
+      }
+    });
+    dispatch({ type: 'SET_STEP', payload: 4 }); // Skip review, go to address
+  };
+
   const goBack = () => {
     dispatch({ type: 'SET_STEP', payload: 1 });
   };
@@ -219,12 +242,20 @@ export function CraftMessageScreen() {
         <Card className="card-warm">
           <CardContent className="p-8">
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
-                What's on Your Mind?
+              <h1 className="text-2xl font-bold text-foreground mb-4">
+                Make It Personal
               </h1>
-              <p className="text-muted-foreground">
-                Make this personal and relevant to you! You don't need to write the whole message. Just list your main concerns, and AI will take it from there. You'll have a chance to edit afterwards.
-              </p>
+              
+              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-xl border border-blue-200 dark:border-blue-800 mb-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-sm font-bold">i</span>
+                  </div>
+                  <p className="text-blue-800 dark:text-blue-200 text-sm">
+                    Representatives are <strong>15x more likely</strong> to respond to postcards that include personal stories and local impact. Share how issues affect you directly.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Input Method Toggle */}
@@ -250,25 +281,65 @@ export function CraftMessageScreen() {
             </div>
 
             {inputMethod === 'text' ? (
-              <div className="space-y-4">
-                <Textarea
-                  placeholder="Tell us what's important to you... (e.g., healthcare costs, climate change, education funding, transportation)"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="input-warm min-h-[150px] resize-none"
-                />
-                <p className="text-sm text-muted-foreground text-right">
-                  {message.length} characters
-                </p>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">I'm concerned about:</label>
+                  <Textarea
+                    placeholder="Healthcare costs, climate change, education funding..."
+                    value={concerns}
+                    onChange={(e) => setConcerns(e.target.value)}
+                    className="input-warm min-h-[80px] resize-none"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">How it affects me or my community:</label>
+                  <Textarea
+                    placeholder="As a parent of two children in public schools..."
+                    value={personalImpact}
+                    onChange={(e) => setPersonalImpact(e.target.value)}
+                    className="input-warm min-h-[100px] resize-none"
+                  />
+                </div>
+
+                {showAdditionalConcern && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">Additional concern:</label>
+                    <Textarea
+                      placeholder="Another issue that matters to you..."
+                      value={additionalConcern}
+                      onChange={(e) => setAdditionalConcern(e.target.value)}
+                      className="input-warm min-h-[80px] resize-none"
+                    />
+                  </div>
+                )}
+
+                {!showAdditionalConcern && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAdditionalConcern(true)}
+                    className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline flex items-center gap-1"
+                  >
+                    + Add one more concern (optional)
+                  </button>
+                )}
               </div>
             ) : (
               <div className="space-y-6">
+                <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-xl border border-blue-200 dark:border-blue-800">
+                  <p className="text-blue-800 dark:text-blue-200 font-medium mb-3">When you record, share:</p>
+                  <div className="space-y-2 text-blue-700 dark:text-blue-300">
+                    <p className="text-sm">1. What specific issue concerns you most</p>
+                    <p className="text-sm">2. How it personally affects you or your community</p>
+                  </div>
+                </div>
+
                 <div className="text-center space-y-4">
                   <Button
                     type="button"
                     onClick={isRecording ? stopRecording : startRecording}
                     className={`w-24 h-24 rounded-full button-warm ${
-                      isRecording ? 'bg-destructive hover:bg-destructive/90 recording-pulse' : ''
+                      isRecording ? 'bg-destructive hover:bg-destructive/90 recording-pulse' : 'bg-blue-600 hover:bg-blue-700'
                     }`}
                   >
                     {isRecording ? (
@@ -304,9 +375,6 @@ export function CraftMessageScreen() {
                         <p className="text-sm font-medium">
                           Tap to start recording
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          Speak clearly about your concerns
-                        </p>
                       </>
                     )}
                   </div>
@@ -321,30 +389,20 @@ export function CraftMessageScreen() {
                   </div>
                 )}
 
-                {message && !isTranscribing && (
+                {concerns && !isTranscribing && (
                   <div className="p-4 bg-muted/50 rounded-xl">
                     <p className="text-sm text-muted-foreground mb-2">Transcribed:</p>
-                    <p className="text-sm">{message}</p>
+                    <p className="text-sm">{concerns}</p>
                   </div>
                 )}
               </div>
             )}
 
-            <div className="flex gap-4 pt-6">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={goBack}
-                className="button-warm"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-              
+            <div className="space-y-3 pt-6">
               <Button
                 onClick={handleDraftMessage}
-                disabled={!message.trim() || isDrafting}
-                className="flex-1 button-warm h-12"
+                disabled={(!concerns.trim() && !personalImpact.trim()) || isDrafting}
+                className="w-full button-warm h-12"
               >
                 {isDrafting ? (
                   <>
@@ -357,6 +415,25 @@ export function CraftMessageScreen() {
                     Draft My Postcard
                   </>
                 )}
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={handleSkipAI}
+                disabled={!concerns.trim() && !personalImpact.trim()}
+                className="w-full button-warm h-12"
+              >
+                Skip AI & Write Myself
+              </Button>
+
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={goBack}
+                className="w-full button-warm h-12"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
               </Button>
             </div>
           </CardContent>
