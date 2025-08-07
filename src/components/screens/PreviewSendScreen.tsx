@@ -187,6 +187,11 @@ export function PreviewSendScreen() {
                     <div className="text-sm leading-relaxed font-caveat">
                       {finalMessage}
                     </div>
+                    <div className="mt-4 text-right">
+                      <div className="text-sm font-caveat text-foreground">
+                        {userInfo?.fullName}
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
