@@ -315,13 +315,15 @@ export function CraftMessageScreen() {
                 )}
 
                 {!showAdditionalConcern && (
-                  <button
-                    type="button"
-                    onClick={() => setShowAdditionalConcern(true)}
-                    className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline flex items-center gap-1"
-                  >
-                    + Add one more concern (optional)
-                  </button>
+                  <div className="-mt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAdditionalConcern(true)}
+                      className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline flex items-center gap-1"
+                    >
+                      + Add one more concern (optional)
+                    </button>
+                  </div>
                 )}
               </div>
             ) : (
