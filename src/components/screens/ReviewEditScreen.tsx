@@ -58,12 +58,12 @@ ${userInfo?.fullName}`;
         
         <Card className="card-warm">
           <CardContent className="p-8">
-            <div className="text-center mb-8">
+            <div className="text-center mb-6">
               <h1 className="text-2xl font-bold text-foreground mb-2">
                 Review Your Postcard
               </h1>
               <p className="text-muted-foreground">
-                Edit the message as needed, or regenerate a new version with AI
+                Write your message from scratch or use AI to help you get started
               </p>
             </div>
 
@@ -78,51 +78,29 @@ ${userInfo?.fullName}`;
                 <Textarea
                   value={editedMessage}
                   onChange={(e) => setEditedMessage(e.target.value)}
-                  className="input-warm min-h-[200px] resize-none"
+                  className="input-warm min-h-[300px] resize-none"
                   maxLength={maxChars}
                 />
               </div>
 
-              <div className="flex gap-3">
+              <div className="space-y-3 pt-4">
                 <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleRegenerate}
-                  disabled={isRegenerating}
-                  className="button-warm flex-1"
+                  onClick={handleContinue}
+                  disabled={!editedMessage.trim() || charCount > maxChars}
+                  className="w-full button-warm h-12 text-base"
                 >
-                  {isRegenerating ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin mr-2" />
-                      Regenerating...
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 className="w-4 h-4 mr-2" />
-                      Regenerate with AI
-                    </>
-                  )}
+                  <Edit3 className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span>Looks Good, Continue</span>
                 </Button>
-              </div>
-
-              <div className="flex gap-2 sm:gap-4 pt-4">
+                
                 <Button
                   type="button"
                   variant="outline"
                   onClick={goBack}
-                  className="button-warm h-12 px-3 sm:px-4 flex-shrink-0"
+                  className="w-full button-warm h-12 text-base"
                 >
-                  <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
-                  <span className="text-sm sm:text-base">Back</span>
-                </Button>
-                
-                <Button
-                  onClick={handleContinue}
-                  disabled={!editedMessage.trim() || charCount > maxChars}
-                  className="flex-1 button-warm h-12 text-sm sm:text-base min-w-0"
-                >
-                  <Edit3 className="w-4 h-4 mr-1 sm:mr-2 flex-shrink-0" />
-                  <span className="truncate">Looks Good, Continue</span>
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <span>Back</span>
                 </Button>
               </div>
             </div>
