@@ -368,6 +368,15 @@ export default function PaymentSuccess() {
 
           <Button 
             asChild 
+            className="w-full h-10 mb-2"
+            variant="outline"
+            disabled={postcardStatus === 'processing' || postcardStatus === 'sending'}
+          >
+            <Link to="/auth">Create Account</Link>
+          </Button>
+
+          <Button 
+            asChild 
             className="w-full h-10"
             disabled={postcardStatus === 'processing' || postcardStatus === 'sending'}
           >
