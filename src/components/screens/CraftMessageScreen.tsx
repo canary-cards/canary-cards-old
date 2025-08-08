@@ -225,7 +225,7 @@ export function CraftMessageScreen() {
         finalMessage: combinedMessage
       }
     });
-    dispatch({ type: 'SET_STEP', payload: 4 }); // Skip review, go to address
+    dispatch({ type: 'SET_STEP', payload: 3 }); // Go to review screen
   };
 
   const goBack = () => {
