@@ -397,7 +397,6 @@ export function CraftMessageScreen() {
               <Button
                 variant="outline"
                 onClick={handleSkipAI}
-                disabled={!concerns.trim() && !personalImpact.trim()}
                 className="w-full button-warm h-10"
               >
                 Skip AI & Write Myself
