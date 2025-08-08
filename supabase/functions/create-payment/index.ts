@@ -54,11 +54,11 @@ serve(async (req) => {
       if (fullName && (!customers.data[0].name || customers.data[0].name !== fullName)) {
         await stripe.customers.update(customerId, { name: fullName });
       }
-    } else if (fullName) {
-      // Create new customer with name
+    } else {
+      // Always create new customer, with or without name
       const customer = await stripe.customers.create({
         email,
-        name: fullName
+        name: fullName || undefined // Let Stripe handle empty names gracefully
       });
       customerId = customer.id;
     }
