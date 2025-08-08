@@ -4,7 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
-import { Mic, MicOff, ArrowLeft, Wand2, Type } from 'lucide-react';
+import { Mic, Square, ArrowLeft, Wand2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -15,17 +15,22 @@ export function CraftMessageScreen() {
   const [personalImpact, setPersonalImpact] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [isDrafting, setIsDrafting] = useState(false);
-  const [inputMethod, setInputMethod] = useState<'text' | 'voice'>('text');
+  const [recordingField, setRecordingField] = useState<'concerns' | 'impact' | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [transcribingField, setTranscribingField] = useState<'concerns' | 'impact' | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const startRecording = async () => {
+  const startRecording = async (field: 'concerns' | 'impact') => {
     try {
+      if (isRecording) {
+        // Stop any ongoing recording before starting a new one
+        stopRecording();
+      }
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
+      setRecordingField(field);
       
       const audioChunks: Blob[] = [];
       
@@ -35,7 +40,7 @@ export function CraftMessageScreen() {
       
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-        await transcribeAudio(audioBlob);
+        await transcribeAudio(audioBlob, field);
         stream.getTracks().forEach(track => track.stop());
       };
       
@@ -49,7 +54,11 @@ export function CraftMessageScreen() {
       
     } catch (error) {
       console.error('Error accessing microphone:', error);
-      alert('Unable to access microphone. Please check permissions and try typing instead.');
+      toast({
+        title: 'Microphone access denied',
+        description: 'Please allow microphone permissions and try again.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -62,10 +71,11 @@ export function CraftMessageScreen() {
     }
     setIsRecording(false);
     setRecordingTime(0);
+    setRecordingField(null);
   };
 
-  const transcribeAudio = async (audioBlob: Blob) => {
-    setIsTranscribing(true);
+  const transcribeAudio = async (audioBlob: Blob, field: 'concerns' | 'impact') => {
+    setTranscribingField(field);
     
     try {
       // Convert audio blob to base64
@@ -91,15 +101,15 @@ export function CraftMessageScreen() {
       }
 
       if (data?.text) {
-        // Parse the transcribed text into concerns and personal impact
-        const transcribedText = data.text;
-        if (inputMethod === 'voice') {
-          // For voice input, put everything in concerns field initially
-          setConcerns(transcribedText);
+        const transcribedText = data.text.trim();
+        if (field === 'concerns') {
+          setConcerns(prev => (prev ? `${prev.trim()} ${transcribedText}` : transcribedText));
+        } else {
+          setPersonalImpact(prev => (prev ? `${prev.trim()} ${transcribedText}` : transcribedText));
         }
         toast({
           title: "Transcription complete",
-          description: "Your voice has been transcribed successfully.",
+          description: "Your voice has been transcribed and added to the field.",
         });
       } else {
         throw new Error('No transcription received');
@@ -113,7 +123,7 @@ export function CraftMessageScreen() {
         variant: "destructive",
       });
     } finally {
-      setIsTranscribing(false);
+      setTranscribingField(null);
     }
   };
 
@@ -256,124 +266,72 @@ export function CraftMessageScreen() {
               </div>
             </div>
 
-            {/* Input Method Toggle */}
-            <div className="flex gap-2 mb-4 p-1 bg-muted rounded-xl">
-              <Button
-                type="button"
-                variant={inputMethod === 'text' ? 'default' : 'ghost'}
-                className="flex-1 rounded-lg"
-                onClick={() => setInputMethod('text')}
-              >
-                <Type className="w-4 h-4 mr-2" />
-                Type
-              </Button>
-              <Button
-                type="button"
-                variant={inputMethod === 'voice' ? 'default' : 'ghost'}
-                className="flex-1 rounded-lg"
-                onClick={() => setInputMethod('voice')}
-              >
-                <Mic className="w-4 h-4 mr-2" />
-                Voice
-              </Button>
-            </div>
-
-            {inputMethod === 'text' ? (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">I'm most concerned about:</label>
+            {/* Simplified inputs with inline microphone controls */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">I'm most concerned about:</label>
+                <div className="relative">
                   <Textarea
                     placeholder="Healthcare costs, climate change, education funding..."
                     value={concerns}
                     onChange={(e) => setConcerns(e.target.value)}
-                    className="input-warm min-h-[60px] resize-none"
+                    className="input-warm min-h-[60px] resize-none pr-12"
                   />
+                  <button
+                    type="button"
+                    aria-label={isRecording && recordingField === 'concerns' ? 'Stop recording' : 'Start recording for concerns'}
+                    onClick={() => (isRecording && recordingField === 'concerns') ? stopRecording() : startRecording('concerns')}
+                    className={`absolute right-2 bottom-2 inline-flex items-center justify-center h-8 w-8 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      isRecording && recordingField === 'concerns' ? 'text-destructive animate-pulse' : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {isRecording && recordingField === 'concerns' ? (
+                      <Square className="w-4 h-4" />
+                    ) : (
+                      <Mic className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
+                {transcribingField === 'concerns' && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-2">
+                    <span className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    Transcribing your voice...
+                  </p>
+                )}
+              </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">How it affects me or my community:</label>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">How it affects me or my community:</label>
+                <div className="relative">
                   <Textarea
                     placeholder="As a parent of two children in public schools..."
                     value={personalImpact}
                     onChange={(e) => setPersonalImpact(e.target.value)}
-                    className="input-warm min-h-[70px] resize-none"
+                    className="input-warm min-h-[70px] resize-none pr-12"
                   />
-                </div>
-
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-                  <p className="text-blue-800 dark:text-blue-200 font-medium mb-2 text-sm">When you record, share:</p>
-                  <div className="space-y-1 text-blue-700 dark:text-blue-300">
-                    <p className="text-xs">1. What specific issue concerns you most</p>
-                    <p className="text-xs">2. How it personally affects you or your community</p>
-                  </div>
-                </div>
-
-                <div className="text-center space-y-3">
-                  <Button
+                  <button
                     type="button"
-                    onClick={isRecording ? stopRecording : startRecording}
-                    className={`w-20 h-20 rounded-full button-warm ${
-                      isRecording ? 'bg-destructive hover:bg-destructive/90 recording-pulse' : 'bg-blue-600 hover:bg-blue-700'
+                    aria-label={isRecording && recordingField === 'impact' ? 'Stop recording' : 'Start recording for impact'}
+                    onClick={() => (isRecording && recordingField === 'impact') ? stopRecording() : startRecording('impact')}
+                    className={`absolute right-2 bottom-2 inline-flex items-center justify-center h-8 w-8 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      isRecording && recordingField === 'impact' ? 'text-destructive animate-pulse' : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
-                    {isRecording ? (
-                      <MicOff className="w-6 h-6" />
+                    {isRecording && recordingField === 'impact' ? (
+                      <Square className="w-4 h-4" />
                     ) : (
-                      <Mic className="w-6 h-6" />
+                      <Mic className="w-4 h-4" />
                     )}
-                  </Button>
-                  
-                  <div className="space-y-1">
-                    {isRecording ? (
-                      <>
-                        <p className="text-xs font-medium text-destructive">
-                          Recording... {formatTime(recordingTime)}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Tap again to stop
-                        </p>
-                        <div className="flex justify-center">
-                          <div className="flex space-x-1">
-                            {[...Array(3)].map((_, i) => (
-                              <div
-                                key={i}
-                                className="w-1 h-4 bg-destructive rounded-full animate-pulse"
-                                style={{ animationDelay: `${i * 0.2}s` }}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-xs font-medium">
-                          Tap to start recording
-                        </p>
-                      </>
-                    )}
-                  </div>
+                  </button>
                 </div>
-
-                {isTranscribing && (
-                  <div className="p-4 bg-muted/50 rounded-xl">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                      <p className="text-sm text-muted-foreground">Transcribing your voice...</p>
-                    </div>
-                  </div>
-                )}
-
-                {concerns && !isTranscribing && (
-                  <div className="p-4 bg-muted/50 rounded-xl">
-                    <p className="text-sm text-muted-foreground mb-2">Transcribed:</p>
-                    <p className="text-sm">{concerns}</p>
-                  </div>
+                {transcribingField === 'impact' && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-2">
+                    <span className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    Transcribing your voice...
+                  </p>
                 )}
               </div>
-            )}
+            </div>
 
             <div className="space-y-2 pt-4">
               <Button
