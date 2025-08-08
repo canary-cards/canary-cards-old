@@ -38,26 +38,23 @@ export function CivicPostcardApp() {
 
   return (
     <div className="civic-postcard-app">
-      {/* Header with branding and hamburger menu */}
-      <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
-        {/* Branding */}
-        <div className="font-bold text-lg">
-          Civic Postcard
-        </div>
+      {/* Header with hamburger menu and progress bar */}
+      <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
+        {/* Progress bar - only show for steps 2-6 */}
+        {state.currentStep > 1 && state.currentStep <= 6 && (
+          <div className="flex-1 max-w-md">
+            <ProgressIndicator currentStep={state.currentStep} totalSteps={6} />
+          </div>
+        )}
+        
+        {/* Spacer to push hamburger menu to the right when no progress bar */}
+        {state.currentStep === 1 && <div className="flex-1" />}
         
         {/* Hamburger menu */}
         <div className="flex-shrink-0">
           <HamburgerMenu />
         </div>
       </div>
-
-      {/* Progress bar - full width below header */}
-      {state.currentStep > 1 && state.currentStep <= 6 && (
-        <div className="absolute top-16 left-0 right-0 z-10 px-4">
-          <ProgressIndicator currentStep={state.currentStep} totalSteps={6} />
-        </div>
-      )}
-      
       {renderCurrentScreen()}
     </div>
   );
