@@ -260,7 +260,7 @@ export function CraftMessageScreen() {
                     <span className="text-white text-xs font-bold">i</span>
                   </div>
                   <p className="text-blue-800 dark:text-blue-200 text-xs leading-tight text-left">
-                    Representatives are <strong>15x more likely</strong> to respond to postcards that include personal stories and local impact. Share how issues affect you directly.
+                    Messages with personal stories and local impact are <strong>20x more effective</strong> at achieving significant influence compared to form letters.
                   </p>
                 </div>
               </div>
