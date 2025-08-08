@@ -281,7 +281,7 @@ export function CraftMessageScreen() {
             {inputMethod === 'text' ? (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">I'm concerned about:</label>
+                  <label className="text-sm font-medium text-foreground">I'm most concerned about:</label>
                   <Textarea
                     placeholder="Healthcare costs, climate change, education funding..."
                     value={concerns}
