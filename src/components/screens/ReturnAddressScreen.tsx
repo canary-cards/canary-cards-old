@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
 import { useAppContext } from '../../context/AppContext';
-import { ProgressIndicator } from '../ProgressIndicator';
 import { MapPin, ArrowLeft } from 'lucide-react';
 import { searchAddressAutocomplete, GooglePlacesAddressPrediction } from '../../services/googlePlaces';
 
@@ -92,8 +91,6 @@ export function ReturnAddressScreen() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <ProgressIndicator currentStep={4} totalSteps={6} />
-        
         <Card className="card-warm">
           <CardContent className="p-8">
             <div className="text-center mb-8">

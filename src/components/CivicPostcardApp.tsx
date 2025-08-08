@@ -37,8 +37,22 @@ export function CivicPostcardApp() {
 
   return (
     <div className="civic-postcard-app">
-      <div className="absolute top-4 right-4 z-10">
-        <HamburgerMenu />
+      <div className="flex items-center justify-between p-4">
+        <div className="flex-1 max-w-md">
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+            <span>Step {state.currentStep} of 6</span>
+            <span>{Math.round((state.currentStep / 6) * 100)}%</span>
+          </div>
+          <div className="w-full bg-muted rounded-full h-10">
+            <div 
+              className="bg-primary h-10 rounded-full transition-all duration-300 ease-out"
+              style={{ width: `${(state.currentStep / 6) * 100}%` }}
+            />
+          </div>
+        </div>
+        <div className="ml-4">
+          <HamburgerMenu />
+        </div>
       </div>
       {renderCurrentScreen()}
     </div>

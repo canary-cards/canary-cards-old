@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
-import { ProgressIndicator } from '../ProgressIndicator';
 import { ArrowLeft, Wand2, Edit3 } from 'lucide-react';
 export function ReviewEditScreen() {
   const {
@@ -56,8 +55,6 @@ ${userInfo?.fullName}`;
   };
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <ProgressIndicator currentStep={3} totalSteps={6} />
-        
         <Card className="card-warm">
           <CardContent className="p-8">
             <div className="text-center mb-6">
