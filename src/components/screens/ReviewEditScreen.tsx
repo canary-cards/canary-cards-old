@@ -63,7 +63,7 @@ ${userInfo?.fullName}`;
                 Review Your Postcard
               </h1>
               <p className="text-muted-foreground">
-                Edit or write the message you want to send
+                Edit or write the message you want to send to your locally elected official
               </p>
             </div>
 
