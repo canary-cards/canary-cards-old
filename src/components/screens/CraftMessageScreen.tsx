@@ -275,14 +275,14 @@ export function CraftMessageScreen() {
                     placeholder="Healthcare costs, climate change, education funding..."
                     value={concerns}
                     onChange={(e) => setConcerns(e.target.value)}
-                    className="input-warm min-h-[60px] resize-none pr-12"
+                    className="input-warm min-h-[60px] resize-none pr-14"
                   />
                   <button
                     type="button"
                     aria-label={isRecording && recordingField === 'concerns' ? 'Stop recording' : 'Start recording for concerns'}
                     aria-pressed={isRecording && recordingField === 'concerns'}
                     onClick={() => (isRecording && recordingField === 'concerns') ? stopRecording() : startRecording('concerns')}
-                    className={`absolute right-2 top-2 inline-flex items-center justify-center h-8 w-8 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm ${
+                    className={`absolute right-2 top-2 inline-flex items-center justify-center h-10 w-10 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm ${
                       isRecording && recordingField === 'concerns'
                         ? 'relative bg-destructive text-destructive-foreground ring-2 ring-destructive/40 shadow-lg animate-pulse'
                         : 'relative bg-primary/10 text-primary hover:bg-primary/20'
@@ -292,9 +292,9 @@ export function CraftMessageScreen() {
                       <span className="absolute inset-0 rounded-full bg-destructive/40 animate-ping sm:hidden" aria-hidden="true" />
                     )}
                     {isRecording && recordingField === 'concerns' ? (
-                      <Square className="w-4 h-4" />
+                      <Square className="w-5 h-5" />
                     ) : (
-                      <Mic className="w-4 h-4" />
+                      <Mic className="w-5 h-5" />
                     )}
                   </button>
                 </div>
@@ -321,14 +321,14 @@ export function CraftMessageScreen() {
                     placeholder="As a parent of two children in public schools..."
                     value={personalImpact}
                     onChange={(e) => setPersonalImpact(e.target.value)}
-                    className="input-warm min-h-[70px] resize-none pr-12"
+                    className="input-warm min-h-[70px] resize-none pr-14"
                   />
                   <button
                     type="button"
                     aria-label={isRecording && recordingField === 'impact' ? 'Stop recording' : 'Start recording for impact'}
                     aria-pressed={isRecording && recordingField === 'impact'}
                     onClick={() => (isRecording && recordingField === 'impact') ? stopRecording() : startRecording('impact')}
-                    className={`absolute right-2 top-2 inline-flex items-center justify-center h-8 w-8 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm ${
+                    className={`absolute right-2 top-2 inline-flex items-center justify-center h-10 w-10 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm ${
                       isRecording && recordingField === 'impact'
                         ? 'relative bg-destructive text-destructive-foreground ring-2 ring-destructive/40 shadow-lg animate-pulse'
                         : 'relative bg-primary/10 text-primary hover:bg-primary/20'
@@ -338,9 +338,9 @@ export function CraftMessageScreen() {
                       <span className="absolute inset-0 rounded-full bg-destructive/40 animate-ping sm:hidden" aria-hidden="true" />
                     )}
                     {isRecording && recordingField === 'impact' ? (
-                      <Square className="w-4 h-4" />
+                      <Square className="w-5 h-5" />
                     ) : (
-                      <Mic className="w-4 h-4" />
+                      <Mic className="w-5 h-5" />
                     )}
                   </button>
                 </div>
