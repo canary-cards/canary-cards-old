@@ -208,13 +208,16 @@ export default function PaymentSuccess() {
   };
 
   const getStatusTitle = () => {
+    const postcardCount = sendingResults?.summary?.totalSent || 1;
+    const postcardText = postcardCount === 1 ? "Postcard" : "Postcards";
+    
     switch (postcardStatus) {
       case 'processing':
         return 'Preparing Your Postcards...';
       case 'sending':
         return 'Sending Your Postcards...';
       case 'success':
-        return 'Postcards Sent Successfully!';
+        return `${postcardCount} ${postcardText} Sent Successfully!`;
       case 'error':
         return 'Postcard Sending Failed';
       default:
@@ -229,9 +232,7 @@ export default function PaymentSuccess() {
       case 'sending':
         return 'Your postcards are being sent to your representatives. This may take a moment...';
       case 'success':
-        return sendingResults?.summary 
-          ? `${sendingResults.summary.totalSent} postcard(s) sent successfully to your representatives.`
-          : 'Your postcards have been sent to your representatives and will be delivered soon.';
+        return 'Your postcards have been sent to your representatives and will be delivered soon.';
       case 'error':
         return 'There was an issue sending your postcards. You can retry or contact support.';
       default:
