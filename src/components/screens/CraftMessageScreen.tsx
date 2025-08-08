@@ -244,9 +244,7 @@ export function CraftMessageScreen() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-4 max-w-2xl">
-        <ProgressIndicator currentStep={2} totalSteps={6} />
-        
+      <div className="container mx-auto px-4 pt-20 pb-4 max-w-2xl">
         <Card className="card-warm">
           <CardContent className="p-6">
             <div className="text-center mb-3">
