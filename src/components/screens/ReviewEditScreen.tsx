@@ -82,7 +82,7 @@ ${userInfo?.fullName}`;
                     className="input-warm min-h-[300px] resize-none pr-12"
                     maxLength={maxChars}
                   />
-                  <Edit3 className="w-4 h-4 text-muted-foreground absolute bottom-3 right-3 pointer-events-none" />
+                  <Edit3 className="w-8 h-8 text-muted-foreground absolute bottom-3 right-3 pointer-events-none" />
                 </div>
               </div>
 
