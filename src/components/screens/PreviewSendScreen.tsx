@@ -64,6 +64,11 @@ export function PreviewSendScreen() {
   };
   const handlePayment = async () => {
     console.log('Payment button clicked!');
+    console.log('Current app state:', state);
+    console.log('PostcardData:', state.postcardData);
+    console.log('UserInfo from state:', userInfo);
+    console.log('UserInfo fullName:', userInfo?.fullName);
+    
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       console.log('Email validation failed:', email);
@@ -71,7 +76,7 @@ export function PreviewSendScreen() {
     }
     setIsProcessing(true);
     setEmailError('');
-    console.log('Calling create-payment with:', { sendOption, email });
+    console.log('Calling create-payment with:', { sendOption, email, fullName: userInfo?.fullName });
     try {
       // Call Stripe payment function
       const {
