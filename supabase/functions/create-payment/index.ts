@@ -71,6 +71,7 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : email,
+      billing_address_collection: 'required',
       payment_method_types: ['card', 'link'],
       line_items: [
         {
