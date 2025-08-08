@@ -101,6 +101,10 @@ serve(async (req) => {
       customer_email: customerId ? undefined : email,
       billing_address_collection: 'required',
       payment_method_types: ['card', 'link'],
+      customer_update: {
+        name: 'auto',
+        address: 'auto'
+      },
       line_items: [
         {
           price_data: {
