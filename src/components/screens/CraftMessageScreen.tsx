@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
+import { ProgressIndicator } from '../ProgressIndicator';
 import { Mic, Square, ArrowLeft, Wand2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -244,6 +245,8 @@ export function CraftMessageScreen() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-4 max-w-2xl">
+        <ProgressIndicator currentStep={2} totalSteps={6} />
+        
         <Card className="card-warm">
           <CardContent className="p-6">
             <div className="text-center mb-3">
