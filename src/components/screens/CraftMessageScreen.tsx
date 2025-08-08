@@ -13,8 +13,6 @@ export function CraftMessageScreen() {
   const { toast } = useToast();
   const [concerns, setConcerns] = useState('');
   const [personalImpact, setPersonalImpact] = useState('');
-  const [additionalConcern, setAdditionalConcern] = useState('');
-  const [showAdditionalConcern, setShowAdditionalConcern] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isDrafting, setIsDrafting] = useState(false);
   const [inputMethod, setInputMethod] = useState<'text' | 'voice'>('text');
@@ -155,7 +153,7 @@ export function CraftMessageScreen() {
   };
 
   const handleDraftMessage = async () => {
-    const combinedMessage = [concerns, personalImpact, additionalConcern].filter(Boolean).join('. ');
+    const combinedMessage = [concerns, personalImpact].filter(Boolean).join('. ');
     
     if (!combinedMessage.trim()) {
       alert('Please enter your concerns first');
@@ -218,7 +216,7 @@ export function CraftMessageScreen() {
 
 
   const handleSkipAI = () => {
-    const combinedMessage = [concerns, personalImpact, additionalConcern].filter(Boolean).join('. ');
+    const combinedMessage = [concerns, personalImpact].filter(Boolean).join('. ');
     dispatch({ 
       type: 'UPDATE_POSTCARD_DATA', 
       payload: { 
@@ -302,29 +300,6 @@ export function CraftMessageScreen() {
                   />
                 </div>
 
-                {showAdditionalConcern && (
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">Additional concern:</label>
-                    <Textarea
-                      placeholder="Another issue that matters to you..."
-                      value={additionalConcern}
-                      onChange={(e) => setAdditionalConcern(e.target.value)}
-                      className="input-warm min-h-[60px] resize-none"
-                    />
-                  </div>
-                )}
-
-                {!showAdditionalConcern && (
-                  <div className="-mt-3 -mb-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowAdditionalConcern(true)}
-                      className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline flex items-center gap-1"
-                    >
-                      + Add one more concern (optional)
-                    </button>
-                  </div>
-                )}
               </div>
             ) : (
               <div className="space-y-4">
