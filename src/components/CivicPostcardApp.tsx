@@ -68,7 +68,7 @@ export function CivicPostcardApp() {
       )}
       
       {/* Content with proper spacing */}
-      <div className={state.currentStep > 1 ? "pt-16" : ""}>
+      <div className={state.currentStep > 1 ? "pt-12" : ""}>
         {renderCurrentScreen()}
       </div>
     </div>
