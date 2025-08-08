@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
-
+import { HamburgerMenu } from './HamburgerMenu';
 import { useAppContext } from '../context/AppContext';
 import { Search, User, ShoppingBag } from 'lucide-react';
 
@@ -13,6 +13,7 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50 dark:from-slate-900 dark:to-emerald-950">
+      <HamburgerMenu />
       {/* Navigation Header */}
       <header className="w-full px-6 py-4">
         <nav className="flex items-center justify-between max-w-7xl mx-auto">

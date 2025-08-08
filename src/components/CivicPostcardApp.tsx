@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
+import { HamburgerMenu } from './HamburgerMenu';
 import { LandingScreen } from './screens/LandingScreen';
 import { ReturnAddressScreen } from './screens/ReturnAddressScreen';
 import { CraftMessageScreen } from './screens/CraftMessageScreen';
@@ -34,5 +35,10 @@ export function CivicPostcardApp() {
     }
   };
 
-  return <div className="civic-postcard-app">{renderCurrentScreen()}</div>;
+  return (
+    <div className="civic-postcard-app">
+      <HamburgerMenu />
+      {renderCurrentScreen()}
+    </div>
+  );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { HamburgerMenu } from '@/components/HamburgerMenu';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -242,7 +243,7 @@ export default function PaymentSuccess() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-2 sm:p-4">
-      
+      <HamburgerMenu />
       <Card className="w-full max-w-lg">
         <CardContent className="p-4 sm:p-6 text-center space-y-3">
           <div className="flex justify-center">
