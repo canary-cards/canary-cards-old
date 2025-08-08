@@ -240,61 +240,61 @@ export default function PaymentSuccess() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-2 sm:p-4">
       
-      <Card className="w-full max-w-md">
-        <CardContent className="p-8 text-center space-y-6">
+      <Card className="w-full max-w-lg">
+        <CardContent className="p-4 sm:p-6 text-center space-y-3">
           <div className="flex justify-center">
             {getStatusIcon()}
           </div>
           
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-foreground">
+          <div className="space-y-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">
               {getStatusTitle()}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {getStatusMessage()}
             </p>
           </div>
 
           {/* Progress Indicator */}
-          <div className="flex items-center justify-center space-x-2 text-sm">
+          <div className="flex items-center justify-center space-x-2 text-xs sm:text-sm py-2">
             <div className="flex items-center text-green-600">
-              <CheckCircle className="h-4 w-4 mr-1" />
+              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
               Payment Complete
             </div>
             <div className="text-muted-foreground">→</div>
             <div className={`flex items-center ${postcardStatus === 'success' ? 'text-green-600' : postcardStatus === 'sending' ? 'text-blue-600' : 'text-muted-foreground'}`}>
               {postcardStatus === 'sending' ? (
-                <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 animate-spin" />
               ) : postcardStatus === 'success' ? (
-                <CheckCircle className="h-4 w-4 mr-1" />
+                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
               ) : (
-                <div className="h-4 w-4 mr-1 rounded-full border-2 border-muted-foreground/30" />
+                <div className="h-3 w-3 sm:h-4 sm:w-4 mr-1 rounded-full border-2 border-muted-foreground/30" />
               )}
               Postcard Sending
             </div>
           </div>
 
           {sessionId && (
-            <div className="bg-muted p-4 rounded-lg">
-              <p className="text-sm text-muted-foreground">
+            <div className="bg-muted p-2 rounded-lg">
+              <p className="text-xs text-muted-foreground">
                 Order ID: {sessionId.slice(-12)}
               </p>
             </div>
           )}
 
           {postcardStatus === 'success' && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
-              <Mail className="h-4 w-4" />
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-blue-50 dark:bg-blue-950 p-2 rounded-lg">
+              <Mail className="h-3 w-3" />
               <span>You'll receive a confirmation email shortly</span>
             </div>
           )}
 
           {/* Error State with Retry */}
           {postcardStatus === 'error' && (
-            <div className="space-y-4 p-4 bg-red-50 dark:bg-red-950 rounded-lg">
-              <div className="text-sm text-red-700 dark:text-red-300">
+            <div className="space-y-2 p-3 bg-red-50 dark:bg-red-950 rounded-lg">
+              <div className="text-xs text-red-700 dark:text-red-300">
                 {sendingResults?.error || 'An error occurred while sending your postcards.'}
               </div>
               <Button 
@@ -302,6 +302,7 @@ export default function PaymentSuccess() {
                 variant="outline" 
                 size="sm"
                 disabled={retryAttempts >= 3}
+                className="text-xs"
               >
                 {retryAttempts >= 3 ? 'Max retries reached' : `Retry (${retryAttempts}/3)`}
               </Button>
@@ -310,8 +311,8 @@ export default function PaymentSuccess() {
 
           {/* Sending Results Details */}
           {postcardStatus === 'success' && sendingResults?.results && (
-            <div className="space-y-2 p-4 bg-green-50 dark:bg-green-950 rounded-lg">
-              <h4 className="text-sm font-medium text-green-800 dark:text-green-200">Postcards Sent:</h4>
+            <div className="space-y-1 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
+              <h4 className="text-xs font-medium text-green-800 dark:text-green-200">Postcards Sent:</h4>
               {sendingResults.results.map((result: any, index: number) => (
                 <div key={index} className="text-xs text-green-700 dark:text-green-300">
                   ✓ {result.recipient} ({result.type})
@@ -320,59 +321,57 @@ export default function PaymentSuccess() {
             </div>
           )}
 
-          {/* Shareable Link Section - Only show when postcards are successfully sent and app is deployed */}
+          {/* Shareable Link Section - Condensed */}
           {postcardStatus === 'success' && shareableLink && (
-            <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Share2 className="h-4 w-4" />
+            <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+              <div className="flex items-center gap-2 text-xs font-medium">
+                <Share2 className="h-3 w-3" />
                 <span>Share with Friends & Family</span>
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex gap-2">
                   <Input
                     value={shareableLink}
                     readOnly
-                    className="text-xs"
+                    className="text-xs h-8"
                   />
                   <Button
                     onClick={copyShareableLink}
                     size="sm"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-1 h-8 text-xs"
                   >
                     <Copy className="h-3 w-3" />
                     Share
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Share this link to encourage others to contact their representatives!
+                  Encourage others to contact their representatives!
                 </p>
               </div>
             </div>
           )}
 
-          {/* Publish Message - Show when app is not deployed */}
+          {/* Publish Message - Condensed */}
           {postcardStatus === 'success' && !shareableLink && (
-            <div className="space-y-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
-              <div className="flex items-center gap-2 text-sm font-medium text-blue-800 dark:text-blue-200">
+            <div className="space-y-2 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+              <div className="flex items-center gap-2 text-xs font-medium text-blue-800 dark:text-blue-200">
                 <span>📢</span>
                 <span>Ready to Share</span>
               </div>
-              <p className="text-sm text-blue-700 dark:text-blue-300">
-                Publish your project using the "Publish" button in the top right to get a shareable link for friends and family!
+              <p className="text-xs text-blue-700 dark:text-blue-300">
+                Publish your project using the "Publish" button in the top right to get a shareable link!
               </p>
             </div>
           )}
 
-          <div className="space-y-3">
-            <Button 
-              asChild 
-              className="w-full"
-              disabled={postcardStatus === 'processing' || postcardStatus === 'sending'}
-            >
-              <Link to="/">Send Another Postcard</Link>
-            </Button>
-          </div>
+          <Button 
+            asChild 
+            className="w-full h-10"
+            disabled={postcardStatus === 'processing' || postcardStatus === 'sending'}
+          >
+            <Link to="/">Send Another Postcard</Link>
+          </Button>
         </CardContent>
       </Card>
     </div>
