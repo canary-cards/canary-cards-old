@@ -63,7 +63,7 @@ ${userInfo?.fullName}`;
                 Review Your Postcard
               </h1>
               <p className="text-muted-foreground">
-                Write your message from scratch or use AI to help you get started
+                Edit or write the message you want to send
               </p>
             </div>
 
