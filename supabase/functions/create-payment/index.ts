@@ -16,6 +16,9 @@ serve(async (req) => {
     // Parse request body
     const { sendOption, email, fullName } = await req.json();
     
+    console.log("=== CREATE PAYMENT DEBUG ===");
+    console.log("Request data:", { sendOption, email, fullName });
+    
     if (!sendOption || !email) {
       throw new Error("Missing required fields: sendOption and email");
     }
@@ -48,24 +51,49 @@ serve(async (req) => {
     // Create or update Stripe customer with name information
     let customerId;
     const customers = await stripe.customers.list({ email, limit: 1 });
+    console.log("Existing customers found:", customers.data.length);
+    
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
+      console.log("Found existing customer:", { 
+        id: customerId, 
+        name: customers.data[0].name, 
+        email: customers.data[0].email 
+      });
+      
       // Update existing customer with name and billing details if provided
       if (fullName && (!customers.data[0].name || customers.data[0].name !== fullName)) {
+        console.log("Updating customer with new name:", fullName);
         await stripe.customers.update(customerId, { 
           name: fullName,
           metadata: { full_name: fullName }
         });
+        console.log("Customer updated successfully");
       }
     } else {
       // Always create new customer, with or without name
+      console.log("Creating new customer with:", { email, name: fullName });
       const customer = await stripe.customers.create({
         email,
         name: fullName || undefined, // Let Stripe handle empty names gracefully
         metadata: { full_name: fullName || "" }
       });
       customerId = customer.id;
+      console.log("New customer created:", { 
+        id: customerId, 
+        name: customer.name, 
+        email: customer.email 
+      });
     }
+
+    // Verify final customer state before creating session
+    const finalCustomer = await stripe.customers.retrieve(customerId);
+    console.log("Final customer before session:", { 
+      id: finalCustomer.id, 
+      name: finalCustomer.name, 
+      email: finalCustomer.email,
+      metadata: finalCustomer.metadata 
+    });
 
     // Create embedded checkout session
     const session = await stripe.checkout.sessions.create({
@@ -95,6 +123,10 @@ serve(async (req) => {
         user_full_name: fullName || ""
       }
     });
+
+    console.log("Session created with customer:", customerId);
+    console.log("Session ID:", session.id);
+    console.log("=== END CREATE PAYMENT DEBUG ===");
 
     console.log("Created Stripe embedded session:", session.id, "for", email, "option:", sendOption);
 
