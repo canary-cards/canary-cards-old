@@ -232,7 +232,7 @@ export default function PaymentSuccess() {
       case 'sending':
         return 'Your postcards are being sent to your representatives. This may take a moment...';
       case 'success':
-        return 'Your postcards have been sent to your representatives and will be delivered soon.';
+        return '';
       case 'error':
         return 'There was an issue sending your postcards. You can retry or contact support.';
       default:
