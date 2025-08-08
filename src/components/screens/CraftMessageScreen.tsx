@@ -282,7 +282,7 @@ export function CraftMessageScreen() {
                     aria-label={isRecording && recordingField === 'concerns' ? 'Stop recording' : 'Start recording for concerns'}
                     aria-pressed={isRecording && recordingField === 'concerns'}
                     onClick={() => (isRecording && recordingField === 'concerns') ? stopRecording() : startRecording('concerns')}
-                    className={`absolute right-2 bottom-2 inline-flex items-center justify-center h-10 w-10 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm ${
+                    className={`absolute right-2 top-2 inline-flex items-center justify-center h-10 w-10 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm ${
                       isRecording && recordingField === 'concerns'
                         ? 'relative bg-destructive text-destructive-foreground ring-2 ring-destructive/40 shadow-lg animate-pulse'
                         : 'relative bg-primary/10 text-primary hover:bg-primary/20'
@@ -328,7 +328,7 @@ export function CraftMessageScreen() {
                     aria-label={isRecording && recordingField === 'impact' ? 'Stop recording' : 'Start recording for impact'}
                     aria-pressed={isRecording && recordingField === 'impact'}
                     onClick={() => (isRecording && recordingField === 'impact') ? stopRecording() : startRecording('impact')}
-                    className={`absolute right-2 bottom-2 inline-flex items-center justify-center h-10 w-10 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm ${
+                    className={`absolute right-2 top-2 inline-flex items-center justify-center h-10 w-10 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm ${
                       isRecording && recordingField === 'impact'
                         ? 'relative bg-destructive text-destructive-foreground ring-2 ring-destructive/40 shadow-lg animate-pulse'
                         : 'relative bg-primary/10 text-primary hover:bg-primary/20'
