@@ -95,16 +95,12 @@ serve(async (req) => {
       metadata: finalCustomer.metadata 
     });
 
-    // Create embedded checkout session
+    // Create embedded checkout session with forced customer creation
     const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : email,
+      customer_creation: 'always',
+      customer_email: email,
       billing_address_collection: 'required',
       payment_method_types: ['card', 'link'],
-      customer_update: {
-        name: 'auto',
-        address: 'auto'
-      },
       line_items: [
         {
           price_data: {
