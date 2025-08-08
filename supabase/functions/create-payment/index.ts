@@ -50,15 +50,19 @@ serve(async (req) => {
     const customers = await stripe.customers.list({ email, limit: 1 });
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
-      // Update existing customer with name if provided
+      // Update existing customer with name and billing details if provided
       if (fullName && (!customers.data[0].name || customers.data[0].name !== fullName)) {
-        await stripe.customers.update(customerId, { name: fullName });
+        await stripe.customers.update(customerId, { 
+          name: fullName,
+          metadata: { full_name: fullName }
+        });
       }
     } else {
       // Always create new customer, with or without name
       const customer = await stripe.customers.create({
         email,
-        name: fullName || undefined // Let Stripe handle empty names gracefully
+        name: fullName || undefined, // Let Stripe handle empty names gracefully
+        metadata: { full_name: fullName || "" }
       });
       customerId = customer.id;
     }
@@ -67,9 +71,6 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : email,
-      customer_details: fullName ? {
-        name: fullName
-      } : undefined,
       payment_method_types: ['card', 'link'],
       line_items: [
         {
