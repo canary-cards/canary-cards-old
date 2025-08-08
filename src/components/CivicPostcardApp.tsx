@@ -37,7 +37,9 @@ export function CivicPostcardApp() {
 
   return (
     <div className="civic-postcard-app">
-      <HamburgerMenu />
+      <div className="absolute top-4 right-4 z-10">
+        <HamburgerMenu />
+      </div>
       {renderCurrentScreen()}
     </div>
   );

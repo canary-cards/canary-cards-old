@@ -243,7 +243,9 @@ export default function PaymentSuccess() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-2 sm:p-4">
-      <HamburgerMenu />
+      <div className="absolute top-4 right-4 z-10">
+        <HamburgerMenu />
+      </div>
       <Card className="w-full max-w-lg">
         <CardContent className="p-4 sm:p-6 text-center space-y-3">
           <div className="flex justify-center">

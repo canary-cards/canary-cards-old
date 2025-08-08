@@ -64,7 +64,7 @@ export function HamburgerMenu() {
         <Button
           variant="ghost"
           size="icon"
-          className="fixed top-4 right-4 z-50 bg-card/80 backdrop-blur-sm border border-border/20 hover:bg-card shadow-lg"
+          className="bg-card/80 backdrop-blur-sm border border-border/20 hover:bg-card shadow-lg"
         >
           <Menu className="h-5 w-5" />
           <span className="sr-only">Open menu</span>

@@ -13,7 +13,6 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50 dark:from-slate-900 dark:to-emerald-950">
-      <HamburgerMenu />
       {/* Navigation Header */}
       <header className="w-full px-6 py-4">
         <nav className="flex items-center justify-between max-w-7xl mx-auto">
@@ -35,7 +34,7 @@ export function LandingPage() {
             <span className="text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Services</span>
             <span className="text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Account</span>
             <Search className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
-            
+            <HamburgerMenu />
           </div>
         </nav>
       </header>
