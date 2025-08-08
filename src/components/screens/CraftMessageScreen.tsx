@@ -240,7 +240,7 @@ export function CraftMessageScreen() {
         <Card className="card-warm">
           <CardContent className="p-6">
             <div className="text-center mb-3">
-              <h1 className="text-xl font-bold text-foreground mb-2">
+              <h1 className="text-2xl font-bold text-foreground mb-2">
                 Make It Personal
               </h1>
               
