@@ -17,6 +17,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -38,8 +39,8 @@ export default function Auth() {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Only redirect authenticated users if not in password recovery mode
-        if (session?.user && !isPasswordRecovery && event !== 'PASSWORD_RECOVERY') {
+        // Only redirect authenticated users if not in password recovery mode and not resetting password
+        if (session?.user && !isPasswordRecovery && !isResettingPassword && event !== 'PASSWORD_RECOVERY') {
           setTimeout(() => {
             navigate('/');
           }, 0);
@@ -64,7 +65,7 @@ export default function Auth() {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, isPasswordRecovery]);
+  }, [navigate, isPasswordRecovery, isResettingPassword]);
 
   const signUp = async (email: string, password: string) => {
     setLoading(true);
@@ -132,6 +133,7 @@ export default function Auth() {
   const resetPassword = async (email: string) => {
     setLoading(true);
     setError('');
+    setIsResettingPassword(true);
     
     try {
       const redirectUrl = `${window.location.origin}/auth`;
@@ -152,6 +154,10 @@ export default function Auth() {
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
+      // Reset the flag after a short delay to allow the toast to show
+      setTimeout(() => {
+        setIsResettingPassword(false);
+      }, 2000);
     }
   };
 
