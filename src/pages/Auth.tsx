@@ -113,6 +113,32 @@ export default function Auth() {
     }
   };
 
+  const resetPassword = async (email: string) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const redirectUrl = `${window.location.origin}/auth`;
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectUrl
+      });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        toast({
+          title: "Password reset email sent",
+          description: "Check your email for a link to reset your password.",
+        });
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const SignUpForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -202,6 +228,23 @@ export default function Auth() {
               className="pl-10"
               required
             />
+          </div>
+          <div className="flex justify-end">
+            <Button
+              type="button"
+              variant="link"
+              className="p-0 h-auto text-sm text-muted-foreground hover:text-primary"
+              onClick={() => {
+                if (email) {
+                  resetPassword(email);
+                } else {
+                  setError('Please enter your email address first.');
+                }
+              }}
+              disabled={loading}
+            >
+              Forgot Password?
+            </Button>
           </div>
         </div>
         
