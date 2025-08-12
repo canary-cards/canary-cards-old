@@ -215,7 +215,7 @@ export default function Auth() {
 
     return (
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
+        <div>
           <Label htmlFor="signin-email">Email</Label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -229,7 +229,7 @@ export default function Auth() {
               required
             />
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end mt-1">
             <Button
               type="button"
               variant="link"
