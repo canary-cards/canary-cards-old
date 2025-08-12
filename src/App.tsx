@@ -11,6 +11,7 @@ import PaymentCanceled from "./pages/PaymentCanceled";
 import PaymentReturn from "./pages/PaymentReturn";
 import Auth from "./pages/Auth";
 import PasswordReset from "./pages/PasswordReset";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/password-reset" element={<PasswordReset />} />
             <Route path="/payment-return" element={<PaymentReturn />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
