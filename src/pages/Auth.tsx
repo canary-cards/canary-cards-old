@@ -229,7 +229,7 @@ export default function Auth() {
               required
             />
           </div>
-          <div className="flex justify-end mt-1">
+          <div className="flex justify-end">
             <Button
               type="button"
               variant="link"
