@@ -229,23 +229,21 @@ export default function Auth() {
               required
             />
           </div>
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              variant="link"
-              className="p-0 h-auto text-sm text-muted-foreground hover:text-primary"
-              onClick={() => {
-                if (email) {
-                  resetPassword(email);
-                } else {
-                  setError('Please enter your email address first.');
-                }
-              }}
-              disabled={loading}
-            >
-              Forgot Password?
-            </Button>
-          </div>
+          <Button
+            type="button"
+            variant="link"
+            className="p-0 h-auto text-sm text-muted-foreground hover:text-primary ml-auto block -mt-1"
+            onClick={() => {
+              if (email) {
+                resetPassword(email);
+              } else {
+                setError('Please enter your email address first.');
+              }
+            }}
+            disabled={loading}
+          >
+            Forgot Password?
+          </Button>
         </div>
         
         <div className="space-y-2">
