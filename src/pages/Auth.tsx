@@ -23,16 +23,26 @@ export default function Auth() {
 
   // Auth state management
   useEffect(() => {
-    // Check URL params for recovery tokens on component mount
+    // Check both URL params and hash for recovery tokens
     const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get('access_token');
-    const refreshToken = urlParams.get('refresh_token');
-    const type = urlParams.get('type');
-    const tokenHash = urlParams.get('token_hash');
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
     
-    console.log('URL Params:', { accessToken, refreshToken, type, tokenHash, fullURL: window.location.href });
+    const accessToken = urlParams.get('access_token') || hashParams.get('access_token');
+    const refreshToken = urlParams.get('refresh_token') || hashParams.get('refresh_token');
+    const type = urlParams.get('type') || hashParams.get('type');
+    const tokenHash = urlParams.get('token_hash') || hashParams.get('token_hash');
     
-    if (type === 'recovery' || (accessToken && refreshToken) || tokenHash) {
+    console.log('URL Params:', { 
+      accessToken: !!accessToken, 
+      refreshToken: !!refreshToken, 
+      type, 
+      tokenHash: !!tokenHash, 
+      fullURL: window.location.href,
+      hash: window.location.hash,
+      search: window.location.search
+    });
+    
+    if (type === 'recovery' || (type === 'recovery' && (accessToken || tokenHash))) {
       console.log('Setting password recovery mode to true');
       setIsPasswordRecovery(true);
     }
@@ -44,20 +54,21 @@ export default function Auth() {
         setSession(session);
         setUser(session?.user ?? null);
         
+        // Handle password recovery event first
+        if (event === 'PASSWORD_RECOVERY') {
+          console.log('Password recovery event detected');
+          setIsPasswordRecovery(true);
+          return; // Don't redirect when in password recovery
+        }
+        
         // Only redirect authenticated users if not in password recovery mode and not resetting password
-        if (session?.user && !isPasswordRecovery && !isResettingPassword && event !== 'PASSWORD_RECOVERY') {
+        if (session?.user && !isPasswordRecovery && !isResettingPassword) {
           console.log('Redirecting to home');
           setTimeout(() => {
             navigate('/');
           }, 0);
         } else {
           console.log('Not redirecting:', { hasUser: !!session?.user, isPasswordRecovery, isResettingPassword, event });
-        }
-        
-        // Handle password recovery event
-        if (event === 'PASSWORD_RECOVERY') {
-          console.log('Password recovery event detected');
-          setIsPasswordRecovery(true);
         }
       }
     );
