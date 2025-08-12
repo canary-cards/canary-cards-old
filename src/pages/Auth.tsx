@@ -232,7 +232,7 @@ export default function Auth() {
           <Button
             type="button"
             variant="link"
-            className="p-0 h-auto text-sm text-muted-foreground hover:text-primary ml-auto block -mt-1 -mb-2"
+            className="p-0 h-auto text-sm text-muted-foreground hover:text-primary ml-auto block -mt-1 -mb-4"
             onClick={() => {
               if (email) {
                 resetPassword(email);
