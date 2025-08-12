@@ -67,12 +67,9 @@ export default function Auth() {
           return;
         }
         
-        // Only redirect authenticated users if not in recovery mode and not resetting password
+        // Don't auto-redirect authenticated users, let them see they're already signed in
         if (session?.user && !isResettingPassword) {
-          console.log('Redirecting to home');
-          setTimeout(() => {
-            navigate('/');
-          }, 0);
+          console.log('User is already signed in - staying on auth page');
         } else {
           console.log('Not redirecting:', { hasUser: !!session?.user, isPasswordRecovery, isResettingPassword, event });
         }
@@ -84,10 +81,7 @@ export default function Auth() {
       setSession(session);
       setUser(session?.user ?? null);
       
-      // Only redirect if already authenticated and not in recovery mode
-      if (session?.user && !isPasswordRecovery) {
-        navigate('/');
-      }
+      // Don't auto-redirect - let users see they're already signed in
     });
 
     return () => subscription.unsubscribe();
@@ -184,6 +178,27 @@ export default function Auth() {
       setTimeout(() => {
         setIsResettingPassword(false);
       }, 2000);
+    }
+  };
+
+  const handleSignOut = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        setError(error.message);
+      } else {
+        toast({
+          title: "Signed out successfully",
+          description: "You have been signed out of your account.",
+        });
+        setUser(null);
+        setSession(null);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -458,6 +473,37 @@ export default function Auth() {
                   Enter your new password below to complete the password reset.
                 </div>
                 <PasswordResetForm />
+              </div>
+            ) : user ? (
+              <div className="space-y-4 text-center">
+                <div className="text-sm text-muted-foreground mb-4">
+                  You're already signed in as <strong>{user.email}</strong>
+                </div>
+                <div className="space-y-3">
+                  <Button 
+                    asChild 
+                    className="w-full"
+                  >
+                    <Link to="/">
+                      Go to Home
+                    </Link>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={handleSignOut}
+                    className="w-full"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Signing Out...
+                      </>
+                    ) : (
+                      'Sign Out'
+                    )}
+                  </Button>
+                </div>
               </div>
             ) : (
               <Tabs defaultValue="signup" className="w-full">
