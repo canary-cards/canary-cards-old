@@ -54,15 +54,21 @@ export default function Auth() {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Handle password recovery event first
+        // Handle password recovery event first and make it persistent
         if (event === 'PASSWORD_RECOVERY') {
-          console.log('Password recovery event detected');
+          console.log('Password recovery event detected - setting persistent recovery mode');
           setIsPasswordRecovery(true);
-          return; // Don't redirect when in password recovery
+          return; // Exit early, don't check for redirects
         }
         
-        // Only redirect authenticated users if not in password recovery mode and not resetting password
-        if (session?.user && !isPasswordRecovery && !isResettingPassword) {
+        // Never redirect if we're in password recovery mode (make this the primary check)
+        if (isPasswordRecovery) {
+          console.log('In password recovery mode - preventing any redirect');
+          return;
+        }
+        
+        // Only redirect authenticated users if not in recovery mode and not resetting password
+        if (session?.user && !isResettingPassword) {
           console.log('Redirecting to home');
           setTimeout(() => {
             navigate('/');
