@@ -28,26 +28,35 @@ export default function Auth() {
     const accessToken = urlParams.get('access_token');
     const refreshToken = urlParams.get('refresh_token');
     const type = urlParams.get('type');
+    const tokenHash = urlParams.get('token_hash');
     
-    if (type === 'recovery' && accessToken && refreshToken) {
+    console.log('URL Params:', { accessToken, refreshToken, type, tokenHash, fullURL: window.location.href });
+    
+    if (type === 'recovery' || (accessToken && refreshToken) || tokenHash) {
+      console.log('Setting password recovery mode to true');
       setIsPasswordRecovery(true);
     }
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('Auth state change:', { event, hasUser: !!session?.user, isPasswordRecovery, isResettingPassword });
         setSession(session);
         setUser(session?.user ?? null);
         
         // Only redirect authenticated users if not in password recovery mode and not resetting password
         if (session?.user && !isPasswordRecovery && !isResettingPassword && event !== 'PASSWORD_RECOVERY') {
+          console.log('Redirecting to home');
           setTimeout(() => {
             navigate('/');
           }, 0);
+        } else {
+          console.log('Not redirecting:', { hasUser: !!session?.user, isPasswordRecovery, isResettingPassword, event });
         }
         
         // Handle password recovery event
         if (event === 'PASSWORD_RECOVERY') {
+          console.log('Password recovery event detected');
           setIsPasswordRecovery(true);
         }
       }
