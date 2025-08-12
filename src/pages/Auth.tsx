@@ -16,22 +16,38 @@ export default function Auth() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   // Auth state management
   useEffect(() => {
+    // Check URL params for recovery tokens on component mount
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get('access_token');
+    const refreshToken = urlParams.get('refresh_token');
+    const type = urlParams.get('type');
+    
+    if (type === 'recovery' && accessToken && refreshToken) {
+      setIsPasswordRecovery(true);
+    }
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Redirect authenticated users to home
-        if (session?.user) {
+        // Only redirect authenticated users if not in password recovery mode
+        if (session?.user && !isPasswordRecovery && event !== 'PASSWORD_RECOVERY') {
           setTimeout(() => {
             navigate('/');
           }, 0);
+        }
+        
+        // Handle password recovery event
+        if (event === 'PASSWORD_RECOVERY') {
+          setIsPasswordRecovery(true);
         }
       }
     );
@@ -41,14 +57,14 @@ export default function Auth() {
       setSession(session);
       setUser(session?.user ?? null);
       
-      // Redirect if already authenticated
-      if (session?.user) {
+      // Only redirect if already authenticated and not in recovery mode
+      if (session?.user && !isPasswordRecovery) {
         navigate('/');
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, isPasswordRecovery]);
 
   const signUp = async (email: string, password: string) => {
     setLoading(true);
@@ -131,6 +147,32 @@ export default function Auth() {
           title: "Password reset email sent",
           description: "Check your email for a link to reset your password.",
         });
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        toast({
+          title: "Password updated successfully",
+          description: "Your password has been changed. You can now sign in with your new password.",
+        });
+        setIsPasswordRecovery(false);
+        navigate('/');
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
@@ -276,6 +318,76 @@ export default function Auth() {
     );
   };
 
+  const PasswordResetForm = () => {
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      
+      if (newPassword !== confirmPassword) {
+        setError('Passwords do not match.');
+        return;
+      }
+      
+      if (newPassword.length < 6) {
+        setError('Password must be at least 6 characters long.');
+        return;
+      }
+      
+      updatePassword(newPassword);
+    };
+
+    return (
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="new-password">New Password</Label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              id="new-password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter your new password"
+              className="pl-10"
+              minLength={6}
+              required
+            />
+          </div>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="confirm-password">Confirm Password</Label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm your new password"
+              className="pl-10"
+              minLength={6}
+              required
+            />
+          </div>
+        </div>
+
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Updating Password...
+            </>
+          ) : (
+            'Update Password'
+          )}
+        </Button>
+      </form>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50 dark:from-slate-900 dark:to-emerald-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -296,7 +408,9 @@ export default function Auth() {
             <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
               <Mail className="w-6 h-6 text-primary-foreground" />
             </div>
-            <CardTitle className="text-2xl">Welcome to InkImpact</CardTitle>
+            <CardTitle className="text-2xl">
+              {isPasswordRecovery ? "Reset Your Password" : "Welcome to InkImpact"}
+            </CardTitle>
           </CardHeader>
           
           <CardContent>
@@ -306,26 +420,35 @@ export default function Auth() {
               </Alert>
             )}
 
-            <Tabs defaultValue="signup" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="signup" className="space-y-4">
+            {isPasswordRecovery ? (
+              <div className="space-y-4">
                 <div className="text-center text-sm text-muted-foreground mb-4">
-                  Create an account to save your postcard history and track your civic engagement.
+                  Enter your new password below to complete the password reset.
                 </div>
-                <SignUpForm />
-              </TabsContent>
-              
-              <TabsContent value="signin" className="space-y-4">
-                <div className="text-center text-sm text-muted-foreground mb-4">
-                  Welcome back! Sign in to access your account.
-                </div>
-                <SignInForm />
-              </TabsContent>
-            </Tabs>
+                <PasswordResetForm />
+              </div>
+            ) : (
+              <Tabs defaultValue="signup" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                  <TabsTrigger value="signin">Sign In</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="signup" className="space-y-4">
+                  <div className="text-center text-sm text-muted-foreground mb-4">
+                    Create an account to save your postcard history and track your civic engagement.
+                  </div>
+                  <SignUpForm />
+                </TabsContent>
+                
+                <TabsContent value="signin" className="space-y-4">
+                  <div className="text-center text-sm text-muted-foreground mb-4">
+                    Welcome back! Sign in to access your account.
+                  </div>
+                  <SignInForm />
+                </TabsContent>
+              </Tabs>
+            )}
           </CardContent>
         </Card>
       </div>
