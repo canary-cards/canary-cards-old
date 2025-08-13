@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
 import { useAppContext } from '../../context/AppContext';
-import { MapPin, ArrowLeft } from 'lucide-react';
+import { MapPin, ArrowLeft, Home } from 'lucide-react';
 import { searchAddressAutocomplete, GooglePlacesAddressPrediction } from '../../services/googlePlaces';
 
 // Interface removed - now using GooglePlacesAddressPrediction from service
@@ -15,6 +15,7 @@ export function ReturnAddressScreen() {
   const { state, dispatch } = useAppContext();
   const [fullName, setFullName] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
+  const [apartmentUnit, setApartmentUnit] = useState('');
   const [addressSuggestions, setAddressSuggestions] = useState<GooglePlacesAddressPrediction[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -56,7 +57,8 @@ export function ReturnAddressScreen() {
   };
 
   const handleSuggestionClick = (suggestion: GooglePlacesAddressPrediction) => {
-    setStreetAddress(suggestion.description);
+    // Extract just the street address (main_text) from the suggestion
+    setStreetAddress(suggestion.structured_formatting.main_text);
     setShowSuggestions(false);
   };
 
@@ -67,9 +69,14 @@ export function ReturnAddressScreen() {
       return;
     }
 
+    // Combine street address and apartment/unit if provided
+    const fullAddress = apartmentUnit.trim() 
+      ? `${streetAddress.trim()}, ${apartmentUnit.trim()}`
+      : streetAddress.trim();
+
     const userInfo = {
       fullName: fullName.trim(),
-      streetAddress: streetAddress.trim(),
+      streetAddress: fullAddress,
       city: '', // Will be populated from selected address
       state: '', // Will be populated from selected address
       zipCode: zipCode
@@ -122,12 +129,12 @@ export function ReturnAddressScreen() {
               </div>
 
               <div className="space-y-2 relative">
-                <Label htmlFor="streetAddress">Return Address *</Label>
+                <Label htmlFor="streetAddress">Street Address *</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground z-10" />
-                  <Textarea
+                  <Input
                     id="streetAddress"
-                    placeholder="Start typing your address..."
+                    placeholder="Start typing your street address..."
                     value={streetAddress}
                     onChange={(e) => handleAddressInputChange(e.target.value)}
                     onFocus={() => {
@@ -135,10 +142,9 @@ export function ReturnAddressScreen() {
                         setShowSuggestions(true);
                       }
                     }}
-                    className="input-warm pl-10 resize-none"
+                    className="input-warm pl-10 h-12"
                     autoComplete="off"
                     required
-                    rows={2}
                   />
                 </div>
                 
@@ -178,6 +184,21 @@ export function ReturnAddressScreen() {
                     </Command>
                   </div>
                 )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="apartmentUnit">Apartment/Unit (Optional)</Label>
+                <div className="relative">
+                  <Home className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="apartmentUnit"
+                    type="text"
+                    value={apartmentUnit}
+                    onChange={(e) => setApartmentUnit(e.target.value)}
+                    placeholder="Apt 5B, Unit 3, Suite 201, etc."
+                    className="input-warm pl-10 h-12"
+                  />
+                </div>
               </div>
 
               <div className="flex gap-4 pt-4">
