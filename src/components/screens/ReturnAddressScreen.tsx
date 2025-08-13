@@ -222,8 +222,8 @@ export function ReturnAddressScreen() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
+              <div className="flex gap-4">
+                <div className="flex-1 space-y-2">
                   <Label htmlFor="city">City</Label>
                   <Input
                     id="city"
@@ -236,15 +236,16 @@ export function ReturnAddressScreen() {
                   />
                 </div>
                 
-                <div className="space-y-2">
+                <div className="w-20 space-y-2">
                   <Label htmlFor="usState">State</Label>
                   <Input
                     id="usState"
                     type="text"
                     value={usState}
-                    onChange={(e) => setUsState(e.target.value)}
-                    placeholder="State"
-                    className="input-warm h-12"
+                    onChange={(e) => setUsState(e.target.value.toUpperCase())}
+                    placeholder="ST"
+                    className="input-warm h-12 text-center"
+                    maxLength={2}
                     readOnly={!!usState}
                   />
                 </div>
