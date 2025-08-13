@@ -7,21 +7,24 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
 import { useAppContext } from '../../context/AppContext';
 import { MapPin, ArrowLeft, Home } from 'lucide-react';
-import { searchAddressAutocomplete, GooglePlacesAddressPrediction } from '../../services/googlePlaces';
+import { searchAddressAutocomplete, getPlaceDetails, GooglePlacesAddressPrediction } from '../../services/googlePlaces';
 
 // Interface removed - now using GooglePlacesAddressPrediction from service
 
 export function ReturnAddressScreen() {
-  const { state, dispatch } = useAppContext();
+  const { state: appState, dispatch } = useAppContext();
   const [fullName, setFullName] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
   const [apartmentUnit, setApartmentUnit] = useState('');
+  const [city, setCity] = useState('');
+  const [usState, setUsState] = useState('');
   const [addressSuggestions, setAddressSuggestions] = useState<GooglePlacesAddressPrediction[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [isFetchingDetails, setIsFetchingDetails] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
-  const zipCode = state.postcardData.zipCode || '';
+  const zipCode = appState.postcardData.zipCode || '';
 
   const handleAddressSearch = async (query: string) => {
     if (query.length < 3) {
@@ -56,10 +59,28 @@ export function ReturnAddressScreen() {
     }, 300);
   };
 
-  const handleSuggestionClick = (suggestion: GooglePlacesAddressPrediction) => {
+  const handleSuggestionClick = async (suggestion: GooglePlacesAddressPrediction) => {
     // Extract just the street address (main_text) from the suggestion
     setStreetAddress(suggestion.structured_formatting.main_text);
     setShowSuggestions(false);
+    
+    // Fetch detailed address information
+    setIsFetchingDetails(true);
+    try {
+      const details = await getPlaceDetails(suggestion.place_id);
+      if (details) {
+        setCity(details.city);
+        setUsState(details.state);
+        // Don't override the zip code from previous step unless it's empty
+        if (!zipCode && details.zipCode) {
+          // Note: We can't set zipCode here as it comes from previous step
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch place details:', error);
+    } finally {
+      setIsFetchingDetails(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -77,8 +98,8 @@ export function ReturnAddressScreen() {
     const userInfo = {
       fullName: fullName.trim(),
       streetAddress: fullAddress,
-      city: '', // Will be populated from selected address
-      state: '', // Will be populated from selected address
+      city: city.trim(),
+      state: usState.trim(),
       zipCode: zipCode
     };
 
@@ -152,9 +173,9 @@ export function ReturnAddressScreen() {
                   <div className="absolute top-full left-0 right-0 z-50 mt-1">
                     <Command className="rounded-xl border border-border shadow-lg bg-background">
                       <CommandList className="max-h-48">
-                        {isSearching ? (
+                         {isSearching || isFetchingDetails ? (
                           <div className="p-3 text-sm text-muted-foreground">
-                            Searching addresses...
+                            {isSearching ? 'Searching addresses...' : 'Getting address details...'}
                           </div>
                         ) : (
                           <>
@@ -197,6 +218,34 @@ export function ReturnAddressScreen() {
                     onChange={(e) => setApartmentUnit(e.target.value)}
                     placeholder="Apt 5B, Unit 3, Suite 201, etc."
                     className="input-warm pl-10 h-12"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="city">City</Label>
+                  <Input
+                    id="city"
+                    type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="City"
+                    className="input-warm h-12"
+                    readOnly={!!city}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="usState">State</Label>
+                  <Input
+                    id="usState"
+                    type="text"
+                    value={usState}
+                    onChange={(e) => setUsState(e.target.value)}
+                    placeholder="State"
+                    className="input-warm h-12"
+                    readOnly={!!usState}
                   />
                 </div>
               </div>

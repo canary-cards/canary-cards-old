@@ -14,6 +14,14 @@ export interface GooglePlacesResponse {
   status: string;
 }
 
+export interface AddressDetails {
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  formattedAddress: string;
+}
+
 export async function searchAddressAutocomplete(query: string, zipCode?: string): Promise<GooglePlacesAddressPrediction[]> {
   if (query.length < 3) {
     return [];
@@ -41,5 +49,24 @@ export async function searchAddressAutocomplete(query: string, zipCode?: string)
   } catch (error) {
     console.error('Google Places autocomplete error:', error);
     return [];
+  }
+}
+
+export async function getPlaceDetails(placeId: string): Promise<AddressDetails | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke('google-places-details', {
+      body: {
+        placeId: placeId
+      }
+    });
+
+    if (error) {
+      throw new Error(`Supabase function error: ${error.message}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Google Places details error:', error);
+    return null;
   }
 }
