@@ -3,7 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle } from 'lucide-react';
+import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle, Clock, Truck, BarChart3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
@@ -237,16 +237,33 @@ export default function PaymentSuccess() {
     }
   };
 
+  // Get representative data from localStorage
+  const getRepresentativeData = () => {
+    try {
+      const storedData = localStorage.getItem('postcardData');
+      if (storedData) {
+        const data = JSON.parse(storedData);
+        const representatives = data.selectedRepresentatives || [];
+        return representatives[0] || null; // Get first representative for display
+      }
+    } catch (error) {
+      console.error('Error getting representative data:', error);
+    }
+    return null;
+  };
+
+  const representative = getRepresentativeData();
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
+    <div className="min-h-screen bg-gradient-to-br from-violet-500 via-purple-500 to-blue-600">
       {/* Header with InkImpact branding and hamburger menu */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
         {/* InkImpact Branding */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-            <Mail className="w-5 h-5 text-primary-foreground" />
+          <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
+            <Mail className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-foreground">InkImpact</h1>
+          <h1 className="text-xl font-bold text-white">InkImpact</h1>
         </div>
         
         {/* Hamburger menu */}
@@ -255,149 +272,248 @@ export default function PaymentSuccess() {
         </div>
       </div>
 
-      {/* Content with proper spacing */}
-      <div className="flex items-center justify-center p-2 sm:p-4 pt-24">
-      <Card className="w-full max-w-lg">
-        <CardContent className="p-4 sm:p-6 text-center space-y-3">
+      {/* Content */}
+      <div className="pt-24 pb-8 px-4 space-y-6 max-w-md mx-auto">
+        {/* Success Header */}
+        <div className="text-center text-white space-y-4">
           <div className="flex justify-center">
-            {getStatusIcon()}
+            <div className={`relative ${postcardStatus === 'success' ? 'animate-pulse' : ''}`}>
+              {postcardStatus === 'success' ? (
+                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                  <CheckCircle className="w-10 h-10 text-white" />
+                </div>
+              ) : postcardStatus === 'error' ? (
+                <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
+                  <AlertCircle className="w-10 h-10 text-white" />
+                </div>
+              ) : (
+                <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                  <Loader2 className="w-10 h-10 text-white animate-spin" />
+                </div>
+              )}
+            </div>
           </div>
           
-          <div className="space-y-1">
-            <h1 className="text-xl sm:text-2xl font-bold text-foreground">
-              {getStatusTitle()}
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold">
+              {postcardStatus === 'success' ? 'Payment Successful!' : 
+               postcardStatus === 'error' ? 'Payment Failed' : 
+               'Processing Payment...'}
             </h1>
-            <p className="text-sm text-muted-foreground">
-              {getStatusMessage()}
+            <p className="text-white/80 text-base">
+              {postcardStatus === 'success' ? 'Your postcard is being prepared and will be sent to your representative.' :
+               postcardStatus === 'error' ? 'There was an issue processing your order.' :
+               'Please wait while we process your payment...'}
             </p>
           </div>
+        </div>
 
-          {/* Progress Indicator */}
-          <div className="flex items-center justify-center space-x-2 text-xs sm:text-sm py-2">
-            <div className="flex items-center text-green-600">
-              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-              Payment Complete
+        {/* Order Details Card */}
+        <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
+          <CardContent className="p-6 space-y-4">
+            {/* Order ID */}
+            {sessionId && (
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground text-sm font-medium">Order ID</span>
+                <span className="font-mono text-sm">{sessionId.slice(-12)}</span>
+              </div>
+            )}
+            
+            {/* Status */}
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground text-sm font-medium">Status</span>
+              <div className="flex items-center gap-2">
+                {postcardStatus === 'success' ? (
+                  <>
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-green-700 font-medium">Processing</span>
+                  </>
+                ) : postcardStatus === 'error' ? (
+                  <>
+                    <AlertCircle className="w-4 h-4 text-red-500" />
+                    <span className="text-red-700 font-medium">Failed</span>
+                  </>
+                ) : (
+                  <>
+                    <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                    <span className="text-blue-700 font-medium">Processing</span>
+                  </>
+                )}
+              </div>
             </div>
-            <div className="text-muted-foreground">→</div>
-            <div className={`flex items-center ${postcardStatus === 'success' ? 'text-green-600' : postcardStatus === 'ordering' ? 'text-blue-600' : 'text-muted-foreground'}`}>
-              {postcardStatus === 'ordering' ? (
-                <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 animate-spin" />
-              ) : postcardStatus === 'success' ? (
-                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-              ) : (
-                <div className="h-3 w-3 sm:h-4 sm:w-4 mr-1 rounded-full border-2 border-muted-foreground/30" />
-              )}
-              Postcard Ordering
-            </div>
-          </div>
 
-          {sessionId && (
-            <div className="bg-muted p-2 rounded-lg">
-              <p className="text-xs text-muted-foreground">
-                Order ID: {sessionId.slice(-12)}
-              </p>
-            </div>
-          )}
+            {/* Confirmation Email */}
+            {postcardStatus === 'success' && (
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground text-sm font-medium">Confirmation Email</span>
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-blue-500" />
+                  <span className="text-blue-700 font-medium">Sending shortly</span>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-          {postcardStatus === 'success' && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-blue-50 dark:bg-blue-950 p-2 rounded-lg">
-              <Mail className="h-3 w-3" />
-              <span>You'll receive a confirmation email shortly</span>
-            </div>
-          )}
+        {/* Representative Details */}
+        {postcardStatus === 'success' && representative && (
+          <Card className="bg-blue-50/95 backdrop-blur-sm border-blue-200/50 shadow-xl">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Mail className="w-5 h-5 text-blue-600" />
+                <h3 className="font-semibold text-blue-900">Your Postcard Details</h3>
+              </div>
+              
+              <div className="bg-white rounded-xl p-4 flex items-center gap-4">
+                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-lg">
+                  {representative.name ? representative.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'SM'}
+                </div>
+                <div>
+                  <h4 className="font-semibold text-foreground">
+                    {representative.name || 'Seth Magaziner'}
+                  </h4>
+                  <p className="text-muted-foreground text-sm">
+                    {representative.title || 'U.S. Representative'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-          {/* Error State with Retry */}
-          {postcardStatus === 'error' && (
-            <div className="space-y-2 p-3 bg-red-50 dark:bg-red-950 rounded-lg">
-              <div className="text-xs text-red-700 dark:text-red-300">
+        {/* What Happens Next */}
+        {postcardStatus === 'success' && (
+          <Card className="bg-amber-50/95 backdrop-blur-sm border-amber-200/50 shadow-xl">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Clock className="w-5 h-5 text-amber-600" />
+                <h3 className="font-semibold text-amber-900">What happens next?</h3>
+              </div>
+              
+              <div className="space-y-3 text-sm">
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-amber-800">Your postcard will be printed within 24 hours</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-amber-800">It will be mailed within 2-3 business days</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-amber-800">Delivery to your representative: 3-5 business days</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-amber-800">You'll receive email updates on the status</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Error State */}
+        {postcardStatus === 'error' && (
+          <Card className="bg-red-50/95 backdrop-blur-sm border-red-200/50 shadow-xl">
+            <CardContent className="p-6 text-center space-y-4">
+              <div className="text-red-700">
                 {orderingResults?.error || 'An error occurred while ordering your postcards.'}
               </div>
               <Button 
                 onClick={retryPostcardOrdering}
                 variant="outline" 
-                size="sm"
+                size="lg"
                 disabled={retryAttempts >= 3}
-                className="text-xs"
+                className="w-full"
               >
                 {retryAttempts >= 3 ? 'Max retries reached' : `Retry (${retryAttempts}/3)`}
               </Button>
-            </div>
-          )}
+            </CardContent>
+          </Card>
+        )}
 
-          {/* Sending Results Details */}
-          {postcardStatus === 'success' && orderingResults?.results && (
-            <div className="space-y-1 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
-              <h4 className="text-xs font-medium text-green-800 dark:text-green-200">Postcards Ordered:</h4>
-              {orderingResults.results.map((result: any, index: number) => (
-                <div key={index} className="text-xs text-green-700 dark:text-green-300">
-                  ✓ {result.recipient} ({result.type})
-                </div>
-              ))}
-            </div>
-          )}
+        {/* Action Buttons */}
+        {postcardStatus === 'success' && (
+          <div className="space-y-3">
+            <Button 
+              asChild 
+              className="w-full h-12 text-base font-medium bg-primary hover:bg-primary/90"
+            >
+              <Link to="/" className="flex items-center gap-2">
+                <Mail className="w-5 h-5" />
+                Send Another Postcard
+              </Link>
+            </Button>
 
-          {/* Shareable Link Section - Condensed */}
-          {postcardStatus === 'success' && shareableLink && (
-            <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
-              <div className="flex items-center gap-2 text-xs font-medium">
-                <Share2 className="h-3 w-3" />
-                <span>Share with Friends & Family</span>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <Input
-                    value={shareableLink}
-                    readOnly
-                    className="text-xs h-8"
-                  />
-                  <Button
-                    onClick={copyShareableLink}
-                    size="sm"
-                    className="flex items-center gap-1 h-8 text-xs"
-                  >
-                    <Copy className="h-3 w-3" />
-                    Share
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Encourage others to contact their representatives!
+            <Button 
+              asChild 
+              variant="outline"
+              className="w-full h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50"
+            >
+              <Link to="/profile" className="flex items-center gap-2">
+                <BarChart3 className="w-5 h-5" />
+                Track This Order
+              </Link>
+            </Button>
+          </div>
+        )}
+
+        {/* Share Section */}
+        {postcardStatus === 'success' && (
+          <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
+            <CardContent className="p-6">
+              <div className="text-center space-y-4">
+                <h3 className="text-lg font-semibold text-foreground">Amplify Your Voice</h3>
+                <p className="text-muted-foreground text-sm">
+                  Encourage friends and family to contact their representatives too!
                 </p>
+                
+                {shareableLink ? (
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <Input
+                        value={shareableLink}
+                        readOnly
+                        className="text-sm"
+                      />
+                      <Button
+                        onClick={copyShareableLink}
+                        size="lg"
+                        className="flex items-center gap-2 px-6"
+                      >
+                        <Copy className="w-4 h-4" />
+                        Copy
+                      </Button>
+                    </div>
+                    
+                    <Button 
+                      variant="outline"
+                      className="w-full h-12 text-base font-medium"
+                      onClick={() => {
+                        if (navigator.share) {
+                          navigator.share({
+                            title: 'Contact Your Representatives with InkImpact',
+                            text: 'Make your voice heard by sending postcards to your representatives!',
+                            url: shareableLink
+                          });
+                        }
+                      }}
+                    >
+                      <Share2 className="w-5 h-5 mr-2" />
+                      Share on Social Media
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-700">
+                      📢 Publish your project using the "Publish" button in the top right to get a shareable link!
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
-          )}
-
-          {/* Publish Message - Condensed */}
-          {postcardStatus === 'success' && !shareableLink && (
-            <div className="space-y-2 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-              <div className="flex items-center gap-2 text-xs font-medium text-blue-800 dark:text-blue-200">
-                <span>📢</span>
-                <span>Ready to Share</span>
-              </div>
-              <p className="text-xs text-blue-700 dark:text-blue-300">
-                Publish your project using the "Publish" button in the top right to get a shareable link!
-              </p>
-            </div>
-          )}
-
-          <Button 
-            asChild 
-            className="w-full h-10 mb-2"
-            disabled={postcardStatus === 'processing' || postcardStatus === 'ordering'}
-          >
-            <Link to="/auth">Create Account</Link>
-          </Button>
-
-          <Button 
-            asChild 
-            className="w-full h-10"
-            variant="outline"
-            disabled={postcardStatus === 'processing' || postcardStatus === 'ordering'}
-          >
-            <Link to="/">Order Another Postcard</Link>
-          </Button>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
