@@ -23,8 +23,14 @@ serve(async (req) => {
 
     console.log('API Key found, making request to Google Places Details API')
 
+    // Extract the actual place ID from the places/ prefix if present
+    const cleanPlaceId = placeId.replace('places/', '')
+    console.log('Clean place ID:', cleanPlaceId)
+
     // Use the new Places API for details
-    const url = `https://places.googleapis.com/v1/places/${placeId}`
+    const url = `https://places.googleapis.com/v1/places/${cleanPlaceId}`
+    
+    console.log('Making request to URL:', url)
     
     const response = await fetch(url, {
       method: 'GET',
@@ -35,13 +41,24 @@ serve(async (req) => {
       }
     })
     
-    const data = await response.json()
-    console.log('Places Details API response:', { status: response.status, data })
+    console.log('Response status:', response.status)
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()))
     
     if (!response.ok) {
-      console.error('Places Details API error:', data)
-      throw new Error(`Google Places Details API error: ${response.status} - ${JSON.stringify(data)}`)
+      const errorText = await response.text()
+      console.error('Places Details API error response:', errorText)
+      throw new Error(`Google Places Details API error: ${response.status} - ${errorText}`)
     }
+    
+    const responseText = await response.text()
+    console.log('Raw response text:', responseText)
+    
+    if (!responseText.trim()) {
+      throw new Error('Empty response from Google Places API')
+    }
+    
+    const data = JSON.parse(responseText)
+    console.log('Places Details API response:', { status: response.status, data })
 
     // Extract address components
     const addressComponents = data.addressComponents || []
