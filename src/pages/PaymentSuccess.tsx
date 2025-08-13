@@ -357,11 +357,11 @@ export default function PaymentSuccess() {
 
         {/* Representative Details */}
         {postcardStatus === 'success' && representative && (
-          <Card className="bg-blue-50/95 backdrop-blur-sm border-blue-200/50 shadow-xl">
+          <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Mail className="w-5 h-5 text-blue-600" />
-                <h3 className="font-semibold text-blue-900">Your Postcard Details</h3>
+                <Mail className="w-5 h-5 text-primary" />
+                <h3 className="font-semibold text-foreground">Your Postcard Details</h3>
               </div>
               
               <div className="bg-white rounded-xl p-4 flex items-center gap-4">
@@ -383,29 +383,29 @@ export default function PaymentSuccess() {
 
         {/* What Happens Next */}
         {postcardStatus === 'success' && (
-          <Card className="bg-amber-50/95 backdrop-blur-sm border-amber-200/50 shadow-xl">
+          <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Clock className="w-5 h-5 text-amber-600" />
-                <h3 className="font-semibold text-amber-900">What happens next?</h3>
+                <Clock className="w-5 h-5 text-primary" />
+                <h3 className="font-semibold text-foreground">What happens next?</h3>
               </div>
               
               <div className="space-y-3 text-sm">
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-amber-800">Your postcard will be printed within 24 hours</span>
+                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-foreground">Your postcard will be printed within 24 hours</span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-amber-800">It will be mailed within 2-3 business days</span>
+                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-foreground">It will be mailed within 2-3 business days</span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-amber-800">Delivery to your representative: 3-5 business days</span>
+                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-foreground">Delivery to your representative: 3-5 business days</span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-amber-800">You'll receive email updates on the status</span>
+                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-foreground">You'll receive email updates on the status</span>
                 </div>
               </div>
             </CardContent>
@@ -414,9 +414,9 @@ export default function PaymentSuccess() {
 
         {/* Error State */}
         {postcardStatus === 'error' && (
-          <Card className="bg-red-50/95 backdrop-blur-sm border-red-200/50 shadow-xl">
+          <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
             <CardContent className="p-6 text-center space-y-4">
-              <div className="text-red-700">
+              <div className="text-destructive">
                 {orderingResults?.error || 'An error occurred while ordering your postcards.'}
               </div>
               <Button 
