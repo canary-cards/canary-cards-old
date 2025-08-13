@@ -68,10 +68,6 @@ export default function PaymentSuccess() {
       
       if (data.success) {
         setPostcardStatus('success');
-        toast({
-          title: "Postcards ordered successfully!",
-          description: `${data.summary.totalSent} postcard(s) ordered for your representatives.`,
-        });
       } else {
         setPostcardStatus('error');
         toast({
