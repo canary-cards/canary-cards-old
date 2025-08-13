@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { HamburgerMenu } from '@/components/HamburgerMenu';
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
@@ -237,7 +238,25 @@ export default function PaymentSuccess() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-2 sm:p-4">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
+      {/* Header with InkImpact branding and hamburger menu */}
+      <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
+        {/* InkImpact Branding */}
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+            <Mail className="w-5 h-5 text-primary-foreground" />
+          </div>
+          <h1 className="text-xl font-bold text-foreground">InkImpact</h1>
+        </div>
+        
+        {/* Hamburger menu */}
+        <div className="flex-shrink-0">
+          <HamburgerMenu />
+        </div>
+      </div>
+
+      {/* Content with proper spacing */}
+      <div className="flex items-center justify-center p-2 sm:p-4 pt-24">
       <Card className="w-full max-w-lg">
         <CardContent className="p-4 sm:p-6 text-center space-y-3">
           <div className="flex justify-center">
@@ -379,6 +398,7 @@ export default function PaymentSuccess() {
           </Button>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
