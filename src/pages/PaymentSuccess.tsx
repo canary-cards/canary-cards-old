@@ -310,17 +310,20 @@ export default function PaymentSuccess() {
 
         {/* Order Details Card */}
         <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
-          <CardContent className="p-6 space-y-4">
+          <CardContent className="p-6">
             {/* Order ID */}
             {sessionId && (
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground text-sm font-medium">Order ID</span>
-                <span className="font-mono text-sm">{sessionId.slice(-12)}</span>
-              </div>
+              <>
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-muted-foreground text-sm font-medium">Order ID</span>
+                  <span className="font-mono text-sm">{sessionId.slice(-12)}</span>
+                </div>
+                <hr className="border-border" />
+              </>
             )}
             
             {/* Status */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center py-3">
               <span className="text-muted-foreground text-sm font-medium">Status</span>
               <div className="flex items-center gap-2">
                 {postcardStatus === 'success' ? (
@@ -344,13 +347,16 @@ export default function PaymentSuccess() {
 
             {/* Confirmation Email */}
             {postcardStatus === 'success' && (
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground text-sm font-medium">Confirmation Email</span>
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-blue-500" />
-                  <span className="text-blue-700 font-medium">Sending shortly</span>
+              <>
+                <hr className="border-border" />
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-muted-foreground text-sm font-medium">Confirmation Email</span>
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-blue-500" />
+                    <span className="text-blue-700 font-medium">Sending shortly</span>
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </CardContent>
         </Card>
