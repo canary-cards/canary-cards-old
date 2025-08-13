@@ -56,8 +56,20 @@ export function ReturnAddressScreen() {
   };
 
   const handleSuggestionClick = (suggestion: GooglePlacesAddressPrediction) => {
-    setStreetAddress(suggestion.description);
+    // Set the base address from the suggestion
+    const baseAddress = suggestion.structured_formatting.main_text;
+    setStreetAddress(baseAddress);
     setShowSuggestions(false);
+    
+    // Focus back to the input so user can add apartment/unit number
+    setTimeout(() => {
+      const textarea = document.getElementById('streetAddress') as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.focus();
+        // Place cursor at the end
+        textarea.setSelectionRange(baseAddress.length, baseAddress.length);
+      }
+    }, 50);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -127,7 +139,7 @@ export function ReturnAddressScreen() {
                   <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground z-10" />
                   <Textarea
                     id="streetAddress"
-                    placeholder="Start typing your address..."
+                    placeholder="Start typing your address... (apartment/unit can be added after selecting)"
                     value={streetAddress}
                     onChange={(e) => handleAddressInputChange(e.target.value)}
                     onFocus={() => {
