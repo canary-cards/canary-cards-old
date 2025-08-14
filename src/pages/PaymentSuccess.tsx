@@ -455,7 +455,8 @@ export default function PaymentSuccess() {
             <div className="grid grid-cols-2 gap-3">
               <Button 
                 asChild 
-                className="h-12 text-base font-medium bg-primary hover:bg-primary/90"
+                variant="outline"
+                className="h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50"
               >
                 <Link to="/" className="flex items-center gap-2">
                   <Mail className="w-5 h-5" />
@@ -465,8 +466,7 @@ export default function PaymentSuccess() {
 
               <Button 
                 asChild 
-                variant="outline"
-                className="h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50"
+                className="h-12 text-base font-medium bg-primary hover:bg-primary/90"
               >
                 <Link to="/auth" className="flex items-center gap-2">
                   <UserPlus className="w-5 h-5" />
