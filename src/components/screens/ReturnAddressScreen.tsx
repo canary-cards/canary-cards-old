@@ -115,14 +115,23 @@ export function ReturnAddressScreen() {
     // Parse city, state, zip from the full address
     const { city, state, zipCode: parsedZip } = parseAddressComponents(streetAddress);
 
-    // Combine street address and apartment/unit if provided
-    const fullAddress = apartmentUnit.trim() 
-      ? `${streetAddress.trim()}, ${apartmentUnit.trim()}`
-      : streetAddress.trim();
+    // Extract just the street portion (remove city, state, zip from the address)
+    let cleanStreetAddress = streetAddress.trim();
+    
+    // Remove the city, state, zip portion if it exists
+    if (city && state) {
+      const cityStatePattern = new RegExp(`,\\s*${city.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')},\\s*${state}.*$`, 'i');
+      cleanStreetAddress = cleanStreetAddress.replace(cityStatePattern, '');
+    }
+
+    // Combine clean street address and apartment/unit if provided
+    const finalStreetAddress = apartmentUnit.trim() 
+      ? `${cleanStreetAddress}, ${apartmentUnit.trim()}`
+      : cleanStreetAddress;
 
     const userInfo = {
       fullName: fullName.trim(),
-      streetAddress: fullAddress,
+      streetAddress: finalStreetAddress,
       city: city || '',
       state: state || '',
       zipCode: parsedZip || zipCode // Use parsed zip or fall back to original
