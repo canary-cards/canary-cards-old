@@ -255,7 +255,7 @@ export default function PaymentSuccess() {
   const representative = getRepresentativeData();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-300 via-indigo-400 to-purple-600">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-300 via-indigo-400 to-violet-600">
       {/* Header with InkImpact branding and hamburger menu */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
         {/* InkImpact Branding */}
