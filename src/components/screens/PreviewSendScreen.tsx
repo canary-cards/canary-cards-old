@@ -184,7 +184,27 @@ export function PreviewSendScreen() {
                     {/* Left side - Return address */}
                     <div className="space-y-1 text-xs">
                       <p className="font-medium">{userInfo?.fullName}</p>
-                      <p>{userInfo?.streetAddress}</p>
+                      {(() => {
+                        // Split street address if it contains apartment info
+                        const streetAddr = userInfo?.streetAddress || '';
+                        const parts = streetAddr.split(', ');
+                        
+                        // Check if we have apartment info (more than just street)
+                        if (parts.length > 1 && parts[parts.length - 1].match(/^(apt|apartment|unit|suite|#)\s*\w+/i)) {
+                          // Last part is apartment info, separate it
+                          const street = parts.slice(0, -1).join(', ');
+                          const apt = parts[parts.length - 1];
+                          return (
+                            <>
+                              <p>{street}</p>
+                              <p>{apt}</p>
+                            </>
+                          );
+                        } else {
+                          // No apartment info or different format, show as is
+                          return <p>{streetAddr}</p>;
+                        }
+                      })()}
                       <p>{userInfo?.city}, {userInfo?.state} {userInfo?.zipCode}</p>
                     </div>
                     
