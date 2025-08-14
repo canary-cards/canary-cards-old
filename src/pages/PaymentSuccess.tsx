@@ -452,15 +452,28 @@ export default function PaymentSuccess() {
               </Link>
             </Button>
 
-            <Button 
-              asChild 
-              className="w-full h-12 text-base font-medium bg-primary hover:bg-primary/90"
-            >
-              <Link to="/" className="flex items-center gap-2">
-                <Mail className="w-5 h-5" />
-                Send Another Postcard
-              </Link>
-            </Button>
+            <div className="grid grid-cols-2 gap-3">
+              <Button 
+                asChild 
+                variant="outline"
+                className="h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50"
+              >
+                <Link to="/auth" className="flex items-center gap-2">
+                  <Mail className="w-5 h-5" />
+                  Create Account
+                </Link>
+              </Button>
+
+              <Button 
+                asChild 
+                className="h-12 text-base font-medium bg-primary hover:bg-primary/90"
+              >
+                <Link to="/" className="flex items-center gap-2">
+                  <Mail className="w-5 h-5" />
+                  Send Another
+                </Link>
+              </Button>
+            </div>
           </div>
         )}
 
