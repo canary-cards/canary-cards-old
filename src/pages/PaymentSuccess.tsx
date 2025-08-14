@@ -3,7 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle, Clock, Truck, BarChart3 } from 'lucide-react';
+import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle, Clock, Truck, BarChart3, UserPlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
@@ -459,7 +459,7 @@ export default function PaymentSuccess() {
                 className="h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50"
               >
                 <Link to="/auth" className="flex items-center gap-2">
-                  <Mail className="w-5 h-5" />
+                  <UserPlus className="w-5 h-5" />
                   Create Account
                 </Link>
               </Button>
