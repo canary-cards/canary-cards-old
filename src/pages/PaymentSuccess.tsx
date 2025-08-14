@@ -443,22 +443,22 @@ export default function PaymentSuccess() {
           <div className="space-y-3">
             <Button 
               asChild 
-              className="w-full h-12 text-base font-medium bg-primary hover:bg-primary/90"
-            >
-              <Link to="/" className="flex items-center gap-2">
-                <Mail className="w-5 h-5" />
-                Send Another Postcard
-              </Link>
-            </Button>
-
-            <Button 
-              asChild 
               variant="outline"
               className="w-full h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50"
             >
               <Link to="/profile" className="flex items-center gap-2">
                 <BarChart3 className="w-5 h-5" />
                 Track This Order
+              </Link>
+            </Button>
+
+            <Button 
+              asChild 
+              className="w-full h-12 text-base font-medium bg-primary hover:bg-primary/90"
+            >
+              <Link to="/" className="flex items-center gap-2">
+                <Mail className="w-5 h-5" />
+                Send Another Postcard
               </Link>
             </Button>
           </div>
