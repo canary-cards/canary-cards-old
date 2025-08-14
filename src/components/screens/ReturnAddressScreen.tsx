@@ -60,9 +60,24 @@ export function ReturnAddressScreen() {
   };
 
   const handleSuggestionClick = async (suggestion: GooglePlacesAddressPrediction) => {
-    // Store the complete formatted address from description
+    // First set the description as temporary value
     setStreetAddress(suggestion.description);
     setShowSuggestions(false);
+    
+    // Fetch detailed address information to get complete formatted address with zip
+    setIsFetchingDetails(true);
+    try {
+      const details = await getPlaceDetails(suggestion.place_id);
+      if (details && details.formattedAddress) {
+        // Use the complete formatted address from Google Places Details API
+        setStreetAddress(details.formattedAddress);
+      }
+    } catch (error) {
+      console.error('Failed to fetch place details:', error);
+      // Fall back to suggestion description if details fetch fails
+    } finally {
+      setIsFetchingDetails(false);
+    }
   };
 
   // Auto-expand textarea based on content
