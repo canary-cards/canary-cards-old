@@ -185,23 +185,25 @@ export function PreviewSendScreen() {
                     <div className="space-y-1 text-xs">
                       <p className="font-medium">{userInfo?.fullName}</p>
                       {(() => {
-                        // Split street address if it contains apartment info
                         const streetAddr = userInfo?.streetAddress || '';
-                        const parts = streetAddr.split(', ');
                         
-                        // Check if we have apartment info (more than just street)
-                        if (parts.length > 1 && parts[parts.length - 1].match(/^(apt|apartment|unit|suite|#)\s*\w+/i)) {
-                          // Last part is apartment info, separate it
-                          const street = parts.slice(0, -1).join(', ');
-                          const apt = parts[parts.length - 1];
+                        // Check if the street address contains apartment info at the end
+                        // Look for patterns like ", Apt 5B", ", Unit 3", ", Suite 201", etc.
+                        const apartmentPattern = /,\s*(apt|apartment|unit|suite|#)\s*\w+.*$/i;
+                        const match = streetAddr.match(apartmentPattern);
+                        
+                        if (match) {
+                          // Split at the apartment part
+                          const street = streetAddr.substring(0, match.index);
+                          const apartment = streetAddr.substring(match.index + 2); // +2 to skip ", "
                           return (
                             <>
                               <p>{street}</p>
-                              <p>{apt}</p>
+                              <p>{apartment}</p>
                             </>
                           );
                         } else {
-                          // No apartment info or different format, show as is
+                          // No apartment info, show street address as is
                           return <p>{streetAddr}</p>;
                         }
                       })()}
