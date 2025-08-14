@@ -21,15 +21,25 @@ serve(async (req) => {
       throw new Error('Google Places API key not found')
     }
 
-    console.log('API Key found, making request to Google Places API')
+    console.log('API Key found, making request to new Google Places API')
 
-    // Use the legacy Places API which provides full formatted addresses with zip codes
-    let url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}&types=address&components=country:US&key=${apiKey}`
+    // Use the new Places API (New) with correct field structure
+    const url = 'https://places.googleapis.com/v1/places:autocomplete'
     
-    // Add location bias if zip code is provided
+    // Build the request body with proper location bias for zip code
+    const requestBody: any = {
+      input: input,
+      includedPrimaryTypes: ['street_address', 'route', 'subpremise', 'premise'],
+      includedRegionCodes: ['US'],
+      languageCode: 'en',
+      regionCode: 'US',
+      includeQueryPredictions: false
+    }
+
+    // If zip code is provided, get coordinates and use for location bias
     if (zipCode) {
       try {
-        // Get coordinates for the zip code using Geocodio API for location bias
+        // Get coordinates for the zip code using Geocodio API
         const geocodioKey = Deno.env.get('GeoCodioKey')
         if (geocodioKey) {
           console.log('Getting coordinates for zip code:', zipCode)
@@ -39,31 +49,62 @@ serve(async (req) => {
           if (geocodioData.results && geocodioData.results.length > 0) {
             const location = geocodioData.results[0].location
             console.log('Found coordinates:', location)
-            url += `&location=${location.lat},${location.lng}&radius=12500`
+            
+            // Use circle location bias with actual coordinates
+            requestBody.locationBias = {
+              circle: {
+                center: {
+                  latitude: location.lat,
+                  longitude: location.lng
+                },
+                radius: 12500.0 // 12.5km radius around the zip code center
+              }
+            }
           }
         }
       } catch (geocodioError) {
         console.warn('Failed to get coordinates for zip code:', geocodioError)
+        // Fall back to including zip code in input
+        requestBody.input = `${input}, ${zipCode}`
       }
     }
 
-    console.log('API request URL:', url)
+    console.log('New API request body:', requestBody)
 
-    const response = await fetch(url)
-    const data = await response.json()
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey
+      },
+      body: JSON.stringify(requestBody)
+    })
     
-    console.log('API response:', { status: response.status, data })
+    const data = await response.json()
+    console.log('New API response:', { status: response.status, data })
     
     if (!response.ok) {
-      console.error('API error:', data)
+      console.error('New API error:', data)
       throw new Error(`Google Places API error: ${response.status} - ${JSON.stringify(data)}`)
     }
 
-    // The legacy API already returns the correct format with full descriptions
-    console.log('Final response data:', data)
+    // Transform the new API response to match the expected format
+    const transformedData = {
+      predictions: data.suggestions?.map((suggestion: any) => ({
+        place_id: suggestion.placePrediction?.place || `temp_${Date.now()}_${Math.random()}`,
+        description: suggestion.placePrediction?.text?.text || suggestion.description || '',
+        structured_formatting: {
+          main_text: suggestion.placePrediction?.structuredFormat?.mainText?.text || suggestion.placePrediction?.text?.text || '',
+          secondary_text: suggestion.placePrediction?.structuredFormat?.secondaryText?.text || ''
+        }
+      })) || [],
+      status: 'OK'
+    }
+
+    console.log('Final response data:', transformedData)
 
     return new Response(
-      JSON.stringify(data),
+      JSON.stringify(transformedData),
       { 
         headers: { 
           ...corsHeaders, 
