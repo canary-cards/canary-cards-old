@@ -184,29 +184,7 @@ export function PreviewSendScreen() {
                     {/* Left side - Return address */}
                     <div className="space-y-1 text-xs">
                       <p className="font-medium">{userInfo?.fullName}</p>
-                      {(() => {
-                        const streetAddr = userInfo?.streetAddress || '';
-                        
-                        // Check if the street address contains apartment info at the end
-                        // Look for patterns like ", Apt 5B", ", Unit 3", ", Suite 201", etc.
-                        const apartmentPattern = /,\s*(apt|apartment|unit|suite|#)\s*\w+.*$/i;
-                        const match = streetAddr.match(apartmentPattern);
-                        
-                        if (match) {
-                          // Split at the apartment part
-                          const street = streetAddr.substring(0, match.index);
-                          const apartment = streetAddr.substring(match.index + 2); // +2 to skip ", "
-                          return (
-                            <>
-                              <p>{street}</p>
-                              <p>{apartment}</p>
-                            </>
-                          );
-                        } else {
-                          // No apartment info, show street address as is
-                          return <p>{streetAddr}</p>;
-                        }
-                      })()}
+                      <p>{userInfo?.streetAddress}</p>
                       <p>{userInfo?.city}, {userInfo?.state} {userInfo?.zipCode}</p>
                     </div>
                     
