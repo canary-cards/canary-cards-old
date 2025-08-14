@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
 import { useAppContext } from '../../context/AppContext';
-import { MapPin, ArrowLeft, Home } from 'lucide-react';
+import { MapPin, ArrowLeft, Home, Plus, Minus } from 'lucide-react';
 import { searchAddressAutocomplete, getPlaceDetails, GooglePlacesAddressPrediction } from '../../services/googlePlaces';
 
 // Interface removed - now using GooglePlacesAddressPrediction from service
@@ -16,13 +16,13 @@ export function ReturnAddressScreen() {
   const [fullName, setFullName] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
   const [apartmentUnit, setApartmentUnit] = useState('');
-  const [city, setCity] = useState('');
-  const [usState, setUsState] = useState('');
+  const [showApartmentField, setShowApartmentField] = useState(false);
   const [addressSuggestions, setAddressSuggestions] = useState<GooglePlacesAddressPrediction[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isFetchingDetails, setIsFetchingDetails] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const zipCode = appState.postcardData.zipCode || '';
 
@@ -60,27 +60,45 @@ export function ReturnAddressScreen() {
   };
 
   const handleSuggestionClick = async (suggestion: GooglePlacesAddressPrediction) => {
-    // Extract just the street address (main_text) from the suggestion
-    setStreetAddress(suggestion.structured_formatting.main_text);
+    // Store the complete formatted address from description
+    setStreetAddress(suggestion.description);
     setShowSuggestions(false);
-    
-    // Fetch detailed address information
-    setIsFetchingDetails(true);
-    try {
-      const details = await getPlaceDetails(suggestion.place_id);
-      if (details) {
-        setCity(details.city);
-        setUsState(details.state);
-        // Don't override the zip code from previous step unless it's empty
-        if (!zipCode && details.zipCode) {
-          // Note: We can't set zipCode here as it comes from previous step
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch place details:', error);
-    } finally {
-      setIsFetchingDetails(false);
+  };
+
+  // Auto-expand textarea based on content
+  useEffect(() => {
+    if (textareaRef.current) {
+      const textarea = textareaRef.current;
+      textarea.style.height = 'auto';
+      textarea.style.height = Math.max(48, textarea.scrollHeight) + 'px';
     }
+  }, [streetAddress]);
+
+  // Parse address components from full address string
+  const parseAddressComponents = (fullAddress: string) => {
+    const parts = fullAddress.split(', ');
+    let city = '';
+    let state = '';
+    let zipCode = '';
+
+    if (parts.length >= 2) {
+      const lastPart = parts[parts.length - 1];
+      const secondLastPart = parts[parts.length - 2];
+      
+      // Check if last part contains state and zip (e.g., "IL 62701")
+      const stateZipMatch = lastPart.match(/^([A-Z]{2})\s+(\d{5}(-\d{4})?)$/);
+      if (stateZipMatch) {
+        state = stateZipMatch[1];
+        zipCode = stateZipMatch[2];
+        city = secondLastPart;
+      } else if (parts.length >= 3) {
+        // If format is different, try to extract from available parts
+        city = secondLastPart;
+        state = lastPart;
+      }
+    }
+
+    return { city, state, zipCode };
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -90,6 +108,9 @@ export function ReturnAddressScreen() {
       return;
     }
 
+    // Parse city, state, zip from the full address
+    const { city, state, zipCode: parsedZip } = parseAddressComponents(streetAddress);
+
     // Combine street address and apartment/unit if provided
     const fullAddress = apartmentUnit.trim() 
       ? `${streetAddress.trim()}, ${apartmentUnit.trim()}`
@@ -98,9 +119,9 @@ export function ReturnAddressScreen() {
     const userInfo = {
       fullName: fullName.trim(),
       streetAddress: fullAddress,
-      city: city.trim(),
-      state: usState.trim(),
-      zipCode: zipCode
+      city: city || '',
+      state: state || '',
+      zipCode: parsedZip || zipCode // Use parsed zip or fall back to original
     };
 
     dispatch({ 
@@ -153,7 +174,8 @@ export function ReturnAddressScreen() {
                 <Label htmlFor="streetAddress">Street Address *</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground z-10" />
-                  <Input
+                  <Textarea
+                    ref={textareaRef}
                     id="streetAddress"
                     placeholder="Start typing your street address..."
                     value={streetAddress}
@@ -163,9 +185,10 @@ export function ReturnAddressScreen() {
                         setShowSuggestions(true);
                       }
                     }}
-                    className="input-warm pl-10 h-12"
+                    className="input-warm pl-10 min-h-[48px] resize-none overflow-hidden"
                     autoComplete="off"
                     required
+                    rows={1}
                   />
                 </div>
                 
@@ -207,49 +230,46 @@ export function ReturnAddressScreen() {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="apartmentUnit">Apartment/Unit (Optional)</Label>
-                <div className="relative">
-                  <Home className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="apartmentUnit"
-                    type="text"
-                    value={apartmentUnit}
-                    onChange={(e) => setApartmentUnit(e.target.value)}
-                    placeholder="Apt 5B, Unit 3, Suite 201, etc."
-                    className="input-warm pl-10 h-12"
-                  />
+              {!showApartmentField ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setShowApartmentField(true)}
+                  className="text-sm text-muted-foreground hover:text-foreground p-0 h-auto font-normal"
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add apartment/unit (optional)
+                </Button>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="apartmentUnit" className="text-sm">Apartment/Unit (Optional)</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        setShowApartmentField(false);
+                        setApartmentUnit('');
+                      }}
+                      className="text-sm text-muted-foreground hover:text-foreground p-0 h-auto font-normal"
+                    >
+                      <Minus className="w-4 h-4 mr-1" />
+                      Remove
+                    </Button>
+                  </div>
+                  <div className="relative">
+                    <Home className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      id="apartmentUnit"
+                      type="text"
+                      value={apartmentUnit}
+                      onChange={(e) => setApartmentUnit(e.target.value)}
+                      placeholder="Apt 5B, Unit 3, Suite 201, etc."
+                      className="input-warm pl-10 h-12"
+                    />
+                  </div>
                 </div>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="flex-1 space-y-2">
-                  <Label htmlFor="city">City</Label>
-                  <Input
-                    id="city"
-                    type="text"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="City"
-                    className="input-warm h-12"
-                    readOnly={!!city}
-                  />
-                </div>
-                
-                <div className="w-20 space-y-2">
-                  <Label htmlFor="usState">State</Label>
-                  <Input
-                    id="usState"
-                    type="text"
-                    value={usState}
-                    onChange={(e) => setUsState(e.target.value.toUpperCase())}
-                    placeholder="ST"
-                    className="input-warm h-12 text-center"
-                    maxLength={2}
-                    readOnly={!!usState}
-                  />
-                </div>
-              </div>
+              )}
 
               <div className="flex gap-4 pt-4">
                 <Button
