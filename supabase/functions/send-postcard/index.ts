@@ -221,6 +221,40 @@ serve(async (req) => {
 
     console.log(`Postcard sending complete: ${successCount} successful, ${errorCount} failed`);
 
+    // Send confirmation email if postcards were successfully ordered and email is provided
+    if (successCount > 0 && postcardData.email) {
+      try {
+        console.log('Triggering order confirmation email...');
+        const emailResponse = await fetch('https://xwsgyxlvxntgpochonwe.supabase.co/functions/v1/send-order-confirmation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`,
+          },
+          body: JSON.stringify({
+            userInfo: {
+              fullName: userInfo.fullName,
+              email: postcardData.email,
+              streetAddress: userInfo.streetAddress,
+              city: userInfo.city,
+              state: userInfo.state,
+              zipCode: userInfo.zipCode
+            },
+            representative,
+            senators,
+            sendOption,
+            orderResults: results.filter(r => r.status === 'success')
+          })
+        });
+        
+        const emailResult = await emailResponse.json();
+        console.log('Email confirmation result:', emailResult);
+      } catch (emailError) {
+        console.error('Failed to send confirmation email (non-blocking):', emailError);
+        // Don't fail the main flow if email fails
+      }
+    }
+
     return new Response(
       JSON.stringify({
         success: errorCount === 0,
