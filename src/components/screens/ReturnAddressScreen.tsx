@@ -20,7 +20,6 @@ export function ReturnAddressScreen() {
   const [addressSuggestions, setAddressSuggestions] = useState<GooglePlacesAddressPrediction[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [isFetchingDetails, setIsFetchingDetails] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -60,24 +59,14 @@ export function ReturnAddressScreen() {
   };
 
   const handleSuggestionClick = async (suggestion: GooglePlacesAddressPrediction) => {
-    // First set the description as temporary value
-    setStreetAddress(suggestion.description);
-    setShowSuggestions(false);
-    
-    // Fetch detailed address information to get complete formatted address with zip
-    setIsFetchingDetails(true);
-    try {
-      const details = await getPlaceDetails(suggestion.place_id);
-      if (details && details.formattedAddress) {
-        // Use the complete formatted address from Google Places Details API
-        setStreetAddress(details.formattedAddress);
-      }
-    } catch (error) {
-      console.error('Failed to fetch place details:', error);
-      // Fall back to suggestion description if details fetch fails
-    } finally {
-      setIsFetchingDetails(false);
+    // Remove country from description if present (ends with ", USA")
+    let formattedAddress = suggestion.description;
+    if (formattedAddress.endsWith(', USA')) {
+      formattedAddress = formattedAddress.replace(', USA', '');
     }
+    
+    setStreetAddress(formattedAddress);
+    setShowSuggestions(false);
   };
 
   // Auto-expand textarea based on content
@@ -211,31 +200,39 @@ export function ReturnAddressScreen() {
                   <div className="absolute top-full left-0 right-0 z-50 mt-1">
                     <Command className="rounded-xl border border-border shadow-lg bg-background">
                       <CommandList className="max-h-48">
-                         {isSearching || isFetchingDetails ? (
+                         {isSearching ? (
                           <div className="p-3 text-sm text-muted-foreground">
-                            {isSearching ? 'Searching addresses...' : 'Getting address details...'}
+                            Searching addresses...
                           </div>
                         ) : (
                           <>
                             {addressSuggestions.length === 0 ? (
                               <CommandEmpty>No addresses found</CommandEmpty>
                             ) : (
-                              addressSuggestions.map((suggestion, index) => (
-                                <CommandItem
-                                  key={suggestion.place_id || index}
-                                  onSelect={() => handleSuggestionClick(suggestion)}
-                                  className="cursor-pointer"
-                                >
-                                  <div>
-                                    <div className="font-medium text-sm">
-                                      {suggestion.structured_formatting.main_text}
+                              addressSuggestions.map((suggestion, index) => {
+                                // Remove country from description if present
+                                let displayAddress = suggestion.description;
+                                if (displayAddress.endsWith(', USA')) {
+                                  displayAddress = displayAddress.replace(', USA', '');
+                                }
+                                
+                                return (
+                                  <CommandItem
+                                    key={suggestion.place_id || index}
+                                    onSelect={() => handleSuggestionClick(suggestion)}
+                                    className="cursor-pointer"
+                                  >
+                                    <div>
+                                      <div className="font-medium text-sm">
+                                        {suggestion.structured_formatting.main_text}
+                                      </div>
+                                      <div className="text-xs text-muted-foreground">
+                                        {displayAddress.replace(suggestion.structured_formatting.main_text + ', ', '')}
+                                      </div>
                                     </div>
-                                    <div className="text-xs text-muted-foreground">
-                                      {suggestion.structured_formatting.secondary_text}
-                                    </div>
-                                  </div>
-                                </CommandItem>
-                              ))
+                                  </CommandItem>
+                                );
+                              })
                             )}
                           </>
                         )}
