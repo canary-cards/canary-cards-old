@@ -50,9 +50,10 @@ async function searchWeb(query: string): Promise<string> {
 }
 
 serve(async (req) => {
-  console.log('Edge function called - draft-postcard-message');
+  console.log('Edge function called - draft-postcard-message [UPDATED VERSION]');
   console.log('Perplexity API Key exists:', !!perplexityApiKey);
   console.log('Request method:', req.method);
+  console.log('Function version: 2.0 - Using Perplexity API');
 
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -67,12 +68,18 @@ serve(async (req) => {
 
     if (!perplexityApiKey) {
       console.error('Perplexity API key is missing');
-      throw new Error('Perplexity API key not configured');
+      return new Response(JSON.stringify({ error: 'Perplexity API key not configured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     if (!concerns || !personalImpact || !representative) {
       console.error('Missing required fields:', { concerns: !!concerns, personalImpact: !!personalImpact, representative: !!representative });
-      throw new Error('Missing required fields: concerns, personalImpact, or representative');
+      return new Response(JSON.stringify({ error: 'Missing required fields: concerns, personalImpact, or representative' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     // Extract representative details
@@ -236,7 +243,10 @@ Use the web search context above to find the most current and actionable federal
     });
   } catch (error) {
     console.error('Error in draft-postcard-message function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: `Draft message generation failed: ${error.message}`,
+      details: error.toString() 
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
