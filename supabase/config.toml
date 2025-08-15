@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.send-order-confirmation]
 verify_jwt = false
+
+[functions.ignitepost-webhook]
+verify_jwt = false
