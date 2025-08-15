@@ -77,13 +77,17 @@ serve(async (req) => {
 
     // Extract representative details
     const repName = representative.name;
-    const repType = representative.type; // 'Representative' or 'Senator'
+    const repType = representative.type; // 'representative' or 'senator'
     const district = representative.district;
     const city = representative.city;
     const state = representative.state;
     const lastName = repName.split(' ').pop();
     
-    console.log('Representative details:', { repName, repType, district, city, state });
+    // Normalize the type for proper addressing
+    const isRepresentative = repType && repType.toLowerCase() === 'representative';
+    const titlePrefix = isRepresentative ? 'Rep.' : 'Sen.';
+    
+    console.log('Representative details:', { repName, repType, district, city, state, titlePrefix });
 
     // Perform web searches for current information
     console.log('Starting web searches...');
@@ -146,7 +150,7 @@ serve(async (req) => {
    * Direct impact on the constituent's concerns
 
 5. **Generate the postcard message**: Create a single postcard message that:
-   * Starts with "${repType === 'Senator' ? 'Sen.' : 'Rep.'} ${lastName}," 
+   * Starts with "${titlePrefix} ${lastName}," 
    * Maximum 250 characters total
    * **Uses the most relevant current federal development** with regional impact when applicable
    * Uses professional tone while preserving the user's voice
@@ -181,7 +185,7 @@ serve(async (req) => {
 Provide only the final postcard message text. Do not include character counts, explanations, or additional commentary - just the postcard content ready to send.
 
 ## Example Structure:
-"${repType === 'Senator' ? 'Sen.' : 'Rep.'} ${lastName}, As a [user's situation], I'm concerned about [specific issue]. [Personal impact statement]. [Reference to federal development - include bill number when available, e.g., "Please support/oppose H.R. 123: [Title]"]. [Policy impact on user's situation]. Please [clear ask]."
+"${titlePrefix} ${lastName}, As a [user's situation], I'm concerned about [specific issue]. [Personal impact statement]. [Reference to federal development - include bill number when available, e.g., "Please support/oppose H.R. 123: [Title]"]. [Policy impact on user's situation]. Please [clear ask]."
 
 Here is the current research context from web searches:
 
@@ -202,8 +206,8 @@ ${searchResults[2]}`
 
 **Personal Impact:** "${personalImpact}"
 
-**Representative:** ${repName} (${repType})
-**District:** ${district ? `District ${district}` : 'Statewide'}
+**Representative:** ${repName} (${titlePrefix.replace('.', '')})
+**District:** ${district ? `District ${district.replace('District ', '')}` : 'Statewide'}
 **Location:** ${city}, ${state}
 
 Use the web search context above to find the most current and actionable federal angle. Generate only the postcard message text - no explanations or character counts.`
@@ -217,7 +221,9 @@ Use the web search context above to find the most current and actionable federal
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Perplexity API error:', response.status, errorText);
+      throw new Error(`Perplexity API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
