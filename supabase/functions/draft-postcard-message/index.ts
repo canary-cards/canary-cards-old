@@ -10,7 +10,7 @@ const corsHeaders = {
 
 async function searchWeb(query: string, fallbackModel: boolean = false): Promise<string> {
   try {
-    const model = fallbackModel ? 'sonar-large-online' : 'sonar-small-online';
+    const model = fallbackModel ? 'sonar-pro' : 'sonar';
     console.log(`Using search model: ${model}`);
     
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
@@ -127,7 +127,7 @@ serve(async (req) => {
 
     // Function to try generation with model fallback
     async function generateWithFallback(fallbackModel: boolean = false): Promise<any> {
-      const model = fallbackModel ? 'sonar-large-online' : 'sonar-small-online';
+      const model = fallbackModel ? 'sonar-reasoning' : 'sonar';
       console.log(`Using generation model: ${model}`);
       
       const response = await fetch('https://api.perplexity.ai/chat/completions', {
