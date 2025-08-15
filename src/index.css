@@ -8,41 +8,40 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Design System Colors */
-    --background: 39 18% 96%; /* Off White (Paper) #F7F5F3 */
-    --foreground: 212 33% 20%; /* Dark Gray #2D3748 */
+    /* Warmer, Friendlier Civic App Colors */
+    --background: 32 50% 98%;
+    --foreground: 210 25% 15%;
 
-    --card: 0 0% 100%; /* Pure White #FFFFFF */
-    --card-foreground: 212 33% 20%;
+    --card: 32 20% 96%;
+    --card-foreground: 210 25% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 212 33% 20%;
+    --popover: 32 20% 96%;
+    --popover-foreground: 210 25% 15%;
 
-    /* Muted Blue Primary #9EACD6 */
-    --primary: 223 45% 70%;
-    --primary-foreground: 0 0% 100%;
+    /* Warmer Navy Blue Primary */
+    --primary: 215 45% 30%;
+    --primary-foreground: 32 50% 98%;
 
-    /* Muted Red Secondary #D69E9E */
-    --secondary: 0 35% 72%;
-    --secondary-foreground: 212 33% 20%;
+    /* Warmer Sage Green Secondary */
+    --secondary: 125 30% 65%;
+    --secondary-foreground: 210 25% 15%;
 
-    /* Subtle backgrounds */
-    --muted: 39 18% 96%;
-    --muted-foreground: 209 20% 57%; /* Medium Gray #718096 */
+    /* Warm Beige Muted */
+    --muted: 32 15% 92%;
+    --muted-foreground: 25 12% 50%;
 
-    /* Muted Blue Accent */
-    --accent: 223 45% 70%;
-    --accent-foreground: 0 0% 100%;
+    /* Soft Green Accent */
+    --accent: 125 35% 70%;
+    --accent-foreground: 210 25% 15%;
 
-    /* Muted Red for warnings/destructive */
-    --destructive: 0 35% 72%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 39 12% 88%;
-    --input: 39 12% 88%;
-    --ring: 223 45% 70%;
+    --border: 30 8% 85%;
+    --input: 30 8% 85%;
+    --ring: 220 50% 25%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -62,33 +61,33 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 212 33% 20%; /* Dark Gray background */
+    --background: 210 30% 15%;
     --foreground: 0 0% 95%;
 
-    --card: 212 30% 25%;
+    --card: 210 25% 22%;
     --card-foreground: 0 0% 95%;
 
-    --popover: 212 30% 25%;
+    --popover: 210 25% 22%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 223 45% 70%; /* Keep muted blue */
-    --primary-foreground: 212 33% 20%;
+    --primary: 220 60% 70%;
+    --primary-foreground: 210 30% 15%;
 
-    --secondary: 0 35% 72%; /* Keep muted red */
+    --secondary: 120 15% 40%;
     --secondary-foreground: 0 0% 95%;
 
-    --muted: 212 30% 25%;
-    --muted-foreground: 209 20% 70%;
+    --muted: 210 25% 25%;
+    --muted-foreground: 30 8% 65%;
 
-    --accent: 223 45% 70%;
-    --accent-foreground: 212 33% 20%;
+    --accent: 120 20% 45%;
+    --accent-foreground: 0 0% 95%;
 
-    --destructive: 0 35% 72%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 95%;
 
-    --border: 212 25% 30%;
-    --input: 212 25% 30%;
-    --ring: 223 45% 70%;
+    --border: 210 25% 25%;
+    --input: 210 25% 25%;
+    --ring: 220 60% 70%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -107,7 +106,7 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   /* Warmer, friendlier styling */

@@ -64,7 +64,6 @@ export default {
 				}
 			},
 			fontFamily: {
-				nunito: ['Nunito', 'sans-serif'],
 				caveat: ['Caveat', 'cursive'],
 			},
 			borderRadius: {
