@@ -174,16 +174,16 @@ export function CraftMessageScreen() {
     
     try {
       console.log('Starting message draft with:', {
-        userInput: combinedMessage,
-        repName: state.postcardData.representative?.name,
-        userInfo: state.postcardData.userInfo
+        concerns,
+        personalImpact,
+        representative: state.postcardData.representative
       });
 
       const { data, error } = await supabase.functions.invoke('draft-postcard-message', {
         body: {
-          userInput: combinedMessage,
-          repName: state.postcardData.representative?.name || 'Representative',
-          userInfo: state.postcardData.userInfo || { fullName: '', streetAddress: '', city: '', state: '', zipCode: '' }
+          concerns: concerns.trim(),
+          personalImpact: personalImpact.trim(),
+          representative: state.postcardData.representative
         }
       });
 
