@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, useLocation, Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,11 +10,11 @@ import { HamburgerMenu } from '@/components/HamburgerMenu';
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get('session_id');
+  const location = useLocation();
+  const sessionId = searchParams.get('session_id') || location.state?.sessionId;
   const [shareableLink, setShareableLink] = useState('');
-  const [postcardStatus, setPostcardStatus] = useState<'processing' | 'ordering' | 'success' | 'error'>('processing');
-  const [orderingResults, setOrderingResults] = useState<any>(null);
-  const [retryAttempts, setRetryAttempts] = useState(0);
+  const [postcardStatus, setPostcardStatus] = useState<'success'>('success');
+  const [orderingResults, setOrderingResults] = useState<any>(location.state?.orderingResults || null);
   const { toast } = useToast();
 
   // Get user's name from localStorage (stored during the flow)
@@ -42,57 +42,8 @@ export default function PaymentSuccess() {
     return 'Friend';
   };
 
-  const orderPostcards = async () => {
-    try {
-      setPostcardStatus('ordering');
-      console.log('Starting postcard ordering process...');
-      
-      const storedData = localStorage.getItem('postcardData');
-      if (!storedData) {
-        throw new Error('No postcard data found');
-      }
-      
-      const postcardData = JSON.parse(storedData);
-      console.log('Ordering postcard with data:', postcardData);
-      
-      const { data, error } = await supabase.functions.invoke('send-postcard', {
-        body: { postcardData }
-      });
-      
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
-      }
-      
-      console.log('Postcard ordering results:', data);
-      setOrderingResults(data);
-      
-      if (data.success) {
-        setPostcardStatus('success');
-      } else {
-        setPostcardStatus('error');
-        toast({
-          title: "Some postcards failed to order",
-          description: `${data.summary.totalSent} ordered, ${data.summary.totalFailed} failed.`,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('Failed to order postcards:', error);
-      setPostcardStatus('error');
-      setOrderingResults({ error: error.message });
-      toast({
-        title: "Failed to order postcards",
-        description: "Please try again or contact support if the issue persists.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const retryPostcardOrdering = async () => {
-    setRetryAttempts(prev => prev + 1);
-    await orderPostcards();
-  };
+  // Postcard ordering is now handled in PaymentReturn component
+  // This page only displays the final success state
 
   // Get the deployed app URL, not the Lovable editor URL
   const getAppUrl = () => {
@@ -112,22 +63,12 @@ export default function PaymentSuccess() {
       const link = `${appUrl}/?shared_by=${encodeURIComponent(userName)}`;
       setShareableLink(link);
     }
-    
-    
-    // Start postcard ordering process
-    const timer = setTimeout(() => {
-      orderPostcards();
-    }, 1500); // Short delay to show processing state
-    
-    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    // Show confetti only when postcards are successfully sent
-    if (postcardStatus === 'success') {
-      showConfetti();
-    }
-  }, [postcardStatus]);
+    // Show confetti immediately since we only reach this page on success
+    showConfetti();
+  }, []);
 
   const showConfetti = () => {
     const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
@@ -190,52 +131,7 @@ export default function PaymentSuccess() {
     }
   };
 
-  const getStatusIcon = () => {
-    switch (postcardStatus) {
-      case 'processing':
-      case 'ordering':
-        return <Loader2 className="h-16 w-16 text-blue-500 animate-spin" />;
-      case 'success':
-        return <CheckCircle className="h-16 w-16 text-green-500" />;
-      case 'error':
-        return <AlertCircle className="h-16 w-16 text-red-500" />;
-      default:
-        return <CheckCircle className="h-16 w-16 text-green-500" />;
-    }
-  };
-
-  const getStatusTitle = () => {
-    const postcardCount = orderingResults?.summary?.totalSent || 1;
-    const postcardText = postcardCount === 1 ? "Postcard" : "Postcards";
-    
-    switch (postcardStatus) {
-      case 'processing':
-        return 'Preparing Your Postcards...';
-      case 'ordering':
-        return 'Ordering Your Postcards...';
-      case 'success':
-        return `${postcardCount} ${postcardText} Ordered Successfully!`;
-      case 'error':
-        return 'Postcard Ordering Failed';
-      default:
-        return 'Payment Complete!';
-    }
-  };
-
-  const getStatusMessage = () => {
-    switch (postcardStatus) {
-      case 'processing':
-        return 'Payment completed successfully! Preparing to order your postcards...';
-      case 'ordering':
-        return 'Your postcards are being ordered from your representatives. This may take a moment...';
-      case 'success':
-        return '';
-      case 'error':
-        return 'There was an issue ordering your postcards. You can retry or contact support.';
-      default:
-        return 'Payment complete! Your postcards are being processed.';
-    }
-  };
+  // Status functions removed since this page only shows success state
 
   // Get representative data from localStorage
   const getRepresentativeData = () => {
@@ -277,33 +173,17 @@ export default function PaymentSuccess() {
         {/* Success Header */}
         <div className="text-center text-white space-y-4">
           <div className="flex justify-center">
-            <div className={`relative ${postcardStatus === 'success' ? 'animate-pulse' : ''}`}>
-              {postcardStatus === 'success' ? (
-                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
-                  <CheckCircle className="w-10 h-10 text-white" />
-                </div>
-              ) : postcardStatus === 'error' ? (
-                <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
-                  <AlertCircle className="w-10 h-10 text-white" />
-                </div>
-              ) : (
-                <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
-                  <Loader2 className="w-10 h-10 text-white animate-spin" />
-                </div>
-              )}
+            <div className="relative animate-pulse">
+              <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                <CheckCircle className="w-10 h-10 text-white" />
+              </div>
             </div>
           </div>
           
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold">
-              {postcardStatus === 'success' ? 'Payment Successful!' : 
-               postcardStatus === 'error' ? 'Payment Failed' : 
-               'Processing Payment...'}
-            </h1>
+            <h1 className="text-2xl font-bold">Payment Successful!</h1>
             <p className="text-white/80 text-base">
-              {postcardStatus === 'success' ? 'Your postcard is being prepared and will be sent to your representative.' :
-               postcardStatus === 'error' ? 'There was an issue processing your order.' :
-               'Please wait while we process your payment...'}
+              Your postcards have been ordered and will be sent to your representatives!
             </p>
           </div>
         </div>
@@ -325,44 +205,26 @@ export default function PaymentSuccess() {
             {/* Status */}
             <div className="flex justify-between items-center py-3">
               <span className="text-muted-foreground text-sm font-medium">Status</span>
-              <div className="flex items-center gap-2">
-                {postcardStatus === 'success' ? (
-                  <>
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-green-700 font-medium">Processing</span>
-                  </>
-                ) : postcardStatus === 'error' ? (
-                  <>
-                    <AlertCircle className="w-4 h-4 text-red-500" />
-                    <span className="text-red-700 font-medium">Failed</span>
-                  </>
-                ) : (
-                  <>
-                    <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-                    <span className="text-blue-700 font-medium">Processing</span>
-                  </>
-                )}
-              </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              <span className="text-green-700 font-medium">Ordered Successfully</span>
+            </div>
             </div>
 
             {/* Confirmation Email */}
-            {postcardStatus === 'success' && (
-              <>
-                <hr className="border-border" />
-                <div className="flex justify-between items-center py-3">
-                  <span className="text-muted-foreground text-sm font-medium">Confirmation Email</span>
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-blue-500" />
-                    <span className="text-blue-700 font-medium">Sending shortly</span>
-                  </div>
-                </div>
-              </>
-            )}
+            <hr className="border-border" />
+            <div className="flex justify-between items-center py-3">
+              <span className="text-muted-foreground text-sm font-medium">Confirmation Email</span>
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-blue-500" />
+                <span className="text-blue-700 font-medium">Sent</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
         {/* Representative Details */}
-        {postcardStatus === 'success' && representative && (
+        {representative && (
           <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-4">
@@ -388,7 +250,6 @@ export default function PaymentSuccess() {
         )}
 
         {/* What Happens Next */}
-        {postcardStatus === 'success' && (
           <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-4">
@@ -416,30 +277,8 @@ export default function PaymentSuccess() {
               </div>
             </CardContent>
           </Card>
-        )}
-
-        {/* Error State */}
-        {postcardStatus === 'error' && (
-          <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
-            <CardContent className="p-6 text-center space-y-4">
-              <div className="text-destructive">
-                {orderingResults?.error || 'An error occurred while ordering your postcards.'}
-              </div>
-              <Button 
-                onClick={retryPostcardOrdering}
-                variant="outline" 
-                size="lg"
-                disabled={retryAttempts >= 3}
-                className="w-full"
-              >
-                {retryAttempts >= 3 ? 'Max retries reached' : `Retry (${retryAttempts}/3)`}
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-
+        
         {/* Action Buttons */}
-        {postcardStatus === 'success' && (
           <div className="space-y-3">
             <Button 
               asChild 
@@ -475,10 +314,9 @@ export default function PaymentSuccess() {
               </Button>
             </div>
           </div>
-        )}
-
+        
         {/* Share Section */}
-        {postcardStatus === 'success' && (
+        {shareableLink && (
           <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
             <CardContent className="p-6">
               <div className="text-center space-y-4">
