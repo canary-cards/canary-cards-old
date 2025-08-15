@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const apiKey = Deno.env.get('IgnitePostAPI key #1 testing');
+    const apiKey = Deno.env.get('IgnitePost API key test');
     if (!apiKey) {
       console.error('IgnitePost API key not found');
       return new Response(
