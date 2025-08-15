@@ -74,8 +74,62 @@ serve(async (req) => {
 
     const senderAddress = parseAddress(userInfo.streetAddress);
 
+    // Function to fetch available letter templates from IgnitePost
+    const fetchAvailableTemplates = async () => {
+      try {
+        console.log('Fetching available letter templates from IgnitePost...');
+        const response = await fetch('https://dashboard.ignitepost.com/api/v1/letter_templates', {
+          method: 'GET',
+          headers: {
+            'X-TOKEN': apiKey,
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Template API request failed: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Template API response:', JSON.stringify(result, null, 2));
+
+        if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+          const templateIds = result.data.map(template => template.id);
+          console.log('Available template IDs:', templateIds);
+          return templateIds;
+        } else {
+          throw new Error('No templates found in API response');
+        }
+      } catch (error) {
+        console.error('Failed to fetch templates from API:', error);
+        return null;
+      }
+    };
+
+    // Function to select a random template ID
+    const selectRandomTemplate = async () => {
+      // First try to fetch templates dynamically
+      const availableTemplates = await fetchAvailableTemplates();
+      
+      let templateList;
+      if (availableTemplates && availableTemplates.length > 0) {
+        templateList = availableTemplates;
+        console.log('Using dynamically fetched templates:', templateList);
+      } else {
+        // Fallback to known template IDs
+        templateList = ['10428', '10420'];
+        console.log('Using fallback templates:', templateList);
+      }
+
+      // Randomly select a template
+      const randomIndex = Math.floor(Math.random() * templateList.length);
+      const selectedTemplate = templateList[randomIndex];
+      console.log(`Selected template ID: ${selectedTemplate} (from ${templateList.length} available templates)`);
+      
+      return selectedTemplate;
+    };
+
     // Function to create a postcard order
-    const createPostcardOrder = async (recipient: any, message: string, recipientType: 'representative' | 'senator') => {
+    const createPostcardOrder = async (recipient: any, message: string, recipientType: 'representative' | 'senator', templateId: string) => {
       const recipientName = recipientType === 'representative' 
         ? `Rep. ${recipient.name.split(' ').pop()}` 
         : `Sen. ${recipient.name.split(' ').pop()}`;
@@ -100,9 +154,8 @@ serve(async (req) => {
       }
 
       const orderData = {
-        font: 'kletzien', // Default font as specified
+        letter_template_id: templateId, // Use selected template instead of hardcoded font/image
         message: message,
-        image: 'white', // Use simple white background for professional appearance
         recipient_name: recipientName,
         recipient_address_one: recipientAddress.address_one,
         recipient_city: recipientAddress.city,
@@ -115,7 +168,8 @@ serve(async (req) => {
         sender_zip: senderAddress.zip,
         uid: `${Date.now()}-${recipientType}-${recipient.id || 'unknown'}`,
         'metadata[recipient_type]': recipientType,
-        'metadata[representative_id]': recipient.id || 'unknown'
+        'metadata[representative_id]': recipient.id || 'unknown',
+        'metadata[template_id]': templateId
       };
 
       console.log(`Creating ${recipientType} postcard order:`, JSON.stringify(orderData, null, 2));
@@ -154,6 +208,9 @@ serve(async (req) => {
         .replace(/\[City\]/g, city);
     };
 
+    // Select a random template for all postcards in this batch
+    const selectedTemplateId = await selectRandomTemplate();
+
     // Send to representative
     try {
       // Replace "Dear Rep." pattern with actual rep name, or use original message
@@ -164,7 +221,7 @@ serve(async (req) => {
       // Replace user placeholders
       repMessage = replaceUserPlaceholders(repMessage);
       
-      const repResult = await createPostcardOrder(representative, repMessage, 'representative');
+      const repResult = await createPostcardOrder(representative, repMessage, 'representative', selectedTemplateId);
       results.push({
         type: 'representative',
         recipient: representative.name,
@@ -197,7 +254,7 @@ serve(async (req) => {
           // Replace user placeholders
           senMessage = replaceUserPlaceholders(senMessage);
           
-          const senResult = await createPostcardOrder(senator, senMessage, 'senator');
+          const senResult = await createPostcardOrder(senator, senMessage, 'senator', selectedTemplateId);
           results.push({
             type: 'senator',
             recipient: senator.name,
