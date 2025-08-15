@@ -268,70 +268,57 @@ export default function PaymentSuccess() {
             </CardContent>
           </Card>
         
-        {/* Share Section - Moved up */}
+        {/* Share Section - Improved UX */}
         {shareableLink && (
           <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
             <CardContent className="p-6">
               <div className="text-center space-y-4">
-                <h3 className="text-lg font-semibold text-foreground">Amplify Your Voice</h3>
+                <h3 className="text-lg font-semibold text-foreground">Multiply Your Impact</h3>
                 <p className="text-muted-foreground text-sm">
-                  Encourage friends and family to contact their representatives too!
+                  Share this link so friends and family can contact their representatives too
                 </p>
                 
                 {shareableLink ? (
-                  <div className="space-y-3">
-                    <div className="flex gap-2">
-                      <Input
-                        value={shareableLink}
-                        readOnly
-                        className="text-sm"
-                      />
-                      <Button
-                        onClick={copyShareableLink}
-                        size="lg"
-                        className="flex items-center gap-2 px-6"
-                      >
-                        <Copy className="w-4 h-4" />
-                        Copy
-                      </Button>
-                    </div>
+                  <div className="space-y-4">
+                    {/* Primary Share Action */}
+                    <Button 
+                      size="lg"
+                      className="w-full h-12 text-base font-medium"
+                      onClick={() => {
+                        if (navigator.share) {
+                          navigator.share({
+                            title: 'Contact Your Representatives with InkImpact',
+                            text: 'Make your voice heard by sending postcards to your representatives!',
+                            url: shareableLink
+                          });
+                        } else {
+                          // Fallback for desktop - copy to clipboard
+                          copyShareableLink();
+                        }
+                      }}
+                    >
+                      <Share2 className="w-5 h-5 mr-2" />
+                      Share with Friends
+                    </Button>
                     
-                    <div className="flex gap-3 justify-center">
-                      {/* WhatsApp */}
-                      <Button 
-                        variant="outline"
-                        size="lg"
-                        className="flex items-center gap-2"
-                        onClick={() => {
-                          const text = encodeURIComponent(`Make your voice heard by sending postcards to your representatives! ${shareableLink}`);
-                          window.open(`https://wa.me/?text=${text}`, '_blank');
-                        }}
-                      >
-                        <MessageCircle className="w-5 h-5 text-green-600" />
-                        WhatsApp
-                      </Button>
-                      
-                      {/* Native Share */}
-                      <Button 
-                        variant="outline"
-                        size="lg"
-                        className="flex items-center gap-2"
-                        onClick={() => {
-                          if (navigator.share) {
-                            navigator.share({
-                              title: 'Contact Your Representatives with InkImpact',
-                              text: 'Make your voice heard by sending postcards to your representatives!',
-                              url: shareableLink
-                            });
-                          } else {
-                            // Fallback for desktop
-                            copyShareableLink();
-                          }
-                        }}
-                      >
-                        <Share2 className="w-5 h-5" />
-                        Share
-                      </Button>
+                    {/* Secondary Copy Action */}
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground">Or copy the link:</p>
+                      <div className="flex gap-2">
+                        <Input
+                          value={shareableLink}
+                          readOnly
+                          className="text-sm"
+                        />
+                        <Button
+                          onClick={copyShareableLink}
+                          variant="outline"
+                          size="lg"
+                          className="flex items-center gap-2 px-4"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ) : (
