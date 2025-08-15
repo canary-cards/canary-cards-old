@@ -3,7 +3,7 @@ import { useSearchParams, useLocation, Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle, Clock, Truck, BarChart3, UserPlus, MessageCircle, Send } from 'lucide-react';
+import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle, Clock, Truck, BarChart3, UserPlus, MessageCircle, Send, Eye, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
@@ -181,21 +181,33 @@ export default function PaymentSuccess() {
         {/* Order Details Card */}
         <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
           <CardContent className="p-6">
-            {/* Order ID */}
+            {/* Order ID - Enhanced */}
             {sessionId && <>
-                <div className="flex justify-between items-center py-3">
-                  <span className="text-muted-foreground text-sm font-medium">Order ID</span>
-                  <span className="font-mono text-sm">{sessionId.slice(-12)}</span>
+                <div className="flex justify-between items-center py-4 bg-gradient-to-r from-blue-50 to-indigo-50 -mx-6 px-6 mb-4 rounded-t-lg border-l-4 border-blue-500">
+                  <div>
+                    <span className="text-blue-700 text-sm font-semibold block">Order ID</span>
+                    <span className="font-mono text-lg font-bold text-blue-900">{sessionId}</span>
+                  </div>
+                  <CheckCircle className="w-6 h-6 text-green-500" />
                 </div>
-                <hr className="border-border" />
               </>}
 
-            {/* Confirmation Email */}
-            <div className="flex justify-between items-center py-3">
-              <span className="text-muted-foreground text-sm font-medium">Confirmation Email</span>
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-blue-500" />
-                <span className="text-blue-700 font-medium">Sent</span>
+            {/* Email with Preview - Enhanced */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <Eye className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground">Email with Preview</h4>
+                    <p className="text-xs text-muted-foreground">Includes a preview of your handwritten postcard</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-green-700 font-medium text-sm">Sent</span>
+                </div>
               </div>
             </div>
           </CardContent>
