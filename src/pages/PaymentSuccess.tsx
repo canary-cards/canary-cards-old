@@ -181,15 +181,6 @@ export default function PaymentSuccess() {
         {/* Order Details Card */}
         <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
           <CardContent className="p-6">
-            {/* Order ID */}
-            {sessionId && <>
-                <div className="flex justify-between items-center py-3">
-                  <span className="text-muted-foreground text-sm font-medium">Order ID</span>
-                  <span className="font-mono text-sm font-semibold">{sessionId}</span>
-                </div>
-                <hr className="border-border" />
-              </>}
-
             {/* Email with Preview - Enhanced */}
             <div className="flex items-center justify-between py-3">
               <div className="flex items-center gap-3">
