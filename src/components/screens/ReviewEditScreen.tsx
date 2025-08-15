@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAppContext } from '../../context/AppContext';
-import { ArrowLeft, Wand2, Edit3, Type } from 'lucide-react';
+import { ArrowLeft, Wand2, Edit3 } from 'lucide-react';
 export function ReviewEditScreen() {
   const {
     state,
@@ -12,24 +11,8 @@ export function ReviewEditScreen() {
   } = useAppContext();
   const [editedMessage, setEditedMessage] = useState(state.postcardData.draftMessage || '');
   const [isRegenerating, setIsRegenerating] = useState(false);
-  const [selectedFont, setSelectedFont] = useState('becca');
   const charCount = editedMessage.length;
   const maxChars = 500;
-
-  // Available fonts from IgnitePost API
-  const availableFonts = [
-    { key: 'becca', label: 'Becca' },
-    { key: 'bella', label: 'Bella' },
-    { key: 'cafe_day', label: 'Cafe Day' },
-    { key: 'ulerson', label: 'Ulerson' },
-    { key: 'ganda', label: 'Ganda' },
-    { key: 'frog', label: 'Frog' },
-    { key: 'r_send', label: 'R-send' },
-    { key: 'at_etch', label: 'At Etch' },
-    { key: 'gel', label: 'Gel' },
-    { key: 'scrubly', label: 'Scrubly' },
-    { key: 'sctd', label: 'S.Ct.D' }
-  ];
   const handleRegenerate = async () => {
     setIsRegenerating(true);
 
@@ -92,40 +75,6 @@ ${userInfo?.fullName}`;
                 <div className="relative">
                   <Textarea value={editedMessage} onChange={e => setEditedMessage(e.target.value)} className="input-warm min-h-[300px] resize-none pr-12" maxLength={maxChars} />
                   <Edit3 className="w-8 h-8 text-muted-foreground absolute bottom-3 right-3 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Postcard Preview */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-foreground">Postcard Preview</h3>
-                <Card className="bg-card border border-light-gray">
-                  <CardContent className="p-6">
-                    <div className="bg-background p-4 rounded-lg min-h-[200px] border-2 border-dashed border-light-gray">
-                      <div className={`font-${selectedFont} text-sm leading-relaxed text-foreground whitespace-pre-wrap`}>
-                        {editedMessage || 'Your message will appear here...'}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Font Selector */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Type className="w-4 h-4" />
-                    Handwriting Style
-                  </label>
-                  <Select value={selectedFont} onValueChange={setSelectedFont}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a font style" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableFonts.map((font) => (
-                        <SelectItem key={font.key} value={font.key}>
-                          <span className={`font-${font.key}`}>{font.label}</span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                 </div>
               </div>
 
