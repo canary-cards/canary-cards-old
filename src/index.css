@@ -8,11 +8,11 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Design System Colors */
-    --background: 39 18% 96%; /* Off White (Paper) #F7F5F3 */
+    /* Design System Colors - Exact Hex Conversions */
+    --background: 39 18% 96%; /* Off White #F7F5F3 */
     --foreground: 212 33% 20%; /* Dark Gray #2D3748 */
 
-    --card: 0 0% 100%; /* Pure White #FFFFFF */
+    --card: 0 0% 100%; /* White #FFFFFF */
     --card-foreground: 212 33% 20%;
 
     --popover: 0 0% 100%;
@@ -27,7 +27,7 @@ All colors MUST be HSL.
     --secondary-foreground: 212 33% 20%;
 
     /* Subtle backgrounds */
-    --muted: 39 18% 96%;
+    --muted: 39 18% 96%; /* Off White */
     --muted-foreground: 209 20% 57%; /* Medium Gray #718096 */
 
     /* Muted Blue Accent */
@@ -38,8 +38,8 @@ All colors MUST be HSL.
     --destructive: 0 35% 72%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 39 12% 88%;
-    --input: 39 12% 88%;
+    --border: 214 32% 91%; /* Light Gray #E2E8F0 */
+    --input: 214 32% 91%;
     --ring: 223 45% 70%;
 
     --radius: 0.75rem;
