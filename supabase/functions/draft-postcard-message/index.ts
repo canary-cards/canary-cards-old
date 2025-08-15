@@ -8,8 +8,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-async function searchWeb(query: string): Promise<string> {
+async function searchWeb(query: string, fallbackModel: boolean = false): Promise<string> {
   try {
+    const model = fallbackModel ? 'sonar-large-online' : 'sonar-small-online';
+    console.log(`Using search model: ${model}`);
+    
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
@@ -17,7 +20,7 @@ async function searchWeb(query: string): Promise<string> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama-3.1-sonar-small-128k-online',
+        model: model,
         messages: [
           {
             role: 'system',
@@ -37,7 +40,15 @@ async function searchWeb(query: string): Promise<string> {
     });
 
     if (!response.ok) {
-      console.error('Perplexity API error:', response.status);
+      const errorText = await response.text();
+      console.error(`Perplexity API error: ${response.status}`, errorText);
+      
+      // Try fallback model if we get a 400 invalid_model error and haven't tried fallback yet
+      if (response.status === 400 && !fallbackModel && errorText.includes('Invalid model')) {
+        console.log('Retrying with fallback model...');
+        return searchWeb(query, true);
+      }
+      
       return '';
     }
 
@@ -96,13 +107,16 @@ serve(async (req) => {
     
     console.log('Representative details:', { repName, repType, district, city, state, titlePrefix });
 
+    // Normalize district for search
+    const districtNumber = district?.replace(/District\s*/i, '') || '';
+    
     // Perform web searches for current information
     console.log('Starting web searches...');
     
     const searchQueries = [
       `current federal legislation bills 2024 2025 related to "${concerns}" congress.gov govtrack`,
       `recent political news developments "${concerns}" federal policy executive actions`,
-      `"${state}" district ${district || ''} federal funding impact "${concerns}" state specific programs`
+      `"${state}" district ${districtNumber} federal funding impact "${concerns}" state specific programs`
     ];
 
     const searchResults = await Promise.all(
@@ -111,15 +125,20 @@ serve(async (req) => {
 
     console.log('Web search completed, generating postcard...');
 
-    const response = await fetch('https://api.perplexity.ai/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${perplexityApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-sonar-small-128k-online',
-        messages: [
+    // Function to try generation with model fallback
+    async function generateWithFallback(fallbackModel: boolean = false): Promise<any> {
+      const model = fallbackModel ? 'sonar-large-online' : 'sonar-small-online';
+      console.log(`Using generation model: ${model}`);
+      
+      const response = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${perplexityApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
           {
             role: 'system',
             content: `You are an AI that generates personalized congressional postcards. When a user submits their concerns and personal impact along with their congressional district information, you will create an effective postcard message.
@@ -227,16 +246,45 @@ Use the web search context above to find the most current and actionable federal
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Perplexity API error:', response.status, errorText);
-      throw new Error(`Perplexity API error: ${response.status} - ${errorText}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Perplexity API error: ${response.status}`, errorText);
+        
+        // Try fallback model if we get a 400 invalid_model error and haven't tried fallback yet
+        if (response.status === 400 && !fallbackModel && errorText.includes('Invalid model')) {
+          console.log('Retrying generation with fallback model...');
+          return generateWithFallback(true);
+        }
+        
+        // For API errors, include the error message in response
+        let errorMessage = 'Failed to generate draft message';
+        try {
+          const errorData = JSON.parse(errorText);
+          if (errorData.error?.message) {
+            errorMessage = errorData.error.message;
+          }
+        } catch {
+          // Use default message if can't parse error
+        }
+        
+        throw new Error(`Perplexity API error: ${response.status} - ${errorMessage}`);
+      }
+
+      const data = await response.json();
+      return data.choices[0].message.content;
     }
 
-    const data = await response.json();
-    const draftMessage = data.choices[0].message.content;
+    // Try generation with fallback capability
+    let draftMessage = await generateWithFallback();
+    
+    // Enforce 250 character limit
+    if (draftMessage && draftMessage.length > 250) {
+      console.log(`Message too long (${draftMessage.length} chars), truncating to 250`);
+      draftMessage = draftMessage.substring(0, 247).trim() + '...';
+    }
 
     console.log('Generated draft message for concerns:', concerns);
+    console.log(`Final message length: ${draftMessage?.length || 0} characters`);
 
     return new Response(JSON.stringify({ draftMessage }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
