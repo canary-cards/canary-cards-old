@@ -7,7 +7,6 @@ import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle, Clock
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
-
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
@@ -15,7 +14,9 @@ export default function PaymentSuccess() {
   const [shareableLink, setShareableLink] = useState('');
   const [postcardStatus, setPostcardStatus] = useState<'success'>('success');
   const [orderingResults, setOrderingResults] = useState<any>(location.state?.orderingResults || null);
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
 
   // Get user's name from localStorage (stored during the flow)
   const getUserName = () => {
@@ -24,7 +25,6 @@ export default function PaymentSuccess() {
       if (storedData) {
         const data = JSON.parse(storedData);
         const fullName = data.userInfo?.fullName;
-        
         if (fullName) {
           const nameParts = fullName.trim().split(' ');
           if (nameParts.length >= 2) {
@@ -54,7 +54,6 @@ export default function PaymentSuccess() {
     // For deployed app or custom domain, use current origin
     return window.location.origin;
   };
-
   useEffect(() => {
     // Generate shareable link automatically
     const userName = getUserName();
@@ -64,19 +63,16 @@ export default function PaymentSuccess() {
       setShareableLink(link);
     }
   }, []);
-
   useEffect(() => {
     // Show confetti immediately since we only reach this page on success
     showConfetti();
   }, []);
-
   const showConfetti = () => {
     const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
     for (let i = 0; i < 50; i++) {
       createConfettiPiece(colors[Math.floor(Math.random() * colors.length)]);
     }
   };
-
   const createConfettiPiece = (color: string) => {
     const confetti = document.createElement('div');
     confetti.style.cssText = `
@@ -90,9 +86,8 @@ export default function PaymentSuccess() {
       border-radius: 50%;
       animation: confetti-fall ${Math.random() * 3 + 2}s linear forwards;
     `;
-    
     document.body.appendChild(confetti);
-    
+
     // Add CSS animation
     if (!document.querySelector('#confetti-style')) {
       const style = document.createElement('style');
@@ -107,25 +102,23 @@ export default function PaymentSuccess() {
       `;
       document.head.appendChild(style);
     }
-    
     setTimeout(() => {
       confetti.remove();
     }, 5000);
   };
-
   const copyShareableLink = async () => {
     if (shareableLink) {
       try {
         await navigator.clipboard.writeText(shareableLink);
         toast({
           title: "Link copied!",
-          description: "Share this link with friends and family.",
+          description: "Share this link with friends and family."
         });
       } catch (err) {
         toast({
           title: "Failed to copy",
           description: "Please copy the link manually.",
-          variant: "destructive",
+          variant: "destructive"
         });
       }
     }
@@ -147,11 +140,8 @@ export default function PaymentSuccess() {
     }
     return null;
   };
-
   const representative = getRepresentativeData();
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-indigo-500 to-violet-500">
+  return <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-indigo-500 to-violet-500">
       {/* Header with InkImpact branding and hamburger menu */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
         {/* InkImpact Branding */}
@@ -192,15 +182,13 @@ export default function PaymentSuccess() {
         <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
           <CardContent className="p-6">
             {/* Order ID */}
-            {sessionId && (
-              <>
+            {sessionId && <>
                 <div className="flex justify-between items-center py-3">
                   <span className="text-muted-foreground text-sm font-medium">Order ID</span>
                   <span className="font-mono text-sm">{sessionId.slice(-12)}</span>
                 </div>
                 <hr className="border-border" />
-              </>
-            )}
+              </>}
 
             {/* Confirmation Email */}
             <div className="flex justify-between items-center py-3">
@@ -214,8 +202,7 @@ export default function PaymentSuccess() {
         </Card>
 
         {/* Representative Details */}
-        {representative && (
-          <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
+        {representative && <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Mail className="w-5 h-5 text-primary" />
@@ -236,8 +223,7 @@ export default function PaymentSuccess() {
                 </div>
               </div>
             </CardContent>
-          </Card>
-        )}
+          </Card>}
 
         {/* What Happens Next */}
           <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
@@ -250,15 +236,12 @@ export default function PaymentSuccess() {
               <div className="space-y-3 text-sm">
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-foreground">Your postcard will be handwritten by robots within 24 hours</span>
+                  <span className="text-foreground">Your postcard will be handwritten by robots and mailed within 3 business days</span>
                 </div>
+                
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-foreground">It will be mailed within 2-3 business days</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-foreground">Delivery to your representative: 3-5 business days</span>
+                  <span className="text-foreground">It will be delivered to your representative 4-6 business days after that</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
@@ -269,8 +252,7 @@ export default function PaymentSuccess() {
           </Card>
         
         {/* Share Section - Improved UX */}
-        {shareableLink && (
-          <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
+        {shareableLink && <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
             <CardContent className="p-6">
               <div className="text-center space-y-4">
                 <h3 className="text-lg font-semibold text-foreground">Multiply Your Impact</h3>
@@ -278,25 +260,20 @@ export default function PaymentSuccess() {
                   Share this link so friends and family can contact their representatives too
                 </p>
                 
-                {shareableLink ? (
-                  <div className="space-y-4">
+                {shareableLink ? <div className="space-y-4">
                     {/* Primary Share Action */}
-                    <Button 
-                      size="lg"
-                      className="w-full h-12 text-base font-medium"
-                      onClick={() => {
-                        if (navigator.share) {
-                          navigator.share({
-                            title: 'Contact Your Representatives with InkImpact',
-                            text: 'Make your voice heard by sending postcards to your representatives!',
-                            url: shareableLink
-                          });
-                        } else {
-                          // Fallback for desktop - copy to clipboard
-                          copyShareableLink();
-                        }
-                      }}
-                    >
+                    <Button size="lg" className="w-full h-12 text-base font-medium" onClick={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    title: 'Contact Your Representatives with InkImpact',
+                    text: 'Make your voice heard by sending postcards to your representatives!',
+                    url: shareableLink
+                  });
+                } else {
+                  // Fallback for desktop - copy to clipboard
+                  copyShareableLink();
+                }
+              }}>
                       <Share2 className="w-5 h-5 mr-2" />
                       Share with Friends
                     </Button>
@@ -305,52 +282,32 @@ export default function PaymentSuccess() {
                     <div className="space-y-2">
                       <p className="text-xs text-muted-foreground">Or copy the link:</p>
                       <div className="flex gap-2">
-                        <Input
-                          value={shareableLink}
-                          readOnly
-                          className="text-sm"
-                        />
-                        <Button
-                          onClick={copyShareableLink}
-                          variant="outline"
-                          size="lg"
-                          className="flex items-center gap-2 px-4"
-                        >
+                        <Input value={shareableLink} readOnly className="text-sm" />
+                        <Button onClick={copyShareableLink} variant="outline" size="lg" className="flex items-center gap-2 px-4">
                           <Copy className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="p-4 bg-blue-50 rounded-lg">
+                  </div> : <div className="p-4 bg-blue-50 rounded-lg">
                     <p className="text-sm text-blue-700">
                       📢 Publish your project using the "Publish" button in the top right to get a shareable link!
                     </p>
-                  </div>
-                )}
+                  </div>}
               </div>
             </CardContent>
-          </Card>
-        )}
+          </Card>}
 
         {/* Action Buttons */}
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <Button 
-              asChild 
-              variant="outline"
-              className="h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50"
-            >
+            <Button asChild variant="outline" className="h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50">
               <Link to="/" className="flex items-center gap-2">
                 <Mail className="w-5 h-5" />
                 Send Another
               </Link>
             </Button>
 
-            <Button 
-              asChild 
-              className="h-12 text-base font-medium bg-primary hover:bg-primary/90"
-            >
+            <Button asChild className="h-12 text-base font-medium bg-primary hover:bg-primary/90">
               <Link to="/auth" className="flex items-center gap-2">
                 <UserPlus className="w-5 h-5" />
                 Create Account
@@ -360,6 +317,5 @@ export default function PaymentSuccess() {
         </div>
         
       </div>
-    </div>
-  );
+    </div>;
 }
