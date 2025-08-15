@@ -92,8 +92,14 @@ serve(async (req) => {
         const result = await response.json();
         console.log('Template API response:', JSON.stringify(result, null, 2));
 
-        if (result.data && Array.isArray(result.data) && result.data.length > 0) {
-          const templateIds = result.data.map(template => template.id);
+        if (Array.isArray(result) && result.length > 0) {
+          // API returns templates directly as an array
+          const templateIds = result.map(template => template.id.toString());
+          console.log('Available template IDs:', templateIds);
+          return templateIds;
+        } else if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+          // Fallback for wrapped response format
+          const templateIds = result.data.map(template => template.id.toString());
           console.log('Available template IDs:', templateIds);
           return templateIds;
         } else {
