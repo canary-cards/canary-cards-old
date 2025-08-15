@@ -175,7 +175,9 @@ serve(async (req) => {
         uid: `${Date.now()}-${recipientType}-${recipient.id || 'unknown'}`,
         'metadata[recipient_type]': recipientType,
         'metadata[representative_id]': recipient.id || 'unknown',
-        'metadata[template_id]': templateId
+        'metadata[template_id]': templateId,
+        'metadata[userEmail]': postcardData.email,
+        'metadata[uid]': `${Date.now()}-${recipientType}-${recipient.id || 'unknown'}`
       };
 
       console.log(`Creating ${recipientType} postcard order:`, JSON.stringify(orderData, null, 2));

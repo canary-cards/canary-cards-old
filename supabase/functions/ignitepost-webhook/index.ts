@@ -1,9 +1,15 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Initialize Supabase client for calling functions
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -25,60 +31,103 @@ serve(async (req) => {
       });
     }
 
-    // Parse the webhook payload
+    // Parse the webhook payload - this is the actual IgnitePost format
     const webhookData = await req.json();
     console.log('Webhook payload:', JSON.stringify(webhookData, null, 2));
 
-    // Extract key information from the webhook
+    // Extract information from the actual IgnitePost webhook format
     const {
-      order_id,
-      order_status,
-      event_type,
+      id: postcardId,
+      letter_template_id,
+      message,
       metadata,
-      timestamp,
-      // Add other fields that IgnitePost might send
+      uid,
+      recipient_name,
+      recipient_address_one,
+      recipient_city,
+      recipient_state,
+      sender_name,
+      sender_address_one,
+      sender_city,
+      sender_state,
+      created_at,
+      send_on,
+      sent_at,
+      sent_at_unix
     } = webhookData;
 
     console.log('=== Extracted Information ===');
-    console.log('Order ID:', order_id);
-    console.log('Order Status:', order_status);
-    console.log('Event Type:', event_type);
+    console.log('Postcard ID:', postcardId);
+    console.log('Recipient:', recipient_name);
+    console.log('Sender:', sender_name);
+    console.log('Message:', message);
     console.log('Metadata:', metadata);
-    console.log('Timestamp:', timestamp);
+    console.log('UID:', uid);
+    console.log('Sent At:', sent_at);
+    console.log('Created At:', created_at);
 
-    // Check if this is an order placed notification
-    if (event_type === 'order.placed' || order_status === 'placed') {
-      console.log('🎉 ORDER PLACED notification detected');
+    // Check if this is a delivery notification (webhook only fires when delivered)
+    if (sent_at) {
+      console.log('📮 DELIVERY notification detected - postcard has been sent to mail!');
       
-      // Extract user information from metadata if available
+      // Try to extract user info from metadata
+      let userEmail = null;
+      let recipientType = null;
+      let representativeId = null;
+      
       if (metadata) {
-        console.log('User UID from metadata:', metadata.uid);
-        console.log('User email from metadata:', metadata.userEmail);
-        console.log('Representative from metadata:', metadata.representative);
-        console.log('Send option from metadata:', metadata.sendOption);
+        console.log('Extracting user info from metadata...');
+        
+        // Try to get user email if stored in metadata
+        if (metadata.userEmail) {
+          userEmail = metadata.userEmail;
+          console.log('User email from metadata:', userEmail);
+        }
+        
+        // Get recipient type and ID for context
+        if (metadata.recipient_type) {
+          recipientType = metadata.recipient_type;
+          console.log('Recipient type:', recipientType);
+        }
+        
+        if (metadata.representative_id) {
+          representativeId = metadata.representative_id;
+          console.log('Representative ID:', representativeId);
+        }
       }
-      
-      // TODO: In future, trigger order placed email notification
-      console.log('TODO: Send order placed confirmation email');
-    }
 
-    // Check if this is a delivery notification
-    if (event_type === 'order.delivered' || order_status === 'delivered' || event_type === 'delivery.post_office') {
-      console.log('📮 DELIVERY notification detected');
-      
-      // Extract user information from metadata if available
-      if (metadata) {
-        console.log('User UID from metadata:', metadata.uid);
-        console.log('User email from metadata:', metadata.userEmail);
+      // Call the delivery notification function
+      try {
+        console.log('Triggering delivery notification email...');
+        
+        const deliveryResult = await supabase.functions.invoke('send-delivery-notification', {
+          body: {
+            postcardId,
+            recipientName: recipient_name,
+            recipientAddress: `${recipient_address_one}, ${recipient_city}, ${recipient_state}`,
+            senderName: sender_name,
+            senderAddress: sender_address_one,
+            senderCity: sender_city,
+            senderState: sender_state,
+            message,
+            sentAt: sent_at,
+            userEmail,
+            recipientType,
+            representativeId,
+            uid
+          }
+        });
+
+        if (deliveryResult.error) {
+          console.error('Error calling delivery notification function:', deliveryResult.error);
+        } else {
+          console.log('Delivery notification result:', deliveryResult.data);
+        }
+      } catch (emailError) {
+        console.error('Failed to send delivery notification:', emailError);
       }
-      
-      // TODO: In future, trigger delivery notification email
-      console.log('TODO: Send delivery notification email');
-    }
-
-    // Log any other event types for debugging
-    if (event_type && !['order.placed', 'order.delivered', 'delivery.post_office'].includes(event_type)) {
-      console.log('ℹ️ Unknown event type received:', event_type);
+    } else {
+      console.log('ℹ️ Webhook received but no sent_at timestamp - not a delivery notification');
     }
 
     console.log('=== Webhook Processing Complete ===');
@@ -88,7 +137,7 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         message: 'Webhook received and processed',
-        order_id: order_id 
+        postcard_id: postcardId 
       }), 
       {
         status: 200,
