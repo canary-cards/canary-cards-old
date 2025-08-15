@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Bot, Zap, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface RobotLoadingScreenProps {
-  status: 'loading' | 'success' | 'error';
+  status: 'loading' | 'error';
   message?: string;
   onRetry?: () => void;
 }
@@ -43,11 +43,6 @@ export const RobotLoadingScreen = ({ status, message, onRetry }: RobotLoadingScr
             </>
           )}
           
-          {status === 'success' && (
-            <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center border-4 border-green-200 animate-scale-in">
-              <CheckCircle className="w-12 h-12 text-green-600" />
-            </div>
-          )}
           
           {status === 'error' && (
             <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center border-4 border-red-200 shake">
@@ -60,7 +55,6 @@ export const RobotLoadingScreen = ({ status, message, onRetry }: RobotLoadingScr
         <div className="space-y-4">
           <h1 className="text-2xl font-bold text-foreground">
             {status === 'loading' && "Processing Your Order"}
-            {status === 'success' && "Order Complete!"}
             {status === 'error' && "Oops! Something Went Wrong"}
           </h1>
           
@@ -71,11 +65,6 @@ export const RobotLoadingScreen = ({ status, message, onRetry }: RobotLoadingScr
               </p>
             )}
             
-            {status === 'success' && (
-              <p className="text-lg text-muted-foreground">
-                Your postcards have been successfully ordered and will be sent to your representatives!
-              </p>
-            )}
             
             {status === 'error' && (
               <div className="space-y-4">

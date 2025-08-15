@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function PaymentReturn() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [status, setStatus] = useState<'loading' | 'ordering' | 'success' | 'error'>('loading');
+  const [status, setStatus] = useState<'loading' | 'ordering' | 'error'>('loading');
   const [orderingResults, setOrderingResults] = useState<any>(null);
   const [retryAttempts, setRetryAttempts] = useState(0);
   const [startTime, setStartTime] = useState<number>(Date.now());
@@ -43,8 +43,6 @@ export default function PaymentReturn() {
       setOrderingResults(data);
       
       if (data.success) {
-        setStatus('success');
-        
         // Ensure minimum 4 seconds before navigating
         const elapsed = Date.now() - startTime;
         const minTime = 4000; // 4 seconds
@@ -101,10 +99,10 @@ export default function PaymentReturn() {
   }, [searchParams, navigate]);
 
   // Show robot loading screen for ordering state, fallback card for error
-  if (status === 'ordering' || status === 'success') {
+  if (status === 'ordering') {
     return (
       <RobotLoadingScreen 
-        status={status === 'ordering' ? 'loading' : 'success'}
+        status="loading"
         onRetry={retryAttempts < 3 ? retryPostcardOrdering : undefined}
       />
     );
