@@ -14,6 +14,7 @@ export default function PaymentReturn() {
   const [status, setStatus] = useState<'loading' | 'ordering' | 'success' | 'error'>('loading');
   const [orderingResults, setOrderingResults] = useState<any>(null);
   const [retryAttempts, setRetryAttempts] = useState(0);
+  const [startTime, setStartTime] = useState<number>(Date.now());
   const { toast } = useToast();
 
   const orderPostcards = async () => {
@@ -43,13 +44,20 @@ export default function PaymentReturn() {
       
       if (data.success) {
         setStatus('success');
-        // Navigate to success page with results
-        navigate('/payment-success', { 
-          state: { 
-            sessionId: searchParams.get('session_id'),
-            orderingResults: data 
-          }
-        });
+        
+        // Ensure minimum 4 seconds before navigating
+        const elapsed = Date.now() - startTime;
+        const minTime = 4000; // 4 seconds
+        const remainingTime = Math.max(0, minTime - elapsed);
+        
+        setTimeout(() => {
+          navigate('/payment-success', { 
+            state: { 
+              sessionId: searchParams.get('session_id'),
+              orderingResults: data 
+            }
+          });
+        }, remainingTime);
       } else {
         setStatus('error');
         toast({
@@ -80,6 +88,7 @@ export default function PaymentReturn() {
     
     if (sessionId) {
       // Payment was successful, start postcard ordering immediately
+      setStartTime(Date.now());
       setStatus('ordering');
       orderPostcards();
     } else {

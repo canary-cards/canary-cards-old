@@ -3,7 +3,7 @@ import { useSearchParams, useLocation, Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle, Clock, Truck, BarChart3, UserPlus } from 'lucide-react';
+import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle, Clock, Truck, BarChart3, UserPlus, MessageCircle, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
@@ -181,9 +181,9 @@ export default function PaymentSuccess() {
           </div>
           
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold">Payment Successful!</h1>
+            <h1 className="text-2xl font-bold">Order Successful!</h1>
             <p className="text-white/80 text-base">
-              Your postcards have been ordered and will be sent to your representatives!
+              Your postcard has been ordered and will be sent to your representative.
             </p>
           </div>
         </div>
@@ -201,18 +201,8 @@ export default function PaymentSuccess() {
                 <hr className="border-border" />
               </>
             )}
-            
-            {/* Status */}
-            <div className="flex justify-between items-center py-3">
-              <span className="text-muted-foreground text-sm font-medium">Status</span>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span className="text-green-700 font-medium">Ordered Successfully</span>
-            </div>
-            </div>
 
             {/* Confirmation Email */}
-            <hr className="border-border" />
             <div className="flex justify-between items-center py-3">
               <span className="text-muted-foreground text-sm font-medium">Confirmation Email</span>
               <div className="flex items-center gap-2">
@@ -260,7 +250,7 @@ export default function PaymentSuccess() {
               <div className="space-y-3 text-sm">
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-foreground">Your postcard will be printed within 24 hours</span>
+                  <span className="text-foreground">Your postcard will be handwritten by robots within 24 hours</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
@@ -272,50 +262,13 @@ export default function PaymentSuccess() {
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-foreground">You'll receive email updates on the status</span>
+                  <span className="text-foreground">You'll receive an email when it's been put in the mail</span>
                 </div>
               </div>
             </CardContent>
           </Card>
         
-        {/* Action Buttons */}
-          <div className="space-y-3">
-            <Button 
-              asChild 
-              variant="outline"
-              className="w-full h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50"
-            >
-              <Link to="/profile" className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
-                Track This Order
-              </Link>
-            </Button>
-
-            <div className="grid grid-cols-2 gap-3">
-              <Button 
-                asChild 
-                variant="outline"
-                className="h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50"
-              >
-                <Link to="/" className="flex items-center gap-2">
-                  <Mail className="w-5 h-5" />
-                  Send Another
-                </Link>
-              </Button>
-
-              <Button 
-                asChild 
-                className="h-12 text-base font-medium bg-primary hover:bg-primary/90"
-              >
-                <Link to="/auth" className="flex items-center gap-2">
-                  <UserPlus className="w-5 h-5" />
-                  Create Account
-                </Link>
-              </Button>
-            </div>
-          </div>
-        
-        {/* Share Section */}
+        {/* Share Section - Moved up */}
         {shareableLink && (
           <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-xl">
             <CardContent className="p-6">
@@ -343,22 +296,43 @@ export default function PaymentSuccess() {
                       </Button>
                     </div>
                     
-                    <Button 
-                      variant="outline"
-                      className="w-full h-12 text-base font-medium"
-                      onClick={() => {
-                        if (navigator.share) {
-                          navigator.share({
-                            title: 'Contact Your Representatives with InkImpact',
-                            text: 'Make your voice heard by sending postcards to your representatives!',
-                            url: shareableLink
-                          });
-                        }
-                      }}
-                    >
-                      <Share2 className="w-5 h-5 mr-2" />
-                      Share on Social Media
-                    </Button>
+                    <div className="flex gap-3 justify-center">
+                      {/* WhatsApp */}
+                      <Button 
+                        variant="outline"
+                        size="lg"
+                        className="flex items-center gap-2"
+                        onClick={() => {
+                          const text = encodeURIComponent(`Make your voice heard by sending postcards to your representatives! ${shareableLink}`);
+                          window.open(`https://wa.me/?text=${text}`, '_blank');
+                        }}
+                      >
+                        <MessageCircle className="w-5 h-5 text-green-600" />
+                        WhatsApp
+                      </Button>
+                      
+                      {/* Native Share */}
+                      <Button 
+                        variant="outline"
+                        size="lg"
+                        className="flex items-center gap-2"
+                        onClick={() => {
+                          if (navigator.share) {
+                            navigator.share({
+                              title: 'Contact Your Representatives with InkImpact',
+                              text: 'Make your voice heard by sending postcards to your representatives!',
+                              url: shareableLink
+                            });
+                          } else {
+                            // Fallback for desktop
+                            copyShareableLink();
+                          }
+                        }}
+                      >
+                        <Share2 className="w-5 h-5" />
+                        Share
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   <div className="p-4 bg-blue-50 rounded-lg">
@@ -371,6 +345,33 @@ export default function PaymentSuccess() {
             </CardContent>
           </Card>
         )}
+
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              asChild 
+              variant="outline"
+              className="h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50"
+            >
+              <Link to="/" className="flex items-center gap-2">
+                <Mail className="w-5 h-5" />
+                Send Another
+              </Link>
+            </Button>
+
+            <Button 
+              asChild 
+              className="h-12 text-base font-medium bg-primary hover:bg-primary/90"
+            >
+              <Link to="/auth" className="flex items-center gap-2">
+                <UserPlus className="w-5 h-5" />
+                Create Account
+              </Link>
+            </Button>
+          </div>
+        </div>
+        
       </div>
     </div>
   );
