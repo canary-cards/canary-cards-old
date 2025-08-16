@@ -17,10 +17,15 @@ export function DraftingScreen() {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [startTime] = useState(Date.now());
 
-  // Rotate messages every 1.25 seconds
+  // Rotate messages every 1.5 seconds, but stop at the last message
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentMessageIndex((prev) => (prev + 1) % draftingMessages.length);
+      setCurrentMessageIndex((prev) => {
+        if (prev < draftingMessages.length - 1) {
+          return prev + 1;
+        }
+        return prev; // Stay on last message
+      });
     }, 1500);
 
     return () => clearInterval(interval);
