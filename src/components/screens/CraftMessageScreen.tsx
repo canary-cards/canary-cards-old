@@ -170,59 +170,21 @@ export function CraftMessageScreen() {
       return;
     }
 
-    setIsDrafting(true);
-    
-    try {
-      console.log('Starting message draft with:', {
-        concerns,
-        personalImpact,
-        representative: state.postcardData.representative
-      });
+    // Convert list-style inputs to sentences
+    const processedConcerns = convertListToSentence(concerns);
+    const processedPersonalImpact = convertListToSentence(personalImpact);
 
-      const { data, error } = await supabase.functions.invoke('draft-postcard-message', {
-        body: {
-          concerns: concerns.trim(),
-          personalImpact: personalImpact.trim(),
-          representative: state.postcardData.representative,
-          zipCode: state.postcardData.zipCode
-        }
-      });
-
-      console.log('Supabase function response:', { data, error });
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
+    // Update the postcard data with the processed inputs
+    dispatch({
+      type: 'UPDATE_POSTCARD_DATA',
+      payload: {
+        concerns: processedConcerns,
+        personalImpact: processedPersonalImpact
       }
+    });
 
-      if (!data?.draftMessage) {
-        console.error('No draft message in response:', data);
-        throw new Error('No draft message received from AI');
-      }
-
-      dispatch({ 
-        type: 'UPDATE_POSTCARD_DATA', 
-        payload: { 
-          originalMessage: combinedMessage,
-          draftMessage: data.draftMessage 
-        }
-      });
-      dispatch({ type: 'SET_STEP', payload: 3 });
-      
-      toast({
-        title: "Message drafted!",
-        description: "Your personalized postcard message has been created.",
-      });
-    } catch (error) {
-      console.error('Error drafting message:', error);
-      toast({
-        title: "Drafting failed",
-        description: `Error: ${error.message || 'Please try again or contact support if the issue persists.'}`,
-        variant: "destructive",
-      });
-    } finally {
-      setIsDrafting(false);
-    }
+    // Navigate to the drafting screen (step 7)
+    dispatch({ type: 'SET_STEP', payload: 7 });
   };
 
 

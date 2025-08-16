@@ -23,6 +23,8 @@ export interface PostcardData {
   zipCode: string;
   representative: Representative;
   userInfo: UserInfo;
+  concerns?: string;
+  personalImpact?: string;
   originalMessage: string;
   draftMessage: string;
   finalMessage: string;

@@ -8,6 +8,7 @@ import { CraftMessageScreen } from './screens/CraftMessageScreen';
 import { ReviewEditScreen } from './screens/ReviewEditScreen';
 import { PreviewSendScreen } from './screens/PreviewSendScreen';
 import { SuccessScreen } from './screens/SuccessScreen';
+import { DraftingScreen } from './screens/DraftingScreen';
 import { Mail } from 'lucide-react';
 
 export function CivicPostcardApp() {
@@ -32,6 +33,8 @@ export function CivicPostcardApp() {
         return <PreviewSendScreen />;
       case 6:
         return <SuccessScreen />;
+      case 7:
+        return <DraftingScreen />;
       default:
         return <LandingScreen />;
     }
@@ -60,7 +63,7 @@ export function CivicPostcardApp() {
         </div>
       </div>
       
-      {/* Progress bar - full width below header for steps 2-6 */}
+      {/* Progress bar - full width below header for steps 2-6 (exclude drafting step 7) */}
       {state.currentStep > 1 && state.currentStep <= 6 && (
         <div className="absolute top-20 left-0 right-0 z-10 px-4">
           <ProgressIndicator currentStep={state.currentStep} totalSteps={6} />
@@ -68,7 +71,7 @@ export function CivicPostcardApp() {
       )}
       
       {/* Content with proper spacing */}
-      <div className={state.currentStep > 1 ? "pt-12" : ""}>
+      <div className={state.currentStep > 1 && state.currentStep !== 7 ? "pt-12" : ""}>
         {renderCurrentScreen()}
       </div>
     </div>
