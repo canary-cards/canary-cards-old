@@ -226,7 +226,7 @@ export function CraftMessageScreen() {
                 <label className="text-sm font-medium text-foreground">I'm most concerned about:</label>
                 <div className="relative">
                   <Textarea
-                    placeholder="Healthcare costs, climate change, education funding..."
+                    placeholder="Immigration"
                     value={concerns}
                     onChange={(e) => setConcerns(e.target.value)}
                     className="input-warm min-h-[60px] resize-none pr-16"
