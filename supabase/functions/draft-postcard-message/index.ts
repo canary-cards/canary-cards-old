@@ -109,17 +109,16 @@ Provide only the final postcard message text. Do not include character counts, e
 "${titlePrefix} ${lastName},
 As a [user's situation], I'm concerned about [specific issue]. [Personal impact statement]. [Reference to federal development - include bill number when available, e.g., "Please support/oppose H.R. 123: [Title]"]. [Policy impact on user's situation]. Please [clear ask]."`;
 
-    // Generate the postcard using Anthropic Claude with web search
+    // Generate the postcard using Anthropic Claude
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'x-api-key': anthropicApiKey,
         'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01',
-        'anthropic-beta': 'tools-2024-10-22'
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-3-7-sonnet-20250219',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 400,
         system: systemPrompt,
         messages: [
@@ -133,14 +132,6 @@ As a [user's situation], I'm concerned about [specific issue]. [Personal impact 
 ${zipCode ? `**Zip Code:** ${zipCode}` : ''}
 
 Follow the process outlined in the system prompt and provide ONLY the final postcard message text of 300 characters or less.`
-          }
-        ],
-        tools: [
-          {
-            type: "web_search",
-            web_search: {
-              max_results: 10
-            }
           }
         ]
       }),
