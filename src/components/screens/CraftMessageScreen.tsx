@@ -211,12 +211,12 @@ export function CraftMessageScreen() {
         <Card className="card-warm">
           <CardContent className="p-6">
             <div className="text-center mb-3">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
+              <h1 className="text-2xl font-semibold text-foreground mb-2">
                 Make It Personal
               </h1>
               
-              <p className="text-muted-foreground text-sm mb-4">
-                Just a few details to get started. You can edit the draft on the next screen.
+              <p className="text-lg text-muted-foreground mb-4">
+                Provide a few details to start. You'll review and edit the draft next.
               </p>
             </div>
 
