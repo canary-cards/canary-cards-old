@@ -215,16 +215,9 @@ export function CraftMessageScreen() {
                 Make It Personal
               </h1>
               
-              <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800 mb-3 max-w-lg mx-auto">
-                <div className="flex items-start gap-2">
-                  <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-white text-xs font-bold">i</span>
-                  </div>
-                  <p className="text-blue-800 dark:text-blue-200 text-xs leading-tight text-left">
-                    Messages with personal stories and local impact are <strong>20x more effective</strong> at achieving significant influence compared to form letters.
-                  </p>
-                </div>
-              </div>
+              <p className="text-muted-foreground text-sm mb-4">
+                Just a few details to get started. You can edit the draft on the next screen.
+              </p>
             </div>
 
             {/* Simplified inputs with inline microphone controls */}
