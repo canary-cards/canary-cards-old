@@ -59,11 +59,9 @@ You are an AI that generates personalized congressional postcards. When a user s
    * Major political developments affecting the issue
 
 2. **Search for relevant federal legislation**: Use web_search to find current federal bills related to the user's primary concern:
-   * congress.gov for federal bills
-   * govtrack.us for bill tracking
-   * Recent news sources for bill updates and numbers
-   
-   Look for bills currently in committee, recently introduced, scheduled for votes, or recently passed/failed.
+    // Note: We previously relied on external web search when supported.
+    // If web search is enabled for your Anthropic account, we can add tool use later.
+
 
 3. **Search for district/state-specific impacts of federal issues**: Use the zip code ${zipCode || 'provided'} to find their city and state, and then use that information to find:
    * How federal legislation/policy specifically affects their state/region
@@ -118,7 +116,7 @@ As a [user's situation], I'm concerned about [specific issue]. [Personal impact 
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-opus-4-1-20250805',
         max_tokens: 400,
         system: systemPrompt,
         messages: [
@@ -140,16 +138,25 @@ Follow the process outlined in the system prompt and provide ONLY the final post
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`Anthropic API error: ${response.status}`, errorText);
-      throw new Error(`Anthropic API error: ${response.status}`);
+      throw new Error(`Anthropic API error ${response.status}: ${errorText}`);
     }
 
     const data = await response.json();
     
     // Extract content from Anthropic response format
     let draftMessage = '';
-    if (data.content && data.content[0] && data.content[0].text) {
-      draftMessage = data.content[0].text;
-    } else {
+    try {
+      const blocks = Array.isArray(data.content) ? data.content : [];
+      draftMessage = blocks
+        .filter((b: any) => b && b.type === 'text' && typeof b.text === 'string')
+        .map((b: any) => b.text)
+        .join(' ')
+        .trim();
+    } catch (e) {
+      console.error('Error parsing Anthropic response content:', e);
+    }
+
+    if (!draftMessage) {
       console.error('Unexpected Anthropic response format:', JSON.stringify(data));
       throw new Error('Unexpected response format from Anthropic API');
     }
