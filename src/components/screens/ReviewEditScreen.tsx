@@ -12,7 +12,7 @@ export function ReviewEditScreen() {
   const [editedMessage, setEditedMessage] = useState(state.postcardData.draftMessage || '');
   const [isRegenerating, setIsRegenerating] = useState(false);
   const charCount = editedMessage.length;
-  const maxChars = 500;
+  const maxChars = 300;
   const handleRegenerate = async () => {
     setIsRegenerating(true);
 

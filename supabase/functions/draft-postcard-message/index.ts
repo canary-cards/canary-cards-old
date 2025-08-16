@@ -10,7 +10,7 @@ const corsHeaders = {
 
 async function searchWeb(query: string, fallbackModel: boolean = false): Promise<string> {
   try {
-    const model = fallbackModel ? 'sonar-pro' : 'sonar';
+    const model = fallbackModel ? 'sonar' : 'sonar-reasoning';
     console.log(`Using search model: ${model}`);
     
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
@@ -127,7 +127,7 @@ serve(async (req) => {
 
     // Function to try generation with model fallback
     async function generateWithFallback(fallbackModel: boolean = false): Promise<any> {
-      const model = fallbackModel ? 'sonar-reasoning' : 'sonar';
+      const model = fallbackModel ? 'sonar' : 'sonar-reasoning';
       console.log(`Using generation model: ${model}`);
       
       const response = await fetch('https://api.perplexity.ai/chat/completions', {
@@ -176,8 +176,8 @@ serve(async (req) => {
    * Direct impact on the constituent's concerns
 
 5. **Generate the postcard message**: Create a single postcard message that:
-   * Starts with "${titlePrefix} ${lastName}," 
-   * Maximum 250 characters total
+    * Starts with "${titlePrefix} ${lastName}," 
+    * Maximum 300 characters total
    * **Uses the most relevant current federal development** with regional impact when applicable
    * Uses professional tone while preserving the user's voice
    * Focuses on personal impact and how federal policy affects people in their situation
@@ -277,10 +277,10 @@ Use the web search context above to find the most current and actionable federal
     // Try generation with fallback capability
     let draftMessage = await generateWithFallback();
     
-    // Enforce 250 character limit
-    if (draftMessage && draftMessage.length > 250) {
-      console.log(`Message too long (${draftMessage.length} chars), truncating to 250`);
-      draftMessage = draftMessage.substring(0, 247).trim() + '...';
+    // Enforce 300 character limit
+    if (draftMessage && draftMessage.length > 300) {
+      console.log(`Message too long (${draftMessage.length} chars), truncating to 300`);
+      draftMessage = draftMessage.substring(0, 297).trim() + '...';
     }
 
     console.log('Generated draft message for concerns:', concerns);
