@@ -52,6 +52,12 @@ export function DraftingScreen() {
           return;
         }
 
+        if (!data?.draftMessage) {
+          console.error('No draft message in response:', data);
+          dispatch({ type: 'SET_ERROR', payload: 'No draft message received from AI' });
+          return;
+        }
+
         // Ensure minimum 1 second dwell time
         const elapsedTime = Date.now() - startTime;
         const remainingTime = Math.max(0, 1000 - elapsedTime);
@@ -62,7 +68,7 @@ export function DraftingScreen() {
             type: 'UPDATE_POSTCARD_DATA',
             payload: {
               originalMessage: `${concerns}\n\n${personalImpact}`,
-              draftMessage: data.message
+              draftMessage: data.draftMessage
             }
           });
 
