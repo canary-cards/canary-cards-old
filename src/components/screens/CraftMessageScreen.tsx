@@ -236,10 +236,10 @@ export function CraftMessageScreen() {
                     aria-label={isRecording && recordingField === 'concerns' ? 'Stop recording' : 'Start recording for concerns'}
                     aria-pressed={isRecording && recordingField === 'concerns'}
                     onClick={() => (isRecording && recordingField === 'concerns') ? stopRecording() : startRecording('concerns')}
-                    className={`absolute right-3 top-3 z-10 inline-flex items-center justify-center h-8 w-8 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm bg-background border border-border ${
+                    className={`absolute right-3 top-3 z-10 inline-flex items-center justify-center h-8 w-8 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm ${
                       isRecording && recordingField === 'concerns'
                         ? 'bg-destructive text-destructive-foreground ring-2 ring-destructive/40 shadow-lg animate-pulse'
-                        : 'bg-background text-primary hover:bg-primary/10'
+                        : 'bg-primary text-primary-foreground hover:bg-primary/90'
                     }`}
                   >
                     {isRecording && recordingField === 'concerns' && (
@@ -282,10 +282,10 @@ export function CraftMessageScreen() {
                     aria-label={isRecording && recordingField === 'impact' ? 'Stop recording' : 'Start recording for impact'}
                     aria-pressed={isRecording && recordingField === 'impact'}
                     onClick={() => (isRecording && recordingField === 'impact') ? stopRecording() : startRecording('impact')}
-                    className={`absolute right-3 top-3 z-10 inline-flex items-center justify-center h-8 w-8 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm bg-background border border-border ${
+                    className={`absolute right-3 top-3 z-10 inline-flex items-center justify-center h-8 w-8 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-sm ${
                       isRecording && recordingField === 'impact'
                         ? 'bg-destructive text-destructive-foreground ring-2 ring-destructive/40 shadow-lg animate-pulse'
-                        : 'bg-background text-primary hover:bg-primary/10'
+                        : 'bg-primary text-primary-foreground hover:bg-primary/90'
                     }`}
                   >
                     {isRecording && recordingField === 'impact' && (
