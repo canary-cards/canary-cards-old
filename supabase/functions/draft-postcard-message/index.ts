@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const perplexityApiKey = Deno.env.get('PERPLEXITY_API_KEY');
+const anthropicApiKey = Deno.env.get('anthropickey');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,9 +22,9 @@ serve(async (req) => {
     
     const { concerns, personalImpact, representative, zipCode } = requestBody;
 
-    if (!perplexityApiKey) {
-      console.error('Perplexity API key is missing');
-      return new Response(JSON.stringify({ error: 'Perplexity API key not configured' }), {
+    if (!anthropicApiKey) {
+      console.error('Anthropic API key is missing');
+      return new Response(JSON.stringify({ error: 'Anthropic API key not configured' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -109,20 +109,20 @@ Provide only the final postcard message text. Do not include character counts, e
 "${titlePrefix} ${lastName},
 As a [user's situation], I'm concerned about [specific issue]. [Personal impact statement]. [Reference to federal development - include bill number when available, e.g., "Please support/oppose H.R. 123: [Title]"]. [Policy impact on user's situation]. Please [clear ask]."`;
 
-    // Generate the postcard using the comprehensive prompt
-    const response = await fetch('https://api.perplexity.ai/chat/completions', {
+    // Generate the postcard using Anthropic Claude with web search
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${perplexityApiKey}`,
+        'x-api-key': anthropicApiKey,
         'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01',
+        'anthropic-beta': 'tools-2024-10-22'
       },
       body: JSON.stringify({
-        model: 'sonar-reasoning',
+        model: 'claude-3-7-sonnet-20250219',
+        max_tokens: 400,
+        system: systemPrompt,
         messages: [
-          {
-            role: 'system',
-            content: systemPrompt
-          },
           {
             role: 'user',
             content: `Generate a postcard message based on:
@@ -135,21 +135,33 @@ ${zipCode ? `**Zip Code:** ${zipCode}` : ''}
 Follow the process outlined in the system prompt and provide ONLY the final postcard message text of 300 characters or less.`
           }
         ],
-        max_tokens: 400,
-        return_images: false,
-        return_related_questions: false,
-        search_recency_filter: 'month'
+        tools: [
+          {
+            type: "web_search",
+            web_search: {
+              max_results: 10
+            }
+          }
+        ]
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Perplexity API error: ${response.status}`, errorText);
-      throw new Error(`Perplexity API error: ${response.status}`);
+      console.error(`Anthropic API error: ${response.status}`, errorText);
+      throw new Error(`Anthropic API error: ${response.status}`);
     }
 
     const data = await response.json();
-    let draftMessage = data.choices[0]?.message?.content || '';
+    
+    // Extract content from Anthropic response format
+    let draftMessage = '';
+    if (data.content && data.content[0] && data.content[0].text) {
+      draftMessage = data.content[0].text;
+    } else {
+      console.error('Unexpected Anthropic response format:', JSON.stringify(data));
+      throw new Error('Unexpected response format from Anthropic API');
+    }
     
     // Clean up the message
     draftMessage = draftMessage

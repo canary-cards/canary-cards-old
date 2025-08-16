@@ -183,7 +183,8 @@ export function CraftMessageScreen() {
         body: {
           concerns: concerns.trim(),
           personalImpact: personalImpact.trim(),
-          representative: state.postcardData.representative
+          representative: state.postcardData.representative,
+          zipCode: state.postcardData.zipCode
         }
       });
 
