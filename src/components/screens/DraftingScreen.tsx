@@ -4,12 +4,13 @@ import { supabase } from '../../integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 
 const draftingMessages = [
-  "Searching for relevant recent news…",
-  "Reviewing current legislation…", 
   "Analyzing your concerns…",
-  "Crafting your message…",
-  "Ensuring it fits on a postcard…",
-  "Adding personal touches…"
+  "Matching with bills in Congress…",
+  "Highlighting local impact…",
+  "Weaving in your story...",
+  "Optimizing for influence…",
+  "Fitting onto a postcard…",
+  "Completing draft — amplifying your voice..."
 ];
 
 export function DraftingScreen() {
