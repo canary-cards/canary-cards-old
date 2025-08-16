@@ -21,7 +21,7 @@ export function DraftingScreen() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentMessageIndex((prev) => (prev + 1) % draftingMessages.length);
-    }, 1250);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, []);

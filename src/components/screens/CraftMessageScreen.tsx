@@ -279,7 +279,7 @@ export function CraftMessageScreen() {
                 <label className="text-sm font-medium text-foreground">How it affects me or my community:</label>
                 <div className="relative">
                   <Textarea
-                    placeholder="As a parent of two children in public schools..."
+                    placeholder="I am a parent of two children in public schools..."
                     value={personalImpact}
                     onChange={(e) => setPersonalImpact(e.target.value)}
                     className="input-warm min-h-[70px] resize-none pr-16"
