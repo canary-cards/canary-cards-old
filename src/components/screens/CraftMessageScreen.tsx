@@ -215,7 +215,7 @@ export function CraftMessageScreen() {
                 Make It Personal
               </h1>
               
-              <p className="text-lg text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-4">
                 Provide a few details to start. You'll review and edit the draft next.
               </p>
             </div>
