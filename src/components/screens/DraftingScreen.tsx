@@ -26,7 +26,7 @@ export function DraftingScreen() {
         }
         return prev; // Stay on last message
       });
-    }, 1500);
+    }, 1750);
 
     return () => clearInterval(interval);
   }, []);
