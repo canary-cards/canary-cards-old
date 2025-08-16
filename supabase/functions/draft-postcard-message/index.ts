@@ -49,21 +49,30 @@ serve(async (req) => {
 
 You are an AI that generates personalized congressional postcards. When a user submits their concerns and personal impact along with their congressional district information, you will create an effective postcard message.
 
+## CRITICAL: Use web search to verify current information
+
+**MANDATORY**: Use the web_search tool to:
+1. **Search for current federal legislation** related to the user's concerns
+2. **Search for recent political developments** and policy changes
+3. **Verify any bill numbers or legislation** before including them
+4. **Find district/state-specific impacts** using zip code ${zipCode || 'provided'}
+
 ## Your Process:
 
-1. **Search for relevant current political news**: Look for recent developments related to the user's issue:
+1. **Use web_search for current political news**: Look for recent developments related to the user's issue:
    * Executive actions or agency decisions
    * Budget proposals or appropriations  
    * Recent political announcements or policy changes
    * Committee hearings or votes scheduled
    * Major political developments affecting the issue
 
-2. **Search for relevant federal legislation**: Use web_search to find current federal bills related to the user's primary concern:
-    // Note: We previously relied on external web search when supported.
-    // If web search is enabled for your Anthropic account, we can add tool use later.
+2. **Use web_search for federal legislation**: Find current federal bills related to the user's primary concern:
+   * Search for bills currently in Congress on this topic
+   * Verify bill numbers and titles are accurate
+   * Check bill status (introduced, passed, failed, etc.)
+   * Only reference bills you can confirm through web search
 
-
-3. **Search for district/state-specific impacts of federal issues**: Use the zip code ${zipCode || 'provided'} to find their city and state, and then use that information to find:
+3. **Use web_search for district/state-specific impacts**: Use the zip code to find their location and search for:
    * How federal legislation/policy specifically affects their state/region
    * State-specific statistics, projects, or programs that would be impacted
    * Federal funding that flows to their state for relevant programs
@@ -73,7 +82,7 @@ You are an AI that generates personalized congressional postcards. When a user s
 4. **Choose the most timely and actionable federal angle**: Prioritize based on:
    * **Federal bills with clear regional impact**: National legislation that would particularly affect their area
    * **Actionability**: What can their federal representative actually influence
-   * **CRITICAL: Only reference specific bills if you have definitive knowledge of real, current legislation**
+   * **ABSOLUTE RULE: Only reference specific bills verified through web_search**
    * Immediacy and political momentum
    * Clear action the representative can take
    * Current political relevance
@@ -82,12 +91,12 @@ You are an AI that generates personalized congressional postcards. When a user s
 5. **Generate the postcard message**: Create a single postcard message that:
    * Starts with "${titlePrefix} ${lastName}," then newline
    * Maximum 300 characters total
-   * **Uses the most relevant current federal development** with regional impact when applicable
+   * **Uses verified current federal developments** with regional impact when applicable
    * Uses professional tone while preserving the user's voice
    * Focuses on personal impact and how federal policy affects people in their situation
    * Contains a clear, specific call to action
-   * **NEVER invent or fabricate bill numbers** - only reference specific legislation if you have definitive knowledge it exists
-   * If unsure about specific bills, focus on general policy areas and ask for support/action on the broader issue
+   * **ABSOLUTE RULE: NEVER invent or fabricate bill numbers** - only reference legislation verified through web_search
+   * If web search finds no specific bills, focus on general policy areas and broader legislative priorities
    * **Does not include location references** (district, state, city) as these will be in the return address
 
 ## Content Guidelines:
@@ -108,33 +117,63 @@ Provide only the final postcard message text. Do not include character counts, e
 "${titlePrefix} ${lastName},
 As a [user's situation], I'm concerned about [specific issue]. [Personal impact statement]. [Reference to federal development - include bill number when available, e.g., "Please support/oppose H.R. 123: [Title]"]. [Policy impact on user's situation]. Please [clear ask]."`;
 
-    // Generate the postcard using Anthropic Claude
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': anthropicApiKey,
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-opus-4-1-20250805',
-        max_tokens: 400,
-        system: systemPrompt,
-        messages: [
-          {
-            role: 'user',
-            content: `Generate a postcard message based on:
+    // Generate the postcard using Anthropic Claude with web search
+    let webSearchUsed = false;
+    let webSearchAvailable = true;
+    
+    const requestPayload = {
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 400,
+      tools: [
+        {
+          type: "web_search_20250305",
+          name: "web_search"
+        }
+      ],
+      system: systemPrompt,
+      messages: [
+        {
+          role: 'user',
+          content: `Generate a postcard message based on:
 
 **Primary Concern:** "${concerns}"
 **Personal Impact:** "${personalImpact}"
 **Representative:** ${representative.name} (${representative.type})
 ${zipCode ? `**Zip Code:** ${zipCode}` : ''}
 
-Follow the process outlined in the system prompt and provide ONLY the final postcard message text of 300 characters or less.`
-          }
-        ]
-      }),
+Use web_search to verify current information before including any specific legislation or bill numbers. Follow the process outlined in the system prompt and provide ONLY the final postcard message text of 300 characters or less.`
+        }
+      ]
+    };
+
+    let response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': anthropicApiKey,
+        'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify(requestPayload),
     });
+
+    // Graceful fallback if tools are unavailable
+    if (!response.ok && response.status >= 400 && response.status < 500) {
+      console.log('Web search tools unavailable, retrying without tools');
+      webSearchAvailable = false;
+      
+      const fallbackPayload = { ...requestPayload };
+      delete fallbackPayload.tools;
+      
+      response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': anthropicApiKey,
+          'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify(fallbackPayload),
+      });
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -143,6 +182,13 @@ Follow the process outlined in the system prompt and provide ONLY the final post
     }
 
     const data = await response.json();
+    
+    // Check if web search was used
+    if (webSearchAvailable && Array.isArray(data.content)) {
+      webSearchUsed = data.content.some((block: any) => 
+        block && block.type === 'tool_use' && block.name === 'web_search'
+      );
+    }
     
     // Extract content from Anthropic response format
     let draftMessage = '';
@@ -177,6 +223,7 @@ Follow the process outlined in the system prompt and provide ONLY the final post
     }
 
     console.log(`Generated message (${draftMessage.length} chars):`, draftMessage);
+    console.log(`Web search used: ${webSearchUsed}, Web search available: ${webSearchAvailable}, Model: claude-sonnet-4-20250514, Zip: ${zipCode || 'none'}, Rep: ${representative.name}`);
 
     return new Response(JSON.stringify({ draftMessage }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
