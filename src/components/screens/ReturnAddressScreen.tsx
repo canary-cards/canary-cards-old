@@ -297,7 +297,7 @@ export function ReturnAddressScreen() {
                   type="button"
                   variant="secondary"
                   onClick={goBack}
-                  className="button-warm"
+                  className="button-warm h-12"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
