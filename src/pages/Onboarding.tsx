@@ -55,11 +55,11 @@ export default function Onboarding() {
 
   // Exit to home with preserved query params
   const exitToHome = useCallback(() => {
-    navigate('/', { 
+    navigate('/' + location.search, { 
       state: { skipOnboarding: true },
       replace: true 
     });
-  }, [navigate]);
+  }, [navigate, location.search]);
 
   // Autoplay logic
   useEffect(() => {
@@ -120,6 +120,13 @@ export default function Onboarding() {
 
   // Touch and click handlers
   const handleClick = useCallback((e: React.MouseEvent) => {
+    // If autoplay is active, first tap should just pause it
+    if (!autoplayStopped) {
+      setAutoplayStopped(true);
+      return;
+    }
+    
+    // If autoplay is already paused, handle navigation
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const width = rect.width;
@@ -129,7 +136,7 @@ export default function Onboarding() {
     } else {
       nextSlide();
     }
-  }, [prevSlide, nextSlide]);
+  }, [autoplayStopped, prevSlide, nextSlide]);
 
   // Swipe handling
   useEffect(() => {

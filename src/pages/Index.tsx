@@ -5,22 +5,17 @@ import { LandingPage } from '../components/LandingPage';
 import { CivicPostcardApp } from '../components/CivicPostcardApp';
 
 const AppContent = () => {
-  const { state } = useAppContext();
   const navigate = useNavigate();
   const location = useLocation();
 
   // Redirect to onboarding on initial load (unless skipOnboarding is set)
   useEffect(() => {
     const shouldSkip = location.state?.skipOnboarding;
-    if (!shouldSkip && state.currentStep === 0) {
+    if (!shouldSkip) {
       navigate('/onboarding' + location.search, { replace: true });
     }
-  }, [navigate, location.search, location.state?.skipOnboarding, state.currentStep]);
+  }, [navigate, location.search, location.state?.skipOnboarding]);
 
-  if (state.currentStep === 0) {
-    return <LandingPage />;
-  }
-  
   return <CivicPostcardApp />;
 };
 
