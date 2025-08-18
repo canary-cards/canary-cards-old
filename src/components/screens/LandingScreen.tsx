@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
+import { SharedBanner } from '../SharedBanner';
 import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
 import { MapPin, Users, Bot, PenTool, ArrowRight, Mail, Heart, Target } from 'lucide-react';
@@ -36,10 +37,7 @@ export function LandingScreen() {
     if (sharedBy) {
       setSharedByName(decodeURIComponent(sharedBy));
       setShowSharedDialog(true);
-      
-      // Clean up URL without causing navigation
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
+      // Don't remove the query param - keep it for persistence
     }
   }, []);
 
@@ -118,22 +116,10 @@ export function LandingScreen() {
     <>
       {/* Shared Link Banner */}
       {showSharedDialog && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-primary text-primary-foreground px-4 py-3 shadow-md">
-          <div className="container mx-auto max-w-2xl relative">
-            <div className="flex items-center justify-center gap-2">
-              <Heart className="h-4 w-4 text-primary-foreground/80" />
-              <span className="text-sm font-medium">
-                Shared with you by <strong>{sharedByName}</strong>
-              </span>
-            </div>
-            <button
-              onClick={() => setShowSharedDialog(false)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-primary-foreground/80 hover:text-primary-foreground transition-colors text-lg leading-none"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
+        <SharedBanner 
+          sharedBy={sharedByName} 
+          onDismiss={() => setShowSharedDialog(false)} 
+        />
       )}
 
       <div className={`min-h-screen bg-background ${showSharedDialog ? 'pt-16' : ''}`}>
