@@ -111,6 +111,13 @@ All colors MUST be HSL.
     color: hsl(var(--accent-foreground)) !important;
   }
 
+  .spotlight-btn:disabled {
+    border: 2px solid hsl(var(--disabled)) !important;
+    background: hsl(var(--disabled)) !important;
+    color: hsl(var(--disabled-foreground)) !important;
+    opacity: 1 !important;
+  }
+
   /* Warmer, friendlier styling */
   .card-warm {
     @apply bg-card border border-border/60 shadow-lg shadow-primary/5;
