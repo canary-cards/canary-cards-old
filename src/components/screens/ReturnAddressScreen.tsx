@@ -156,10 +156,10 @@ export function ReturnAddressScreen() {
         <Card className="card-warm">
           <CardContent className="p-8">
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
+              <h1 className="text-2xl display-title mb-2">
                 Return Address Information
               </h1>
-              <p className="text-muted-foreground">
+              <p className="body-text text-muted-foreground">
                 We need your return address for the postcard so your representative knows it came from a constituent.
               </p>
             </div>

@@ -17,10 +17,10 @@ export default function PaymentCanceled() {
           </div>
           
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="text-2xl display-title">
               Payment Canceled
             </h1>
-            <p className="text-muted-foreground">
+            <p className="body-text text-muted-foreground">
               Your payment was canceled. No charges have been made to your account.
             </p>
           </div>

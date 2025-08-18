@@ -70,8 +70,8 @@ export default function Profile() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">My Profile</h1>
-            <p className="text-muted-foreground">Manage your account information</p>
+            <h1 className="text-3xl display-title">My Profile</h1>
+            <p className="body-text text-muted-foreground">Manage your account information</p>
           </div>
         </div>
 

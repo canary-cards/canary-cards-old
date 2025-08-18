@@ -25,10 +25,10 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder }: SlideProp
       {/* Bottom half - Content */}
       <div className="flex-1 flex flex-col justify-center px-6 pb-[max(env(safe-area-inset-bottom),2rem)]">
         <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold text-foreground leading-tight">
+          <h2 className="text-2xl display-title leading-tight">
             {title}
           </h2>
-          <p className="text-base text-muted-foreground leading-relaxed">
+          <p className="text-base body-text text-muted-foreground leading-relaxed">
             {subtitle}
           </p>
           {finePrint && (

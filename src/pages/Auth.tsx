@@ -455,7 +455,7 @@ export default function Auth() {
             <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
               <Mail className="w-6 h-6 text-primary-foreground" />
             </div>
-            <CardTitle className="text-2xl">
+            <CardTitle className="text-2xl display-title">
               {isPasswordRecovery ? "Reset Your Password" : "Welcome to Canary Cards"}
             </CardTitle>
           </CardHeader>

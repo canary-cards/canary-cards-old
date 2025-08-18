@@ -130,7 +130,7 @@ export function LandingScreen() {
             <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
               <Mail className="w-5 h-5 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-bold text-foreground">Canary Cards</h1>
+            <h1 className="text-xl display-title">Canary Cards</h1>
           </div>
           
         </div>
@@ -140,10 +140,10 @@ export function LandingScreen() {
           {/* Hero Text */}
           <div className="w-full mb-4 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5">
             
-            <h2 className="text-2xl md:text-3xl font-bold leading-tight mb-3 text-foreground">
+            <h2 className="text-2xl md:text-3xl display-title leading-tight mb-3">
               Make Your Voice Heard in Washington D.C.
             </h2>
-            <p className="text-base text-muted-foreground mb-2 leading-relaxed">
+            <p className="text-base body-text text-muted-foreground mb-2 leading-relaxed">
               You craft a postcard, robots handwrite and mail it, your rep reads it
             </p>
           </div>
@@ -258,8 +258,8 @@ export function LandingScreen() {
                     />
                   </div>
                   <div className="flex-grow min-w-0">
-                    <h3 className="font-semibold text-sm md:text-base truncate">{rep.name}</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground truncate">
+                    <h3 className="subtitle text-sm md:text-base truncate">{rep.name}</h3>
+                    <p className="text-xs md:text-sm body-text text-muted-foreground truncate">
                       {rep.district} • {rep.city}, {rep.state}
                     </p>
                   </div>

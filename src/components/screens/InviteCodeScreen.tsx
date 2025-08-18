@@ -51,10 +51,10 @@ export function InviteCodeScreen() {
           <div className="mx-auto mb-4 w-16 h-16 bg-primary rounded-full flex items-center justify-center">
             <Mail className="w-8 h-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl font-bold text-foreground">
+          <CardTitle className="text-2xl display-title">
             Canary Cards
           </CardTitle>
-          <CardDescription className="text-muted-foreground">
+          <CardDescription className="body-text text-muted-foreground">
             Send handwritten postcards to your representatives
           </CardDescription>
         </CardHeader>

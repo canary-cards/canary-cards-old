@@ -45,15 +45,15 @@ export function LandingPage() {
         <div className="flex-1 max-w-xl">
           
           
-          <h1 className="text-6xl md:text-7xl font-light leading-tight mb-8 text-foreground">
+          <h1 className="text-6xl md:text-7xl display-title font-normal leading-tight mb-8">
             Handwritten
             <br />
-            <span className="font-normal">Postcards</span>
+            <span className="font-bold">Postcards</span>
             <br />
-            <span className="font-light">to Your Reps</span>
+            <span className="font-normal">to Your Reps</span>
           </h1>
           
-          <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-md">
+          <p className="text-lg body-text text-muted-foreground mb-8 leading-relaxed max-w-md">
             Send authentic, handwritten postcards to your elected representatives. 
             Real ink, real impact, delivered directly to their offices.
           </p>
@@ -104,24 +104,24 @@ export function LandingPage() {
             <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-emerald-600 dark:text-emerald-400 text-xl">✍️</span>
             </div>
-            <h3 className="font-medium mb-2">Authentic Handwriting</h3>
-            <p className="text-sm text-muted-foreground">Real ink on real paper, written by advanced robotics</p>
+            <h3 className="subtitle text-base mb-2">Authentic Handwriting</h3>
+            <p className="text-sm body-text text-muted-foreground">Real ink on real paper, written by advanced robotics</p>
           </div>
           
           <div className="text-center">
             <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-blue-600 dark:text-blue-400 text-xl">🏛️</span>
             </div>
-            <h3 className="font-medium mb-2">Direct to Officials</h3>
-            <p className="text-sm text-muted-foreground">Delivered straight to your representatives' offices</p>
+            <h3 className="subtitle text-base mb-2">Direct to Officials</h3>
+            <p className="text-sm body-text text-muted-foreground">Delivered straight to your representatives' offices</p>
           </div>
           
           <div className="text-center">
             <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-purple-600 dark:text-purple-400 text-xl">⚡</span>
             </div>
-            <h3 className="font-medium mb-2">Maximum Impact</h3>
-            <p className="text-sm text-muted-foreground">Stand out from digital messages with tangible mail</p>
+            <h3 className="subtitle text-base mb-2">Maximum Impact</h3>
+            <p className="text-sm body-text text-muted-foreground">Stand out from digital messages with tangible mail</p>
           </div>
         </div>
       </section>
