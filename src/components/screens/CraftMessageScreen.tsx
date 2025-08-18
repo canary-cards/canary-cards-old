@@ -335,7 +335,7 @@ export function CraftMessageScreen() {
               </Button>
 
               <Button
-                variant="outline"
+                variant="secondary"
                 onClick={handleSkipAI}
                 className="w-full button-warm h-10"
               >
