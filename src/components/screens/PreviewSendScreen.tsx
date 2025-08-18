@@ -220,14 +220,14 @@ export function PreviewSendScreen() {
                 
                 <div className="grid grid-cols-3 gap-2">
                   {/* House Representative */}
-                  {rep && <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                  {rep && <Card className="bg-card border-secondary">
                       <CardContent className="p-2 text-center">
-                        <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-primary/10">
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-muted">
                           {rep.photo ? <img src={rep.photo} alt={rep.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
                               {rep.name.split(' ').map(n => n[0]).join('')}
                             </div>}
                         </div>
-                        <h4 className="font-medium text-xs text-foreground leading-tight mb-1">{rep.name}</h4>
+                        <h4 className="font-medium text-xs text-primary leading-tight mb-1">{rep.name}</h4>
                         <p className="text-xs text-muted-foreground">House</p>
                       </CardContent>
                     </Card>}
@@ -248,14 +248,14 @@ export function PreviewSendScreen() {
                           <div className="h-3 bg-muted rounded w-12 mx-auto animate-pulse" />
                         </CardContent>
                       </Card>
-                    </> : senators.slice(0, 2).map(senator => <Card key={senator.id} className="bg-gradient-to-br from-secondary/5 to-secondary/10 border-secondary/20">
+                    </> : senators.slice(0, 2).map(senator => <Card key={senator.id} className="bg-card border-secondary">
                         <CardContent className="p-2 text-center">
-                          <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-secondary/10">
-                            {senator.photo ? <img src={senator.photo} alt={senator.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-secondary text-xs font-medium">
+                          <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-muted">
+                            {senator.photo ? <img src={senator.photo} alt={senator.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
                                 {senator.name.split(' ').map(n => n[0]).join('')}
                               </div>}
                           </div>
-                          <h4 className="font-medium text-xs text-foreground leading-tight mb-1">{senator.name}</h4>
+                          <h4 className="font-medium text-xs text-primary leading-tight mb-1">{senator.name}</h4>
                           <p className="text-xs text-muted-foreground">Senate</p>
                         </CardContent>
                       </Card>)}

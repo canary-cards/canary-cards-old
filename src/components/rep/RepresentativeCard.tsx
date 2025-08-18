@@ -1,0 +1,59 @@
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Representative } from '@/types';
+
+interface RepresentativeCardProps {
+  representative: Representative;
+  isSelected?: boolean;
+  showBadge?: boolean;
+  density?: 'compact' | 'normal';
+  onClick?: () => void;
+}
+
+export function RepresentativeCard({ 
+  representative, 
+  isSelected = false, 
+  showBadge = false,
+  density = 'normal',
+  onClick 
+}: RepresentativeCardProps) {
+  const isCompact = density === 'compact';
+  
+  return (
+    <Card 
+      className={`cursor-pointer transition-all duration-200 bg-card border-secondary ${
+        isSelected 
+          ? 'ring-2 ring-secondary bg-card border-secondary' 
+          : 'hover:shadow-md border-secondary/50'
+      } ${onClick ? 'cursor-pointer' : 'cursor-default'}`}
+      onClick={onClick}
+    >
+      <CardContent className={`flex items-center ${isCompact ? 'p-2' : 'p-4'}`}>
+        <div className={`${isCompact ? 'w-12 h-12' : 'w-12 h-12 md:w-16 md:h-16'} rounded-full bg-muted mr-3 md:mr-4 flex-shrink-0 overflow-hidden`}>
+          <img 
+            src={representative.photo} 
+            alt={representative.name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src = '/placeholder.svg';
+            }}
+          />
+        </div>
+        <div className="flex-grow min-w-0">
+          <h3 className={`text-primary font-semibold ${isCompact ? 'text-xs' : 'text-sm md:text-base'} truncate`}>
+            {representative.name}
+          </h3>
+          <p className={`text-muted-foreground ${isCompact ? 'text-xs' : 'text-xs md:text-sm'} truncate`}>
+            {representative.district} • {representative.city}, {representative.state}
+          </p>
+        </div>
+        {showBadge && isSelected && (
+          <Badge variant="accent" className="ml-2 text-xs">
+            My Rep
+          </Badge>
+        )}
+      </CardContent>
+    </Card>
+  );
+}

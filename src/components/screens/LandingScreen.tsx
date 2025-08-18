@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
+import { RepresentativeCard } from '@/components/rep/RepresentativeCard';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useAppContext } from '../../context/AppContext';
 import { ProgressIndicator } from '../ProgressIndicator';
@@ -237,39 +238,13 @@ export function LandingScreen() {
             )}
             
             {representatives.map((rep) => (
-              <Card 
-                key={rep.id} 
-                className={`cursor-pointer transition-all duration-200 ${
-                  selectedRep?.id === rep.id 
-                    ? 'ring-2 ring-primary bg-primary/5 border-primary/50' 
-                    : 'hover:shadow-md border-border/50'
-                }`}
+              <RepresentativeCard
+                key={rep.id}
+                representative={rep}
+                isSelected={selectedRep?.id === rep.id}
+                showBadge={true}
                 onClick={() => handleRepSelect(rep)}
-              >
-                <CardContent className="flex items-center p-4">
-                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-muted mr-3 md:mr-4 flex-shrink-0 overflow-hidden">
-                    <img 
-                      src={rep.photo} 
-                      alt={rep.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = '/placeholder.svg';
-                      }}
-                    />
-                  </div>
-                  <div className="flex-grow min-w-0">
-                    <h3 className="subtitle text-sm md:text-base truncate">{rep.name}</h3>
-                    <p className="text-xs md:text-sm body-text text-muted-foreground truncate">
-                      {rep.district} • {rep.city}, {rep.state}
-                    </p>
-                  </div>
-                  {selectedRep?.id === rep.id && (
-                    <Badge variant="secondary" className="ml-2 text-xs bg-green-100 text-green-800 border-green-200">
-                      My Rep
-                    </Badge>
-                  )}
-                </CardContent>
-              </Card>
+              />
             ))}
             
             {selectedRep && (
