@@ -118,7 +118,7 @@ export function HamburgerMenu() {
 
           <div className="p-6 pt-4 border-t border-border">
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={handleSignOut}
               className="w-full justify-start"
             >

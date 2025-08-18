@@ -489,7 +489,7 @@ export default function Auth() {
                     </Link>
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     onClick={handleSignOut}
                     className="w-full"
                     disabled={loading}

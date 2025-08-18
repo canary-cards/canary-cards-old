@@ -33,7 +33,7 @@ export default function PaymentCanceled() {
               </Link>
             </Button>
             
-            <Button variant="outline" asChild className="w-full">
+            <Button variant="secondary" asChild className="w-full">
               <Link to="/">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Home
