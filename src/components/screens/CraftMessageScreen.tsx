@@ -223,7 +223,7 @@ export function CraftMessageScreen() {
             {/* Simplified inputs with inline microphone controls */}
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="subtitle text-sm font-medium">I'm most concerned about:</label>
+                <label className="eyebrow text-sm font-medium">I'm most concerned about:</label>
                 <div className="relative">
                   <Textarea
                     placeholder="Immigration..."
@@ -269,7 +269,7 @@ export function CraftMessageScreen() {
               </div>
 
               <div className="space-y-2">
-                <label className="subtitle text-sm font-medium">How it affects me or my community:</label>
+                <label className="eyebrow text-sm font-medium">How it affects me or my community:</label>
                 <div className="relative">
                   <Textarea
                     placeholder="I am a parent of two children in public schools..."
