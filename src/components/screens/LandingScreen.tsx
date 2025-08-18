@@ -66,7 +66,7 @@ export function LandingScreen() {
         setSelectedRep(reps[0]);
       }
     } catch (error) {
-      setSearchError(error instanceof Error ? error.message : 'Failed to lookup representatives. Please try again.');
+      setSearchError('Hmm. That doesn\'t look like a valid zip code. Please try again.');
     } finally {
       setIsSearching(false);
     }
