@@ -295,7 +295,7 @@ export function ReturnAddressScreen() {
               <div className="flex gap-4 pt-4">
                 <Button
                   type="button"
-                  variant="secondary"
+                  variant="outline"
                   onClick={goBack}
                   className="button-warm"
                 >

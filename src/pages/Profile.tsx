@@ -179,7 +179,7 @@ export default function Profile() {
           <Button onClick={() => navigate('/')} className="w-full sm:w-auto">
             Send a Postcard
           </Button>
-          <Button variant="secondary" onClick={() => navigate('/auth')} className="w-full sm:w-auto">
+          <Button variant="outline" onClick={() => navigate('/auth')} className="w-full sm:w-auto">
             Account Settings
           </Button>
         </div>

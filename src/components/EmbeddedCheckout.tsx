@@ -139,7 +139,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
             <div className="text-destructive text-2xl">⚠️</div>
             <h2 className="text-xl font-semibold">Payment Error</h2>
             <p className="text-muted-foreground">{error}</p>
-            <Button onClick={onBack} variant="secondary" className="mt-4">
+            <Button onClick={onBack} variant="outline" className="mt-4">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Go Back
             </Button>
@@ -166,7 +166,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           <div className="mt-6 pt-4 border-t">
             <Button 
               type="button" 
-              variant="secondary" 
+              variant="outline" 
               onClick={onBack}
               className="button-warm"
             >

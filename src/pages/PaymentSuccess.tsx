@@ -282,7 +282,7 @@ export default function PaymentSuccess() {
                       <p className="text-xs text-muted-foreground">Or copy the link:</p>
                       <div className="flex gap-2">
                         <Input value={shareableLink} readOnly className="text-sm" />
-                        <Button onClick={copyShareableLink} variant="secondary" size="lg" className="flex items-center gap-2 px-4">
+                        <Button onClick={copyShareableLink} variant="outline" size="lg" className="flex items-center gap-2 px-4">
                           <Copy className="w-4 h-4" />
                         </Button>
                       </div>
@@ -299,7 +299,7 @@ export default function PaymentSuccess() {
         {/* Action Buttons */}
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <Button asChild variant="secondary" className="h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50">
+            <Button asChild variant="outline" className="h-12 text-base font-medium bg-white/90 hover:bg-white border-white/50">
               <Link to="/" className="flex items-center gap-2">
                 <Mail className="w-5 h-5" />
                 Send Another
