@@ -74,7 +74,9 @@ ${userInfo?.fullName}`;
                 </div>
                 <div className="relative">
                   <Textarea value={editedMessage} onChange={e => setEditedMessage(e.target.value)} className="input-warm min-h-[300px] resize-none pr-12" maxLength={maxChars} />
-                  <Edit3 className="w-8 h-8 text-accent absolute bottom-3 right-3 pointer-events-none" />
+                  <div className="absolute bottom-4 right-4 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                    <Edit3 className="w-4 h-4 text-accent" />
+                  </div>
                 </div>
               </div>
 
