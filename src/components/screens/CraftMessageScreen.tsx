@@ -11,8 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 export function CraftMessageScreen() {
   const { state, dispatch } = useAppContext();
   const { toast } = useToast();
-  const [concerns, setConcerns] = useState('');
-  const [personalImpact, setPersonalImpact] = useState('');
+  const [concerns, setConcerns] = useState(state.postcardData.concerns || '');
+  const [personalImpact, setPersonalImpact] = useState(state.postcardData.personalImpact || '');
   const [isRecording, setIsRecording] = useState(false);
   const [isDrafting, setIsDrafting] = useState(false);
   const [recordingField, setRecordingField] = useState<'concerns' | 'impact' | null>(null);
@@ -103,9 +103,19 @@ export function CraftMessageScreen() {
       if (data?.text) {
         const transcribedText = data.text.trim();
         if (field === 'concerns') {
-          setConcerns(prev => (prev ? `${prev.trim()} ${transcribedText}` : transcribedText));
+          const newValue = concerns ? `${concerns.trim()} ${transcribedText}` : transcribedText;
+          setConcerns(newValue);
+          dispatch({ 
+            type: 'UPDATE_POSTCARD_DATA', 
+            payload: { concerns: newValue }
+          });
         } else {
-          setPersonalImpact(prev => (prev ? `${prev.trim()} ${transcribedText}` : transcribedText));
+          const newValue = personalImpact ? `${personalImpact.trim()} ${transcribedText}` : transcribedText;
+          setPersonalImpact(newValue);
+          dispatch({ 
+            type: 'UPDATE_POSTCARD_DATA', 
+            payload: { personalImpact: newValue }
+          });
         }
         toast({
           title: "Transcription complete",
@@ -228,7 +238,13 @@ export function CraftMessageScreen() {
                   <Textarea
                     placeholder="Immigration..."
                     value={concerns}
-                    onChange={(e) => setConcerns(e.target.value)}
+                    onChange={(e) => {
+                      setConcerns(e.target.value);
+                      dispatch({ 
+                        type: 'UPDATE_POSTCARD_DATA', 
+                        payload: { concerns: e.target.value }
+                      });
+                    }}
                     className="input-warm min-h-[60px] resize-none pr-16"
                   />
                   <button
@@ -274,7 +290,13 @@ export function CraftMessageScreen() {
                   <Textarea
                     placeholder="I am a parent of two children in public schools..."
                     value={personalImpact}
-                    onChange={(e) => setPersonalImpact(e.target.value)}
+                    onChange={(e) => {
+                      setPersonalImpact(e.target.value);
+                      dispatch({ 
+                        type: 'UPDATE_POSTCARD_DATA', 
+                        payload: { personalImpact: e.target.value }
+                      });
+                    }}
                     className="input-warm min-h-[70px] resize-none pr-16"
                   />
                   <button
