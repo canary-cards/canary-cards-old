@@ -315,7 +315,7 @@ export function CraftMessageScreen() {
               </div>
             </div>
 
-            <div className="space-y-2 pt-4">
+            <div className="space-y-4 pt-4">
               <Button
                 variant="spotlight"
                 onClick={handleDraftMessage}
@@ -335,23 +335,25 @@ export function CraftMessageScreen() {
                 )}
               </Button>
 
-              <Button
-                variant="secondary"
-                onClick={handleSkipAI}
-                className="w-full button-warm h-10"
-              >
-                Skip AI & Write Myself
-              </Button>
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={goBack}
+                  className="flex-1 button-warm h-10"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
 
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={goBack}
-                className="w-full button-warm h-10"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
+                <Button
+                  variant="secondary"
+                  onClick={handleSkipAI}
+                  className="flex-1 button-warm h-10"
+                >
+                  Skip AI
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
