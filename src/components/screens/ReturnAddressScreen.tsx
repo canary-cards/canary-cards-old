@@ -159,7 +159,7 @@ export function ReturnAddressScreen() {
               <h1 className="text-2xl display-title mb-2">
                 Return Address Information
               </h1>
-              <p className="body-text text-muted-foreground">
+              <p className="body-text text-secondary">
                 We need your return address for the postcard so your representative knows it came from a constituent.
               </p>
             </div>
