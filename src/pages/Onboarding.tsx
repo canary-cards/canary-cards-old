@@ -238,13 +238,13 @@ export default function Onboarding() {
       {/* X Button - Fixed */}
       <button
         onClick={exitToHome}
-        className="fixed right-4 z-50 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors shadow-lg"
+        className="fixed right-4 z-50 w-10 h-10 flex items-center justify-center text-primary hover:text-primary/80 transition-colors"
         style={{ 
-          top: showSharedBanner ? 'calc(3.25rem + 3rem)' : '3.25rem'
+          top: showSharedBanner ? 'calc(3.25rem + 1rem)' : '1rem'
         }}
         aria-label="Skip onboarding"
       >
-        <X className="w-5 h-5" />
+        <X className="w-6 h-6" />
       </button>
 
       {/* Main Content - Full height container */}
