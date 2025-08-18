@@ -54,7 +54,7 @@ export function InviteCodeScreen() {
           <CardTitle className="text-2xl display-title">
             Canary Cards
           </CardTitle>
-          <CardDescription className="body-text text-muted-foreground">
+          <CardDescription variant="subtitle" as="h3">
             Send handwritten postcards to your representatives
           </CardDescription>
         </CardHeader>

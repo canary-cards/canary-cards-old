@@ -83,7 +83,7 @@ export default function Profile() {
                 <User className="h-5 w-5" />
                 Account Information
               </CardTitle>
-              <CardDescription>
+              <CardDescription variant="subtitle" as="h3">
                 Your basic account details
               </CardDescription>
             </CardHeader>
@@ -118,7 +118,7 @@ export default function Profile() {
                 <MapPin className="h-5 w-5" />
                 Personal Information
               </CardTitle>
-              <CardDescription>
+              <CardDescription variant="subtitle" as="h3">
                 Your address and contact details
               </CardDescription>
             </CardHeader>
@@ -138,7 +138,7 @@ export default function Profile() {
                 <Users className="h-5 w-5" />
                 My Representatives
               </CardTitle>
-              <CardDescription>
+              <CardDescription variant="subtitle" as="h3">
                 Your local congressional representatives
               </CardDescription>
             </CardHeader>
@@ -158,7 +158,7 @@ export default function Profile() {
                 <Package className="h-5 w-5" />
                 Previous Orders
               </CardTitle>
-              <CardDescription>
+              <CardDescription variant="subtitle" as="h3">
                 Your postcard sending history
               </CardDescription>
             </CardHeader>
