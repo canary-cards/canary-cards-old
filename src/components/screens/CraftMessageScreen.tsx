@@ -344,7 +344,7 @@ export function CraftMessageScreen() {
 
               <Button
                 type="button"
-                variant="ghost"
+                variant="secondary"
                 onClick={goBack}
                 className="w-full button-warm h-10"
               >

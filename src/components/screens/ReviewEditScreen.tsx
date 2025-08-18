@@ -83,7 +83,7 @@ ${userInfo?.fullName}`;
                   <span>Looks Good, Continue</span>
                 </Button>
                 
-                <Button type="button" variant="outline" onClick={goBack} className="w-full button-warm h-12 text-base">
+                <Button type="button" variant="secondary" onClick={goBack} className="w-full button-warm h-12 text-base">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   <span>Back</span>
                 </Button>

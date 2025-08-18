@@ -11,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-[hsl(212_29%_22%)] active:bg-[hsl(212_28%_20%)] disabled:bg-[hsl(210_23%_83%)] disabled:text-[hsl(209_10%_48%)] shadow-primary/20",
         primary: "bg-primary text-primary-foreground hover:bg-[hsl(212_29%_22%)] active:bg-[hsl(212_28%_20%)] disabled:bg-[hsl(210_23%_83%)] disabled:text-[hsl(209_10%_48%)] shadow-primary/20",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-[hsl(14_45%_94%)] active:bg-[hsl(14_45%_92%)] disabled:bg-white disabled:text-[hsl(6_39%_73%)] disabled:border-[hsl(6_39%_73%)] border-2 border-secondary shadow-secondary/20",
+        secondary: "bg-transparent text-secondary border-2 border-secondary hover:bg-secondary/10 active:bg-secondary/20 disabled:bg-transparent disabled:text-secondary/50 disabled:border-secondary/50 shadow-none",
         destructive: "bg-destructive text-destructive-foreground hover:bg-[hsl(3_58%_46%)] active:bg-[hsl(3_60%_42%)] disabled:bg-[hsl(0_0%_95%)] disabled:text-[hsl(3_30%_60%)] shadow-destructive/20",
         spotlight: "bg-accent text-accent-foreground hover:bg-[hsl(46_100%_61%)] active:bg-[hsl(47_90%_56%)] disabled:bg-[hsl(50_100%_85%)] disabled:text-[hsl(210_16%_66%)] disabled:border-[hsl(210_16%_66%)] border-2 border-primary shadow-accent/20",
         outline: "border-2 border-primary/20 bg-background text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary",
