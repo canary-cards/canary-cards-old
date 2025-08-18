@@ -143,9 +143,9 @@ export function LandingScreen() {
             <h2 className="text-2xl md:text-3xl display-title leading-tight mb-3">
               Make Your Voice Heard in Washington D.C.
             </h2>
-            <p className="text-base body-text text-secondary mb-2 leading-relaxed">
+            <h3 className="subtitle text-base mb-2 leading-relaxed">
               You craft a postcard, robots handwrite and mail it, your rep reads it
-            </p>
+            </h3>
           </div>
         </div>
 
