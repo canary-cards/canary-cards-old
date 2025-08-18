@@ -106,9 +106,9 @@ All colors MUST be HSL.
   }
 
   .spotlight-btn {
-    border: 2px solid hsl(var(--primary));
-    background: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
+    border: 2px solid hsl(var(--primary)) !important;
+    background: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
   }
 
   /* Warmer, friendlier styling */
