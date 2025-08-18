@@ -317,7 +317,6 @@ export function CraftMessageScreen() {
 
             <div className="space-y-2 pt-4">
               <Button
-                variant="spotlight"
                 onClick={handleDraftMessage}
                 disabled={(!concerns.trim() && !personalImpact.trim()) || isDrafting}
                 className="w-full button-warm h-10"
@@ -336,7 +335,7 @@ export function CraftMessageScreen() {
               </Button>
 
               <Button
-                variant="secondary"
+                variant="outline"
                 onClick={handleSkipAI}
                 className="w-full button-warm h-10"
               >
