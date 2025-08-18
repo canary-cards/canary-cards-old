@@ -13,11 +13,12 @@ import { SharedBanner } from '../SharedBanner';
 import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
 import { MapPin, Users, Bot, PenTool, ArrowRight, Mail, Heart, Target } from 'lucide-react';
-
 import heroImage from '@/assets/civic-hero-mobile.jpg';
-
 export function LandingScreen() {
-  const { state, dispatch } = useAppContext();
+  const {
+    state,
+    dispatch
+  } = useAppContext();
   const [zipCode, setZipCode] = useState('');
   const [representatives, setRepresentatives] = useState<Representative[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -34,34 +35,28 @@ export function LandingScreen() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const sharedBy = urlParams.get('shared_by');
-    
     if (sharedBy) {
       setSharedByName(decodeURIComponent(sharedBy));
       setShowSharedDialog(true);
       // Don't remove the query param - keep it for persistence
     }
   }, []);
-
   const validateZipCode = (zip: string) => {
     return /^\d{5}$/.test(zip);
   };
-
   const handleZipSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!validateZipCode(zipCode)) {
       setSearchError('Please enter a valid 5-digit zip code');
       return;
     }
-
     setIsSearching(true);
     setSearchError('');
     setShowSharedDialog(false); // Hide the shared banner when user starts searching
-    
+
     try {
       const reps = await lookupRepresentatives(zipCode);
       setRepresentatives(reps);
-      
       if (reps.length === 1) {
         setSelectedRep(reps[0]);
       }
@@ -76,9 +71,9 @@ export function LandingScreen() {
   useEffect(() => {
     if (representatives.length > 0 && resultsRef.current) {
       setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
+        resultsRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
         });
       }, 300);
     }
@@ -88,40 +83,34 @@ export function LandingScreen() {
   useEffect(() => {
     if (selectedRep && continueButtonRef.current) {
       setTimeout(() => {
-        continueButtonRef.current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'center' 
+        continueButtonRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
         });
       }, 300);
     }
   }, [selectedRep]);
-
   const handleRepSelect = (rep: Representative) => {
     setSelectedRep(rep);
   };
-
   const handleContinue = () => {
     if (selectedRep) {
-      dispatch({ 
-        type: 'UPDATE_POSTCARD_DATA', 
-        payload: { 
-          zipCode, 
-          representative: selectedRep 
+      dispatch({
+        type: 'UPDATE_POSTCARD_DATA',
+        payload: {
+          zipCode,
+          representative: selectedRep
         }
       });
-      dispatch({ type: 'SET_STEP', payload: 2 });
+      dispatch({
+        type: 'SET_STEP',
+        payload: 2
+      });
     }
   };
-
-  return (
-    <>
+  return <>
       {/* Shared Link Banner */}
-      {showSharedDialog && (
-        <SharedBanner 
-          sharedBy={sharedByName} 
-          onDismiss={() => setShowSharedDialog(false)} 
-        />
-      )}
+      {showSharedDialog && <SharedBanner sharedBy={sharedByName} onDismiss={() => setShowSharedDialog(false)} />}
 
       <div className={`min-h-screen bg-background ${showSharedDialog ? 'pt-16' : ''}`}>
       <div className="container mx-auto px-4 py-4 max-w-2xl">
@@ -159,51 +148,30 @@ export function LandingScreen() {
                 </Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="zipCode"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]{5}"
-                    placeholder="12345"
-                    value={zipCode}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, '').slice(0, 5);
-                      setZipCode(value);
-                      setSearchError('');
-                    }}
-                    className="pl-10 pr-10 h-12 text-center text-lg md:text-base"
-                    style={{ textAlign: 'center', paddingLeft: '2.5rem', paddingRight: '2.5rem' }}
-                    maxLength={5}
-                  />
+                  <Input id="zipCode" type="text" inputMode="numeric" pattern="[0-9]{5}" placeholder="12345" value={zipCode} onChange={e => {
+                    const value = e.target.value.replace(/\D/g, '').slice(0, 5);
+                    setZipCode(value);
+                    setSearchError('');
+                  }} className="pl-10 pr-10 h-12 text-center text-lg md:text-base" style={{
+                    textAlign: 'center',
+                    paddingLeft: '2.5rem',
+                    paddingRight: '2.5rem'
+                  }} maxLength={5} />
                 </div>
-                {searchError && (
-                  <p className="text-sm text-destructive">
+                {searchError && <p className="text-sm text-destructive">
                     {searchError}
-                    {searchError.includes('valid') && (
-                      <span className="block mt-1 text-muted-foreground">
-                        Try a nearby zip code
-                      </span>
-                    )}
-                  </p>
-                )}
+                    {searchError.includes('valid')}
+                  </p>}
               </div>
               
-              <Button 
-                type="submit" 
-                className="w-full h-12 text-base font-medium"
-                disabled={isSearching || !zipCode}
-              >
-                {isSearching ? (
-                  <>
+              <Button type="submit" className="w-full h-12 text-base font-medium" disabled={isSearching || !zipCode}>
+                {isSearching ? <>
                     <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
                     Finding Your Rep...
-                  </>
-                ) : (
-                  <>
+                  </> : <>
                     Find My Representative
                     <ArrowRight className="w-4 h-4 ml-2" />
-                  </>
-                )}
+                  </>}
               </Button>
             </form>
           </CardContent>
@@ -222,44 +190,23 @@ export function LandingScreen() {
         </div>
 
         {/* Representatives Results */}
-        {isSearching && (
-          <div className="mb-6">
+        {isSearching && <div className="mb-6">
             <Skeleton className="h-20 w-full rounded-xl" />
-          </div>
-        )}
+          </div>}
 
-        {representatives.length > 0 && !isSearching && (
-          <div ref={resultsRef} className="mb-6 space-y-4">
-            {representatives.length > 1 && (
-              <p className="text-center text-sm text-muted-foreground px-4">
+        {representatives.length > 0 && !isSearching && <div ref={resultsRef} className="mb-6 space-y-4">
+            {representatives.length > 1 && <p className="text-center text-sm text-muted-foreground px-4">
                 Multiple representatives found. Select yours:
-              </p>
-            )}
+              </p>}
             
-            {representatives.map((rep) => (
-              <RepresentativeCard
-                key={rep.id}
-                representative={rep}
-                isSelected={selectedRep?.id === rep.id}
-                showBadge={true}
-                onClick={() => handleRepSelect(rep)}
-              />
-            ))}
+            {representatives.map(rep => <RepresentativeCard key={rep.id} representative={rep} isSelected={selectedRep?.id === rep.id} showBadge={true} onClick={() => handleRepSelect(rep)} />)}
             
-            {selectedRep && (
-              <Button 
-                ref={continueButtonRef}
-                onClick={handleContinue}
-                className="w-full h-12 text-base font-medium"
-              >
+            {selectedRep && <Button ref={continueButtonRef} onClick={handleContinue} className="w-full h-12 text-base font-medium">
                 Continue
                 <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            )}
-          </div>
-        )}
+              </Button>}
+          </div>}
       </div>
     </div>
-    </>
-  );
+    </>;
 }
