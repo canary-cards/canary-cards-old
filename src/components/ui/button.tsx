@@ -9,10 +9,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-[hsl(8_45%_42%)] active:bg-[hsl(8_48%_39%)] active:scale-[0.99] disabled:bg-[hsl(var(--disabled-surface))] disabled:text-[hsl(var(--disabled-content))]",
-        primary: "bg-primary text-primary-foreground hover:bg-[hsl(8_45%_42%)] active:bg-[hsl(8_48%_39%)] active:scale-[0.99] disabled:bg-[hsl(var(--disabled-surface))] disabled:text-[hsl(var(--disabled-content))]",
+        default: "bg-secondary text-secondary-foreground hover:bg-[hsl(215_35%_20%)] active:bg-[hsl(215_40%_15%)] active:scale-[0.99] disabled:bg-[hsl(var(--disabled-surface))] disabled:text-[hsl(var(--disabled-content))]",
+        primary: "bg-secondary text-secondary-foreground hover:bg-[hsl(215_35%_20%)] active:bg-[hsl(215_40%_15%)] active:scale-[0.99] disabled:bg-[hsl(var(--disabled-surface))] disabled:text-[hsl(var(--disabled-content))]",
         secondary:
-          "bg-transparent text-secondary border-2 border-secondary hover:bg-[hsl(215_29%_26%_/_0.06)] active:bg-[hsl(215_29%_26%_/_0.10)] active:scale-[0.99] disabled:text-[hsl(var(--disabled-content))] disabled:border-[hsl(var(--disabled-content))]",
+          "bg-transparent text-primary border-2 border-primary hover:bg-[hsl(8_38%_49%_/_0.06)] active:bg-[hsl(8_38%_49%_/_0.10)] active:scale-[0.99] disabled:text-[hsl(var(--disabled-content))] disabled:border-[hsl(var(--disabled-content))]",
         outline:
           "bg-transparent text-secondary border-2 border-secondary hover:bg-[hsl(215_29%_26%_/_0.06)] active:bg-[hsl(215_29%_26%_/_0.10)] active:scale-[0.99] disabled:text-[hsl(var(--disabled-content))] disabled:border-[hsl(var(--disabled-content))]",
         tertiary: "bg-transparent text-secondary hover:text-[hsl(215_35%_20%)] active:text-[hsl(215_40%_15%)]",
