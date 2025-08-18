@@ -123,6 +123,7 @@ export default function Onboarding() {
     // If autoplay is active, first tap should just pause it
     if (!autoplayStopped) {
       setAutoplayStopped(true);
+      setProgress(100); // Fill current bar completely when paused
       return;
     }
     
