@@ -64,8 +64,9 @@ export default {
 				}
 			},
 			fontFamily: {
-				nunito: ['Nunito', 'sans-serif'],
-				caveat: ['Caveat', 'cursive'],
+				sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'Noto Sans', 'sans-serif'],
+				display: ['Spectral', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+				mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'monospace'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
