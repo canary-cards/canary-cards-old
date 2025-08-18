@@ -58,10 +58,10 @@ ${userInfo?.fullName}`;
         <Card className="card-warm">
           <CardContent className="p-8">
             <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
+              <h1 className="display-title mb-2">
                 Review Your Postcard
               </h1>
-              <p className="text-muted-foreground">Finalize the message you want to send to your locally elected official</p>
+              <h3 className="subtitle">Finalize the message you want to send to your locally elected official</h3>
             </div>
 
             <div className="space-y-6">
