@@ -124,7 +124,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           <div className="text-center space-y-4">
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
             <h2 className="text-xl font-semibold">Loading Payment Form...</h2>
-            <p className="text-muted-foreground">Setting up secure payment for your postcards</p>
+            <h3 className="subtitle text-base">Setting up secure payment for your postcards</h3>
           </div>
         </CardContent>
       </Card>

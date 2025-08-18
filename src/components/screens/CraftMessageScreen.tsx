@@ -215,15 +215,15 @@ export function CraftMessageScreen() {
                 Make It Personal
               </h1>
               
-              <p className="body-text text-muted-foreground mb-4">
+              <h3 className="subtitle text-base mb-4">
                 Provide a few details to start. You'll review and edit the draft next.
-              </p>
+              </h3>
             </div>
 
             {/* Simplified inputs with inline microphone controls */}
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm subtitle">I'm most concerned about:</label>
+                <label className="subtitle text-sm font-medium">I'm most concerned about:</label>
                 <div className="relative">
                   <Textarea
                     placeholder="Immigration..."
@@ -269,7 +269,7 @@ export function CraftMessageScreen() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm subtitle">How it affects me or my community:</label>
+                <label className="subtitle text-sm font-medium">How it affects me or my community:</label>
                 <div className="relative">
                   <Textarea
                     placeholder="I am a parent of two children in public schools..."

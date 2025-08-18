@@ -28,9 +28,9 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder }: SlideProp
           <h2 className="text-2xl display-title leading-tight">
             {title}
           </h2>
-          <p className="text-base body-text text-muted-foreground leading-relaxed">
+          <h3 className="subtitle text-base leading-relaxed">
             {subtitle}
-          </p>
+          </h3>
           {finePrint && (
             <p className="text-xs text-muted-foreground/70 mt-6">
               {finePrint}

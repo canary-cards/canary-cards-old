@@ -171,9 +171,9 @@ export function PreviewSendScreen() {
               <h1 className="text-2xl font-bold text-foreground mb-2">
                 Review Your Card
               </h1>
-              <p className="text-muted-foreground">
+              <h3 className="subtitle text-base">
                 We'll send this card to a robot that will use real pen and paper to write it
-              </p>
+              </h3>
             </div>
 
             {/* Postcard Preview */}
