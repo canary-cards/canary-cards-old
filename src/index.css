@@ -8,95 +8,122 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Design System Colors - Exact Hex Conversions */
-    --background: 39 18% 96%; /* Off White #F7F5F3 */
-    --foreground: 212 33% 20%; /* Dark Gray #2D3748 */
+    /* Canary Design System - Base Colors */
+    --background: 43 69% 95%; /* #FEF4E9 */
+    --surface: 0 0% 100%; /* #FFFFFF */
+    --text-primary: 0 0% 13%; /* #222222 */
+    --text-secondary: 25 10% 36%; /* #5B4F44 */
+    --divider: 41 28% 86%; /* #E8DECF */
 
-    --card: 0 0% 100%; /* White #FFFFFF */
-    --card-foreground: 212 33% 20%;
+    /* Brand Colors */
+    --ink-blue: 215 29% 26%; /* #2F4156 */
+    --brick-red: 8 38% 49%; /* #B25549 */
+    --canary-yellow: 49 100% 64%; /* #FFD44D */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 212 33% 20%;
+    /* Semantic Colors */
+    --success: 132 43% 44%; /* #3FA556 */
+    --warning: 46 52% 56%; /* #D9A441 */
+    --error: 6 49% 51%; /* #C04B44 */
+    --info: 213 36% 36%; /* #3E5C76 */
 
-    /* Muted Blue Primary #9EACD6 */
-    --primary: 223 45% 70%;
+    /* State Colors */
+    --focus-ring: 215 29% 26% / 0.4; /* inkBlue with opacity */
+    --overlay-scrim: 0 0% 13% / 0.5; /* #222222 with opacity */
+    --disabled-content: 0 0% 13% / 0.4; /* #222222 with opacity */
+    --disabled-surface: 42 45% 91%; /* #F5EEE4 */
+    --hover-surface: 50 100% 97%; /* #FFF8EF */
+    --active-surface: 48 100% 95%; /* #FFF3E3 */
+
+    /* Mapped to Shadcn Variables */
+    --foreground: var(--text-primary);
+    --card: var(--surface);
+    --card-foreground: var(--text-primary);
+    --popover: var(--surface);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--brick-red);
     --primary-foreground: 0 0% 100%;
-
-    /* Muted Red Secondary #D69E9E */
-    --secondary: 0 35% 72%;
-    --secondary-foreground: 212 33% 20%;
-
-    /* Subtle backgrounds */
-    --muted: 39 18% 96%; /* Off White */
-    --muted-foreground: 209 20% 57%; /* Medium Gray #718096 */
-
-    /* Muted Blue Accent */
-    --accent: 223 45% 70%;
-    --accent-foreground: 0 0% 100%;
-
-    /* Muted Red for warnings/destructive */
-    --destructive: 0 35% 72%;
+    --secondary: var(--ink-blue);
+    --secondary-foreground: 0 0% 100%;
+    --muted: var(--hover-surface);
+    --muted-foreground: var(--text-secondary);
+    --accent: var(--canary-yellow);
+    --accent-foreground: var(--text-primary);
+    --destructive: var(--error);
     --destructive-foreground: 0 0% 100%;
+    --border: var(--divider);
+    --input: var(--divider);
+    --ring: var(--focus-ring);
 
-    --border: 214 32% 91%; /* Light Gray #E2E8F0 */
-    --input: 214 32% 91%;
-    --ring: 223 45% 70%;
+    /* Spacing and Layout */
+    --radius: 1rem; /* 16px - lg from design tokens */
+    --spacing-unit: 4;
 
-    --radius: 0.75rem;
+    /* Typography */
+    --font-heading: 'Spectral', Georgia, 'Times New Roman', serif;
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
-    --sidebar-background: 0 0% 98%;
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 6px rgba(0,0,0,0.12);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.18);
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Motion */
+    --duration-tap: 150ms;
+    --duration-fast: 180ms;
+    --duration-default: 220ms;
+    --duration-slow: 260ms;
+    --duration-celebration: 1400ms;
+    --easing-in: cubic-bezier(0.4, 0.0, 1, 1);
+    --easing-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+    --easing-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
 
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar (legacy support) */
+    --sidebar-background: var(--surface);
+    --sidebar-foreground: var(--text-primary);
+    --sidebar-primary: var(--ink-blue);
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: var(--hover-surface);
+    --sidebar-accent-foreground: var(--text-primary);
+    --sidebar-border: var(--divider);
+    --sidebar-ring: var(--focus-ring);
   }
 
   .dark {
-    --background: 212 33% 20%; /* Dark Gray background */
-    --foreground: 0 0% 95%;
+    /* Dark Mode Overrides */
+    --background: 215 29% 15%; /* Darker ink blue */
+    --surface: 215 25% 20%; /* Slightly lighter surface */
+    --text-primary: 0 0% 95%; /* Light text */
+    --text-secondary: 25 10% 70%; /* Lighter secondary text */
+    --divider: 215 20% 30%; /* Darker divider */
 
-    --card: 212 30% 25%;
-    --card-foreground: 0 0% 95%;
+    /* Keep brand colors consistent */
+    --ink-blue: 215 35% 70%; /* Lighter version for dark mode */
+    --brick-red: 8 45% 60%; /* Slightly lighter red */
+    --canary-yellow: 49 95% 70%; /* Slightly lighter yellow */
 
-    --popover: 212 30% 25%;
-    --popover-foreground: 0 0% 95%;
+    /* Adjust state colors for dark mode */
+    --disabled-surface: 215 25% 18%;
+    --hover-surface: 215 25% 25%;
+    --active-surface: 215 25% 22%;
 
-    --primary: 223 45% 70%; /* Keep muted blue */
-    --primary-foreground: 212 33% 20%;
+    /* Mapped variables update automatically */
+    --foreground: var(--text-primary);
+    --card: var(--surface);
+    --card-foreground: var(--text-primary);
+    --popover: var(--surface);
+    --popover-foreground: var(--text-primary);
+    --muted: var(--hover-surface);
+    --muted-foreground: var(--text-secondary);
+    --border: var(--divider);
+    --input: var(--divider);
 
-    --secondary: 0 35% 72%; /* Keep muted red */
-    --secondary-foreground: 0 0% 95%;
-
-    --muted: 212 30% 25%;
-    --muted-foreground: 209 20% 70%;
-
-    --accent: 223 45% 70%;
-    --accent-foreground: 212 33% 20%;
-
-    --destructive: 0 35% 72%;
-    --destructive-foreground: 0 0% 95%;
-
-    --border: 212 25% 30%;
-    --input: 212 25% 30%;
-    --ring: 223 45% 70%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar updates */
+    --sidebar-background: var(--surface);
+    --sidebar-foreground: var(--text-primary);
+    --sidebar-accent: var(--hover-surface);
+    --sidebar-accent-foreground: var(--text-primary);
+    --sidebar-border: var(--divider);
   }
 }
 
@@ -106,22 +133,52 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
-    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
   }
 
-  /* Warmer, friendlier styling */
-  .card-warm {
-    @apply bg-card border border-border/60 shadow-lg shadow-primary/5;
-    border-radius: 1.25rem;
+  /* Typography Classes */
+  .text-h1 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    line-height: 2.375rem;
+    font-weight: 700;
   }
 
-  .button-warm {
-    @apply rounded-xl shadow-md hover:shadow-lg transition-all duration-200;
+  .text-h2 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    line-height: 1.875rem;
+    font-weight: 600;
   }
 
-  .input-warm {
-    @apply rounded-xl border-2 border-border/60 focus:border-primary/40 transition-colors;
+  .text-h3 {
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    line-height: 1.625rem;
+    font-weight: 600;
+  }
+
+  .text-body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 400;
+  }
+
+  .text-small {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 400;
+  }
+
+  .text-button {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
   }
 
   /* Animation utilities */
