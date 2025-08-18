@@ -23,7 +23,7 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder }: SlideProp
       </div>
 
       {/* Bottom half - Content */}
-      <div className="flex-1 flex flex-col justify-center px-6 pb-8">
+      <div className="flex-1 flex flex-col justify-center px-6 pb-[max(env(safe-area-inset-bottom),2rem)]">
         <div className="text-center space-y-4">
           <h2 className="text-2xl font-bold text-foreground leading-tight">
             {title}

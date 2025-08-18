@@ -192,8 +192,25 @@ export default function Onboarding() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [prevSlide, nextSlide]);
 
+  // Lock vertical scrolling while onboarding is mounted
+  useEffect(() => {
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalBodyOverscroll = document.body.style.overscrollBehavior;
+
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    document.body.style.overscrollBehavior = 'contain';
+
+    return () => {
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.overflow = originalBodyOverflow;
+      document.body.style.overscrollBehavior = originalBodyOverscroll;
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="fixed inset-0 z-50 bg-background h-[100dvh] overflow-hidden">
       {/* Shared Banner */}
       {showSharedBanner && (
         <SharedBanner 
@@ -202,36 +219,44 @@ export default function Onboarding() {
         />
       )}
 
-      {/* Main Content */}
+      {/* Progress Strips - Fixed at top */}
+      <div 
+        className="fixed left-0 right-0 z-40 bg-foreground/90 text-background"
+        style={{ 
+          top: showSharedBanner ? '3.25rem' : 0,
+          paddingTop: 'env(safe-area-inset-top, 0px)'
+        }}
+      >
+        <ProgressStrips
+          currentSlide={currentSlide}
+          totalSlides={TOTAL_SLIDES}
+          autoplayActive={!autoplayStopped}
+          progress={progress}
+        />
+      </div>
+
+      {/* X Button - Fixed */}
+      <button
+        onClick={exitToHome}
+        className="fixed right-4 z-50 w-8 h-8 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center text-foreground hover:bg-background transition-colors"
+        style={{ 
+          top: showSharedBanner ? 'calc(3.25rem + 0.5rem)' : '0.75rem'
+        }}
+        aria-label="Skip onboarding"
+      >
+        <X className="w-4 h-4" />
+      </button>
+
+      {/* Main Content - Full height container */}
       <div 
         id="onboarding-container"
-        className={`min-h-screen flex flex-col ${showSharedBanner ? 'pt-16' : ''}`}
+        className="relative h-full w-full touch-pan-x select-none"
+        style={{ 
+          paddingTop: showSharedBanner ? 'calc(3.25rem + 2.5rem)' : '2.5rem'
+        }}
+        onClick={handleClick}
       >
-        {/* Progress Strips */}
-        <div className="bg-foreground/90 text-background pt-safe">
-          <ProgressStrips
-            currentSlide={currentSlide}
-            totalSlides={TOTAL_SLIDES}
-            autoplayActive={!autoplayStopped}
-            progress={progress}
-          />
-        </div>
-
-        {/* X Button */}
-        <button
-          onClick={exitToHome}
-          className="fixed top-4 right-4 z-50 w-8 h-8 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center text-foreground hover:bg-background transition-colors"
-          style={{ top: showSharedBanner ? '4.5rem' : '1rem' }}
-          aria-label="Skip onboarding"
-        >
-          <X className="w-4 h-4" />
-        </button>
-
-        {/* Slide Content */}
-        <div 
-          className="flex-1 cursor-pointer select-none max-w-lg mx-auto w-full"
-          onClick={handleClick}
-        >
+        <div className="h-full max-w-lg mx-auto w-full">
           <Slide {...slides[currentSlide]} />
         </div>
       </div>
