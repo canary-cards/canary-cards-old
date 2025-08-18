@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,6 +11,7 @@ export function ReviewEditScreen() {
   } = useAppContext();
   const [editedMessage, setEditedMessage] = useState(state.postcardData.draftMessage || '');
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const charCount = editedMessage.length;
   const maxChars = 300;
   const handleRegenerate = async () => {
@@ -53,6 +54,10 @@ ${userInfo?.fullName}`;
       payload: 2
     });
   };
+
+  const handleEditClick = () => {
+    textareaRef.current?.focus();
+  };
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
         <Card className="card-warm">
@@ -73,10 +78,20 @@ ${userInfo?.fullName}`;
                   </span>
                 </div>
                 <div className="relative">
-                  <Textarea value={editedMessage} onChange={e => setEditedMessage(e.target.value)} className="input-warm min-h-[300px] resize-none pr-12" maxLength={maxChars} />
-                  <div className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                  <Textarea 
+                    ref={textareaRef}
+                    value={editedMessage} 
+                    onChange={e => setEditedMessage(e.target.value)} 
+                    className="input-warm min-h-[300px] resize-none pr-12" 
+                    maxLength={maxChars} 
+                  />
+                  <button 
+                    onClick={handleEditClick}
+                    className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors cursor-pointer touch-manipulation"
+                    aria-label="Edit message"
+                  >
                     <Edit3 className="w-6 h-6 text-accent" />
-                  </div>
+                  </button>
                 </div>
               </div>
 
