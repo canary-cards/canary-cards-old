@@ -238,7 +238,7 @@ export default function Onboarding() {
       {/* X Button - Fixed */}
       <button
         onClick={exitToHome}
-        className="fixed right-4 z-50 w-10 h-10 flex items-center justify-center text-primary hover:text-primary/80 transition-colors"
+        className="fixed right-4 z-50 w-10 h-10 flex items-center justify-center text-foreground hover:text-foreground/80 transition-colors"
         style={{ 
           top: showSharedBanner ? 'calc(3.25rem + 1rem)' : '1rem'
         }}
