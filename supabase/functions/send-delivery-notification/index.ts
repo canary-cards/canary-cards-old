@@ -108,7 +108,7 @@ const handler = async (req: Request): Promise<Response> => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>📮 InkImpact</h1>
+              <h1>📮 Canary Cards</h1>
               <p style="color: #d1fae5; margin: 8px 0 0 0; font-size: 16px;">Your postcard has been delivered!</p>
             </div>
             
@@ -165,17 +165,17 @@ const handler = async (req: Request): Promise<Response> => {
               </p>
               
               <div style="text-align: center;">
-                <a href="https://inkimpact.com" class="cta-button">Send Another Postcard</a>
+                <a href="https://canarycards.com" class="cta-button">Send Another Postcard</a>
               </div>
               
               <p style="color: #6b7280; font-size: 14px; text-align: center; margin-top: 24px;">
-                Want to maximize your impact? Consider sharing InkImpact with friends and family to help amplify citizen voices.
+                Want to maximize your impact? Consider sharing Canary Cards with friends and family to help amplify citizen voices.
               </p>
             </div>
             
             <div class="footer">
-              <p>This delivery confirmation was sent by InkImpact.</p>
-              <p>© 2024 InkImpact. Making democracy more accessible, one postcard at a time.</p>
+              <p>This delivery confirmation was sent by Canary Cards.</p>
+              <p>© 2024 Canary Cards. Making democracy more accessible, one postcard at a time.</p>
             </div>
           </div>
         </body>
@@ -185,7 +185,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Sending delivery notification email to:', userEmail);
 
     const emailResponse = await resend.emails.send({
-      from: "InkImpact <noreply@resend.dev>",
+      from: "Canary Cards <noreply@resend.dev>",
       to: [userEmail],
       subject: `📬 Your Postcard to ${recipientName} Has Been Delivered!`,
       html: emailHtml,

@@ -89,7 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>📮 InkImpact</h1>
+              <h1>📮 Canary Cards</h1>
               <p style="color: #dbeafe; margin: 8px 0 0 0; font-size: 16px;">Your voice delivered to your representatives</p>
             </div>
             
@@ -142,13 +142,13 @@ const handler = async (req: Request): Promise<Response> => {
               </p>
               
               <p style="color: #374151; line-height: 1.6;">
-                Want to send another postcard on a different issue? <a href="https://inkimpact.com" style="color: #3b82f6; text-decoration: none;">Visit InkImpact</a> to create a new message.
+                Want to send another postcard on a different issue? <a href="https://canarycards.com" style="color: #3b82f6; text-decoration: none;">Visit Canary Cards</a> to create a new message.
               </p>
             </div>
             
             <div class="footer">
-              <p>This email was sent to confirm your postcard order with InkImpact.</p>
-              <p>© 2024 InkImpact. Making democracy more accessible, one postcard at a time.</p>
+              <p>This email was sent to confirm your postcard order with Canary Cards.</p>
+              <p>© 2024 Canary Cards. Making democracy more accessible, one postcard at a time.</p>
             </div>
           </div>
         </body>
@@ -156,7 +156,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "InkImpact <noreply@resend.dev>",
+      from: "Canary Cards <noreply@resend.dev>",
       to: [userInfo.email],
       subject: `Your Postcard to ${representative.name} Has Been Ordered!`,
       html: emailHtml,

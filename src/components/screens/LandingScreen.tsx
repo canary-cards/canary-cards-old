@@ -144,7 +144,7 @@ export function LandingScreen() {
             <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
               <Mail className="w-5 h-5 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-bold text-foreground">InkImpact</h1>
+            <h1 className="text-xl font-bold text-foreground">Canary Cards</h1>
           </div>
           
         </div>

@@ -456,7 +456,7 @@ export default function Auth() {
               <Mail className="w-6 h-6 text-primary-foreground" />
             </div>
             <CardTitle className="text-2xl">
-              {isPasswordRecovery ? "Reset Your Password" : "Welcome to InkImpact"}
+              {isPasswordRecovery ? "Reset Your Password" : "Welcome to Canary Cards"}
             </CardTitle>
           </CardHeader>
           

@@ -142,14 +142,14 @@ export default function PaymentSuccess() {
   };
   const representative = getRepresentativeData();
   return <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-indigo-500 to-violet-500">
-      {/* Header with InkImpact branding and hamburger menu */}
+      {/* Header with Canary Cards branding and hamburger menu */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
-        {/* InkImpact Branding */}
+        {/* Canary Cards Branding */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
             <Mail className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-white">InkImpact</h1>
+          <h1 className="text-xl font-bold text-white">Canary Cards</h1>
         </div>
         
         {/* Hamburger menu */}
@@ -264,7 +264,7 @@ export default function PaymentSuccess() {
                     <Button size="lg" className="w-full h-12 text-base font-medium" onClick={() => {
                 if (navigator.share) {
                   navigator.share({
-                    title: 'Contact Your Representatives with InkImpact',
+                    title: 'Contact Your Representatives with Canary Cards',
                     text: 'Make your voice heard by sending postcards to your representatives!',
                     url: shareableLink
                   });
