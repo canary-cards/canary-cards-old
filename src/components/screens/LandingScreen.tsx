@@ -137,14 +137,13 @@ export function LandingScreen() {
         </div>
         
         {/* Mobile-First Hero Section */}
-        <div className="text-center mb-3">
+        <div className="text-center mb-8">
           {/* Hero Text */}
-          <div className="w-full mb-4 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5">
-            
+          <div className="w-full mb-4">
             <h2 className="text-2xl md:text-3xl display-title leading-tight mb-3">
               Make Your Voice Heard in Washington D.C.
             </h2>
-            <p className="text-base body-text text-muted-foreground mb-2 leading-relaxed">
+            <p className="text-base body-text text-destructive mb-2 leading-relaxed">
               You craft a postcard, robots handwrite and mail it, your rep reads it
             </p>
           </div>
