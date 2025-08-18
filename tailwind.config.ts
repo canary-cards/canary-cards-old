@@ -13,14 +13,22 @@ export default {
 		container: {
 			center: true,
 			padding: '2rem',
+			screens: {
+				xs: '360px',
+				sm: '768px', 
+				md: '1024px',
+				lg: '1280px',
+				xl: '1400px',
+				'2xl': '1400px'
+			}
+		},
 		screens: {
 			xs: '360px',
-			sm: '768px', 
-			md: '1024px',
+			sm: '768px',
+			md: '1024px', 
 			lg: '1280px',
 			xl: '1400px',
 			'2xl': '1400px'
-		}
 		},
 		extend: {
 			colors: {
@@ -123,6 +131,35 @@ export default {
 						height: '0'
 					}
 				}
+			},
+			zIndex: {
+				'0': '0',
+				'10': '10',
+				'20': '20',
+				'30': '30',
+				'40': '40',
+				'50': '50',
+				'auto': 'auto',
+				'dropdown': '1000',
+				'sticky': '1020',
+				'fixed': '1030',
+				'modal-backdrop': '1040',
+				'offcanvas': '1050',
+				'modal': '1055',
+				'popover': '1070',
+				'tooltip': '1080',
+			},
+			transitionDuration: {
+				'tap': 'var(--duration-tap)',
+				'fast': 'var(--duration-fast)',
+				'default': 'var(--duration-default)',
+				'slow': 'var(--duration-slow)',
+				'celebration': 'var(--duration-celebration)',
+			},
+			transitionTimingFunction: {
+				'in': 'var(--easing-in)',
+				'out': 'var(--easing-out)',
+				'in-out': 'var(--easing-in-out)',
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
