@@ -21,7 +21,7 @@ export function ProgressStrips({ currentSlide, totalSlides, autoplayActive, prog
                 ? 'bg-white' 
                 : index === currentSlide 
                   ? 'bg-accent'
-                  : 'bg-transparent'
+                  : 'bg-muted'
             }`}
             style={{
               width: index < currentSlide 
