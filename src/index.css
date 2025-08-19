@@ -57,6 +57,7 @@ All colors MUST be HSL.
     /* Component sizing variables */
     --logo-size: 3.25rem; /* ~13, 30% larger than h-10 (2.5rem) */
     --menu-icon-size: 2.25rem; /* ~9, 50% larger than h-6 (1.5rem) */
+    --menu-icon-stroke: 1; /* Half thickness of default stroke (2) */
   }
 }
 

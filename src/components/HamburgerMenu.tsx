@@ -66,7 +66,14 @@ export function HamburgerMenu() {
           size="icon"
           className="hover:bg-transparent"
         >
-          <Menu className="text-primary" style={{ height: 'var(--menu-icon-size)', width: 'var(--menu-icon-size)' }} />
+          <Menu 
+            className="text-primary" 
+            style={{ 
+              height: 'var(--menu-icon-size)', 
+              width: 'var(--menu-icon-size)',
+              strokeWidth: 'var(--menu-icon-stroke)'
+            }} 
+          />
           <span className="sr-only">Open menu</span>
         </Button>
       </SheetTrigger>
