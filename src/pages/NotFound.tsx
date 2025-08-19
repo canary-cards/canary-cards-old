@@ -1,7 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { HamburgerMenu } from "@/components/HamburgerMenu";
-import { Logo } from "@/components/Logo";
 
 const NotFound = () => {
   const location = useLocation();
@@ -15,9 +14,7 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      {/* Header with logo and hamburger menu */}
-      <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
-        <Logo />
+      <div className="absolute top-4 right-4 z-10">
         <HamburgerMenu />
       </div>
       <div className="text-center">

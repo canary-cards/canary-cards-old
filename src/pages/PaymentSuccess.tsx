@@ -7,7 +7,6 @@ import { CheckCircle, Mail, ArrowLeft, Copy, Share2, Loader2, AlertCircle, Clock
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
-import { Logo } from '@/components/Logo';
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
@@ -145,8 +144,13 @@ export default function PaymentSuccess() {
   return <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-indigo-500 to-violet-500">
       {/* Header with Canary Cards branding and hamburger menu */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
-        {/* Logo */}
-        <Logo className="h-13 w-auto filter brightness-0 invert" />
+        {/* Canary Cards Branding */}
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
+            <Mail className="w-5 h-5 text-white" />
+          </div>
+          <h1 className="text-xl font-bold text-white">Canary Cards</h1>
+        </div>
         
         {/* Hamburger menu */}
         <div className="flex-shrink-0">
