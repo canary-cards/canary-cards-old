@@ -3,11 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Badge } from '@/components/ui/badge';
+import { LawmakerSelectCard } from '@/components/ui/lawmaker-select-card';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { useAppContext } from '../../context/AppContext';
-import { ArrowLeft, Info, Apple } from 'lucide-react';
+import { ArrowLeft, Apple } from 'lucide-react';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
 import { useNavigate } from 'react-router-dom';
@@ -125,154 +124,115 @@ export function CheckoutScreen() {
                 Pick where your message goes. Start with your Representative, then add your Senators.
               </p>
 
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Lawmaker Cards */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {/* Representative (always selected, disabled) */}
                   {rep && (
-                    <Card className="border-2 border-primary bg-card">
-                      <CardContent className="p-4">
-                        <div className="flex items-start space-x-4">
-                          <Checkbox 
-                            checked={true} 
-                            disabled={true}
-                            className="mt-1"
-                          />
-                          <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                            {rep.photo ? (
-                              <img src={rep.photo} alt={rep.name} className="w-full h-full object-cover" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
-                                {rep.name.split(' ').map(n => n[0]).join('')}
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-medium text-foreground mb-1">
-                              Send to your Representative — $5.00
-                            </h4>
-                            <p className="text-sm text-muted-foreground">
-                              Your local Representative is directly accountable to your district.
-                            </p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <LawmakerSelectCard
+                      lawmaker={rep}
+                      isSelected={true}
+                      isDisabled={true}
+                      price="$5.00"
+                      valueText="Your Representative is directly accountable to your district"
+                      supportText="Representatives focus on local issues and have the strongest incentive to respond to constituents"
+                      className="ring-2 ring-primary/20"
+                    />
                   )}
 
                   {/* Senators */}
                   {loadingSenators ? (
                     <>
-                      <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
-                        <CardContent className="p-4">
-                          <div className="flex items-start space-x-4">
-                            <div className="w-4 h-4 bg-muted rounded mt-1 animate-pulse" />
-                            <div className="w-16 h-16 bg-muted rounded-lg animate-pulse" />
-                            <div className="flex-1 space-y-2">
-                              <div className="h-4 bg-muted rounded animate-pulse" />
-                              <div className="h-3 bg-muted rounded w-3/4 animate-pulse" />
+                      {/* Loading skeleton for senators */}
+                      {[0, 1].map((index) => (
+                        <Card key={index} className="bg-gradient-to-br from-muted/20 to-muted/40">
+                          <CardContent className="p-4">
+                            <div className="space-y-3">
+                              <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 bg-muted rounded-lg animate-pulse" />
+                                <div className="flex-1 space-y-2">
+                                  <div className="h-4 bg-muted rounded animate-pulse" />
+                                  <div className="h-3 bg-muted rounded w-1/2 animate-pulse" />
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <div className="w-12 h-5 bg-muted rounded animate-pulse" />
+                                  <div className="w-4 h-4 bg-muted rounded animate-pulse" />
+                                </div>
+                              </div>
+                              <div className="space-y-1">
+                                <div className="h-3 bg-muted rounded animate-pulse" />
+                                <div className="h-3 bg-muted rounded w-3/4 animate-pulse" />
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                      <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
-                        <CardContent className="p-4">
-                          <div className="flex items-start space-x-4">
-                            <div className="w-4 h-4 bg-muted rounded mt-1 animate-pulse" />
-                            <div className="w-16 h-16 bg-muted rounded-lg animate-pulse" />
-                            <div className="flex-1 space-y-2">
-                              <div className="h-4 bg-muted rounded animate-pulse" />
-                              <div className="h-3 bg-muted rounded w-3/4 animate-pulse" />
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+                      ))}
                     </>
                   ) : (
                     senators.slice(0, 2).map((senator, index) => (
-                      <Card 
-                        key={senator.id} 
-                        className={`transition-all ${selectedSenators[index] ? 'border-2 border-primary bg-card' : 'border border-border bg-card'}`}
-                      >
-                        <CardContent className="p-4">
-                          <div className="flex items-start space-x-4">
-                            <Checkbox 
-                              checked={selectedSenators[index]} 
-                              onCheckedChange={(checked) => handleSenatorToggle(index, checked as boolean)}
-                              className="mt-1"
-                            />
-                            <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                              {senator.photo ? (
-                                <img src={senator.photo} alt={senator.name} className="w-full h-full object-cover" />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
-                                  {senator.name.split(' ').map(n => n[0]).join('')}
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-medium text-foreground mb-1">
-                                {index === 0 ? 'Also send to' : 'And send to'} 
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <span className="inline-flex items-center ml-1">
-                                      Senator
-                                      <Info className="w-3 h-3 ml-1 text-muted-foreground" />
-                                    </span>
-                                  </TooltipTrigger>
-                                  <TooltipContent className="max-w-xs">
-                                    <p>
-                                      {index === 0 
-                                        ? "Every state has two U.S. Senators who represent the whole state. We've already verified their official addresses—no extra steps."
-                                        : "You have two Senators. We'll automatically address and mail each card to the correct office."
-                                      }
-                                    </p>
-                                  </TooltipContent>
-                                </Tooltip>
-                                {' '}{senator.name} — +$3.00
-                              </h4>
-                              <p className="text-sm text-muted-foreground">
-                                {index === 0 
-                                  ? `Make your message heard in the Senate. Adding ${senator.name} means both chambers hear from you.`
-                                  : `Double your impact. Both Senators ensure your state's full voice is heard in the Senate.`
-                                }
-                              </p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                      <LawmakerSelectCard
+                        key={senator.id}
+                        lawmaker={senator}
+                        isSelected={selectedSenators[index]}
+                        price="+$3.00"
+                        valueText={
+                          index === 0 
+                            ? "Make your message heard in the Senate — both chambers matter"
+                            : "Double your Senate impact — your state's full voice"
+                        }
+                        supportText={
+                          index === 0 
+                            ? "Senators represent your entire state and vote on national policy that affects your community"
+                            : "Having both Senators ensures your state's interests are fully represented in federal decisions"
+                        }
+                        onSelectionChange={(checked) => handleSenatorToggle(index, checked)}
+                        showTooltip={true}
+                        tooltipContent={
+                          index === 0 
+                            ? "Every state has two U.S. Senators who represent the whole state. We've already verified their official addresses—no extra steps."
+                            : "You have two Senators. We'll automatically address and mail each card to the correct office."
+                        }
+                      />
                     ))
                   )}
+                </div>
 
-                  {/* Address reassurance */}
-                  {senators.length > 0 && (
+                {/* Address reassurance */}
+                {senators.length > 0 && !loadingSenators && (
+                  <div className="text-center">
                     <p className="text-sm text-muted-foreground">
-                      We've got it covered: Your Senators' official mailing addresses are already confirmed—nothing for you to look up.
+                      ✓ All official mailing addresses are verified and ready to go
                     </p>
-                  )}
-                </div>
+                  </div>
+                )}
+              </div>
 
-                {/* Impact + Social Proof */}
-                <div className="text-center">
-                  <p className="text-base text-foreground">
-                    You're joining others making themselves heard today. Most people send to all 3 lawmakers.
-                  </p>
-                </div>
-
-                {/* Order Summary */}
-                <Card className="bg-muted/20">
+              <div className="space-y-6">
+                {/* Order Summary - Sticky on mobile */}
+                <Card className="bg-primary/5 border-primary/20 sticky top-4 z-10">
                   <CardContent className="p-4">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold text-foreground">Total:</span>
-                      <span className="font-bold text-lg text-foreground">
-                        ${getTotalPrice().toFixed(2)} 
-                        {getSendOption() === 'single' && ' (Representative)'}
-                        {getSendOption() === 'double' && ' (Rep + 1 Senator)'}
-                        {getSendOption() === 'triple' && ' (Rep + 2 Senators)'}
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-foreground">Your order:</span>
+                        <span className="text-sm text-muted-foreground">
+                          {getSendOption() === 'single' && '1 postcard'}
+                          {getSendOption() === 'double' && '2 postcards'}
+                          {getSendOption() === 'triple' && '3 postcards'}
+                        </span>
+                      </div>
+                      <span className="font-bold text-xl text-primary">
+                        ${getTotalPrice().toFixed(2)}
                       </span>
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Social Proof */}
+                <div className="text-center py-2">
+                  <p className="text-sm text-muted-foreground">
+                    Most people send to all 3 lawmakers for maximum impact
+                  </p>
+                </div>
 
                 {/* Email Input */}
                 <div className="space-y-2">
