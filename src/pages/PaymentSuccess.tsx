@@ -263,11 +263,11 @@ export default function PaymentSuccess() {
                 <Twitter className="w-3 h-3 mr-1" />
                 Twitter
               </Button>
-              <Button variant="secondary" onClick={shareViaFacebook} className="px-2 py-2 text-xs">
+              <Button variant="secondary" onClick={shareViaFacebook} className="px-3 py-2 text-xs">
                 <Facebook className="w-3 h-3 mr-1" />
                 Facebook
               </Button>
-              <Button variant="secondary" onClick={copyShareableLink} className="px-2 py-2 text-xs">
+              <Button variant="secondary" onClick={copyShareableLink} className="px-3 py-2 text-xs">
                 <Copy className="w-3 h-3 mr-1" />
                 Copy Link
               </Button>
