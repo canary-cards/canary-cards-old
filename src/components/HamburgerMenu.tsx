@@ -19,7 +19,7 @@ export function HamburgerMenu() {
         title: "Signed out successfully",
         description: "You have been logged out of your account.",
       });
-      navigate('/');
+      navigate('/', { state: { skipOnboarding: true } });
     } catch (error) {
       toast({
         title: "Error signing out",
@@ -30,11 +30,16 @@ export function HamburgerMenu() {
     setIsOpen(false);
   };
 
+  const handleHomeClick = () => {
+    navigate('/', { state: { skipOnboarding: true } });
+    setIsOpen(false);
+  };
+
   const menuItems = [
     {
       icon: Home,
       label: 'Home',
-      href: '/',
+      onClick: handleHomeClick,
     },
     {
       icon: User,
@@ -97,15 +102,26 @@ export function HamburgerMenu() {
           <div className="flex-1 px-6">
             <nav className="space-y-1">
               {menuItems.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center px-3 py-3 text-sm font-medium rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
-                >
-                  <item.icon className="mr-3 h-5 w-5" />
-                  {item.label}
-                </Link>
+                item.onClick ? (
+                  <button
+                    key={item.label}
+                    onClick={item.onClick}
+                    className="flex items-center px-3 py-3 text-sm font-medium rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors w-full text-left"
+                  >
+                    <item.icon className="mr-3 h-5 w-5" />
+                    {item.label}
+                  </button>
+                ) : (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center px-3 py-3 text-sm font-medium rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
+                  >
+                    <item.icon className="mr-3 h-5 w-5" />
+                    {item.label}
+                  </Link>
+                )
               ))}
             </nav>
 

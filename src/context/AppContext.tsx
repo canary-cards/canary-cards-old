@@ -7,15 +7,16 @@ type AppAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'RESET_STATE' }
+  | { type: 'RESET_TO_HOME' }
   | { type: 'RESTORE_STATE'; payload: AppState }
   | { type: 'SET_RESTORING'; payload: boolean };
 
 const initialState: AppState = {
-  currentStep: 0,
+  currentStep: 1, // Start at landing screen instead of 0
   postcardData: {},
   isLoading: false,
   error: null,
-  isRestoring: true, // Add restoration loading state
+  isRestoring: false, // Start with false since we no longer auto-restore
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -39,6 +40,24 @@ function appReducer(state: AppState, action: AppAction): AppState {
       break;
     case 'RESET_STATE':
       newState = initialState;
+      break;
+    case 'RESET_TO_HOME':
+      // Clear all cached data and reset to step 1 (landing screen)
+      console.log('🏠 Resetting to home - clearing all cached data');
+      try {
+        sessionStorage.removeItem('appContextBackup');
+        localStorage.removeItem('postcardData');
+        console.log('🧹 Cleared all cached data');
+      } catch (error) {
+        console.error('Failed to clear cached data:', error);
+      }
+      newState = { 
+        currentStep: 1, 
+        postcardData: {}, 
+        isLoading: false, 
+        error: null, 
+        isRestoring: false 
+      };
       break;
     case 'RESTORE_STATE':
       newState = { ...action.payload, isRestoring: false };
@@ -71,103 +90,12 @@ const AppContext = createContext<{
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
-  // Restore state from sessionStorage on mount
+  // Only restore state when explicitly requested (like payment return flow)
   React.useEffect(() => {
-    const restoreStateFromStorage = () => {
-      console.log('🔍 Attempting to restore state from storage...');
-      
-      // First try sessionStorage (primary)
-      try {
-        const sessionData = sessionStorage.getItem('appContextBackup');
-        if (sessionData) {
-          const parsedSessionData = JSON.parse(sessionData);
-          console.log('✅ Found sessionStorage data:', parsedSessionData);
-          
-          if (validateRestoredState(parsedSessionData)) {
-            console.log('✅ Restoring from sessionStorage');
-            dispatch({ type: 'RESTORE_STATE', payload: parsedSessionData });
-            return;
-          }
-        }
-      } catch (error) {
-        console.error('❌ Failed to restore from sessionStorage:', error);
-      }
-      
-      // Fallback to localStorage
-      try {
-        const localData = localStorage.getItem('postcardData');
-        if (localData) {
-          const parsedLocalData = JSON.parse(localData);
-          console.log('🔄 Found localStorage data, migrating:', parsedLocalData);
-          
-          // Convert localStorage format to AppState format
-          const migratedState: AppState = {
-            currentStep: 5, // Assume we're at checkout step
-            postcardData: parsedLocalData,
-            isLoading: false,
-            error: null,
-            isRestoring: false
-          };
-          
-          if (validateRestoredState(migratedState)) {
-            console.log('✅ Restoring from localStorage (migrated)');
-            dispatch({ type: 'RESTORE_STATE', payload: migratedState });
-            
-            // Clean up old localStorage after successful migration
-            localStorage.removeItem('postcardData');
-            console.log('🧹 Cleaned up old localStorage data');
-            return;
-          }
-        }
-      } catch (error) {
-        console.error('❌ Failed to restore from localStorage:', error);
-      }
-      
-      console.log('ℹ️ No valid data found in storage, starting fresh');
-      dispatch({ type: 'SET_RESTORING', payload: false });
-    };
-
-    const validateRestoredState = (data: any): boolean => {
-      console.log('🔍 Validating restored state:', data);
-      
-      if (!data || typeof data !== 'object') {
-        console.log('❌ Invalid state: not an object');
-        return false;
-      }
-      
-      if (!data.postcardData) {
-        console.log('❌ Invalid state: missing postcardData');
-        return false;
-      }
-      
-      const { postcardData } = data;
-      
-      // Check required fields
-      if (!postcardData.userInfo?.fullName) {
-        console.log('❌ Invalid state: missing userInfo.fullName');
-        return false;
-      }
-      
-      if (!postcardData.userInfo?.streetAddress) {
-        console.log('❌ Invalid state: missing userInfo.streetAddress');
-        return false;
-      }
-      
-      if (!postcardData.representative?.name) {
-        console.log('❌ Invalid state: missing representative.name');
-        return false;
-      }
-      
-      if (!postcardData.finalMessage) {
-        console.log('❌ Invalid state: missing finalMessage');
-        return false;
-      }
-      
-      console.log('✅ State validation passed');
-      return true;
-    };
-    
-    restoreStateFromStorage();
+    // For now, we'll start fresh on every app load to prevent unwanted jumps
+    // State restoration is only used in specific flows like payment return
+    console.log('🏠 App starting fresh - no automatic state restoration');
+    dispatch({ type: 'SET_RESTORING', payload: false });
   }, []);
 
   return (
@@ -183,4 +111,100 @@ export function useAppContext() {
     throw new Error('useAppContext must be used within an AppProvider');
   }
   return context;
+}
+
+// Helper function for payment return flow to restore state
+export function restoreStateFromStorage(dispatch: React.Dispatch<AppAction>): boolean {
+  console.log('🔍 Payment return: attempting to restore state from storage...');
+  
+  // Validation function
+  const validateRestoredState = (data: any): boolean => {
+    console.log('🔍 Validating restored state:', data);
+    
+    if (!data || typeof data !== 'object') {
+      console.log('❌ Invalid state: not an object');
+      return false;
+    }
+    
+    if (!data.postcardData) {
+      console.log('❌ Invalid state: missing postcardData');
+      return false;
+    }
+    
+    const { postcardData } = data;
+    
+    // Check required fields
+    if (!postcardData.userInfo?.fullName) {
+      console.log('❌ Invalid state: missing userInfo.fullName');
+      return false;
+    }
+    
+    if (!postcardData.userInfo?.streetAddress) {
+      console.log('❌ Invalid state: missing userInfo.streetAddress');
+      return false;
+    }
+    
+    if (!postcardData.representative?.name) {
+      console.log('❌ Invalid state: missing representative.name');
+      return false;
+    }
+    
+    if (!postcardData.finalMessage) {
+      console.log('❌ Invalid state: missing finalMessage');
+      return false;
+    }
+    
+    console.log('✅ State validation passed');
+    return true;
+  };
+
+  // First try sessionStorage (primary)
+  try {
+    const sessionData = sessionStorage.getItem('appContextBackup');
+    if (sessionData) {
+      const parsedSessionData = JSON.parse(sessionData);
+      console.log('✅ Found sessionStorage data:', parsedSessionData);
+      
+      if (validateRestoredState(parsedSessionData)) {
+        console.log('✅ Restoring from sessionStorage');
+        dispatch({ type: 'RESTORE_STATE', payload: parsedSessionData });
+        return true;
+      }
+    }
+  } catch (error) {
+    console.error('❌ Failed to restore from sessionStorage:', error);
+  }
+  
+  // Fallback to localStorage
+  try {
+    const localData = localStorage.getItem('postcardData');
+    if (localData) {
+      const parsedLocalData = JSON.parse(localData);
+      console.log('🔄 Found localStorage data, migrating:', parsedLocalData);
+      
+      // Convert localStorage format to AppState format
+      const migratedState: AppState = {
+        currentStep: 5, // Assume we're at checkout step
+        postcardData: parsedLocalData,
+        isLoading: false,
+        error: null,
+        isRestoring: false
+      };
+      
+      if (validateRestoredState(migratedState)) {
+        console.log('✅ Restoring from localStorage (migrated)');
+        dispatch({ type: 'RESTORE_STATE', payload: migratedState });
+        
+        // Clean up old localStorage after successful migration
+        localStorage.removeItem('postcardData');
+        console.log('🧹 Cleaned up old localStorage data');
+        return true;
+      }
+    }
+  } catch (error) {
+    console.error('❌ Failed to restore from localStorage:', error);
+  }
+  
+  console.log('ℹ️ No valid data found in storage for payment return');
+  return false;
 }

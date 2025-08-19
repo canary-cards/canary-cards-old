@@ -7,7 +7,7 @@ import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { RobotLoadingScreen } from '@/components/RobotLoadingScreen';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useAppContext } from '@/context/AppContext';
+import { useAppContext, restoreStateFromStorage } from '@/context/AppContext';
 
 export default function PaymentReturn() {
   const [searchParams] = useSearchParams();
@@ -17,7 +17,7 @@ export default function PaymentReturn() {
   const [retryAttempts, setRetryAttempts] = useState(0);
   const [startTime, setStartTime] = useState<number>(Date.now());
   const { toast } = useToast();
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
 
   // Enhanced validation for postcard data
   const validatePostcardData = (data: any): boolean => {
@@ -80,12 +80,6 @@ export default function PaymentReturn() {
   };
 
   const orderPostcards = async () => {
-    // Wait for state restoration to complete
-    if (state.isRestoring) {
-      console.log('⏳ State is still restoring, waiting...');
-      return;
-    }
-    
     try {
       setStatus('ordering');
       console.log('Starting postcard ordering process...');
@@ -194,20 +188,29 @@ export default function PaymentReturn() {
         return;
       }
       
-      console.log('✅ Payment verified successfully, proceeding to order postcards');
+      console.log('✅ Payment verified successfully, attempting to restore postcard data');
       
-      // Wait for state restoration to complete before ordering
-      const checkAndOrder = () => {
-        if (!state.isRestoring) {
-          console.log('✅ State restoration complete, starting postcard ordering');
-          orderPostcards();
-        } else {
-          console.log('⏳ Still restoring state, checking again in 100ms...');
-          setTimeout(checkAndOrder, 100);
-        }
-      };
+      // Attempt to restore state from storage for payment return flow
+      const stateRestored = restoreStateFromStorage(dispatch);
       
-      checkAndOrder();
+      if (!stateRestored) {
+        console.log('❌ Failed to restore postcard data for payment return');
+        setStatus('error');
+        toast({
+          title: "Session expired",
+          description: "Unable to find your postcard data. Please start over.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          navigate('/onboarding');
+        }, 3000);
+        return;
+      }
+      
+      console.log('✅ State restored successfully, proceeding to order postcards');
+      
+      // Start ordering immediately since state is now restored
+      orderPostcards();
       
     } catch (error) {
       console.error('Payment verification failed:', error);
@@ -235,7 +238,7 @@ export default function PaymentReturn() {
         navigate('/payment-canceled');
       }, 3000);
     }
-  }, [searchParams, navigate, state.isRestoring]);
+  }, [searchParams, navigate]);
 
   // Show robot loading screen for ordering state, fallback card for error
   if (status === 'ordering') {
