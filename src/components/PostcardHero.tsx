@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
-import postcardBackImage from '@/assets/postcard-back-handwriting.png';
-import postcardFrontImage from '@/assets/postcard-front-yosemite.png';
 
 interface PostcardHeroProps {
   className?: string;
@@ -14,8 +12,8 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
   const [isZoomed, setIsZoomed] = useState(false);
 
   const images = [
-    { src: postcardBackImage, alt: 'Postcard back with handwritten message' },
-    { src: postcardFrontImage, alt: 'Postcard front with Yosemite scenery' }
+    { src: '/postcard_back.png', alt: 'Postcard back with handwritten message' },
+    { src: '/postcard_front.png', alt: 'Postcard front with Yosemite scenery' }
   ];
 
   // Auto-advance logic
