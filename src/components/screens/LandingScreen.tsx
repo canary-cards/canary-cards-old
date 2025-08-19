@@ -116,8 +116,8 @@ export function LandingScreen() {
       <div className={`min-h-screen bg-background ${showSharedDialog ? 'pt-16' : ''}`}>
       <div className="container mx-auto px-4 py-4 max-w-2xl">
         {/* Logo Section */}
-        <div className="flex justify-start mb-6">
-          <Logo />
+        <div className="flex justify-center mb-6">
+          <Logo className="h-10 w-auto scale-130" />
         </div>
         
         {/* Mobile-First Hero Section */}
@@ -144,14 +144,14 @@ export function LandingScreen() {
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                    <Input id="zipCode" type="text" inputMode="numeric" pattern="[0-9]{5}" placeholder="12345" value={zipCode} onChange={e => {
-                     const value = e.target.value.replace(/\D/g, '').slice(0, 5);
-                     setZipCode(value);
-                     setSearchError('');
-                   }} className="pl-10 pr-10 h-12 text-center text-lg md:text-base focus:ring-accent focus:border-accent border-2" style={{
-                     textAlign: 'center',
-                     paddingLeft: '2.5rem',
-                     paddingRight: '2.5rem'
-                   }} maxLength={5} />
+                    const value = e.target.value.replace(/\D/g, '').slice(0, 5);
+                    setZipCode(value);
+                    setSearchError('');
+                  }} className="pl-10 pr-10 h-12 text-center text-lg md:text-base focus:ring-accent focus:border-accent border-2" style={{
+                    textAlign: 'center',
+                    paddingLeft: '2.5rem',
+                    paddingRight: '2.5rem'
+                  }} maxLength={5} />
                 </div>
                 {searchError && <p className="text-sm text-destructive">
                     {searchError}
@@ -179,9 +179,7 @@ export function LandingScreen() {
         {/* Proof Card */}
         <Card className="mb-6 bg-card border-2 border-border/60">
           <CardContent className="p-6 text-center">
-            <p className="text-sm font-semibold text-secondary mb-3 tracking-wide uppercase">
-              Proof it works
-            </p>
+            
             <p className="text-base font-normal text-foreground leading-relaxed">
               Just 50 personalized postcards can influence a congresspersons vote.
             </p>
