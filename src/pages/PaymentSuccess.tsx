@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { CheckCircle, Share, Twitter, Facebook, Copy, Plus, BarChart3, Mail, Clock, ArrowLeft, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
+import { Logo } from '@/components/Logo';
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
@@ -149,12 +150,7 @@ export default function PaymentSuccess() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center border border-primary">
-            <img src="/postallogov1.svg" alt="Canary Cards Logo" className="w-6 h-6" />
-          </div>
-          <h1 className="display-title text-primary">Canary Cards</h1>
-        </div>
+        <Logo className="h-8" />
         <HamburgerMenu />
       </div>
 
