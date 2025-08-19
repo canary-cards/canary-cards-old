@@ -194,7 +194,7 @@ export function CheckoutScreen() {
                               type: 'Senator'
                             }}
                             isSelected={selectedSenators[index]}
-                            price="$5"
+                            price="$3"
                             valueText=""
                             supportText=""
                             onSelectionChange={(checked) => handleSenatorToggle(index, checked)}

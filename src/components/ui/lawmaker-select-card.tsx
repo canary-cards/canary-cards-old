@@ -71,7 +71,7 @@ export function LawmakerSelectCard({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <h4 className="font-semibold text-foreground text-sm truncate">
-                  {lawmaker.type} {lawmaker.name}
+                  {lawmaker.type === 'Representative' ? 'Rep.' : lawmaker.type} {lawmaker.name}
                 </h4>
                 {showTooltip && tooltipContent && (
                   <Tooltip>
