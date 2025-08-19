@@ -16,6 +16,14 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     { src: '/postcard_front.png', alt: 'Postcard front with Yosemite scenery' }
   ];
 
+  // Preload images for instant loading
+  useEffect(() => {
+    images.forEach(image => {
+      const img = new Image();
+      img.src = image.src;
+    });
+  }, []);
+
   // Auto-advance logic
   useEffect(() => {
     if (!isAutoPlaying) return;
@@ -78,24 +86,6 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
         </p>
       </div>
 
-      {/* Progress Bar */}
-      <div className="flex gap-1 mb-6">
-        {images.map((_, index) => (
-          <div
-            key={index}
-            className="flex-1 h-1 bg-disabled rounded-full overflow-hidden"
-          >
-            <div
-              className="h-full bg-secondary transition-all duration-100 ease-linear"
-              style={{
-                width: index === currentImageIndex ? `${progress}%` : 
-                       index < currentImageIndex ? '100%' : '0%'
-              }}
-            />
-          </div>
-        ))}
-      </div>
-
       {/* Postcard Images */}
       <Card className="relative overflow-hidden bg-white shadow-lg">
         <div 
@@ -112,6 +102,24 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
           />
         </div>
       </Card>
+
+      {/* Progress Bar */}
+      <div className="flex gap-1 mt-4 mb-4">
+        {images.map((_, index) => (
+          <div
+            key={index}
+            className="flex-1 h-1 bg-disabled rounded-full overflow-hidden"
+          >
+            <div
+              className="h-full bg-secondary transition-all duration-100 ease-linear"
+              style={{
+                width: index === currentImageIndex ? `${progress}%` : 
+                       index < currentImageIndex ? '100%' : '0%'
+              }}
+            />
+          </div>
+        ))}
+      </div>
 
       {/* Instructions for mobile */}
       <div className="text-center mt-4 text-sm text-muted-foreground">
