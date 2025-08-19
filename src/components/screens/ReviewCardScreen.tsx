@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useAppContext } from '../../context/AppContext';
-import { ArrowLeft } from 'lucide-react';
+import { PostcardHero } from '../PostcardHero';
+import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 
 export function ReviewCardScreen() {
   const { state, dispatch } = useAppContext();
+  const [isMessageExpanded, setIsMessageExpanded] = useState(false);
   
   const rep = state.postcardData.representative;
   const userInfo = state.postcardData.userInfo;
@@ -34,70 +37,96 @@ export function ReviewCardScreen() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
-        <Card className="card-warm">
-          <CardContent className="p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
-                Review Your Card
-              </h1>
-              <h3 className="subtitle text-base">
-                We'll send this card to a robot that will use real pen and paper to write it
-              </h3>
-            </div>
+      <div className="container mx-auto px-4 pt-20 pb-32 max-w-2xl">
+        
+        {/* Hero Visual Carousel */}
+        <PostcardHero className="mb-8" />
 
-            {/* Postcard Preview */}
-            <div className="mb-8">
-              <Card className="bg-gradient-to-br from-card to-muted/30 border-2">
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Left side - Return address */}
-                    <div className="space-y-1 text-xs">
-                      <p className="font-medium">{userInfo?.fullName}</p>
-                      <p>{userInfo?.streetAddress}</p>
-                      <p>{userInfo?.city}, {userInfo?.state} {userInfo?.zipCode}</p>
-                    </div>
-                    
-                    {/* Right side - Representative address */}
-                    <div className="space-y-1 text-xs">
-                      <p className="font-medium">{rep?.name}</p>
-                      <p>{rep?.address || 'U.S. House of Representatives'}</p>
-                      {!rep?.address && <p>Washington, DC 20515</p>}
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 bg-background/80 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-2">Message (handwritten style):</p>
-                    <div className="text-sm leading-relaxed font-caveat">
-                      {displayMessage}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+        {/* Representative & Return Address Block */}
+        <Card className="bg-white shadow-sm mb-6">
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              {/* TO Address */}
+              <div>
+                <div className="text-xs font-semibold text-accent uppercase tracking-wide mb-1">
+                  TO:
+                </div>
+                <div className="text-primary font-inter">
+                  <p className="font-medium">{rep?.name}</p>
+                  <p className="text-sm">{rep?.address || '2206 Rayburn House Office Building'}</p>
+                  <p className="text-sm">{rep?.address ? '' : 'Washington, DC 20515-0507'}</p>
+                </div>
+              </div>
 
-            {/* Navigation Buttons */}
-            <div className="flex gap-2 sm:gap-4 pt-4 border-t">
-              <Button 
-                type="button" 
-                variant="secondary" 
-                onClick={goBack} 
-                className="button-warm flex-shrink-0 px-3 sm:px-4"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
-                <span className="text-sm sm:text-base">Back</span>
-              </Button>
-              
-              <Button 
-                onClick={handleContinue}
-                variant="primary"
-                className="button-warm flex-1"
-              >
-                <span className="text-sm sm:text-base">Continue</span>
-              </Button>
+              {/* Divider */}
+              <div className="border-t border-border"></div>
+
+              {/* FROM Address */}
+              <div>
+                <div className="text-xs font-semibold text-accent uppercase tracking-wide mb-1">
+                  FROM:
+                </div>
+                <div className="text-primary font-inter">
+                  <p className="font-medium">{userInfo?.fullName}</p>
+                  <p className="text-sm">{userInfo?.streetAddress}</p>
+                  <p className="text-sm">{userInfo?.city}, {userInfo?.state} {userInfo?.zipCode}</p>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
+
+        {/* User's Message (Progressive Disclosure) */}
+        <Card className="bg-white shadow-sm mb-8">
+          <CardContent className="p-0">
+            <Collapsible open={isMessageExpanded} onOpenChange={setIsMessageExpanded}>
+              <CollapsibleTrigger asChild>
+                <button className="w-full p-6 text-left hover:bg-muted/50 transition-colors flex items-center justify-between">
+                  <span className="text-primary font-medium">See your message (optional)</span>
+                  {isMessageExpanded ? 
+                    <ChevronUp className="w-4 h-4 text-muted-foreground" /> : 
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  }
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="px-6 pb-6">
+                <div className="bg-cream rounded-lg p-4 border border-border">
+                  <div className="text-primary font-caveat text-lg leading-relaxed mb-3">
+                    {displayMessage}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    This is a digital preview — your card will be handwritten with a real pen and mailed for you.
+                  </p>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </CardContent>
+        </Card>
+
+      </div>
+
+      {/* Navigation Buttons - Fixed at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4">
+        <div className="container mx-auto max-w-2xl">
+          <div className="flex gap-3">
+            <Button 
+              type="button" 
+              variant="secondary" 
+              onClick={goBack} 
+              className="flex-shrink-0"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+            
+            <Button 
+              onClick={handleContinue}
+              className="flex-1 bg-primary text-white hover:bg-primary/90"
+            >
+              Continue →
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
