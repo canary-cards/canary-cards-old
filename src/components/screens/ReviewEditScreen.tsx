@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
-import { ArrowLeft, Wand2, Edit3, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Edit3 } from 'lucide-react';
 export function ReviewEditScreen() {
   const {
     state,
@@ -58,6 +58,22 @@ ${userInfo?.fullName}`;
   const handleEditClick = () => {
     textareaRef.current?.focus();
   };
+
+  const getDomainLabel = (url: string) => {
+    try {
+      const domain = new URL(url).hostname;
+      // Convert common domains to readable names
+      if (domain.includes('congress.gov')) return 'Congress.gov';
+      if (domain.includes('house.gov')) return 'House.gov';
+      if (domain.includes('senate.gov')) return 'Senate.gov';
+      if (domain.includes('wikipedia.org')) return 'Wikipedia';
+      if (domain.includes('immigrationforum.org')) return 'Immigration Forum';
+      // Default to domain without www
+      return domain.replace('www.', '');
+    } catch {
+      return 'Source';
+    }
+  };
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
         <Card className="card-warm">
@@ -98,29 +114,32 @@ ${userInfo?.fullName}`;
               {/* Sources Section */}
               {state.postcardData.sources && state.postcardData.sources.length > 0 && (
                 <div className="space-y-3 pt-4 border-t border-border">
-                  <h4 className="text-sm font-medium text-foreground">Sources used for this postcard:</h4>
-                  <div className="space-y-2">
+                  <h4 className="text-sm font-medium text-foreground">Sources</h4>
+                  <ul className="space-y-2">
                     {state.postcardData.sources.map((source, index) => (
-                      <div key={index} className="flex items-start gap-2 p-3 bg-muted rounded-lg">
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-muted-foreground mt-1.5">•</span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-muted-foreground leading-relaxed">
+                          <span className="text-sm text-muted-foreground leading-relaxed">
                             {source.description}
-                          </p>
+                          </span>
                           {source.url && (
                             <a 
                               href={source.url} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1"
+                              className="inline-flex items-center gap-1 ml-1 px-2 py-0.5 text-xs bg-muted hover:bg-muted/80 rounded-full transition-colors"
                             >
-                              View source
-                              <ExternalLink className="w-3 h-3" />
+                              {getDomainLabel(source.url)}
+                              {source.dataPointCount > 0 && (
+                                <span className="text-muted-foreground">+{source.dataPointCount}</span>
+                              )}
                             </a>
                           )}
                         </div>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
               )}
 
