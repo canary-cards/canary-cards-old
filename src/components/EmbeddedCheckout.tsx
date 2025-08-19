@@ -6,6 +6,9 @@ import { ArrowLeft, Loader2 } from 'lucide-react';
 
 const stripePromise = loadStripe('pk_test_51Rm04GLqBC9dKThjLjUe7M1Cd8oIgW3IAFBwI1QYk3GsoBLUCu9SfW79On3wjkvst8OJtKpyLPhwjtyqBtonVg5O00BztMUEXj');
 
+// Global instance tracker to prevent multiple embedded checkouts
+let globalCheckoutInstance: any = null;
+
 interface EmbeddedCheckoutProps {
   clientSecret: string;
   onBack: () => void;
@@ -26,6 +29,18 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
     const initializeCheckout = async () => {
       try {
         console.log('EmbeddedCheckout: Starting initialization with clientSecret:', clientSecret ? 'present' : 'missing');
+        
+        // Clean up any existing global instance first
+        if (globalCheckoutInstance) {
+          console.log('EmbeddedCheckout: Cleaning up existing global instance');
+          try {
+            globalCheckoutInstance.unmount();
+            globalCheckoutInstance.destroy?.();
+          } catch (error) {
+            console.log('EmbeddedCheckout: Error cleaning up global instance:', error);
+          }
+          globalCheckoutInstance = null;
+        }
         
         if (!clientSecret) {
           throw new Error('Client secret is missing');
@@ -63,7 +78,9 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           return;
         }
 
+        // Store in both local and global references
         setCheckout(checkoutInstance);
+        globalCheckoutInstance = checkoutInstance;
         setLoading(false);
         
         // Mount after state is updated and component re-renders
@@ -107,22 +124,34 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
       return () => {
         clearTimeout(fallbackTimeout);
         isMounted = false;
+        
+        // Clean up local instance
         if (checkoutInstance) {
           console.log('EmbeddedCheckout: Unmounting checkout instance');
           try {
             checkoutInstance.unmount();
+            checkoutInstance.destroy?.(); // Call destroy if available
           } catch (error) {
             console.log('EmbeddedCheckout: Error unmounting checkout:', error);
           }
           checkoutInstance = null;
         }
+        
+        // Clean up state instance if different
         if (checkout && checkout !== checkoutInstance) {
           console.log('EmbeddedCheckout: Unmounting stored checkout instance');
           try {
             checkout.unmount();
+            checkout.destroy?.(); // Call destroy if available
           } catch (error) {
             console.log('EmbeddedCheckout: Error unmounting stored checkout:', error);
           }
+        }
+        
+        // Clear global instance if it matches this component's instance
+        if (globalCheckoutInstance === checkoutInstance || globalCheckoutInstance === checkout) {
+          console.log('EmbeddedCheckout: Clearing global checkout instance');
+          globalCheckoutInstance = null;
         }
       };
     } else {
@@ -133,7 +162,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         isMounted = false;
       };
     }
-  }, [clientSecret, loading]);
+  }, [clientSecret]); // Removed 'loading' dependency to prevent loops
 
   if (loading) {
     return (
