@@ -40,12 +40,10 @@ export function LawmakerSelectCard({
   return (
     <Card 
       className={`transition-all duration-200 ${
-        isDisabled 
-          ? 'bg-disabled border-disabled-foreground/20 cursor-default' 
-          : isSelected 
-            ? 'border-2 border-primary bg-primary/5 shadow-md cursor-pointer' 
-            : 'border border-border bg-card hover:bg-muted/20 cursor-pointer'
-      } ${className}`}
+        isSelected 
+          ? 'border-2 border-primary bg-primary/5 shadow-md cursor-pointer' 
+          : 'border border-border bg-card hover:bg-muted/20 cursor-pointer'
+      } ${isDisabled ? 'cursor-default' : ''} ${className}`}
       onClick={handleCardClick}
     >
       <CardContent className="p-4">
@@ -94,17 +92,15 @@ export function LawmakerSelectCard({
 
           {/* Action Row - Checkbox and Price */}
           <div className="flex items-center justify-between pt-2 border-t border-border/30">
-            <div className="flex items-center gap-2">
-              <Checkbox 
-                checked={isSelected} 
-                disabled={isDisabled}
-                onCheckedChange={onSelectionChange}
-                onClick={(e) => e.stopPropagation()}
-              />
-              <span className="text-sm text-foreground">
-                Send to {lawmaker.name.split(' ').pop()} {price}
-              </span>
-            </div>
+            <span className="text-sm text-foreground">
+              Send to {lawmaker.name} {price}
+            </span>
+            <Checkbox 
+              checked={isSelected} 
+              disabled={isDisabled}
+              onCheckedChange={onSelectionChange}
+              onClick={(e) => e.stopPropagation()}
+            />
           </div>
          </div>
       </CardContent>
