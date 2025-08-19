@@ -46,12 +46,12 @@ export function LawmakerSelectCard({
       } ${isDisabled ? 'cursor-default' : ''} ${className}`}
       onClick={handleCardClick}
     >
-      <CardContent className="p-4">
-        <div className="space-y-3">
+      <CardContent className="p-3">
+        <div className="space-y-2">
           {/* Header Row - Photo, Name, Action */}
           <div className="flex items-start gap-4">
             {/* Photo */}
-            <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg overflow-hidden bg-muted flex-shrink-0">
               {lawmaker.photo ? (
                 <img 
                   src={lawmaker.photo} 
