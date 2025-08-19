@@ -125,9 +125,6 @@ serve(async (req) => {
       mode: "payment",
       ui_mode: "embedded",
       return_url: returnUrl,
-      // Add redirect URLs for backup (these work for hosted checkout)
-      success_url: `${origin}/payment-return?session_id={CHECKOUT_SESSION_ID}&success=true`,
-      cancel_url: `${origin}/payment-canceled`,
       metadata: {
         send_option: sendOption,
         user_email: email,
