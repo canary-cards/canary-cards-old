@@ -105,6 +105,9 @@ export default {
 			},
 			scale: {
 				'130': '1.3'
+			},
+			spacing: {
+				'13': '3.25rem' // 30% bigger than h-10 (2.5rem * 1.3 = 3.25rem)
 			}
 		}
 	},

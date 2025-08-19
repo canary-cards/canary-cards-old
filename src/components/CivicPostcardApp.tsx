@@ -49,7 +49,7 @@ export function CivicPostcardApp() {
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
         {/* Logo - show on all pages except step 1 */}
         {state.currentStep > 1 && (
-          <Logo />
+          <Logo className="h-13 w-auto" />
         )}
         
         {/* Spacer to push hamburger menu to the right when no branding */}
