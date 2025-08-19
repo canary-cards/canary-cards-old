@@ -64,9 +64,9 @@ export function HamburgerMenu() {
         <Button
           variant="ghost"
           size="icon"
-          className="bg-card/80 backdrop-blur-sm border border-border/20 hover:bg-card shadow-lg"
+          className="hover:bg-transparent"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-6 w-6 text-slate-700" />
           <span className="sr-only">Open menu</span>
         </Button>
       </SheetTrigger>
