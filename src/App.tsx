@@ -32,7 +32,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/password-reset" element={<PasswordReset />} />
             <Route path="/checkout" element={<AppProvider><Checkout /></AppProvider>} />
-            <Route path="/payment-return" element={<PaymentReturn />} />
+            <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-canceled" element={<PaymentCanceled />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
