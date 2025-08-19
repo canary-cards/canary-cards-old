@@ -48,7 +48,7 @@ export function ReviewCardScreen() {
             <div className="space-y-4">
               {/* TO Address */}
               <div>
-                <div className="text-xs font-semibold text-accent uppercase tracking-wide mb-1">
+                <div className="text-xs font-semibold text-secondary uppercase tracking-wide mb-1">
                   TO:
                 </div>
                 <div className="text-primary font-inter">
@@ -63,7 +63,7 @@ export function ReviewCardScreen() {
 
               {/* FROM Address */}
               <div>
-                <div className="text-xs font-semibold text-accent uppercase tracking-wide mb-1">
+                <div className="text-xs font-semibold text-secondary uppercase tracking-wide mb-1">
                   FROM:
                 </div>
                 <div className="text-primary font-inter">
