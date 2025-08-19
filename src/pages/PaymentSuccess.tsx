@@ -180,10 +180,12 @@ export default function PaymentSuccess() {
               </p>
               
               {/* Hero Postcard Image Placeholder */}
-              <div className="mx-auto w-80 h-48 bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-muted-foreground/30">
-                <div className="text-center space-y-2">
-                  <p className="text-muted-foreground font-medium">Image Here</p>
-                  <p className="text-xs text-muted-foreground">Sample handwritten postcard</p>
+              <div className="flex justify-center">
+                <div className="w-80 h-48 bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-muted-foreground/30">
+                  <div className="text-center space-y-2">
+                    <p className="text-muted-foreground font-medium">Image Here</p>
+                    <p className="text-xs text-muted-foreground">Sample handwritten postcard</p>
+                  </div>
                 </div>
               </div>
               
@@ -257,16 +259,16 @@ export default function PaymentSuccess() {
 
             {/* Social Media Quick Shares */}
             <div className="grid grid-cols-3 gap-3">
-              <Button variant="secondary" onClick={shareViaTwitter} className="flex-1">
-                <Twitter className="w-4 h-4" />
+              <Button variant="secondary" onClick={shareViaTwitter} className="px-4 py-2 text-sm">
+                <Twitter className="w-4 h-4 mr-2" />
                 Twitter
               </Button>
-              <Button variant="secondary" onClick={shareViaFacebook} className="flex-1">
-                <Facebook className="w-4 h-4" />
+              <Button variant="secondary" onClick={shareViaFacebook} className="px-4 py-2 text-sm">
+                <Facebook className="w-4 h-4 mr-2" />
                 Facebook
               </Button>
-              <Button variant="secondary" onClick={copyShareableLink} className="flex-1">
-                <Copy className="w-4 h-4" />
+              <Button variant="secondary" onClick={copyShareableLink} className="px-4 py-2 text-sm">
+                <Copy className="w-4 h-4 mr-2" />
                 Copy Link
               </Button>
             </div>
@@ -295,13 +297,9 @@ export default function PaymentSuccess() {
                 <Clock className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <span className="body-text">We'll email you when your postcard is mailed</span>
               </div>
-              <div className="flex items-start gap-3">
-                <BarChart3 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <span className="body-text">Track your impact in your dashboard</span>
-              </div>
             </div>
 
-            <div className="flex gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button size="lg" className="flex-1" asChild>
                 <Link to="/">
                   <Plus className="w-5 h-5" />
@@ -309,9 +307,9 @@ export default function PaymentSuccess() {
                 </Link>
               </Button>
               <Button variant="secondary" size="lg" className="flex-1" asChild>
-                <Link to="/auth">
+                <Link to="/">
                   <User className="w-5 h-5" />
-                  Back to Dashboard
+                  Home
                 </Link>
               </Button>
             </div>
