@@ -123,13 +123,13 @@ export function LandingScreen() {
         {/* Mobile-First Hero Section */}
         <div className="text-center mb-8">
           {/* Hero Text */}
-          <div className="w-full mb-4 p-6">
-            <h2 className="text-2xl md:text-3xl display-title leading-tight mb-3">
-              Make Your Voice Heard in Washington D.C.
+          <div className="w-full mb-6 p-6">
+            <h1 className="text-2xl md:text-3xl display-title leading-tight mb-4">
+              Send a Real Postcard to Your Representative
+            </h1>
+            <h2 className="subtitle text-base mb-2 leading-relaxed">
+              Handwritten postcards get noticed. Emails don't.
             </h2>
-            <h3 className="subtitle text-base mb-2 leading-relaxed">
-              You craft a postcard, robots handwrite and mail it, your rep reads it
-            </h3>
           </div>
         </div>
 
@@ -168,21 +168,28 @@ export function LandingScreen() {
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </>}
               </Button>
+              
+              <p className="text-xs text-muted-foreground text-center mt-3">
+                We only use your zip to find your rep.
+              </p>
             </form>
           </CardContent>
         </Card>
 
-        {/* Impact Card */}
-        <div className="w-full mb-4 p-4 rounded-xl bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/30 dark:border-green-800/30 relative">
-          <div className="text-sm text-foreground text-center">
-            <p className="text-base font-medium mb-1">
-              Just 50 personalized postcards can influence a congressperson's vote
+        {/* Proof Card */}
+        <Card className="mb-6 border-red-200/50 dark:border-red-800/30 bg-gradient-to-br from-red-50/30 to-orange-50/30 dark:from-red-950/20 dark:to-orange-950/20">
+          <CardContent className="p-6 text-center">
+            <p className="text-sm font-semibold text-red-700 dark:text-red-400 mb-3 tracking-wide uppercase">
+              Proof it works
             </p>
-            <p className="text-xs text-muted-foreground italic">
-              — Congressional Management Foundation study
+            <p className="text-base font-normal text-foreground leading-relaxed">
+              Just 50 personalized postcards can influence a congresspersons vote.
             </p>
-          </div>
-        </div>
+            <p className="text-sm text-muted-foreground mt-3">
+              — Congressional Management Foundation
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Representatives Results */}
         {isSearching && <div className="mb-6">
