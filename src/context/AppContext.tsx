@@ -7,13 +7,15 @@ type AppAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'RESET_STATE' }
-  | { type: 'RESTORE_STATE'; payload: AppState };
+  | { type: 'RESTORE_STATE'; payload: AppState }
+  | { type: 'SET_RESTORING'; payload: boolean };
 
 const initialState: AppState = {
   currentStep: 0,
   postcardData: {},
   isLoading: false,
   error: null,
+  isRestoring: true, // Add restoration loading state
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -39,7 +41,10 @@ function appReducer(state: AppState, action: AppAction): AppState {
       newState = initialState;
       break;
     case 'RESTORE_STATE':
-      newState = action.payload;
+      newState = { ...action.payload, isRestoring: false };
+      break;
+    case 'SET_RESTORING':
+      newState = { ...state, isRestoring: action.payload };
       break;
     default:
       newState = state;
@@ -100,7 +105,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             currentStep: 5, // Assume we're at checkout step
             postcardData: parsedLocalData,
             isLoading: false,
-            error: null
+            error: null,
+            isRestoring: false
           };
           
           if (validateRestoredState(migratedState)) {
@@ -118,6 +124,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
       
       console.log('ℹ️ No valid data found in storage, starting fresh');
+      dispatch({ type: 'SET_RESTORING', payload: false });
     };
 
     const validateRestoredState = (data: any): boolean => {

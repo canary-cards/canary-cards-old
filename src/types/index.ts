@@ -45,4 +45,5 @@ export interface AppState {
   postcardData: Partial<PostcardData>;
   isLoading: boolean;
   error: string | null;
+  isRestoring: boolean;
 }

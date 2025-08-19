@@ -80,6 +80,12 @@ export default function PaymentReturn() {
   };
 
   const orderPostcards = async () => {
+    // Wait for state restoration to complete
+    if (state.isRestoring) {
+      console.log('⏳ State is still restoring, waiting...');
+      return;
+    }
+    
     try {
       setStatus('ordering');
       console.log('Starting postcard ordering process...');
@@ -162,10 +168,23 @@ export default function PaymentReturn() {
     const sessionId = searchParams.get('session_id');
     
     if (sessionId) {
-      // Payment was successful, start postcard ordering immediately
+      // Payment was successful, wait for state restoration then start ordering
+      console.log('💳 Payment successful, preparing to order postcards...');
       setStartTime(Date.now());
       setStatus('ordering');
-      orderPostcards();
+      
+      // Wait for state restoration to complete before ordering
+      const checkAndOrder = () => {
+        if (!state.isRestoring) {
+          console.log('✅ State restoration complete, starting postcard ordering');
+          orderPostcards();
+        } else {
+          console.log('⏳ Still restoring state, checking again in 100ms...');
+          setTimeout(checkAndOrder, 100);
+        }
+      };
+      
+      checkAndOrder();
     } else {
       // No session ID means payment failed
       setStatus('error');
@@ -173,7 +192,7 @@ export default function PaymentReturn() {
         navigate('/payment-canceled');
       }, 3000);
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, state.isRestoring]);
 
   // Show robot loading screen for ordering state, fallback card for error
   if (status === 'ordering') {
