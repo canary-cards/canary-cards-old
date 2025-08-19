@@ -123,16 +123,17 @@ ${userInfo?.fullName}`;
                             {source.description}
                           </span>
                           {source.url && (
-                            <button
-                              type="button"
-                              onClick={() => window.open(source.url, '_blank', 'noopener,noreferrer')}
-                              className="inline-flex items-center gap-1 ml-1 px-3 py-1 text-xs bg-primary/20 text-primary rounded-full transition-colors hover:bg-primary/30 cursor-pointer no-underline border-0 outline-none"
+                            <a 
+                              href={source.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 ml-1 px-3 py-1 text-xs bg-primary/20 text-primary rounded-full transition-colors hover:bg-primary/30 cursor-pointer no-underline"
                             >
                               {getDomainLabel(source.url)}
                               {source.dataPointCount > 0 && (
                                 <span>+{source.dataPointCount}</span>
                               )}
-                            </button>
+                            </a>
                           )}
                         </div>
                       </li>
