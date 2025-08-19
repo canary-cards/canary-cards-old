@@ -117,7 +117,7 @@ export function LandingScreen() {
       <div className="container mx-auto px-4 py-4 max-w-2xl">
         {/* Logo Section */}
         <div className="flex justify-center mb-6">
-          <Logo />
+          <Logo className="h-10 w-auto scale-130" />
         </div>
         
         {/* Mobile-First Hero Section */}
@@ -143,15 +143,15 @@ export function LandingScreen() {
                 </Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input id="zipCode" type="text" inputMode="numeric" pattern="[0-9]{5}" placeholder="12345" value={zipCode} onChange={e => {
-                    const value = e.target.value.replace(/\D/g, '').slice(0, 5);
-                    setZipCode(value);
-                    setSearchError('');
-                  }} className="pl-10 pr-10 h-12 text-center text-lg md:text-base" style={{
-                    textAlign: 'center',
-                    paddingLeft: '2.5rem',
-                    paddingRight: '2.5rem'
-                  }} maxLength={5} />
+                   <Input id="zipCode" type="text" inputMode="numeric" pattern="[0-9]{5}" placeholder="12345" value={zipCode} onChange={e => {
+                     const value = e.target.value.replace(/\D/g, '').slice(0, 5);
+                     setZipCode(value);
+                     setSearchError('');
+                   }} className="pl-10 pr-10 h-12 text-center text-lg md:text-base focus:ring-accent focus:border-accent border-2" style={{
+                     textAlign: 'center',
+                     paddingLeft: '2.5rem',
+                     paddingRight: '2.5rem'
+                   }} maxLength={5} />
                 </div>
                 {searchError && <p className="text-sm text-destructive">
                     {searchError}
@@ -177,9 +177,9 @@ export function LandingScreen() {
         </Card>
 
         {/* Proof Card */}
-        <Card className="mb-6 border-red-200/50 dark:border-red-800/30 bg-gradient-to-br from-red-50/30 to-orange-50/30 dark:from-red-950/20 dark:to-orange-950/20">
+        <Card className="mb-6 bg-card border-2 border-border/60">
           <CardContent className="p-6 text-center">
-            <p className="text-sm font-semibold text-red-700 dark:text-red-400 mb-3 tracking-wide uppercase">
+            <p className="text-sm font-semibold text-rust mb-3 tracking-wide uppercase">
               Proof it works
             </p>
             <p className="text-base font-normal text-foreground leading-relaxed">
