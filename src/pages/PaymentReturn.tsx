@@ -19,109 +19,63 @@ export default function PaymentReturn() {
   const { toast } = useToast();
   const { state } = useAppContext();
 
-  // Validate if postcard data is complete with detailed logging
-  const validatePostcardData = (data: any) => {
-    console.log('=== VALIDATING POSTCARD DATA ===');
-    console.log('Raw data:', data);
+  // Enhanced validation for postcard data
+  const validatePostcardData = (data: any): boolean => {
+    console.log('🔍 Validating postcard data:', data);
     
     if (!data) {
-      console.log('❌ Validation failed: No data provided');
+      console.log('❌ No data provided');
       return false;
     }
     
-    console.log('✅ Data exists, checking userInfo...');
-    console.log('userInfo:', data.userInfo);
-    
+    // Check userInfo
     if (!data.userInfo) {
-      console.log('❌ Validation failed: Missing userInfo');
-      return false;
-    }
-    
-    if (!data.userInfo.streetAddress) {
-      console.log('❌ Validation failed: Missing userInfo.streetAddress');
-      console.log('Available userInfo fields:', Object.keys(data.userInfo));
+      console.log('❌ Missing userInfo');
       return false;
     }
     
     if (!data.userInfo.fullName) {
-      console.log('❌ Validation failed: Missing userInfo.fullName');
-      console.log('Available userInfo fields:', Object.keys(data.userInfo));
+      console.log('❌ Missing userInfo.fullName');
       return false;
     }
     
-    console.log('✅ userInfo valid, checking representative...');
-    console.log('representative:', data.representative);
+    if (!data.userInfo.streetAddress) {
+      console.log('❌ Missing userInfo.streetAddress');
+      return false;
+    }
     
+    // Check representative
     if (!data.representative) {
-      console.log('❌ Validation failed: Missing representative');
+      console.log('❌ Missing representative');
       return false;
     }
     
     if (!data.representative.name) {
-      console.log('❌ Validation failed: Missing representative.name');
-      console.log('Available representative fields:', Object.keys(data.representative));
+      console.log('❌ Missing representative.name');
       return false;
     }
     
-    console.log('✅ representative valid, checking finalMessage...');
-    console.log('finalMessage:', data.finalMessage);
-    
+    // Check message
     if (!data.finalMessage) {
-      console.log('❌ Validation failed: Missing finalMessage');
+      console.log('❌ Missing finalMessage');
       return false;
     }
     
-    console.log('✅ All validation checks passed!');
+    console.log('✅ All validation checks passed');
     return true;
   };
 
-  // Migrate data from localStorage to AppContext if needed
-  const migrateDataToAppContext = () => {
-    console.log('=== MIGRATING DATA FROM LOCALSTORAGE ===');
-    const storedData = localStorage.getItem('postcardData');
-    console.log('Raw localStorage data:', storedData);
-    
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData);
-        console.log('Parsed localStorage data:', parsedData);
-        
-        if (validatePostcardData(parsedData)) {
-          console.log('✅ localStorage data is valid, migrating to AppContext');
-          return parsedData;
-        } else {
-          console.log('❌ localStorage data failed validation');
-        }
-      } catch (error) {
-        console.error('❌ Failed to parse localStorage data:', error);
-      }
-    } else {
-      console.log('❌ No data found in localStorage');
-    }
-    return null;
-  };
-
-  // Get postcard data with fallback logic
+  // Get postcard data from AppContext (which now auto-restores from storage)
   const getPostcardData = () => {
-    console.log('=== GETTING POSTCARD DATA ===');
+    console.log('🔍 Getting postcard data from AppContext...');
     console.log('Current AppContext state:', state.postcardData);
     
-    // First try AppContext
     if (validatePostcardData(state.postcardData)) {
-      console.log('✅ Using postcard data from AppContext');
+      console.log('✅ Using valid data from AppContext');
       return state.postcardData;
-    } else {
-      console.log('❌ AppContext data invalid, trying localStorage migration...');
     }
     
-    // Fallback to localStorage migration
-    const migratedData = migrateDataToAppContext();
-    if (migratedData) {
-      console.log('✅ Using migrated data from localStorage');
-      return migratedData;
-    }
-    
-    console.log('❌ No valid data found anywhere');
+    console.log('❌ No valid data available');
     return null;
   };
 
@@ -133,20 +87,25 @@ export default function PaymentReturn() {
       const postcardData = getPostcardData();
       
       if (!postcardData) {
-        console.log('No valid postcard data found, clearing localStorage and redirecting...');
+        console.log('❌ No valid postcard data found');
+        
+        // Clear any corrupted storage data
+        sessionStorage.removeItem('appContextBackup');
         localStorage.removeItem('postcardData');
+        
         toast({
           title: "Session expired",
           description: "Please start the postcard process again.",
           variant: "destructive",
         });
+        
         setTimeout(() => {
           navigate('/onboarding');
         }, 3000);
         return;
       }
       
-      console.log('Ordering postcard with data:', postcardData);
+      console.log('✅ Using valid postcard data:', postcardData);
       
       const { data, error } = await supabase.functions.invoke('send-postcard', {
         body: { postcardData }
