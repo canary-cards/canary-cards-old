@@ -259,17 +259,14 @@ export default function PaymentSuccess() {
 
             {/* Social Media Quick Shares */}
             <div className="grid grid-cols-3 gap-3">
-              <Button variant="secondary" onClick={shareViaTwitter} className="px-2 py-2 text-xs">
-                <Twitter className="w-3 h-3 mr-1" />
-                Twitter
+              <Button variant="secondary" onClick={shareViaTwitter} className="p-3">
+                <Twitter className="w-4 h-4" />
               </Button>
-              <Button variant="secondary" onClick={shareViaFacebook} className="px-3 py-2 text-xs">
-                <Facebook className="w-3 h-3 mr-1" />
-                Facebook
+              <Button variant="secondary" onClick={shareViaFacebook} className="p-3">
+                <Facebook className="w-4 h-4" />
               </Button>
-              <Button variant="secondary" onClick={copyShareableLink} className="px-3 py-2 text-xs">
-                <Copy className="w-3 h-3 mr-1" />
-                Copy Link
+              <Button variant="secondary" onClick={copyShareableLink} className="p-3">
+                <Copy className="w-4 h-4" />
               </Button>
             </div>
 
