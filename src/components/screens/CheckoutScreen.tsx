@@ -3,30 +3,25 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { useAppContext } from '../../context/AppContext';
-import { EmbeddedCheckout } from '../EmbeddedCheckout';
-import { ArrowLeft, CreditCard, Shield, Clock, Heart, Zap } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { ArrowLeft, Info, Apple } from 'lucide-react';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
+import { useNavigate } from 'react-router-dom';
 
 export function CheckoutScreen() {
   const { state, dispatch } = useAppContext();
+  const navigate = useNavigate();
   
-  const [sendOption, setSendOption] = useState<'single' | 'triple'>('single');
-  const [email, setEmail] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [email, setEmail] = useState(state.postcardData.email || '');
   const [emailError, setEmailError] = useState('');
   const [senators, setSenators] = useState<Representative[]>([]);
   const [loadingSenators, setLoadingSenators] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [selectedSenators, setSelectedSenators] = useState<boolean[]>([true, false]); // Senator 1 checked by default
   
-  const singlePrice = 4.99;
-  const triplePrice = 11.99;
-  const savings = singlePrice * 3 - triplePrice;
   const rep = state.postcardData.representative;
   const userInfo = state.postcardData.userInfo;
 
@@ -60,288 +55,282 @@ export function CheckoutScreen() {
     }
   };
 
-  const handlePayment = async () => {
+  const handleSenatorToggle = (index: number, checked: boolean) => {
+    const newSelectedSenators = [...selectedSenators];
+    newSelectedSenators[index] = checked;
+    setSelectedSenators(newSelectedSenators);
+  };
+
+  const getSelectedSenatorsCount = () => {
+    return selectedSenators.filter(Boolean).length;
+  };
+
+  const getTotalPrice = () => {
+    const senatorCount = getSelectedSenatorsCount();
+    return 5.00 + (senatorCount * 3.00);
+  };
+
+  const getSendOption = (): 'single' | 'double' | 'triple' => {
+    const senatorCount = getSelectedSenatorsCount();
+    if (senatorCount === 0) return 'single';
+    if (senatorCount === 1) return 'double'; 
+    return 'triple';
+  };
+
+  const handleContinueToCheckout = () => {
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       return;
     }
-    
-    setIsProcessing(true);
-    setEmailError('');
-    
-    try {
-      // Call Stripe payment function
-      const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: {
-          sendOption,
-          email,
-          fullName: userInfo?.fullName
-        }
-      });
-      
-      if (error) throw error;
 
-      // Update app state 
-      dispatch({
-        type: 'UPDATE_POSTCARD_DATA',
-        payload: {
-          sendOption,
-          email
-        }
-      });
+    const sendOption = getSendOption();
+    const selectedSenatorsList = senators.filter((_, index) => selectedSenators[index]);
 
-      // Store the complete postcard data to localStorage for access after payment
-      const completePostcardData = {
-        ...state.postcardData,
+    // Update app state
+    dispatch({
+      type: 'UPDATE_POSTCARD_DATA',
+      payload: {
         sendOption,
         email,
-        senators: sendOption === 'triple' ? senators : undefined
-      };
-      localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
+        senators: selectedSenatorsList
+      }
+    });
 
-      // Show embedded checkout
-      setClientSecret(data.client_secret);
-      setShowCheckout(true);
-    } catch (error) {
-      console.error('Payment error:', error);
-      setEmailError('Payment failed. Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleBackFromCheckout = () => {
-    setShowCheckout(false);
-    setClientSecret(null);
+    // Navigate to checkout
+    navigate('/checkout');
   };
 
   const goBack = () => {
     dispatch({ type: 'SET_STEP', payload: 5 }); // Go back to review card screen
   };
 
-  // Show embedded checkout on separate screen if client secret is available
-  if (showCheckout && clientSecret) {
-    return (
+  return (
+    <TooltipProvider>
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
-          <EmbeddedCheckout 
-            clientSecret={clientSecret}
-            onBack={handleBackFromCheckout}
-            sendOption={sendOption}
-            amount={sendOption === 'single' ? singlePrice : triplePrice}
-          />
-        </div>
-      </div>
-    );
-  }
+          <Card className="card-warm">
+            <CardContent className="p-8">
+              {/* Header Section */}
+              <div className="text-center mb-8">
+                <h1 className="text-2xl font-bold text-foreground mb-2">
+                  Your postcard will be read.
+                </h1>
+                <h3 className="subtitle text-base">
+                  Postcards from verified constituents reach your lawmakers' desks—faster than letters, stronger than email.
+                </h3>
+              </div>
 
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
-        <Card className="card-warm">
-          <CardContent className="p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
-                Amplify Your Impact
-              </h1>
-            </div>
+              {/* Instruction Line */}
+              <p className="text-base text-foreground mb-6">
+                Pick where your message goes. Start with your Representative, then add your Senators.
+              </p>
 
-            <div className="space-y-6">
-              {/* Representatives Mini-Cards */}
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Zap className="w-4 h-4 text-primary" />
-                  <h3 className="font-semibold text-foreground">Send to all your representatives</h3>
-                </div>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Send your message to all your representatives to maximize your voice in government
-                </p>
-                
-                <div className="grid grid-cols-3 gap-2">
-                  {/* House Representative */}
+              <div className="space-y-6">
+                {/* Lawmaker Cards */}
+                <div className="space-y-4">
+                  {/* Representative (always selected, disabled) */}
                   {rep && (
-                    <Card className="bg-card border-secondary">
-                      <CardContent className="p-2 text-center">
-                        <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-muted">
-                          {rep.photo ? (
-                            <img src={rep.photo} alt={rep.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
-                              {rep.name.split(' ').map(n => n[0]).join('')}
-                            </div>
-                          )}
+                    <Card className="border-2 border-primary bg-card">
+                      <CardContent className="p-4">
+                        <div className="flex items-start space-x-4">
+                          <Checkbox 
+                            checked={true} 
+                            disabled={true}
+                            className="mt-1"
+                          />
+                          <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                            {rep.photo ? (
+                              <img src={rep.photo} alt={rep.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
+                                {rep.name.split(' ').map(n => n[0]).join('')}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-foreground mb-1">
+                              Send to your Representative — $5.00
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Your local Representative is directly accountable to your district.
+                            </p>
+                          </div>
                         </div>
-                        <h4 className="font-medium text-xs text-primary leading-tight mb-1">{rep.name}</h4>
-                        <p className="text-xs text-muted-foreground">House</p>
                       </CardContent>
                     </Card>
                   )}
-                  
+
                   {/* Senators */}
                   {loadingSenators ? (
                     <>
                       <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
-                        <CardContent className="p-2 text-center">
-                          <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 animate-pulse" />
-                          <div className="h-3 bg-muted rounded mx-auto mb-1 animate-pulse" />
-                          <div className="h-3 bg-muted rounded w-12 mx-auto animate-pulse" />
+                        <CardContent className="p-4">
+                          <div className="flex items-start space-x-4">
+                            <div className="w-4 h-4 bg-muted rounded mt-1 animate-pulse" />
+                            <div className="w-16 h-16 bg-muted rounded-lg animate-pulse" />
+                            <div className="flex-1 space-y-2">
+                              <div className="h-4 bg-muted rounded animate-pulse" />
+                              <div className="h-3 bg-muted rounded w-3/4 animate-pulse" />
+                            </div>
+                          </div>
                         </CardContent>
                       </Card>
                       <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
-                        <CardContent className="p-2 text-center">
-                          <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 animate-pulse" />
-                          <div className="h-3 bg-muted rounded mx-auto mb-1 animate-pulse" />
-                          <div className="h-3 bg-muted rounded w-12 mx-auto animate-pulse" />
+                        <CardContent className="p-4">
+                          <div className="flex items-start space-x-4">
+                            <div className="w-4 h-4 bg-muted rounded mt-1 animate-pulse" />
+                            <div className="w-16 h-16 bg-muted rounded-lg animate-pulse" />
+                            <div className="flex-1 space-y-2">
+                              <div className="h-4 bg-muted rounded animate-pulse" />
+                              <div className="h-3 bg-muted rounded w-3/4 animate-pulse" />
+                            </div>
+                          </div>
                         </CardContent>
                       </Card>
                     </>
                   ) : (
-                    senators.slice(0, 2).map(senator => (
-                      <Card key={senator.id} className="bg-card border-secondary">
-                        <CardContent className="p-2 text-center">
-                          <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-muted">
-                            {senator.photo ? (
-                              <img src={senator.photo} alt={senator.name} className="w-full h-full object-cover" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
-                                {senator.name.split(' ').map(n => n[0]).join('')}
-                              </div>
-                            )}
+                    senators.slice(0, 2).map((senator, index) => (
+                      <Card 
+                        key={senator.id} 
+                        className={`transition-all ${selectedSenators[index] ? 'border-2 border-primary bg-card' : 'border border-border bg-card'}`}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-start space-x-4">
+                            <Checkbox 
+                              checked={selectedSenators[index]} 
+                              onCheckedChange={(checked) => handleSenatorToggle(index, checked as boolean)}
+                              className="mt-1"
+                            />
+                            <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                              {senator.photo ? (
+                                <img src={senator.photo} alt={senator.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
+                                  {senator.name.split(' ').map(n => n[0]).join('')}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-medium text-foreground mb-1">
+                                {index === 0 ? 'Also send to' : 'And send to'} 
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="inline-flex items-center ml-1">
+                                      Senator
+                                      <Info className="w-3 h-3 ml-1 text-muted-foreground" />
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="max-w-xs">
+                                    <p>
+                                      {index === 0 
+                                        ? "Every state has two U.S. Senators who represent the whole state. We've already verified their official addresses—no extra steps."
+                                        : "You have two Senators. We'll automatically address and mail each card to the correct office."
+                                      }
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+                                {' '}{senator.name} — +$3.00
+                              </h4>
+                              <p className="text-sm text-muted-foreground">
+                                {index === 0 
+                                  ? `Make your message heard in the Senate. Adding ${senator.name} means both chambers hear from you.`
+                                  : `Double your impact. Both Senators ensure your state's full voice is heard in the Senate.`
+                                }
+                              </p>
+                            </div>
                           </div>
-                          <h4 className="font-medium text-xs text-primary leading-tight mb-1">{senator.name}</h4>
-                          <p className="text-xs text-muted-foreground">Senate</p>
                         </CardContent>
                       </Card>
                     ))
                   )}
-                </div>
-              </div>
 
-              {/* Send Options */}
-              <div>
-                <h3 className="font-semibold mb-4">Choose your send option:</h3>
-                <RadioGroup value={sendOption} onValueChange={(value: 'single' | 'triple') => setSendOption(value)}>
-                  <div className="space-y-3">
-                    <Card className={`cursor-pointer transition-all ${sendOption === 'single' ? 'ring-2 ring-primary' : ''}`}>
-                      <CardContent className="p-4">
-                        <div className="flex items-center space-x-3">
-                          <RadioGroupItem value="single" id="single" />
-                          <div className="flex-1">
-                            <Label htmlFor="single" className="cursor-pointer">
-                              <div className="flex items-center justify-between">
-                                <span className="font-medium">Single Postcard</span>
-                                <span className="font-bold text-lg">${singlePrice}</span>
-                              </div>
-                              <p className="text-xs text-muted-foreground">
-                                Send to Rep. {rep?.name.split(' ').slice(-1)[0]}
-                              </p>
-                            </Label>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card className={`cursor-pointer transition-all ${sendOption === 'triple' ? 'ring-2 ring-primary' : ''}`}>
-                      <CardContent className="p-4">
-                        <div className="flex items-center space-x-3">
-                          <RadioGroupItem value="triple" id="triple" />
-                          <div className="flex-1">
-                            <Label htmlFor="triple" className="cursor-pointer">
-                              <div className="flex items-center justify-between">
-                                <span className="font-medium">Triple Postcard Package</span>
-                                <div className="text-right">
-                                  <span className="font-bold text-lg">${triplePrice}</span>
-                                  <Badge variant="secondary" className="ml-2">
-                                    Save ${savings.toFixed(2)}
-                                  </Badge>
-                                </div>
-                              </div>
-                              <p className="text-xs text-muted-foreground">
-                                Send to Reps. {rep ? rep.name.split(' ').slice(-1)[0] : 'Representative'}{senators.length > 0 ? `, ${senators.map(s => s.name.split(' ').slice(-1)[0]).join(', and ')}` : ''}
-                              </p>
-                            </Label>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              {/* Email Input */}
-              <div className="space-y-2">
-                <Label htmlFor="email">Email for tracking details</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="your@email.com" 
-                  value={email} 
-                  onChange={e => handleEmailChange(e.target.value)} 
-                  className="input-warm" 
-                />
-                {emailError && <p className="text-sm text-destructive">{emailError}</p>}
-              </div>
-
-              {/* Security & Delivery Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center space-x-2 text-muted-foreground">
-                  <Shield className="w-4 h-4" />
-                  <span>Secure payment processing</span>
-                </div>
-                <div className="flex items-center space-x-2 text-muted-foreground">
-                  <Clock className="w-4 h-4" />
-                  <span>Sent within 3 business days</span>
-                </div>
-              </div>
-
-              {/* Payment Button */}
-              <div className="space-y-4">
-                <Button 
-                  onClick={handlePayment} 
-                  disabled={!email || !validateEmail(email) || isProcessing} 
-                  variant="spotlight" 
-                  className="w-full h-12 sm:h-14 button-warm text-sm sm:text-base md:text-lg"
-                >
-                  {isProcessing ? (
-                    <>
-                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2 sm:mr-3" />
-                      <span className="truncate">Loading checkout...</span>
-                    </>
-                  ) : (
-                    <>
-                      <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
-                      <span className="truncate">Checkout - ${sendOption === 'single' ? singlePrice : triplePrice}</span>
-                    </>
+                  {/* Address reassurance */}
+                  {senators.length > 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      We've got it covered: Your Senators' official mailing addresses are already confirmed—nothing for you to look up.
+                    </p>
                   )}
-                </Button>
-                
+                </div>
+
+                {/* Impact + Social Proof */}
                 <div className="text-center">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    <Heart className="w-4 h-4 inline mr-1" />
-                    Who knew saving democracy could be so easy?
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Supports Apple Pay, Google Pay, and all major credit cards
+                  <p className="text-base text-foreground">
+                    You're joining others making themselves heard today. Most people send to all 3 lawmakers.
                   </p>
                 </div>
-              </div>
 
-              {/* Navigation */}
-              <div className="flex gap-2 sm:gap-4 pt-4 border-t">
-                <Button 
-                  type="button" 
-                  variant="secondary" 
-                  onClick={goBack} 
-                  className="button-warm flex-shrink-0 px-3 sm:px-4"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
-                  <span className="text-sm sm:text-base">Back</span>
-                </Button>
+                {/* Order Summary */}
+                <Card className="bg-muted/20">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-foreground">Total:</span>
+                      <span className="font-bold text-lg text-foreground">
+                        ${getTotalPrice().toFixed(2)} 
+                        {getSendOption() === 'single' && ' (Representative)'}
+                        {getSendOption() === 'double' && ' (Rep + 1 Senator)'}
+                        {getSendOption() === 'triple' && ' (Rep + 2 Senators)'}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Email Input */}
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email for tracking details</Label>
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    placeholder="your@email.com" 
+                    value={email} 
+                    onChange={e => handleEmailChange(e.target.value)} 
+                    className="input-warm" 
+                  />
+                  {emailError && <p className="text-sm text-destructive">{emailError}</p>}
+                </div>
+
+                {/* Primary CTA */}
+                <div className="space-y-4">
+                  <Button 
+                    onClick={handleContinueToCheckout} 
+                    disabled={!email || !validateEmail(email)} 
+                    variant="spotlight" 
+                    className="w-full h-12 sm:h-14 button-warm text-sm sm:text-base md:text-lg"
+                  >
+                    Continue to Checkout
+                  </Button>
+                  
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-1">
+                      Payments processed securely — supports <Apple className="w-4 h-4 inline mx-1" /> Apple Pay and Google Pay
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      You'll receive an email confirmation as soon as your order is processed.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Footer reassurance */}
+                <p className="text-sm text-muted-foreground text-center">
+                  We include the details staff look for to process constituent mail swiftly.
+                </p>
+
+                {/* Navigation */}
+                <div className="flex gap-2 sm:gap-4 pt-4 border-t">
+                  <Button 
+                    type="button" 
+                    variant="secondary" 
+                    onClick={goBack} 
+                    className="button-warm flex-shrink-0 px-3 sm:px-4"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+                    <span className="text-sm sm:text-base">Back</span>
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }

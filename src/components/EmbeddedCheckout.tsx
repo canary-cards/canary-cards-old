@@ -9,7 +9,7 @@ const stripePromise = loadStripe('pk_test_51Rm04GLqBC9dKThjLjUe7M1Cd8oIgW3IAFBwI
 interface EmbeddedCheckoutProps {
   clientSecret: string;
   onBack: () => void;
-  sendOption: 'single' | 'triple';
+  sendOption: 'single' | 'double' | 'triple';
   amount: number;
 }
 

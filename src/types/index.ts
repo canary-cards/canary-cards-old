@@ -28,8 +28,9 @@ export interface PostcardData {
   originalMessage: string;
   draftMessage: string;
   finalMessage: string;
-  sendOption: 'single' | 'triple';
+  sendOption: 'single' | 'double' | 'triple';
   email: string;
+  senators?: Representative[];
 }
 
 export interface AppState {
