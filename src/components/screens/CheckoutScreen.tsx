@@ -1,0 +1,347 @@
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Badge } from '@/components/ui/badge';
+import { useAppContext } from '../../context/AppContext';
+import { EmbeddedCheckout } from '../EmbeddedCheckout';
+import { ArrowLeft, CreditCard, Shield, Clock, Heart, Zap } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { lookupRepresentativesAndSenators } from '@/services/geocodio';
+import { Representative } from '@/types';
+
+export function CheckoutScreen() {
+  const { state, dispatch } = useAppContext();
+  
+  const [sendOption, setSendOption] = useState<'single' | 'triple'>('single');
+  const [email, setEmail] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [senators, setSenators] = useState<Representative[]>([]);
+  const [loadingSenators, setLoadingSenators] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  
+  const singlePrice = 4.99;
+  const triplePrice = 11.99;
+  const savings = singlePrice * 3 - triplePrice;
+  const rep = state.postcardData.representative;
+  const userInfo = state.postcardData.userInfo;
+
+  // Fetch senators when component mounts
+  useEffect(() => {
+    const fetchSenatorsFromZip = async () => {
+      if (userInfo?.zipCode) {
+        setLoadingSenators(true);
+        try {
+          const { senators: stateSenators } = await lookupRepresentativesAndSenators(userInfo.zipCode);
+          setSenators(stateSenators);
+        } catch (error) {
+          console.error('Failed to fetch senators:', error);
+        } finally {
+          setLoadingSenators(false);
+        }
+      }
+    };
+    fetchSenatorsFromZip();
+  }, [userInfo?.zipCode]);
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    if (emailError && validateEmail(value)) {
+      setEmailError('');
+    }
+  };
+
+  const handlePayment = async () => {
+    if (!validateEmail(email)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+    
+    setIsProcessing(true);
+    setEmailError('');
+    
+    try {
+      // Call Stripe payment function
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: {
+          sendOption,
+          email,
+          fullName: userInfo?.fullName
+        }
+      });
+      
+      if (error) throw error;
+
+      // Update app state 
+      dispatch({
+        type: 'UPDATE_POSTCARD_DATA',
+        payload: {
+          sendOption,
+          email
+        }
+      });
+
+      // Store the complete postcard data to localStorage for access after payment
+      const completePostcardData = {
+        ...state.postcardData,
+        sendOption,
+        email,
+        senators: sendOption === 'triple' ? senators : undefined
+      };
+      localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
+
+      // Show embedded checkout
+      setClientSecret(data.client_secret);
+      setShowCheckout(true);
+    } catch (error) {
+      console.error('Payment error:', error);
+      setEmailError('Payment failed. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleBackFromCheckout = () => {
+    setShowCheckout(false);
+    setClientSecret(null);
+  };
+
+  const goBack = () => {
+    dispatch({ type: 'SET_STEP', payload: 5 }); // Go back to review card screen
+  };
+
+  // Show embedded checkout on separate screen if client secret is available
+  if (showCheckout && clientSecret) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
+          <EmbeddedCheckout 
+            clientSecret={clientSecret}
+            onBack={handleBackFromCheckout}
+            sendOption={sendOption}
+            amount={sendOption === 'single' ? singlePrice : triplePrice}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
+        <Card className="card-warm">
+          <CardContent className="p-8">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold text-foreground mb-2">
+                Amplify Your Impact
+              </h1>
+            </div>
+
+            <div className="space-y-6">
+              {/* Representatives Mini-Cards */}
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-4 h-4 text-primary" />
+                  <h3 className="font-semibold text-foreground">Send to all your representatives</h3>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Send your message to all your representatives to maximize your voice in government
+                </p>
+                
+                <div className="grid grid-cols-3 gap-2">
+                  {/* House Representative */}
+                  {rep && (
+                    <Card className="bg-card border-secondary">
+                      <CardContent className="p-2 text-center">
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-muted">
+                          {rep.photo ? (
+                            <img src={rep.photo} alt={rep.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
+                              {rep.name.split(' ').map(n => n[0]).join('')}
+                            </div>
+                          )}
+                        </div>
+                        <h4 className="font-medium text-xs text-primary leading-tight mb-1">{rep.name}</h4>
+                        <p className="text-xs text-muted-foreground">House</p>
+                      </CardContent>
+                    </Card>
+                  )}
+                  
+                  {/* Senators */}
+                  {loadingSenators ? (
+                    <>
+                      <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
+                        <CardContent className="p-2 text-center">
+                          <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 animate-pulse" />
+                          <div className="h-3 bg-muted rounded mx-auto mb-1 animate-pulse" />
+                          <div className="h-3 bg-muted rounded w-12 mx-auto animate-pulse" />
+                        </CardContent>
+                      </Card>
+                      <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
+                        <CardContent className="p-2 text-center">
+                          <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 animate-pulse" />
+                          <div className="h-3 bg-muted rounded mx-auto mb-1 animate-pulse" />
+                          <div className="h-3 bg-muted rounded w-12 mx-auto animate-pulse" />
+                        </CardContent>
+                      </Card>
+                    </>
+                  ) : (
+                    senators.slice(0, 2).map(senator => (
+                      <Card key={senator.id} className="bg-card border-secondary">
+                        <CardContent className="p-2 text-center">
+                          <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-muted">
+                            {senator.photo ? (
+                              <img src={senator.photo} alt={senator.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
+                                {senator.name.split(' ').map(n => n[0]).join('')}
+                              </div>
+                            )}
+                          </div>
+                          <h4 className="font-medium text-xs text-primary leading-tight mb-1">{senator.name}</h4>
+                          <p className="text-xs text-muted-foreground">Senate</p>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Send Options */}
+              <div>
+                <h3 className="font-semibold mb-4">Choose your send option:</h3>
+                <RadioGroup value={sendOption} onValueChange={(value: 'single' | 'triple') => setSendOption(value)}>
+                  <div className="space-y-3">
+                    <Card className={`cursor-pointer transition-all ${sendOption === 'single' ? 'ring-2 ring-primary' : ''}`}>
+                      <CardContent className="p-4">
+                        <div className="flex items-center space-x-3">
+                          <RadioGroupItem value="single" id="single" />
+                          <div className="flex-1">
+                            <Label htmlFor="single" className="cursor-pointer">
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium">Single Postcard</span>
+                                <span className="font-bold text-lg">${singlePrice}</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground">
+                                Send to Rep. {rep?.name.split(' ').slice(-1)[0]}
+                              </p>
+                            </Label>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className={`cursor-pointer transition-all ${sendOption === 'triple' ? 'ring-2 ring-primary' : ''}`}>
+                      <CardContent className="p-4">
+                        <div className="flex items-center space-x-3">
+                          <RadioGroupItem value="triple" id="triple" />
+                          <div className="flex-1">
+                            <Label htmlFor="triple" className="cursor-pointer">
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium">Triple Postcard Package</span>
+                                <div className="text-right">
+                                  <span className="font-bold text-lg">${triplePrice}</span>
+                                  <Badge variant="secondary" className="ml-2">
+                                    Save ${savings.toFixed(2)}
+                                  </Badge>
+                                </div>
+                              </div>
+                              <p className="text-xs text-muted-foreground">
+                                Send to Reps. {rep ? rep.name.split(' ').slice(-1)[0] : 'Representative'}{senators.length > 0 ? `, ${senators.map(s => s.name.split(' ').slice(-1)[0]).join(', and ')}` : ''}
+                              </p>
+                            </Label>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {/* Email Input */}
+              <div className="space-y-2">
+                <Label htmlFor="email">Email for tracking details</Label>
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="your@email.com" 
+                  value={email} 
+                  onChange={e => handleEmailChange(e.target.value)} 
+                  className="input-warm" 
+                />
+                {emailError && <p className="text-sm text-destructive">{emailError}</p>}
+              </div>
+
+              {/* Security & Delivery Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center space-x-2 text-muted-foreground">
+                  <Shield className="w-4 h-4" />
+                  <span>Secure payment processing</span>
+                </div>
+                <div className="flex items-center space-x-2 text-muted-foreground">
+                  <Clock className="w-4 h-4" />
+                  <span>Sent within 3 business days</span>
+                </div>
+              </div>
+
+              {/* Payment Button */}
+              <div className="space-y-4">
+                <Button 
+                  onClick={handlePayment} 
+                  disabled={!email || !validateEmail(email) || isProcessing} 
+                  variant="spotlight" 
+                  className="w-full h-12 sm:h-14 button-warm text-sm sm:text-base md:text-lg"
+                >
+                  {isProcessing ? (
+                    <>
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2 sm:mr-3" />
+                      <span className="truncate">Loading checkout...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
+                      <span className="truncate">Checkout - ${sendOption === 'single' ? singlePrice : triplePrice}</span>
+                    </>
+                  )}
+                </Button>
+                
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    <Heart className="w-4 h-4 inline mr-1" />
+                    Who knew saving democracy could be so easy?
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Supports Apple Pay, Google Pay, and all major credit cards
+                  </p>
+                </div>
+              </div>
+
+              {/* Navigation */}
+              <div className="flex gap-2 sm:gap-4 pt-4 border-t">
+                <Button 
+                  type="button" 
+                  variant="secondary" 
+                  onClick={goBack} 
+                  className="button-warm flex-shrink-0 px-3 sm:px-4"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+                  <span className="text-sm sm:text-base">Back</span>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

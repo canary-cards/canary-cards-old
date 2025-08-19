@@ -6,7 +6,8 @@ import { LandingScreen } from './screens/LandingScreen';
 import { ReturnAddressScreen } from './screens/ReturnAddressScreen';
 import { CraftMessageScreen } from './screens/CraftMessageScreen';
 import { ReviewEditScreen } from './screens/ReviewEditScreen';
-import { PreviewSendScreen } from './screens/PreviewSendScreen';
+import { ReviewCardScreen } from './screens/ReviewCardScreen';
+import { CheckoutScreen } from './screens/CheckoutScreen';
 import { SuccessScreen } from './screens/SuccessScreen';
 import { DraftingScreen } from './screens/DraftingScreen';
 import { Mail } from 'lucide-react';
@@ -30,10 +31,12 @@ export function CivicPostcardApp() {
       case 4:
         return <ReturnAddressScreen />;
       case 5:
-        return <PreviewSendScreen />;
+        return <ReviewCardScreen />;
       case 6:
-        return <SuccessScreen />;
+        return <CheckoutScreen />;
       case 7:
+        return <SuccessScreen />;
+      case 8:
         return <DraftingScreen />;
       default:
         return <LandingScreen />;
@@ -63,15 +66,15 @@ export function CivicPostcardApp() {
         </div>
       </div>
       
-      {/* Progress bar - full width below header for steps 2-6 (exclude drafting step 7) */}
-      {state.currentStep > 1 && state.currentStep <= 6 && (
+      {/* Progress bar - full width below header for steps 2-7 (exclude drafting step 8) */}
+      {state.currentStep > 1 && state.currentStep <= 7 && (
         <div className="absolute top-20 left-0 right-0 z-10 px-4">
-          <ProgressIndicator currentStep={state.currentStep} totalSteps={6} />
+          <ProgressIndicator currentStep={state.currentStep} totalSteps={7} />
         </div>
       )}
       
       {/* Content with proper spacing */}
-      <div className={state.currentStep > 1 && state.currentStep !== 7 ? "pt-12" : ""}>
+      <div className={state.currentStep > 1 && state.currentStep !== 8 ? "pt-12" : ""}>
         {renderCurrentScreen()}
       </div>
     </div>
