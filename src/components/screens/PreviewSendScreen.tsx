@@ -115,16 +115,7 @@ export function PreviewSendScreen() {
         throw new Error('Invalid payment session response');
       }
 
-      // Update app state 
-      dispatch({
-        type: 'UPDATE_POSTCARD_DATA',
-        payload: {
-          sendOption,
-          email
-        }
-      });
-
-      // Store the complete postcard data to localStorage for access after payment
+      // Update app state with complete postcard data
       const completePostcardData = {
         userInfo: state.postcardData.userInfo,
         representative: state.postcardData.representative,
@@ -134,7 +125,13 @@ export function PreviewSendScreen() {
         email
       };
       
-      console.log('Storing complete postcard data to localStorage:', completePostcardData);
+      dispatch({
+        type: 'UPDATE_POSTCARD_DATA',
+        payload: completePostcardData
+      });
+
+      // Also store to localStorage as backup (for migration)
+      console.log('Storing complete postcard data to localStorage and AppContext:', completePostcardData);
       localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 
       // Show embedded checkout

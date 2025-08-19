@@ -7,6 +7,7 @@ import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { RobotLoadingScreen } from '@/components/RobotLoadingScreen';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAppContext } from '@/context/AppContext';
 
 export default function PaymentReturn() {
   const [searchParams] = useSearchParams();
@@ -16,18 +17,66 @@ export default function PaymentReturn() {
   const [retryAttempts, setRetryAttempts] = useState(0);
   const [startTime, setStartTime] = useState<number>(Date.now());
   const { toast } = useToast();
+  const { state } = useAppContext();
+
+  // Validate if postcard data is complete
+  const validatePostcardData = (data: any) => {
+    if (!data) return false;
+    if (!data.userInfo?.streetAddress || !data.userInfo?.fullName) return false;
+    if (!data.representative?.name) return false;
+    if (!data.finalMessage) return false;
+    return true;
+  };
+
+  // Migrate data from localStorage to AppContext if needed
+  const migrateDataToAppContext = () => {
+    const storedData = localStorage.getItem('postcardData');
+    if (storedData && validatePostcardData(JSON.parse(storedData))) {
+      console.log('Found valid localStorage data, migrating to AppContext');
+      return JSON.parse(storedData);
+    }
+    return null;
+  };
+
+  // Get postcard data with fallback logic
+  const getPostcardData = () => {
+    // First try AppContext
+    if (validatePostcardData(state.postcardData)) {
+      console.log('Using postcard data from AppContext');
+      return state.postcardData;
+    }
+    
+    // Fallback to localStorage migration
+    const migratedData = migrateDataToAppContext();
+    if (migratedData) {
+      console.log('Using migrated data from localStorage');
+      return migratedData;
+    }
+    
+    return null;
+  };
 
   const orderPostcards = async () => {
     try {
       setStatus('ordering');
       console.log('Starting postcard ordering process...');
       
-      const storedData = localStorage.getItem('postcardData');
-      if (!storedData) {
-        throw new Error('No postcard data found');
+      const postcardData = getPostcardData();
+      
+      if (!postcardData) {
+        console.log('No valid postcard data found, clearing localStorage and redirecting...');
+        localStorage.removeItem('postcardData');
+        toast({
+          title: "Session expired",
+          description: "Please start the postcard process again.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          navigate('/onboarding');
+        }, 3000);
+        return;
       }
       
-      const postcardData = JSON.parse(storedData);
       console.log('Ordering postcard with data:', postcardData);
       
       const { data, error } = await supabase.functions.invoke('send-postcard', {
