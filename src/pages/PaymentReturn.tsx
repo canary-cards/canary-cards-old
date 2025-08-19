@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
+import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { RobotLoadingScreen } from '@/components/RobotLoadingScreen';
@@ -110,7 +111,9 @@ export default function PaymentReturn() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-4">
-      <div className="absolute top-4 right-4 z-10">
+      {/* Header with logo and hamburger menu */}
+      <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
+        <Logo />
         <HamburgerMenu />
       </div>
       <Card className="w-full max-w-md">
