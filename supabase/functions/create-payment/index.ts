@@ -14,13 +14,34 @@ serve(async (req) => {
 
   try {
     // Parse request body
-    const { sendOption, email, fullName } = await req.json();
+    const { sendOption, email, fullName, postcardData } = await req.json();
     
     console.log("=== CREATE PAYMENT DEBUG ===");
     console.log("Request data:", { sendOption, email, fullName });
+    console.log("Postcard data received:", postcardData ? "Yes" : "No");
     
     if (!sendOption || !email) {
       throw new Error("Missing required fields: sendOption and email");
+    }
+
+    // Prepare postcard data for metadata storage
+    let postcardMetadata = {};
+    if (postcardData) {
+      try {
+        // Store essential postcard data in metadata (Stripe has size limits)
+        postcardMetadata = {
+          postcard_userInfo: JSON.stringify(postcardData.userInfo || {}),
+          postcard_representative: JSON.stringify(postcardData.representative || {}),
+          postcard_senators: JSON.stringify(postcardData.senators || []),
+          postcard_finalMessage: postcardData.finalMessage || "",
+          postcard_sendOption: postcardData.sendOption || sendOption,
+          postcard_email: postcardData.email || email
+        };
+        console.log("Prepared postcard metadata for session");
+      } catch (error) {
+        console.error("Error preparing postcard metadata:", error);
+        postcardMetadata = {}; // Fallback to empty metadata
+      }
     }
 
     // Parse full name into first and last name for Stripe
@@ -128,7 +149,8 @@ serve(async (req) => {
       metadata: {
         send_option: sendOption,
         user_email: email,
-        user_full_name: fullName || ""
+        user_full_name: fullName || "",
+        ...postcardMetadata // Include all postcard data in session metadata
       }
     });
 

@@ -92,12 +92,20 @@ export function CheckoutScreen() {
       const sendOption = getSendOption();
       const selectedSenatorsList = senators.filter((_, index) => selectedSenators[index]);
 
-      // Call Stripe payment function
+      // Call Stripe payment function with complete postcard data
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: {
           sendOption,
           email,
-          fullName: userInfo?.fullName
+          fullName: userInfo?.fullName,
+          postcardData: {
+            userInfo,
+            representative: rep,
+            senators: selectedSenatorsList,
+            finalMessage: state.postcardData.finalMessage,
+            sendOption,
+            email
+          }
         }
       });
       

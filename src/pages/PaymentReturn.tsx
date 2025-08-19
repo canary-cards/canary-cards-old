@@ -7,7 +7,7 @@ import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { RobotLoadingScreen } from '@/components/RobotLoadingScreen';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useAppContext, restoreStateFromStorage } from '@/context/AppContext';
+import { useAppContext } from '@/context/AppContext';
 
 export default function PaymentReturn() {
   const [searchParams] = useSearchParams();
@@ -188,16 +188,27 @@ export default function PaymentReturn() {
         return;
       }
       
-      console.log('✅ Payment verified successfully, attempting to restore postcard data');
+      console.log('✅ Payment verified successfully, checking for postcard data');
       
-      // Attempt to restore state from storage for payment return flow
-      const stateRestored = restoreStateFromStorage(dispatch);
-      
-      if (!stateRestored) {
-        console.log('❌ Failed to restore postcard data for payment return');
+      // Use postcard data from payment session metadata
+      if (verificationResult.postcardData) {
+        console.log('✅ Found postcard data in payment session, updating app state');
+        
+        // Update app state with the postcard data from payment session
+        dispatch({ 
+          type: 'UPDATE_POSTCARD_DATA', 
+          payload: verificationResult.postcardData 
+        });
+        
+        console.log('✅ App state updated, proceeding to order postcards');
+        
+        // Start ordering immediately with session data
+        orderPostcards();
+      } else {
+        console.log('❌ No postcard data found in payment session');
         setStatus('error');
         toast({
-          title: "Session expired",
+          title: "Session data missing",
           description: "Unable to find your postcard data. Please start over.",
           variant: "destructive",
         });
@@ -206,11 +217,6 @@ export default function PaymentReturn() {
         }, 3000);
         return;
       }
-      
-      console.log('✅ State restored successfully, proceeding to order postcards');
-      
-      // Start ordering immediately since state is now restored
-      orderPostcards();
       
     } catch (error) {
       console.error('Payment verification failed:', error);

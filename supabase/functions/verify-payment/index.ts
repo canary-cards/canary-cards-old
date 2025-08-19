@@ -42,11 +42,33 @@ serve(async (req) => {
     // Check if payment was successful
     const isPaymentSuccessful = session.payment_status === 'paid' && session.status === 'complete';
     
+    // Extract postcard data from session metadata
+    let postcardData = null;
+    if (isPaymentSuccessful && session.metadata) {
+      try {
+        const metadata = session.metadata;
+        if (metadata.postcard_userInfo && metadata.postcard_representative && metadata.postcard_finalMessage) {
+          postcardData = {
+            userInfo: JSON.parse(metadata.postcard_userInfo),
+            representative: JSON.parse(metadata.postcard_representative),
+            senators: metadata.postcard_senators ? JSON.parse(metadata.postcard_senators) : [],
+            finalMessage: metadata.postcard_finalMessage,
+            sendOption: metadata.postcard_sendOption || metadata.send_option,
+            email: metadata.postcard_email || metadata.user_email
+          };
+          console.log("Successfully extracted postcard data from session metadata");
+        }
+      } catch (error) {
+        console.error("Error parsing postcard data from metadata:", error);
+      }
+    }
+    
     console.log("Payment verification result:", {
       sessionId,
       isPaymentSuccessful,
       paymentStatus: session.payment_status,
-      sessionStatus: session.status
+      sessionStatus: session.status,
+      hasPostcardData: !!postcardData
     });
 
     console.log("=== END VERIFY PAYMENT DEBUG ===");
@@ -57,7 +79,8 @@ serve(async (req) => {
       sessionStatus: session.status,
       amountTotal: session.amount_total,
       customerEmail: session.customer_email,
-      metadata: session.metadata
+      metadata: session.metadata,
+      postcardData: postcardData // Include extracted postcard data
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
