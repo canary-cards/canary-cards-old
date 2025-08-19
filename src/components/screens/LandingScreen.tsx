@@ -12,7 +12,8 @@ import { ProgressIndicator } from '../ProgressIndicator';
 import { SharedBanner } from '../SharedBanner';
 import { Representative } from '../../types';
 import { lookupRepresentatives } from '../../services/geocodio';
-import { MapPin, Users, Bot, PenTool, ArrowRight, Mail, Heart, Target } from 'lucide-react';
+import { MapPin, Users, Bot, PenTool, ArrowRight, Heart, Target } from 'lucide-react';
+import { Logo } from '../Logo';
 import heroImage from '@/assets/civic-hero-mobile.jpg';
 export function LandingScreen() {
   const {
@@ -114,15 +115,9 @@ export function LandingScreen() {
 
       <div className={`min-h-screen bg-background ${showSharedDialog ? 'pt-16' : ''}`}>
       <div className="container mx-auto px-4 py-4 max-w-2xl">
-        {/* Branding Section */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-              <Mail className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-xl display-title">Canary Cards</h1>
-          </div>
-          
+        {/* Logo Section */}
+        <div className="flex justify-center mb-6">
+          <Logo />
         </div>
         
         {/* Mobile-First Hero Section */}

@@ -10,7 +10,7 @@ import { ReviewCardScreen } from './screens/ReviewCardScreen';
 import { CheckoutScreen } from './screens/CheckoutScreen';
 import { SuccessScreen } from './screens/SuccessScreen';
 import { DraftingScreen } from './screens/DraftingScreen';
-import { Mail } from 'lucide-react';
+import { Logo } from './Logo';
 
 export function CivicPostcardApp() {
   const { state } = useAppContext();
@@ -47,14 +47,9 @@ export function CivicPostcardApp() {
     <div className="civic-postcard-app">
       {/* Header with Canary Cards branding and hamburger menu - show on all pages */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
-        {/* Canary Cards Branding - show on all pages except step 1 */}
+        {/* Logo - show on all pages except step 1 */}
         {state.currentStep > 1 && (
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-              <Mail className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-xl display-title">Canary Cards</h1>
-          </div>
+          <Logo />
         )}
         
         {/* Spacer to push hamburger menu to the right when no branding */}
