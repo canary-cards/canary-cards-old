@@ -128,10 +128,6 @@ ${userInfo?.fullName}`;
                               target="_blank" 
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 ml-1 px-3 py-1 text-xs bg-primary/20 text-primary rounded-full transition-colors hover:bg-primary/30 cursor-pointer no-underline"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                console.log('Clicking source URL:', source.url);
-                              }}
                             >
                               {getDomainLabel(source.url)}
                               {source.dataPointCount > 0 && (
