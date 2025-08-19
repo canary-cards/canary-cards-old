@@ -126,11 +126,15 @@ export function PreviewSendScreen() {
 
       // Store the complete postcard data to localStorage for access after payment
       const completePostcardData = {
-        ...state.postcardData,
+        userInfo: state.postcardData.userInfo,
+        representative: state.postcardData.representative,
+        finalMessage: state.postcardData.finalMessage,
+        senators: sendOption === 'triple' ? senators : [],
         sendOption,
-        email,
-        senators: sendOption === 'triple' ? senators : undefined
+        email
       };
+      
+      console.log('Storing complete postcard data to localStorage:', completePostcardData);
       localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 
       // Show embedded checkout

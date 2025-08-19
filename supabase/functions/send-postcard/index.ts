@@ -39,6 +39,51 @@ serve(async (req) => {
 
     const { userInfo, representative, senators, finalMessage, sendOption } = postcardData;
 
+    // Validate required fields with detailed error messages
+    if (!userInfo) {
+      console.error('Missing userInfo in postcardData');
+      return new Response(
+        JSON.stringify({ error: 'User information is required', missingField: 'userInfo' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    if (!userInfo.streetAddress) {
+      console.error('Missing streetAddress in userInfo:', userInfo);
+      return new Response(
+        JSON.stringify({ error: 'Return address is required', missingField: 'userInfo.streetAddress' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    if (!representative) {
+      console.error('Missing representative in postcardData');
+      return new Response(
+        JSON.stringify({ error: 'Representative information is required', missingField: 'representative' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    if (!finalMessage) {
+      console.error('Missing finalMessage in postcardData');
+      return new Response(
+        JSON.stringify({ error: 'Message content is required', missingField: 'finalMessage' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
     // Parse user's street address into components
     const parseAddress = (fullAddress: string) => {
       // Simple parsing - assuming format: "123 Main St, City, State ZIP"
