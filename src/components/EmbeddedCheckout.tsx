@@ -17,6 +17,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
   const [checkout, setCheckout] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showFallback, setShowFallback] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -45,6 +46,11 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         console.log('EmbeddedCheckout: Initializing embedded checkout...');
         checkoutInstance = await stripe.initEmbeddedCheckout({
           clientSecret,
+          onComplete: () => {
+            console.log('EmbeddedCheckout: Payment completed successfully!');
+            // The return_url in the session will handle the redirect
+            // No need to manually redirect here as Stripe handles it
+          }
         });
         console.log('EmbeddedCheckout: Checkout instance created successfully');
 
@@ -89,33 +95,45 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
     console.log('EmbeddedCheckout: useEffect triggered, clientSecret:', clientSecret ? 'present' : 'missing');
     if (clientSecret) {
       initializeCheckout();
+      
+      // Set up a fallback timeout in case embedded checkout fails silently
+      const fallbackTimeout = setTimeout(() => {
+        if (isMounted && loading) {
+          console.log('EmbeddedCheckout: Timeout reached, showing fallback option');
+          setShowFallback(true);
+        }
+      }, 15000); // 15 seconds
+      
+      return () => {
+        clearTimeout(fallbackTimeout);
+        isMounted = false;
+        if (checkoutInstance) {
+          console.log('EmbeddedCheckout: Unmounting checkout instance');
+          try {
+            checkoutInstance.unmount();
+          } catch (error) {
+            console.log('EmbeddedCheckout: Error unmounting checkout:', error);
+          }
+          checkoutInstance = null;
+        }
+        if (checkout && checkout !== checkoutInstance) {
+          console.log('EmbeddedCheckout: Unmounting stored checkout instance');
+          try {
+            checkout.unmount();
+          } catch (error) {
+            console.log('EmbeddedCheckout: Error unmounting stored checkout:', error);
+          }
+        }
+      };
     } else {
       console.log('EmbeddedCheckout: No clientSecret provided, skipping initialization');
       setError('No payment session provided');
       setLoading(false);
+      return () => {
+        isMounted = false;
+      };
     }
-
-    return () => {
-      isMounted = false;
-      if (checkoutInstance) {
-        console.log('EmbeddedCheckout: Unmounting checkout instance');
-        try {
-          checkoutInstance.unmount();
-        } catch (error) {
-          console.log('EmbeddedCheckout: Error unmounting checkout:', error);
-        }
-        checkoutInstance = null;
-      }
-      if (checkout && checkout !== checkoutInstance) {
-        console.log('EmbeddedCheckout: Unmounting stored checkout instance');
-        try {
-          checkout.unmount();
-        } catch (error) {
-          console.log('EmbeddedCheckout: Error unmounting stored checkout:', error);
-        }
-      }
-    };
-  }, [clientSecret]);
+  }, [clientSecret, loading]);
 
   if (loading) {
     return (
@@ -125,6 +143,16 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
             <h2 className="text-xl font-semibold">Loading Payment Form...</h2>
             <h3 className="subtitle text-base">Setting up secure payment for your postcards</h3>
+            {showFallback && (
+              <div className="mt-6 p-4 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Payment form is taking longer than expected.
+                </p>
+                <Button onClick={onBack} variant="outline" size="sm">
+                  Go Back and Try Again
+                </Button>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

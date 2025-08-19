@@ -96,6 +96,13 @@ serve(async (req) => {
       metadata: finalCustomer.metadata 
     });
 
+    // Get the origin for the return URL
+    const origin = req.headers.get("origin");
+    const returnUrl = `${origin}/payment-return?session_id={CHECKOUT_SESSION_ID}`;
+    
+    console.log("Setting up Stripe session with return URL:", returnUrl);
+    console.log("Origin header:", origin);
+
     // Create embedded checkout session with forced customer creation
     const session = await stripe.checkout.sessions.create({
       customer_creation: 'always',
@@ -117,7 +124,10 @@ serve(async (req) => {
       ],
       mode: "payment",
       ui_mode: "embedded",
-      return_url: `${req.headers.get("origin")}/payment-return?session_id={CHECKOUT_SESSION_ID}`,
+      return_url: returnUrl,
+      // Add redirect URLs for backup (these work for hosted checkout)
+      success_url: `${origin}/payment-return?session_id={CHECKOUT_SESSION_ID}&success=true`,
+      cancel_url: `${origin}/payment-canceled`,
       metadata: {
         send_option: sendOption,
         user_email: email,

@@ -164,14 +164,37 @@ export default function PaymentReturn() {
     await orderPostcards();
   };
 
-  useEffect(() => {
-    const sessionId = searchParams.get('session_id');
-    
-    if (sessionId) {
-      // Payment was successful, wait for state restoration then start ordering
-      console.log('💳 Payment successful, preparing to order postcards...');
-      setStartTime(Date.now());
-      setStatus('ordering');
+  const verifyPaymentAndOrder = async (sessionId: string) => {
+    try {
+      console.log('🔍 Verifying payment status for session:', sessionId);
+      
+      // Verify payment with Stripe
+      const { data: verificationResult, error: verificationError } = await supabase.functions.invoke('verify-payment', {
+        body: { sessionId }
+      });
+      
+      if (verificationError) {
+        console.error('Payment verification error:', verificationError);
+        throw new Error('Failed to verify payment status');
+      }
+      
+      console.log('Payment verification result:', verificationResult);
+      
+      if (!verificationResult.success) {
+        console.log('❌ Payment verification failed');
+        setStatus('error');
+        toast({
+          title: "Payment verification failed",
+          description: "Unable to confirm payment. Please contact support.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          navigate('/payment-canceled');
+        }, 3000);
+        return;
+      }
+      
+      console.log('✅ Payment verified successfully, proceeding to order postcards');
       
       // Wait for state restoration to complete before ordering
       const checkAndOrder = () => {
@@ -185,8 +208,28 @@ export default function PaymentReturn() {
       };
       
       checkAndOrder();
+      
+    } catch (error) {
+      console.error('Payment verification failed:', error);
+      setStatus('error');
+      toast({
+        title: "Payment verification failed",
+        description: "Unable to verify payment. Please try again or contact support.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  useEffect(() => {
+    const sessionId = searchParams.get('session_id');
+    
+    if (sessionId) {
+      console.log('💳 Session ID found, verifying payment...');
+      setStartTime(Date.now());
+      setStatus('loading'); // Start with loading while we verify
+      verifyPaymentAndOrder(sessionId);
     } else {
-      // No session ID means payment failed
+      console.log('❌ No session ID found, redirecting to canceled page');
       setStatus('error');
       setTimeout(() => {
         navigate('/payment-canceled');

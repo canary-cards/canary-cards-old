@@ -3,6 +3,9 @@ project_id = "xwsgyxlvxntgpochonwe"
 [functions.create-payment]
 verify_jwt = false
 
+[functions.verify-payment]
+verify_jwt = false
+
 [functions.draft-postcard-message]
 verify_jwt = false
 
