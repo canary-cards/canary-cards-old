@@ -18,6 +18,12 @@ export interface UserInfo {
   zipCode: string;
 }
 
+export interface Source {
+  description: string;
+  url: string;
+  dataPointCount: number;
+}
+
 export interface PostcardData {
   inviteCode?: string;
   zipCode: string;
@@ -31,6 +37,7 @@ export interface PostcardData {
   sendOption: 'single' | 'double' | 'triple';
   email: string;
   senators?: Representative[];
+  sources?: Source[];
 }
 
 export interface AppState {

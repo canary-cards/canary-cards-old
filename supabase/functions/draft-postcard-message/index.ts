@@ -2,128 +2,145 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const anthropicApiKey = Deno.env.get('anthropickey');
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
 };
+
+function getCurrentDate() {
+  return new Date().toISOString().split('T')[0]; // Returns YYYY-MM-DD format
+}
 
 serve(async (req) => {
   console.log('Edge function called - draft-postcard-message');
   console.log('Request method:', req.method);
-
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
-
+  
   try {
     const requestBody = await req.json();
     console.log('Request received:', JSON.stringify(requestBody, null, 2));
     
     const { concerns, personalImpact, representative, zipCode } = requestBody;
-
+    
     if (!anthropicApiKey) {
       console.error('Anthropic API key is missing');
-      return new Response(JSON.stringify({ error: 'Anthropic API key not configured' }), {
+      return new Response(JSON.stringify({
+        error: 'Anthropic API key not configured'
+      }), {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
-
-    if (!concerns || !personalImpact || !representative) {
+    
+    if (!concerns || !representative) {
       console.error('Missing required fields');
-      return new Response(JSON.stringify({ error: 'Missing required fields: concerns, personalImpact, or representative' }), {
+      return new Response(JSON.stringify({
+        error: 'Missing required fields: concerns or representative'
+      }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
-
+    
     // Extract representative details
     const lastName = representative.name.split(' ').pop();
     const titlePrefix = representative.type?.toLowerCase() === 'representative' ? 'Rep.' : 'Sen.';
+    const currentDate = getCurrentDate();
     
-    console.log(`Generating postcard for ${titlePrefix} ${lastName}`);
+    console.log(`Generating postcard for ${titlePrefix} ${lastName} on ${currentDate}`);
+    
+    // Enhanced system prompt with date awareness and source requirements
+    const systemPrompt = `Enhanced Congressional Postcard Generator System Prompt
 
-    // Create the comprehensive system prompt from user requirements
-    const systemPrompt = `# Congressional Postcard Generator System Prompt
+CRITICAL CONSTRAINTS
+TARGET: 280 CHARACTERS | ACCEPTABLE: 270-290 | HARD MAX: 295
+MUST INCLUDE NEWLINE AFTER GREETING
+You generate impactful congressional postcards using ~280 characters for optimal effectiveness.
 
-You are an AI that generates personalized congressional postcards. When a user submits their concerns and personal impact along with their congressional district information, you will create an effective postcard message.
+CONSTITUENT LOCATION
+- Zip Code: ${zipCode || 'Not provided'}
+- Use this to understand the constituent's location for relevant local context and district-specific impacts.
 
-## CRITICAL: Use web search to verify current information
+DATE AWARENESS
+- Current date: ${currentDate}
+- Always use this date to determine what legislation/policies are already in effect vs. upcoming.
+- Only reference events/bills from the past 1–2 months (≈60 days).
+- If an upcoming vote, markup, or hearing is scheduled within the next 14–21 days, explicitly tie the postcard ask to it.
 
-**MANDATORY**: Use the web_search tool to:
-1. **Search for current federal legislation** related to the user's concerns
-2. **Search for recent political developments** and policy changes
-3. **Verify any bill numbers or legislation** before including them
-4. **Find district/state-specific impacts** using zip code ${zipCode || 'provided'}
-
-## Your Process:
-
-1. **Use web_search for current political news**: Look for recent developments related to the user's issue:
-   * Executive actions or agency decisions
-   * Budget proposals or appropriations  
-   * Recent political announcements or policy changes
-   * Committee hearings or votes scheduled
-   * Major political developments affecting the issue
-
-2. **Use web_search for federal legislation**: Find current federal bills related to the user's primary concern:
-   * Search for bills currently in Congress on this topic
-   * Verify bill numbers and titles are accurate
-   * Check bill status (introduced, passed, failed, etc.)
-   * Only reference bills you can confirm through web search
-
-3. **Use web_search for district/state-specific impacts**: Use the zip code to find their location and search for:
-   * How federal legislation/policy specifically affects their state/region
-   * State-specific statistics, projects, or programs that would be impacted
-   * Federal funding that flows to their state for relevant programs
-   * Economic impacts of federal policy on their region
-   * How national issues manifest differently in their specific area
-
-4. **Choose the most timely and actionable federal angle**: Prioritize based on:
-   * **Federal bills with clear regional impact**: National legislation that would particularly affect their area
-   * **Actionability**: What can their federal representative actually influence
-   * **ABSOLUTE RULE: Only reference specific bills verified through web_search**
-   * Immediacy and political momentum
-   * Clear action the representative can take
-   * Current political relevance
-   * Direct impact on the constituent's concerns
-
-5. **Generate the postcard message**: Create a single postcard message that:
-   * Starts with "${titlePrefix} ${lastName}," then newline
-   * Maximum 300 characters total
-   * **Uses verified current federal developments** with regional impact when applicable
-   * Uses professional tone while preserving the user's voice
-   * Focuses on personal impact and how federal policy affects people in their situation
-   * Contains a clear, specific call to action
-   * **ABSOLUTE RULE: NEVER invent or fabricate bill numbers** - only reference legislation verified through web_search
-   * If web search finds no specific bills, focus on general policy areas and broader legislative priorities
-   * **Does not include location references** (district, state, city) as these will be in the return address
-
-## Content Guidelines:
-* Lead with personal connection to the issue
-* **Reference the most timely and actionable federal development** with regional impact when available
-* **Focus on federal policy impact**: How national legislation or policy affects people in similar situations
-* If bill recently passed/failed, reference that status and next steps
-* Emphasize how federal policy affects the user's concerns
-* Use the user's own language and concerns where possible
-* Make it single-issue focused
-* Ensure readability in 5-6 seconds
-* **Avoid personal location references** (e.g., "as a person from Louisville") but regional/policy references are acceptable (e.g., "Utah's public lands," "our district's funding")
-
-## Output:
-Provide only the final postcard message text. Do not include character counts, explanations, or additional commentary - just the postcard content ready to send. OUTPUT ONLY THE POSTCARD MESSAGE of 300 characters or less
-
-## Example Structure:
+REQUIRED FORMAT (include newline):
 "${titlePrefix} ${lastName},
-As a [user's situation], I'm concerned about [specific issue]. [Personal impact statement]. [Reference to federal development - include bill number when available, e.g., "Please support/oppose H.R. 123: [Title]"]. [Policy impact on user's situation]. Please [clear ask]."`;
+[Personal stake]. [Specific impact]. [Current context/bill if found]. [Direct ask]."
 
-    // Generate the postcard using Anthropic Claude with web search
-    let webSearchUsed = false;
-    let webSearchAvailable = true;
-    
-    const requestPayload = {
+STRICT RULES
+- Target 280 characters (270–290 acceptable range, hard max 295).
+- MUST include newline after "${titlePrefix} ${lastName},"
+- Use contractions always.
+- Include specific details/numbers when possible.
+- Direct action verbs.
+- Single spaces only.
+- If bill found: include identifier in "HR123" or "S.954" format.
+
+PERSONAL STAKE GUIDANCE
+The "personal stake" can be a short phrase (e.g., "As a nurse," "As a parent," "As a renter") or a short sentence, but keep it concise (<30 characters preferred).
+
+SOURCE SELECTION RULES
+- Include at least 1 source from congress.gov or govtrack.us.
+- Include at least 1 source from Axios, Politico, or Washington Post.
+- Do not use think tanks, unions, or advocacy sources alone. They may be included only if paired with an allowed source.
+- Only include sources published within the last 60 days.
+- If a highly relevant source is older than 60 days, include it only if paired with a corroborating <60-day source.
+
+NATIONAL CONTEXT RULE
+- Before drafting, check if a dominant national policy shift (e.g., agency closure, major department change) occurred in the last 60 days.
+- If yes and relevant to the user's issue, include it in the postcard. If not, skip.
+
+UPCOMING VOTE RULE
+- Always check congress.gov and govtrack.us calendars.
+- If a relevant vote/markup/hearing is scheduled in the next 14–21 days, explicitly tie the postcard's direct ask to that vote.
+- If none, proceed with the strongest current federal issue framing.
+
+PROCESS
+1. Look up current date and ensure timeline accuracy.
+2. Search priority sources for recent federal developments (since ~60 days ago).
+3. Identify the most timely/actionable federal angle with regional relevance.
+4. Check for dominant national policy context (include only if primary driver).
+5. Check for upcoming votes (14–21 day window); if found, anchor the ask to the vote.
+6. Write complete message targeting 280 chars with accurate timeline references.
+7. Count characters including newline.
+8. Adjust if outside 270–290 range.
+
+REQUIRED OUTPUT FORMAT
+Postcard text (with required newline after greeting)
+
+Sources Used:
+- [Description of key information gathered] | [URL] | +[data point count]
+- [Description of key information gathered] | [URL] | +[data point count]
+(2–3 sources required; 2 is acceptable, 3 if useful)
+
+Output ONLY the postcard text with newline and sources as specified above, nothing else.`;
+
+    // Build user message with graceful handling of missing personalImpact
+    const userMessage = personalImpact 
+      ? `Write a ~280 character postcard (270-290 range) about:
+**Concern:** ${concerns}
+**Personal Impact:** ${personalImpact}
+
+Current date: ${currentDate}
+Include a newline after the greeting. Search for current developments and include sources. Output the postcard text and sources as specified.`
+      : `Write a ~280 character postcard (270-290 range) about:
+**Concern:** ${concerns}
+
+Current date: ${currentDate}
+The constituent cares deeply about this issue. Include a newline after the greeting. Search for current developments and include sources. Output the postcard text and sources as specified.`;
+
+    // Initial request with web search
+    let requestPayload = {
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 400,
+      max_tokens: 800,
+      temperature: 0.2,
       tools: [
         {
           type: "web_search_20250305",
@@ -134,18 +151,11 @@ As a [user's situation], I'm concerned about [specific issue]. [Personal impact 
       messages: [
         {
           role: 'user',
-          content: `Generate a postcard message based on:
-
-**Primary Concern:** "${concerns}"
-**Personal Impact:** "${personalImpact}"
-**Representative:** ${representative.name} (${representative.type})
-${zipCode ? `**Zip Code:** ${zipCode}` : ''}
-
-Use web_search to verify current information before including any specific legislation or bill numbers. Follow the process outlined in the system prompt and provide ONLY the final postcard message text of 300 characters or less.`
+          content: userMessage
         }
       ]
     };
-
+    
     let response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -153,16 +163,32 @@ Use web_search to verify current information before including any specific legis
         'Content-Type': 'application/json',
         'anthropic-version': '2023-06-01'
       },
-      body: JSON.stringify(requestPayload),
+      body: JSON.stringify(requestPayload)
     });
-
-    // Graceful fallback if tools are unavailable
-    if (!response.ok && response.status >= 400 && response.status < 500) {
-      console.log('Web search tools unavailable, retrying without tools');
-      webSearchAvailable = false;
+    
+    let data;
+    let needsRetry = false;
+    
+    if (response.ok) {
+      data = await response.json();
       
-      const fallbackPayload = { ...requestPayload };
-      delete fallbackPayload.tools;
+      // Check if response contains only tool_use blocks without text content
+      const blocks = Array.isArray(data.content) ? data.content : [];
+      const hasTextContent = blocks.some(b => b && b.type === 'text' && typeof b.text === 'string' && b.text.trim());
+      const hasOnlyToolUse = blocks.length > 0 && blocks.every(b => b && b.type === 'tool_use');
+      
+      if (hasOnlyToolUse || !hasTextContent) {
+        console.log('Response contains only tool use or no text content, retrying without tools');
+        needsRetry = true;
+      }
+    } else if (response.status >= 400 && response.status < 500) {
+      console.log('Web search unavailable, retrying without tools');
+      needsRetry = true;
+    }
+    
+    // Retry without tools if needed
+    if (needsRetry) {
+      delete requestPayload.tools;
       
       response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -171,70 +197,201 @@ Use web_search to verify current information before including any specific legis
           'Content-Type': 'application/json',
           'anthropic-version': '2023-06-01'
         },
-        body: JSON.stringify(fallbackPayload),
+        body: JSON.stringify(requestPayload)
       });
+      
+      if (response.ok) {
+        data = await response.json();
+      }
     }
-
+    
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`Anthropic API error: ${response.status}`, errorText);
       throw new Error(`Anthropic API error ${response.status}: ${errorText}`);
     }
-
-    const data = await response.json();
     
-    // Check if web search was used
-    if (webSearchAvailable && Array.isArray(data.content)) {
-      webSearchUsed = data.content.some((block: any) => 
-        block && block.type === 'tool_use' && block.name === 'web_search'
-      );
-    }
-    
-    // Extract content from Anthropic response format
-    let draftMessage = '';
+    // Extract message and sources from response
+    let fullResponse = '';
     try {
       const blocks = Array.isArray(data.content) ? data.content : [];
-      draftMessage = blocks
-        .filter((b: any) => b && b.type === 'text' && typeof b.text === 'string')
-        .map((b: any) => b.text)
+      fullResponse = blocks
+        .filter(b => b && b.type === 'text' && typeof b.text === 'string')
+        .map(b => b.text)
         .join(' ')
         .trim();
     } catch (e) {
-      console.error('Error parsing Anthropic response content:', e);
-    }
-
-    if (!draftMessage) {
-      console.error('Unexpected Anthropic response format:', JSON.stringify(data));
-      throw new Error('Unexpected response format from Anthropic API');
+      console.error('Error parsing response:', e);
     }
     
-    // Clean up the message
-    draftMessage = draftMessage
-      .replace(/```[\s\S]*?```/g, '') // Remove code blocks
-      .replace(/^["'`]|["'`]$/g, '') // Remove quotes at start/end
-      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
-      .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown
-      .trim();
-
-    // Ensure it doesn't exceed 300 characters
-    if (draftMessage.length > 300) {
-      console.log(`Message too long (${draftMessage.length} chars), truncating to 300`);
-      draftMessage = draftMessage.substring(0, 297).trim() + '...';
+    if (!fullResponse) {
+      console.error('No message in response:', JSON.stringify(data));
+      throw new Error('No message generated');
     }
+    
+    // Parse message and sources
+    const sourcesIndex = fullResponse.indexOf('Sources Used:');
+    let draftMessage = '';
+    let sources = [];
+    
+    if (sourcesIndex !== -1) {
+      draftMessage = fullResponse.substring(0, sourcesIndex).trim();
+      const sourcesText = fullResponse.substring(sourcesIndex + 'Sources Used:'.length).trim();
+      
+      // Parse sources from the response
+      const sourceLines = sourcesText.split('\n').filter(line => line.trim().startsWith('-'));
+      sources = sourceLines.map(line => {
+        const cleanLine = line.replace(/^-\s*/, '').trim();
+        const parts = cleanLine.split(' | ');
+        if (parts.length >= 2) {
+          const description = parts[0];
+          const url = parts[1];
+          const dataPointMatch = parts[2]?.match(/\+(\d+)/);
+          const dataPointCount = dataPointMatch ? parseInt(dataPointMatch[1]) : 0;
+          
+          return {
+            description,
+            url,
+            dataPointCount
+          };
+        }
+        return null;
+      }).filter(Boolean);
+    } else {
+      draftMessage = fullResponse;
+    }
+    
+    // Clean up formatting of the message (preserve newlines)
+    draftMessage = draftMessage
+      .replace(/```[\s\S]*?```/g, '')  // Remove code blocks
+      .replace(/^["'`]|["'`]$/g, '')   // Remove wrapper quotes
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+      .replace(/\*(.*?)\*/g, '$1')     // Remove italic
+      .replace(/[ \t]+/g, ' ')         // Single spaces but preserve newlines
+      .trim();
+    
+    // STRICT enforcement of character limits (270-290 optimal, 295 max)
+    if (draftMessage.length > 295) {
+      console.log(`Message too long (${draftMessage.length} chars), requesting shorter version`);
+      
+      // Request a shorter version from Claude
+      const shortenPayload = {
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        temperature: 0.2,
+        system: 'Rewrite this message to be 280-290 characters. Keep the core message, impact, and ask. Must include newline after greeting.',
+        messages: [
+          {
+            role: 'user',
+            content: `Adjust to 280-290 chars (currently ${draftMessage.length}):
+"${draftMessage}"
 
-    console.log(`Generated message (${draftMessage.length} chars):`, draftMessage);
-    console.log(`Web search used: ${webSearchUsed}, Web search available: ${webSearchAvailable}, Model: claude-sonnet-4-20250514, Zip: ${zipCode || 'none'}, Rep: ${representative.name}`);
+Keep newline after greeting. Output only the adjusted message.`
+          }
+        ]
+      };
+      
+      const shortenResponse = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': anthropicApiKey,
+          'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify(shortenPayload)
+      });
+      
+      if (shortenResponse.ok) {
+        const shortenData = await shortenResponse.json();
+        const shortened = shortenData.content
+          ?.filter(b => b?.type === 'text')
+          ?.map(b => b.text)
+          ?.join(' ')
+          ?.trim();
+        
+        if (shortened && shortened.length <= 295) {
+          draftMessage = shortened
+            .replace(/^["'`]|["'`]$/g, '')
+            .replace(/\*\*(.*?)\*\*/g, '$1')
+            .replace(/\*(.*?)\*/g, '$1')
+            .replace(/[ \t]+/g, ' ')
+            .trim();
+        }
+      }
+    }
+    
+    // If too short, request expansion
+    if (draftMessage.length < 270) {
+      console.log(`Message too short (${draftMessage.length} chars), requesting expanded version`);
+      
+      const expandPayload = {
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        temperature: 0.2,
+        system: 'Expand this message to 280 characters by adding specific details, statistics, or urgency. Keep the newline after greeting.',
+        messages: [
+          {
+            role: 'user',
+            content: `Expand to ~280 chars (currently ${draftMessage.length}):
+"${draftMessage}"
 
-    return new Response(JSON.stringify({ draftMessage }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  } catch (error) {
-    console.error('Error in draft-postcard-message function:', error);
+Add details to reach 280 chars. Keep newline after greeting. Output only the expanded message.`
+          }
+        ]
+      };
+      
+      const expandResponse = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': anthropicApiKey,
+          'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify(expandPayload)
+      });
+      
+      if (expandResponse.ok) {
+        const expandData = await expandResponse.json();
+        const expanded = expandData.content
+          ?.filter(b => b?.type === 'text')
+          ?.map(b => b.text)
+          ?.join(' ')
+          ?.trim();
+        
+        if (expanded && expanded.length >= 270 && expanded.length <= 295) {
+          draftMessage = expanded
+            .replace(/^["'`]|["'`]$/g, '')
+            .replace(/\*\*(.*?)\*\*/g, '$1')
+            .replace(/\*(.*?)\*/g, '$1')
+            .replace(/[ \t]+/g, ' ')
+            .trim();
+        }
+      }
+    }
+    
+    console.log(`Final message (${draftMessage.length} chars):`, draftMessage);
+    console.log('Sources found:', sources);
+    
     return new Response(JSON.stringify({ 
-      error: `Draft message generation failed: ${error.message}`
+      draftMessage,
+      sources 
+    }), {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error in function:', error);
+    return new Response(JSON.stringify({
+      error: `Generation failed: ${error.message}`
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
+      }
     });
   }
 });

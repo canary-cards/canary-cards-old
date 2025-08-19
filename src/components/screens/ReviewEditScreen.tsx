@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
-import { ArrowLeft, Wand2, Edit3 } from 'lucide-react';
+import { ArrowLeft, Wand2, Edit3, ExternalLink } from 'lucide-react';
 export function ReviewEditScreen() {
   const {
     state,
@@ -94,6 +94,35 @@ ${userInfo?.fullName}`;
                   </button>
                 </div>
               </div>
+
+              {/* Sources Section */}
+              {state.postcardData.sources && state.postcardData.sources.length > 0 && (
+                <div className="space-y-3 pt-4 border-t border-border">
+                  <h4 className="text-sm font-medium text-foreground">Sources used for this postcard:</h4>
+                  <div className="space-y-2">
+                    {state.postcardData.sources.map((source, index) => (
+                      <div key={index} className="flex items-start gap-2 p-3 bg-muted rounded-lg">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {source.description}
+                          </p>
+                          {source.url && (
+                            <a 
+                              href={source.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1"
+                            >
+                              View source
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-3 pt-4">
                 <Button onClick={handleContinue} disabled={!editedMessage.trim() || charCount > maxChars} className="w-full button-warm h-12 text-base">

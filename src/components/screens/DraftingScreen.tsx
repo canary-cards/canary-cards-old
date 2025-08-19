@@ -48,7 +48,8 @@ export function DraftingScreen() {
           body: {
             concerns,
             personalImpact,
-            representative: state.postcardData.representative
+            representative: state.postcardData.representative,
+            zipCode: state.postcardData.zipCode
           }
         });
 
@@ -74,7 +75,8 @@ export function DraftingScreen() {
             type: 'UPDATE_POSTCARD_DATA',
             payload: {
               originalMessage: `${concerns}\n\n${personalImpact}`,
-              draftMessage: data.draftMessage
+              draftMessage: data.draftMessage,
+              sources: data.sources || []
             }
           });
 
