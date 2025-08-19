@@ -180,13 +180,13 @@ export function LandingScreen() {
         <Card className="mb-6 bg-card border-2 border-border/60">
           <CardContent className="p-6 text-center">
             <p className="text-sm font-semibold text-secondary mb-3 tracking-wide uppercase">
-              Proof it works
+              The Research
             </p>
             <p className="text-base font-normal text-foreground leading-relaxed">
               Just 50 personalized postcards can influence a congresspersons vote.
             </p>
             <p className="text-sm text-muted-foreground mt-3">
-              — Congressional Management Foundation
+              — 2019 Congressional Management Foundation Study
             </p>
           </CardContent>
         </Card>
