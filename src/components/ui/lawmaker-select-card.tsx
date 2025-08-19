@@ -51,7 +51,7 @@ export function LawmakerSelectCard({
           {/* Header Row - Photo, Name, Action */}
           <div className="flex items-start gap-4">
             {/* Photo */}
-            <div className="w-10 h-10 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+            <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
               {lawmaker.photo ? (
                 <img 
                   src={lawmaker.photo} 
@@ -93,7 +93,7 @@ export function LawmakerSelectCard({
           {/* Action Row - Checkbox and Price */}
           <div className="flex items-center justify-between pt-2 border-t border-border/30">
             <span className="text-sm text-foreground">
-              Send to {lawmaker.name} {price}
+              Send to {lawmaker.type === 'Representative' ? 'Representative' : 'Senator'} {lawmaker.name.split(' ').pop()} {price}
             </span>
             <Checkbox 
               checked={isSelected} 
