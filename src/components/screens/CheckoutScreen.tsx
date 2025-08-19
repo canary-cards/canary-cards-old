@@ -127,74 +127,83 @@ export function CheckoutScreen() {
               <div className="space-y-4">
                 {/* Lawmaker Cards */}
                 <div className="space-y-3">
-                  {/* Representative (always selected, disabled) */}
+                  {/* Representative Section */}
                   {rep && (
-                    <LawmakerSelectCard
-                      lawmaker={rep}
-                      isSelected={true}
-                      isDisabled={true}
-                      price="$5.00"
-                      valueText="Your Representative is directly accountable to your district"
-                      supportText="Representatives focus on local issues and have the strongest incentive to respond to constituents"
-                      className="ring-2 ring-primary/20"
-                    />
+                    <div className="space-y-4">
+                      <div className="px-1">
+                        <p className="text-sm font-medium text-foreground leading-tight mb-3">
+                          Your representative is directly accountable to your district.
+                        </p>
+                      </div>
+                      <LawmakerSelectCard
+                        lawmaker={{
+                          ...rep,
+                          type: 'Representative'
+                        }}
+                        isSelected={true}
+                        isDisabled={true}
+                        price="$5"
+                        valueText=""
+                        supportText=""
+                        showTooltip={false}
+                      />
+                    </div>
                   )}
 
-                  {/* Senators */}
-                  {loadingSenators ? (
-                    <>
-                      {/* Loading skeleton for senators */}
-                      {[0, 1].map((index) => (
-                        <Card key={index} className="bg-gradient-to-br from-muted/20 to-muted/40">
-                          <CardContent className="p-4">
-                            <div className="space-y-3">
-                              <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-muted rounded-lg animate-pulse" />
-                                <div className="flex-1 space-y-2">
-                                  <div className="h-4 bg-muted rounded animate-pulse" />
-                                  <div className="h-3 bg-muted rounded w-1/2 animate-pulse" />
+                  {/* Senators Section */}
+                  <div className="space-y-4">
+                    <div className="px-1">
+                      <p className="text-sm font-medium text-foreground leading-tight mb-3">
+                        Make your message heard in the Senate. Both chambers matter. Senators represent your entire state.
+                      </p>
+                    </div>
+                    <div className="space-y-3">
+                      {loadingSenators ? (
+                        <>
+                          {/* Loading skeleton for senators */}
+                          {[0, 1].map((index) => (
+                            <Card key={index} className="bg-gradient-to-br from-muted/20 to-muted/40">
+                              <CardContent className="p-4">
+                                <div className="space-y-3">
+                                  <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 bg-muted rounded-lg animate-pulse" />
+                                    <div className="flex-1 space-y-2">
+                                      <div className="h-4 bg-muted rounded animate-pulse" />
+                                      <div className="h-3 bg-muted rounded w-1/2 animate-pulse" />
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                      <div className="w-12 h-5 bg-muted rounded animate-pulse" />
+                                      <div className="w-4 h-4 bg-muted rounded animate-pulse" />
+                                    </div>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <div className="h-3 bg-muted rounded animate-pulse" />
+                                    <div className="h-3 bg-muted rounded w-3/4 animate-pulse" />
+                                  </div>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                  <div className="w-12 h-5 bg-muted rounded animate-pulse" />
-                                  <div className="w-4 h-4 bg-muted rounded animate-pulse" />
-                                </div>
-                              </div>
-                              <div className="space-y-1">
-                                <div className="h-3 bg-muted rounded animate-pulse" />
-                                <div className="h-3 bg-muted rounded w-3/4 animate-pulse" />
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </>
-                  ) : (
-                    senators.slice(0, 2).map((senator, index) => (
-                      <LawmakerSelectCard
-                        key={senator.id}
-                        lawmaker={senator}
-                        isSelected={selectedSenators[index]}
-                        price="+$3.00"
-                        valueText={
-                          index === 0 
-                            ? "Make your message heard in the Senate — both chambers matter"
-                            : "Double your Senate impact — your state's full voice"
-                        }
-                        supportText={
-                          index === 0 
-                            ? "Senators represent your entire state and vote on national policy that affects your community"
-                            : "Having both Senators ensures your state's interests are fully represented in federal decisions"
-                        }
-                        onSelectionChange={(checked) => handleSenatorToggle(index, checked)}
-                        showTooltip={true}
-                        tooltipContent={
-                          index === 0 
-                            ? "Every state has two U.S. Senators who represent the whole state. We've already verified their official addresses—no extra steps."
-                            : "You have two Senators. We'll automatically address and mail each card to the correct office."
-                        }
-                      />
-                    ))
-                  )}
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </>
+                      ) : (
+                        senators.slice(0, 2).map((senator, index) => (
+                          <LawmakerSelectCard
+                            key={senator.id}
+                            lawmaker={{
+                              ...senator,
+                              type: 'Senator'
+                            }}
+                            isSelected={selectedSenators[index]}
+                            price="$5"
+                            valueText=""
+                            supportText=""
+                            onSelectionChange={(checked) => handleSenatorToggle(index, checked)}
+                            showTooltip={false}
+                          />
+                        ))
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Address reassurance */}

@@ -39,11 +39,13 @@ export function LawmakerSelectCard({
 
   return (
     <Card 
-      className={`transition-all duration-200 cursor-pointer ${
-        isSelected 
-          ? 'border-2 border-primary bg-primary/5 shadow-md' 
-          : 'border border-border bg-card hover:bg-muted/20'
-      } ${isDisabled ? 'cursor-default' : ''} ${className}`}
+      className={`transition-all duration-200 ${
+        isDisabled 
+          ? 'bg-disabled border-disabled-foreground/20 cursor-default' 
+          : isSelected 
+            ? 'border-2 border-primary bg-primary/5 shadow-md cursor-pointer' 
+            : 'border border-border bg-card hover:bg-muted/20 cursor-pointer'
+      } ${className}`}
       onClick={handleCardClick}
     >
       <CardContent className="p-4">
@@ -69,7 +71,7 @@ export function LawmakerSelectCard({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <h4 className="font-semibold text-foreground text-sm truncate">
-                  {lawmaker.name}
+                  {lawmaker.type} {lawmaker.name}
                 </h4>
                 {showTooltip && tooltipContent && (
                   <Tooltip>
@@ -83,36 +85,28 @@ export function LawmakerSelectCard({
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
-                {lawmaker.type} • {lawmaker.state}
+                {lawmaker.state}
                 {lawmaker.district && ` - District ${lawmaker.district}`}
               </p>
             </div>
 
-            {/* Action Row - Checkbox and Price */}
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <Badge variant="secondary" className="text-xs font-medium">
-                {price}
-              </Badge>
+          </div>
+
+          {/* Action Row - Checkbox and Price */}
+          <div className="flex items-center justify-between pt-2 border-t border-border/30">
+            <div className="flex items-center gap-2">
               <Checkbox 
                 checked={isSelected} 
                 disabled={isDisabled}
                 onCheckedChange={onSelectionChange}
                 onClick={(e) => e.stopPropagation()}
-                className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
               />
+              <span className="text-sm text-foreground">
+                Send to {lawmaker.name.split(' ').pop()} {price}
+              </span>
             </div>
           </div>
-
-          {/* Value Proposition */}
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-foreground leading-tight">
-              {valueText}
-            </p>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              {supportText}
-            </p>
-          </div>
-        </div>
+         </div>
       </CardContent>
     </Card>
   );
