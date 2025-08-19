@@ -117,7 +117,7 @@ export function LandingScreen() {
       <div className="container mx-auto px-4 py-4 max-w-2xl">
         {/* Logo Section */}
         <div className="flex justify-start mb-6">
-          <Logo className="h-13 w-auto" />
+          <Logo className="h-10 w-auto" />
         </div>
         
         {/* Mobile-First Hero Section */}
