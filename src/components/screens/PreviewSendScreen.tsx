@@ -115,23 +115,41 @@ export function PreviewSendScreen() {
         throw new Error('Invalid payment session response');
       }
 
-      // Update app state with complete postcard data
+      // Store complete data ensuring all required fields are present
       const completePostcardData = {
-        userInfo: state.postcardData.userInfo,
-        representative: state.postcardData.representative,
+        userInfo: {
+          fullName: state.postcardData.userInfo?.fullName,
+          streetAddress: state.postcardData.userInfo?.streetAddress,
+          city: state.postcardData.userInfo?.city,
+          state: state.postcardData.userInfo?.state,
+          zipCode: state.postcardData.userInfo?.zipCode,
+        },
+        representative: {
+          id: state.postcardData.representative?.id,
+          name: state.postcardData.representative?.name,
+          address: state.postcardData.representative?.address,
+          city: state.postcardData.representative?.city,
+          state: state.postcardData.representative?.state,
+          party: state.postcardData.representative?.party,
+          type: state.postcardData.representative?.type,
+          photo: state.postcardData.representative?.photo,
+        },
         finalMessage: state.postcardData.finalMessage,
         senators: sendOption === 'triple' ? senators : [],
         sendOption,
         email
       };
       
+      console.log('=== STORING COMPLETE POSTCARD DATA ===');
+      console.log('Complete data being stored:', JSON.stringify(completePostcardData, null, 2));
+      
+      // Update AppContext with complete data
       dispatch({
         type: 'UPDATE_POSTCARD_DATA',
         payload: completePostcardData
       });
 
-      // Also store to localStorage as backup (for migration)
-      console.log('Storing complete postcard data to localStorage and AppContext:', completePostcardData);
+      // Store to localStorage as backup
       localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 
       // Show embedded checkout

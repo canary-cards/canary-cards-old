@@ -19,40 +19,109 @@ export default function PaymentReturn() {
   const { toast } = useToast();
   const { state } = useAppContext();
 
-  // Validate if postcard data is complete
+  // Validate if postcard data is complete with detailed logging
   const validatePostcardData = (data: any) => {
-    if (!data) return false;
-    if (!data.userInfo?.streetAddress || !data.userInfo?.fullName) return false;
-    if (!data.representative?.name) return false;
-    if (!data.finalMessage) return false;
+    console.log('=== VALIDATING POSTCARD DATA ===');
+    console.log('Raw data:', data);
+    
+    if (!data) {
+      console.log('❌ Validation failed: No data provided');
+      return false;
+    }
+    
+    console.log('✅ Data exists, checking userInfo...');
+    console.log('userInfo:', data.userInfo);
+    
+    if (!data.userInfo) {
+      console.log('❌ Validation failed: Missing userInfo');
+      return false;
+    }
+    
+    if (!data.userInfo.streetAddress) {
+      console.log('❌ Validation failed: Missing userInfo.streetAddress');
+      console.log('Available userInfo fields:', Object.keys(data.userInfo));
+      return false;
+    }
+    
+    if (!data.userInfo.fullName) {
+      console.log('❌ Validation failed: Missing userInfo.fullName');
+      console.log('Available userInfo fields:', Object.keys(data.userInfo));
+      return false;
+    }
+    
+    console.log('✅ userInfo valid, checking representative...');
+    console.log('representative:', data.representative);
+    
+    if (!data.representative) {
+      console.log('❌ Validation failed: Missing representative');
+      return false;
+    }
+    
+    if (!data.representative.name) {
+      console.log('❌ Validation failed: Missing representative.name');
+      console.log('Available representative fields:', Object.keys(data.representative));
+      return false;
+    }
+    
+    console.log('✅ representative valid, checking finalMessage...');
+    console.log('finalMessage:', data.finalMessage);
+    
+    if (!data.finalMessage) {
+      console.log('❌ Validation failed: Missing finalMessage');
+      return false;
+    }
+    
+    console.log('✅ All validation checks passed!');
     return true;
   };
 
   // Migrate data from localStorage to AppContext if needed
   const migrateDataToAppContext = () => {
+    console.log('=== MIGRATING DATA FROM LOCALSTORAGE ===');
     const storedData = localStorage.getItem('postcardData');
-    if (storedData && validatePostcardData(JSON.parse(storedData))) {
-      console.log('Found valid localStorage data, migrating to AppContext');
-      return JSON.parse(storedData);
+    console.log('Raw localStorage data:', storedData);
+    
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData);
+        console.log('Parsed localStorage data:', parsedData);
+        
+        if (validatePostcardData(parsedData)) {
+          console.log('✅ localStorage data is valid, migrating to AppContext');
+          return parsedData;
+        } else {
+          console.log('❌ localStorage data failed validation');
+        }
+      } catch (error) {
+        console.error('❌ Failed to parse localStorage data:', error);
+      }
+    } else {
+      console.log('❌ No data found in localStorage');
     }
     return null;
   };
 
   // Get postcard data with fallback logic
   const getPostcardData = () => {
+    console.log('=== GETTING POSTCARD DATA ===');
+    console.log('Current AppContext state:', state.postcardData);
+    
     // First try AppContext
     if (validatePostcardData(state.postcardData)) {
-      console.log('Using postcard data from AppContext');
+      console.log('✅ Using postcard data from AppContext');
       return state.postcardData;
+    } else {
+      console.log('❌ AppContext data invalid, trying localStorage migration...');
     }
     
     // Fallback to localStorage migration
     const migratedData = migrateDataToAppContext();
     if (migratedData) {
-      console.log('Using migrated data from localStorage');
+      console.log('✅ Using migrated data from localStorage');
       return migratedData;
     }
     
+    console.log('❌ No valid data found anywhere');
     return null;
   };
 
