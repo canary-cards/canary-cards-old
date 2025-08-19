@@ -93,7 +93,7 @@ export function LawmakerSelectCard({
           {/* Action Row - Checkbox and Price */}
           <div className="flex items-center justify-between pt-2 border-t border-border/30">
             <span className="text-sm text-foreground">
-              Send to {lawmaker.type === 'Representative' ? 'Representative' : 'Senator'} {lawmaker.name.split(' ').pop()} {price}
+              Send to {lawmaker.type === 'Representative' ? 'Rep.' : 'Sen.'} {lawmaker.name.split(' ').pop()} -- {price}
             </span>
             <Checkbox 
               checked={isSelected} 
