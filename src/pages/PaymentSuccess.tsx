@@ -151,7 +151,7 @@ export default function PaymentSuccess() {
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center border border-primary">
-            <Mail className="w-5 h-5 text-primary" />
+            <img src="/postallogov1.svg" alt="Canary Cards Logo" className="w-6 h-6" />
           </div>
           <h1 className="display-title text-primary">Canary Cards</h1>
         </div>
@@ -259,16 +259,16 @@ export default function PaymentSuccess() {
 
             {/* Social Media Quick Shares */}
             <div className="grid grid-cols-3 gap-3">
-              <Button variant="secondary" onClick={shareViaTwitter} className="px-4 py-2 text-sm">
-                <Twitter className="w-4 h-4 mr-2" />
+              <Button variant="secondary" onClick={shareViaTwitter} className="px-2 py-2 text-xs">
+                <Twitter className="w-3 h-3 mr-1" />
                 Twitter
               </Button>
-              <Button variant="secondary" onClick={shareViaFacebook} className="px-4 py-2 text-sm">
-                <Facebook className="w-4 h-4 mr-2" />
+              <Button variant="secondary" onClick={shareViaFacebook} className="px-2 py-2 text-xs">
+                <Facebook className="w-3 h-3 mr-1" />
                 Facebook
               </Button>
-              <Button variant="secondary" onClick={copyShareableLink} className="px-4 py-2 text-sm">
-                <Copy className="w-4 h-4 mr-2" />
+              <Button variant="secondary" onClick={copyShareableLink} className="px-2 py-2 text-xs">
+                <Copy className="w-3 h-3 mr-1" />
                 Copy Link
               </Button>
             </div>
