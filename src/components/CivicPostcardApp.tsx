@@ -47,18 +47,18 @@ export function CivicPostcardApp() {
     <div className="civic-postcard-app">
       {/* Header with Canary Cards branding and hamburger menu - show on all pages */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
+        {/* Hamburger menu - show on all pages, on the left */}
+        <div className="flex-shrink-0">
+          <HamburgerMenu />
+        </div>
+        
         {/* Logo - show on all pages except step 1 */}
         {state.currentStep > 1 && (
           <Logo />
         )}
         
-        {/* Spacer to push hamburger menu to the right when no branding */}
+        {/* Spacer when no logo on step 1 */}
         {state.currentStep === 1 && <div className="flex-1" />}
-        
-        {/* Hamburger menu - show on all pages */}
-        <div className="flex-shrink-0">
-          <HamburgerMenu />
-        </div>
       </div>
       
       {/* Progress bar - full width below header for steps 2-6 and 8 (exclude drafting step 7) */}
