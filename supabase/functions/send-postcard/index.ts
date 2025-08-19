@@ -335,6 +335,13 @@ serve(async (req) => {
     if (successCount > 0 && postcardData.email) {
       try {
         console.log('Triggering order confirmation email...');
+        
+        // Calculate amount based on send option
+        const amount = sendOption === 'single' ? 5.00 : sendOption === 'double' ? 8.00 : 11.00;
+        
+        // Generate order ID
+        const orderId = `CC-${Date.now()}${Math.floor(Math.random() * 1000)}`;
+        
         const emailResponse = await fetch('https://xwsgyxlvxntgpochonwe.supabase.co/functions/v1/send-order-confirmation', {
           method: 'POST',
           headers: {
@@ -353,7 +360,11 @@ serve(async (req) => {
             representative,
             senators,
             sendOption,
-            orderResults: results.filter(r => r.status === 'success')
+            orderResults: results.filter(r => r.status === 'success'),
+            amount,
+            orderId,
+            paymentMethod: 'card',
+            finalMessage
           })
         });
         
