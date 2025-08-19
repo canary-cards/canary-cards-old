@@ -118,7 +118,6 @@ ${userInfo?.fullName}`;
                   <ul className="space-y-2">
                     {state.postcardData.sources.map((source, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-muted-foreground mt-1.5">•</span>
                         <div className="flex-1 min-w-0">
                           <span className="text-sm text-muted-foreground leading-relaxed">
                             {source.description}
@@ -128,11 +127,11 @@ ${userInfo?.fullName}`;
                               href={source.url} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 ml-1 px-2 py-0.5 text-xs bg-muted hover:bg-muted/80 rounded-full transition-colors"
+                              className="inline-flex items-center gap-1 ml-1 px-3 py-1 text-xs bg-primary/20 text-primary rounded-full transition-colors hover:bg-primary/30 cursor-pointer"
                             >
                               {getDomainLabel(source.url)}
                               {source.dataPointCount > 0 && (
-                                <span className="text-muted-foreground">+{source.dataPointCount}</span>
+                                <span>+{source.dataPointCount}</span>
                               )}
                             </a>
                           )}
