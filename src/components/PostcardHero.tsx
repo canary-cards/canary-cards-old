@@ -79,10 +79,10 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
       {/* Hero text */}
       <div className="text-center mb-6">
         <h1 className="text-2xl font-bold text-primary mb-2 font-spectral">
-          Review Your Card
+          Here's how your postcard will look.
         </h1>
-        <p className="text-accent font-inter font-semibold">
-          Written with a real pen. Mailed for you.
+        <p className="text-secondary font-inter">
+          This is an example — your message will be written with a ballpoint pen on a real postcard we mail for you
         </p>
       </div>
 
