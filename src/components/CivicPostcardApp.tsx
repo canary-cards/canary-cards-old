@@ -35,9 +35,9 @@ export function CivicPostcardApp() {
       case 6:
         return <CheckoutScreen />;
       case 7:
-        return <SuccessScreen />;
-      case 8:
         return <DraftingScreen />;
+      case 8:
+        return <SuccessScreen />;
       default:
         return <LandingScreen />;
     }
@@ -61,15 +61,15 @@ export function CivicPostcardApp() {
         </div>
       </div>
       
-      {/* Progress bar - full width below header for steps 2-7 (exclude drafting step 8) */}
-      {state.currentStep > 1 && state.currentStep <= 7 && (
+      {/* Progress bar - full width below header for steps 2-6 and 8 (exclude drafting step 7) */}
+      {state.currentStep > 1 && state.currentStep <= 6 || state.currentStep === 8 && (
         <div className="absolute top-20 left-0 right-0 z-10 px-4">
           <ProgressIndicator currentStep={state.currentStep} totalSteps={7} />
         </div>
       )}
       
       {/* Content with proper spacing */}
-      <div className={state.currentStep > 1 && state.currentStep !== 8 ? "pt-12" : ""}>
+      <div className={state.currentStep > 1 && state.currentStep !== 7 ? "pt-12" : ""}>
         {renderCurrentScreen()}
       </div>
     </div>
