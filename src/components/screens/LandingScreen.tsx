@@ -116,8 +116,8 @@ export function LandingScreen() {
       <div className={`min-h-screen bg-background ${showSharedDialog ? 'pt-16' : ''}`}>
       <div className="container mx-auto px-4 py-4 max-w-2xl">
         {/* Logo Section */}
-        <div className="flex justify-center mb-6">
-          <Logo className="h-10 w-auto scale-130" />
+        <div className="flex justify-start mb-6">
+          <Logo className="h-10 w-auto" />
         </div>
         
         {/* Mobile-First Hero Section */}
