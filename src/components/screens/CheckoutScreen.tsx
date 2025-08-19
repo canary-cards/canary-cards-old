@@ -6,20 +6,23 @@ import { Card, CardContent } from '@/components/ui/card';
 import { LawmakerSelectCard } from '@/components/ui/lawmaker-select-card';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { useAppContext } from '../../context/AppContext';
-import { ArrowLeft, Apple } from 'lucide-react';
+import { EmbeddedCheckout } from '../EmbeddedCheckout';
+import { ArrowLeft, Apple, CreditCard, Shield, Clock } from 'lucide-react';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
-import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 export function CheckoutScreen() {
   const { state, dispatch } = useAppContext();
-  const navigate = useNavigate();
   
   const [email, setEmail] = useState(state.postcardData.email || '');
   const [emailError, setEmailError] = useState('');
   const [senators, setSenators] = useState<Representative[]>([]);
   const [loadingSenators, setLoadingSenators] = useState(false);
   const [selectedSenators, setSelectedSenators] = useState<boolean[]>([true, false]); // Senator 1 checked by default
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   
   const rep = state.postcardData.representative;
   const userInfo = state.postcardData.userInfo;
@@ -76,32 +79,84 @@ export function CheckoutScreen() {
     return 'triple';
   };
 
-  const handleContinueToCheckout = () => {
+  const handlePayment = async () => {
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       return;
     }
+    
+    setIsProcessing(true);
+    setEmailError('');
+    
+    try {
+      const sendOption = getSendOption();
+      const selectedSenatorsList = senators.filter((_, index) => selectedSenators[index]);
 
-    const sendOption = getSendOption();
-    const selectedSenatorsList = senators.filter((_, index) => selectedSenators[index]);
+      // Call Stripe payment function
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: {
+          sendOption,
+          email,
+          fullName: userInfo?.fullName
+        }
+      });
+      
+      if (error) throw error;
 
-    // Update app state
-    dispatch({
-      type: 'UPDATE_POSTCARD_DATA',
-      payload: {
+      // Update app state 
+      dispatch({
+        type: 'UPDATE_POSTCARD_DATA',
+        payload: {
+          sendOption,
+          email,
+          senators: selectedSenatorsList
+        }
+      });
+
+      // Store the complete postcard data to localStorage for access after payment
+      const completePostcardData = {
+        ...state.postcardData,
         sendOption,
         email,
         senators: selectedSenatorsList
-      }
-    });
+      };
+      localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 
-    // Navigate to checkout
-    navigate('/checkout');
+      // Show embedded checkout
+      setClientSecret(data.client_secret);
+      setShowCheckout(true);
+    } catch (error) {
+      console.error('Payment error:', error);
+      setEmailError('Payment failed. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleBackFromCheckout = () => {
+    setShowCheckout(false);
+    setClientSecret(null);
   };
 
   const goBack = () => {
     dispatch({ type: 'SET_STEP', payload: 5 }); // Go back to review card screen
   };
+
+  // Show embedded checkout on separate screen if client secret is available
+  if (showCheckout && clientSecret) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
+          <EmbeddedCheckout 
+            clientSecret={clientSecret}
+            onBack={handleBackFromCheckout}
+            sendOption={getSendOption()}
+            amount={getTotalPrice()}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <TooltipProvider>
@@ -257,15 +312,37 @@ export function CheckoutScreen() {
                   {emailError && <p className="text-sm text-destructive">{emailError}</p>}
                 </div>
 
+                {/* Security & Delivery Info */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
+                  <div className="flex items-center space-x-2 text-muted-foreground">
+                    <Shield className="w-4 h-4" />
+                    <span>Secure payment processing</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-muted-foreground">
+                    <Clock className="w-4 h-4" />
+                    <span>Sent within 3 business days</span>
+                  </div>
+                </div>
+
                 {/* Primary CTA */}
                 <div className="space-y-4">
                   <Button 
-                    onClick={handleContinueToCheckout} 
-                    disabled={!email || !validateEmail(email)} 
+                    onClick={handlePayment} 
+                    disabled={!email || !validateEmail(email) || isProcessing} 
                     variant="spotlight" 
                     className="w-full h-12 sm:h-14 button-warm text-sm sm:text-base md:text-lg"
                   >
-                    Continue to Checkout
+                    {isProcessing ? (
+                      <>
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2 sm:mr-3" />
+                        <span className="truncate">Loading checkout...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
+                        <span className="truncate">Pay ${getTotalPrice().toFixed(2)}</span>
+                      </>
+                    )}
                   </Button>
                   
                   <div className="text-center">

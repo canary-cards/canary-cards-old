@@ -13,7 +13,7 @@ import PaymentReturn from "./pages/PaymentReturn";
 import Auth from "./pages/Auth";
 import PasswordReset from "./pages/PasswordReset";
 import Profile from "./pages/Profile";
-import { Checkout } from "./pages/Checkout";
+
 import { AppProvider } from "./context/AppContext";
 
 const queryClient = new QueryClient();
@@ -31,7 +31,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/password-reset" element={<PasswordReset />} />
-            <Route path="/checkout" element={<AppProvider><Checkout /></AppProvider>} />
+            
             <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-canceled" element={<PaymentCanceled />} />
