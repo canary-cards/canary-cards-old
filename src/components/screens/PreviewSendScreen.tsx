@@ -25,8 +25,8 @@ export function PreviewSendScreen() {
   const [loadingSenators, setLoadingSenators] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const singlePrice = 4.99;
-  const triplePrice = 11.99;
+  const singlePrice = 5.00;
+  const triplePrice = 11.00;
   const savings = singlePrice * 3 - triplePrice;
   const rep = state.postcardData.representative;
   const userInfo = state.postcardData.userInfo;
@@ -62,34 +62,58 @@ export function PreviewSendScreen() {
     }
   };
   const handlePayment = async () => {
+    console.log('=== PAYMENT FLOW DEBUG START ===');
     console.log('Payment button clicked!');
     console.log('Current app state:', state);
     console.log('PostcardData:', state.postcardData);
     console.log('UserInfo from state:', userInfo);
     console.log('UserInfo fullName:', userInfo?.fullName);
+    console.log('Send option:', sendOption);
+    console.log('Email:', email);
     
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       console.log('Email validation failed:', email);
       return;
     }
+    
     setIsProcessing(true);
     setEmailError('');
-    console.log('Calling create-payment with:', { sendOption, email, fullName: userInfo?.fullName });
+    
+    const paymentData = { sendOption, email, fullName: userInfo?.fullName };
+    console.log('Calling create-payment with:', paymentData);
+    console.log('Supabase client:', supabase);
+    
     try {
+      console.log('Making API call to create-payment...');
+      
       // Call Stripe payment function
       const {
         data,
         error
       } = await supabase.functions.invoke('create-payment', {
-        body: {
-          sendOption,
-          email,
-          fullName: userInfo?.fullName
-        }
+        body: paymentData
       });
-      console.log('create-payment response:', { data, error });
-      if (error) throw error;
+      
+      console.log('=== API RESPONSE ===');
+      console.log('Response data:', data);
+      console.log('Response error:', error);
+      console.log('Response type:', typeof data);
+      
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
+      
+      if (!data) {
+        console.error('No data returned from create-payment');
+        throw new Error('No response data from payment service');
+      }
+      
+      if (!data.client_secret) {
+        console.error('No client_secret in response:', data);
+        throw new Error('Invalid payment session response');
+      }
 
       // Update app state 
       dispatch({
