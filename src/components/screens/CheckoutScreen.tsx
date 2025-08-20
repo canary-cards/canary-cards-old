@@ -276,7 +276,7 @@ export function CheckoutScreen() {
                     placeholder="you@example.com" 
                     value={email} 
                     onChange={e => handleEmailChange(e.target.value)}
-                    className="bg-white border-2 border-[#E8DECF] rounded-xl"
+                    className="bg-white"
                   />
                   <p className="text-sm text-muted-foreground">
                     We'll send your order confirmation here after checkout.
