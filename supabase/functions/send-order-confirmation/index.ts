@@ -146,9 +146,12 @@ const handler = async (req: Request): Promise<Response> => {
                   <tr>
                     <td class="bg-primary" style="background-color: #2F4156; padding: 32px; text-align: center; border-radius: 0.75rem;">
                       <!-- Canary Icon Stamp -->
-                      <div style="width: 56px; height: 56px; background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 28px;">
-                        🐤
-                      </div>
+                       <!-- Canary Brand Icon -->
+                       <div style="width: 56px; height: 56px; background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
+                         <svg width="32" height="32" viewBox="0 0 375 375" xmlns="http://www.w3.org/2000/svg" style="color: #2F4156;">
+                           <path d="M187.5 18.75C108.125 18.75 43.75 83.125 43.75 162.5C43.75 241.875 108.125 306.25 187.5 306.25C266.875 306.25 331.25 241.875 331.25 162.5C331.25 83.125 266.875 18.75 187.5 18.75ZM162.5 125C175 125 187.5 137.5 187.5 150C187.5 162.5 175 175 162.5 175C150 175 137.5 162.5 137.5 150C137.5 137.5 150 125 162.5 125ZM237.5 225C237.5 237.5 225 250 212.5 250H162.5C150 250 137.5 237.5 137.5 225C137.5 212.5 150 200 162.5 200H212.5C225 200 237.5 212.5 237.5 225Z" fill="currentColor"/>
+                         </svg>
+                       </div>
                       <h1 class="font-spectral text-white" style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2;">
                         Your Message Is On Its Way!
                       </h1>
@@ -165,9 +168,9 @@ const handler = async (req: Request): Promise<Response> => {
                       <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 16px;">
                         <tr>
                           <td style="vertical-align: top;">
-                            <h2 class="font-spectral text-primary" style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; color: #2F4156; margin: 0; font-size: 20px; font-weight: 600;">
-                              Order #${successfulOrders[0]?.orderId?.substring(0, 8) || 'N/A'}
-                            </h2>
+                             <h2 class="font-spectral text-primary" style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; color: #2F4156; margin: 0; font-size: 20px; font-weight: 600;">
+                               Order #${successfulOrders[0]?.orderId || 'PENDING'}
+                             </h2>
                           </td>
                           <td style="text-align: right; vertical-align: top;">
                             <span style="background-color: #3FA556; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
@@ -236,12 +239,12 @@ const handler = async (req: Request): Promise<Response> => {
                     <td style="padding: 24px;">
                       <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
                         <tr>
-                          <td style="width: 32px; vertical-align: top; padding-right: 12px;">
-                            <!-- Check Circle Icon -->
-                            <div style="width: 24px; height: 24px; background-color: #3FA556; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 12px; font-weight: bold;">
-                              ✓
-                            </div>
-                          </td>
+                           <td style="width: 32px; vertical-align: top; padding-right: 12px;">
+                             <!-- Check Circle Icon -->
+                             <div style="width: 24px; height: 24px; background-color: #3FA556; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 12px; font-weight: bold; line-height: 1;">
+                               <span style="position: relative; top: -1px;">✓</span>
+                             </div>
+                           </td>
                           <td class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 16px; line-height: 1.6;">
                             We'll update you as soon as your card is in the mail. Until then, know that your effort—combined with thousands of others—helps amplify real issues.
                           </td>
@@ -255,26 +258,22 @@ const handler = async (req: Request): Promise<Response> => {
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded-lg shadow" style="width: 100%; background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(47, 65, 86, 0.08); margin-bottom: 32px;">
                   <tr>
                     <td style="padding: 24px;">
-                      <!-- Optional Eyebrow -->
-                      <div class="font-inter text-muted" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #9A9289; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
-                        OPTIONAL
-                      </div>
-                      <h3 class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">
-                        Want to share?
-                      </h3>
+                       <h3 class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">
+                         Want to share?
+                       </h3>
                       <p class="font-inter text-muted" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #9A9289; margin: 0 0 16px 0; font-size: 14px; line-height: 1.5;">
                         When you share your action, you help build a community of engaged citizens.
                       </p>
-                      <!-- Share Button -->
-                      <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                        <tr>
-                          <td style="background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 0.75rem; padding: 12px 20px;">
-                            <a href="https://canary.cards" class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; text-decoration: none; font-weight: 600; font-size: 14px;">
-                              Share your civic action
-                            </a>
-                          </td>
-                        </tr>
-                      </table>
+                       <!-- Share Button -->
+                       <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                         <tr>
+                           <td style="background-color: #FFD44D; border-radius: 0.75rem; padding: 12px 20px;">
+                             <a href="https://canary.cards" class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; text-decoration: none; font-weight: 600; font-size: 14px;">
+                               Share with a friend
+                             </a>
+                           </td>
+                         </tr>
+                       </table>
                     </td>
                   </tr>
                 </table>
@@ -283,9 +282,9 @@ const handler = async (req: Request): Promise<Response> => {
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded-lg shadow" style="width: 100%; background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(47, 65, 86, 0.08);">
                   <tr>
                     <td style="padding: 24px; text-align: center;">
-                      <p class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; margin: 0 0 12px 0; font-size: 14px; line-height: 1.5;">
-                        You're a <strong class="text-primary" style="color: #2F4156;">verified constituent</strong>. That means your message will be prioritized by your elected officials.
-                      </p>
+                       <p class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; margin: 0 0 12px 0; font-size: 14px; line-height: 1.5;">
+                         You're a <strong class="text-primary" style="color: #2F4156;">verified constituent of ${userInfo.city}</strong>. That means your message will be prioritized by your elected officials.
+                       </p>
                       
                       <!-- Footer Links -->
                       <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 16px auto 0;">
