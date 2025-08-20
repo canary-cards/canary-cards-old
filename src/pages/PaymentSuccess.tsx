@@ -161,10 +161,10 @@ export default function PaymentSuccess() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-md mx-auto px-4 pt-10 space-y-8">
+      <div className="max-w-md mx-auto px-4 pt-20 space-y-8">
         
         {/* 1. Success Header */}
-        <div className="text-center mt-8">
+        <div className="text-center">
           <div className="flex justify-center mb-4">
             <CheckCircle className="w-12 h-12 text-accent" />
           </div>
