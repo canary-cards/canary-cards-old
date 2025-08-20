@@ -172,7 +172,7 @@ export default function PaymentSuccess() {
             </div>
           </div>
           
-          <h1 className="font-display text-3xl font-bold text-primary mb-3">
+          <h1 className="font-display text-3xl font-bold text-primary mb-6">
             Your postcard is on its way.
           </h1>
           
@@ -183,9 +183,9 @@ export default function PaymentSuccess() {
 
         {/* 2. Proof of Impact */}
         <Card className="shadow-sm mb-8">
-          <CardContent className="p-6">
+          <CardContent className="p-8">
             <h3 className="eyebrow text-accent mb-2">Proof it matters</h3>
-            <p className="body-text">
+            <p className="body-text max-w-80 mx-auto">
               {proofMessage}
             </p>
           </CardContent>
@@ -196,7 +196,7 @@ export default function PaymentSuccess() {
           <div className="border-t border-border my-8"></div>
           
           <div className="text-center space-y-5">
-            <h2 className="font-display text-2xl font-semibold text-primary">
+            <h2 className="font-display text-2xl font-semibold text-primary mb-3">
               Want to spread the word?
             </h2>
             
@@ -225,7 +225,7 @@ export default function PaymentSuccess() {
                 Share with a friend
               </Button>
               
-              <Button variant="secondary" size="lg" className="w-full h-12">
+              <Button variant="outline" size="lg" className="w-full h-12 border-border/60">
                 Home
               </Button>
             </div>
@@ -233,8 +233,8 @@ export default function PaymentSuccess() {
         </div>
 
         {/* 4. Next Steps (Closure) */}
-        <div className="text-center pt-6 pb-6">
-          <p className="body-text text-muted-foreground">
+        <div className="text-left pt-6 pb-6">
+          <p className="text-xs leading-relaxed text-muted-foreground/70 font-normal">
             Check your inbox for your order confirmation. We'll notify you again once your card is mailed.
           </p>
         </div>
