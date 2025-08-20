@@ -11,6 +11,7 @@ import { ArrowLeft, Apple, CreditCard, Shield, Clock } from 'lucide-react';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
+
 export function CheckoutScreen() {
   const {
     state,
@@ -46,34 +47,41 @@ export function CheckoutScreen() {
     };
     fetchSenatorsFromZip();
   }, [userInfo?.zipCode]);
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
+
   const handleEmailChange = (value: string) => {
     setEmail(value);
     if (emailError && validateEmail(value)) {
       setEmailError('');
     }
   };
+
   const handleSenatorToggle = (index: number, checked: boolean) => {
     const newSelectedSenators = [...selectedSenators];
     newSelectedSenators[index] = checked;
     setSelectedSenators(newSelectedSenators);
   };
+
   const getSelectedSenatorsCount = () => {
     return selectedSenators.filter(Boolean).length;
   };
+
   const getTotalPrice = () => {
     const senatorCount = getSelectedSenatorsCount();
     return 5.00 + senatorCount * 3.00;
   };
+
   const getSendOption = (): 'single' | 'double' | 'triple' => {
     const senatorCount = getSelectedSenatorsCount();
     if (senatorCount === 0) return 'single';
     if (senatorCount === 1) return 'double';
     return 'triple';
   };
+
   const handlePayment = async () => {
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
@@ -135,10 +143,12 @@ export function CheckoutScreen() {
       setIsProcessing(false);
     }
   };
+
   const handleBackFromCheckout = () => {
     setShowCheckout(false);
     setClientSecret(null);
   };
+
   const goBack = () => {
     dispatch({
       type: 'SET_STEP',
@@ -154,20 +164,24 @@ export function CheckoutScreen() {
         </div>
       </div>;
   }
+
   return <TooltipProvider>
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
-          <Card className="card-warm">
+          {/* Header Section - Outside of cards */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-display font-bold text-foreground mb-2">You've created a masterful postcard</h1>
+            <h3 className="subtitle text-base">Let's get it out into the world</h3>
+          </div>
+
+          {/* Social Proof - Outside of cards */}
+          <div className="text-center mb-6">
+            <p className="text-sm text-muted-foreground">You can choose just your Rep — most send to all three.</p>
+          </div>
+
+          {/* Lawmaker Selection Card */}
+          <Card className="card-warm mb-6">
             <CardContent className="p-8">
-              {/* Header Section */}
-              <div className="text-center mb-8">
-                <h1 className="text-2xl font-display font-bold text-foreground mb-2">You've created a masterful postcard</h1>
-                <h3 className="subtitle text-base">Let's get it out into the world</h3>
-              </div>
-
-              {/* Instruction Line */}
-              
-
               <div className="space-y-4">
                 {/* Lawmaker Cards */}
                 <div className="space-y-3">
@@ -223,10 +237,15 @@ export function CheckoutScreen() {
 
                 {/* Address reassurance */}
                 {senators.length > 0 && !loadingSenators && <div className="text-center">
-                    <p className="text-sm text-muted-foreground">✓ We’ll add the correct senator addresses automatically.</p>
+                    <p className="text-sm text-muted-foreground">✓ We'll add the correct senator addresses automatically.</p>
                   </div>}
               </div>
+            </CardContent>
+          </Card>
 
+          {/* Order & Payment Card */}
+          <Card className="card-warm">
+            <CardContent className="p-8">
               <div className="space-y-6">
                 {/* Order Summary - Sticky on mobile */}
                 <Card className="bg-primary/5 border-primary/20 sticky top-4 z-10">
@@ -246,11 +265,6 @@ export function CheckoutScreen() {
                     </div>
                   </CardContent>
                 </Card>
-
-                {/* Social Proof */}
-                <div className="text-center py-2">
-                  <p className="text-sm text-muted-foreground">You can choose just your Rep — most send to all three.</p>
-                </div>
 
                 {/* Email Input */}
                 <div className="space-y-2">
