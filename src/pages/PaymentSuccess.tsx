@@ -222,7 +222,7 @@ export default function PaymentSuccess() {
                 Share with a friend
               </Button>
               
-              <Button variant="outline" size="lg" className="w-full h-14 px-6 border-border/60">
+              <Button variant="secondary" size="lg" className="w-full h-14 px-6">
                 Home
               </Button>
             </div>
