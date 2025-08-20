@@ -230,7 +230,7 @@ export default function PaymentSuccess() {
         </div>
 
         {/* 4. Next Steps (Closure) */}
-        <div className="text-left pt-6 pb-6">
+        <div className="text-center pt-6 pb-6">
           <p className="text-base leading-relaxed text-muted-foreground">
             Check your inbox for your order confirmation. We'll notify you again once your card is mailed.
           </p>
