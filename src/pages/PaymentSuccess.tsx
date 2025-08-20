@@ -193,7 +193,7 @@ export default function PaymentSuccess() {
           <div className="border-t border-border my-10"></div>
           
           <div className="text-center space-y-6">
-            <h2 className="font-display text-2xl font-semibold text-primary mb-4">
+            <h2 className="font-display text-2xl font-semibold text-primary mb-7">
               Want to spread the word?
             </h2>
             
@@ -205,7 +205,7 @@ export default function PaymentSuccess() {
               <Button 
                 variant="primary" 
                 size="lg"
-                className="w-full h-14 px-6"
+                className="w-full h-16 px-6"
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
@@ -218,7 +218,7 @@ export default function PaymentSuccess() {
                   }
                 }}
               >
-                <Share className="w-5 h-5 mr-3" />
+                <Share className="w-5 h-5 mr-3 flex-shrink-0" />
                 Share with a friend
               </Button>
               
