@@ -248,7 +248,7 @@ export function ReturnAddressScreen() {
                         setShowSuggestions(true);
                       }
                     }}
-                    className="input-warm pl-10 min-h-[48px] resize-none overflow-hidden"
+                    className="input-warm pl-10 min-h-[60px] resize-none overflow-hidden text-base"
                     autoComplete="off"
                     required
                     rows={1}
