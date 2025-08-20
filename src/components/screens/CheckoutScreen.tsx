@@ -161,7 +161,7 @@ export function CheckoutScreen() {
             <CardContent className="p-8">
               {/* Header Section */}
               <div className="text-center mb-8">
-                <h1 className="text-2xl font-bold text-foreground mb-2">You've created a masterful postcard</h1>
+                <h1 className="text-2xl font-display font-bold text-foreground mb-2">You've created a masterful postcard</h1>
                 <h3 className="subtitle text-base">Let's get it out into the world</h3>
               </div>
 
