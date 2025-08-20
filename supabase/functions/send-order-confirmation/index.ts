@@ -149,7 +149,16 @@ const handler = async (req: Request): Promise<Response> => {
                        <!-- Canary Brand Icon -->
                        <div style="width: 56px; height: 56px; background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
                          <svg width="32" height="32" viewBox="0 0 375 375" xmlns="http://www.w3.org/2000/svg" style="color: #2F4156;">
-                           <path d="M187.5 18.75C108.125 18.75 43.75 83.125 43.75 162.5C43.75 241.875 108.125 306.25 187.5 306.25C266.875 306.25 331.25 241.875 331.25 162.5C331.25 83.125 266.875 18.75 187.5 18.75ZM162.5 125C175 125 187.5 137.5 187.5 150C187.5 162.5 175 175 162.5 175C150 175 137.5 162.5 137.5 150C137.5 137.5 150 125 162.5 125ZM237.5 225C237.5 237.5 225 250 212.5 250H162.5C150 250 137.5 237.5 137.5 225C137.5 212.5 150 200 162.5 200H212.5C225 200 237.5 212.5 237.5 225Z" fill="currentColor"/>
+                           <g>
+                             <g clip-rule="nonzero">
+                               <g transform="matrix(0.433649,0,0,0.434028,4.340282,0)">
+                                 <path d="M844 0H0v844h844V0zM422 622c-110.5 0-200-89.5-200-200s89.5-200 200-200 200 89.5 200 200-89.5 200-200 200z" fill="currentColor"/>
+                                 <circle cx="372" cy="322" r="25" fill="currentColor"/>
+                                 <circle cx="472" cy="322" r="25" fill="currentColor"/>
+                                 <path d="M372 422h100c13.8 0 25 11.2 25 25s-11.2 25-25 25H372c-13.8 0-25-11.2-25-25s11.2-25 25-25z" fill="currentColor"/>
+                               </g>
+                             </g>
+                           </g>
                          </svg>
                        </div>
                       <h1 class="font-spectral text-white" style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2;">
@@ -241,8 +250,10 @@ const handler = async (req: Request): Promise<Response> => {
                         <tr>
                            <td style="width: 32px; vertical-align: top; padding-right: 12px;">
                              <!-- Check Circle Icon -->
-                             <div style="width: 24px; height: 24px; background-color: #3FA556; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 12px; font-weight: bold; line-height: 1;">
-                               <span style="position: relative; top: -1px;">✓</span>
+                             <div style="width: 24px; height: 24px; background-color: #3FA556; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                               <svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                 <path d="M16.667 5L7.5 14.167 3.333 10" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                               </svg>
                              </div>
                            </td>
                           <td class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 16px; line-height: 1.6;">
