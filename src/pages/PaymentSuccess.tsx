@@ -3,7 +3,7 @@ import { useSearchParams, useLocation, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle2, Share } from 'lucide-react';
+import { CheckCircle, Share } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
 import { Logo } from '@/components/Logo';
@@ -166,10 +166,7 @@ export default function PaymentSuccess() {
         {/* 1. Success Header */}
         <div className="text-center mt-8">
           <div className="flex justify-center mb-4">
-            <div className="relative">
-              <div className="absolute inset-0 bg-accent/10 rounded-full scale-125"></div>
-              <CheckCircle2 className="w-12 h-12 text-accent relative" />
-            </div>
+            <CheckCircle className="w-12 h-12 text-primary" />
           </div>
           
           <h1 className="font-display text-3xl font-bold text-primary mb-6">
@@ -184,7 +181,7 @@ export default function PaymentSuccess() {
         {/* 2. Proof of Impact */}
         <Card className="shadow-sm mb-8">
           <CardContent className="p-8">
-            <h3 className="eyebrow text-accent mb-2">Proof it matters</h3>
+            <h3 className="eyebrow text-primary mb-2">Proof it matters</h3>
             <p className="body-text max-w-80 mx-auto">
               {proofMessage}
             </p>
