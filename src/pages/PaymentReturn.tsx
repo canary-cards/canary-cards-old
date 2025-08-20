@@ -79,7 +79,7 @@ export default function PaymentReturn() {
     return null;
   };
 
-  const orderPostcards = async () => {
+  const orderPostcardsWithData = async (postcardData: any) => {
     try {
       console.log('🔄 [STEP 11] Starting postcard ordering process...');
       setStatus('ordering');
@@ -92,9 +92,7 @@ export default function PaymentReturn() {
         hasFinalMessage: !!state.postcardData?.finalMessage
       });
       
-      const postcardData = getPostcardData();
-      
-      if (!postcardData) {
+      if (!postcardData || !validatePostcardData(postcardData)) {
         console.log('❌ No valid postcard data found');
         
         // Clear any corrupted storage data
@@ -189,7 +187,10 @@ export default function PaymentReturn() {
 
   const retryPostcardOrdering = async () => {
     setRetryAttempts(prev => prev + 1);
-    await orderPostcards();
+    const postcardData = getPostcardData();
+    if (postcardData) {
+      await orderPostcardsWithData(postcardData);
+    }
   };
 
   const verifyPaymentAndOrder = async (sessionId: string) => {
@@ -269,8 +270,8 @@ export default function PaymentReturn() {
         console.log('🔄 [STEP 10] Setting status to ordering and starting postcard process...');
         setStatus('ordering');
         
-        // Start ordering immediately with session data
-        orderPostcards();
+        // Start ordering immediately with session data (pass data directly to avoid state timing issues)
+        orderPostcardsWithData(verificationResult.postcardData);
       } else {
         console.log('❌ [STEP 7] No postcard data found in payment session');
         console.log('📊 [DEBUG] Full verification result:', verificationResult);
