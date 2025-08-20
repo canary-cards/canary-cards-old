@@ -166,7 +166,7 @@ export default function PaymentSuccess() {
         {/* 1. Success Header */}
         <div className="text-center mt-8">
           <div className="flex justify-center mb-4">
-            <CheckCircle className="w-12 h-12 text-accent" />
+            <CheckCircle className="w-12 h-12 text-accent stroke-primary" strokeWidth={1} />
           </div>
           
           <h1 className="font-display text-3xl font-bold text-primary mb-8">
