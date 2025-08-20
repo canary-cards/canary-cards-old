@@ -179,14 +179,12 @@ export function CheckoutScreen() {
             <CardContent className="p-8">
               <div className="space-y-4">
                 {/* Lawmaker Cards */}
-                <div className="space-y-3">
+                <div className="space-y-6">
                   {/* Representative Section */}
                   {rep && <div className="space-y-4">
-                      <div className="px-1">
-                        <p className="text-sm font-medium text-foreground leading-tight mb-3">
-                          Your representative is directly accountable to your district.
-                        </p>
-                      </div>
+                      <Label className="block">
+                        Your representative is directly accountable to your district.
+                      </Label>
                       <LawmakerSelectCard lawmaker={{
                     ...rep,
                     type: 'Representative'
@@ -195,9 +193,7 @@ export function CheckoutScreen() {
 
                   {/* Senators Section */}
                   <div className="space-y-4">
-                    <div className="px-1">
-                      <p className="text-sm font-medium text-foreground leading-tight mb-3">Your two senators represent your whole state.</p>
-                    </div>
+                    <Label className="block">Your two senators represent your whole state.</Label>
                     <div className="space-y-3">
                       {loadingSenators ? <>
                           {/* Loading skeleton for senators */}
