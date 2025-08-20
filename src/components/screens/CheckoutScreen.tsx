@@ -267,46 +267,56 @@ export function CheckoutScreen() {
             <CardContent className="p-8">
               <div className="space-y-6">
 
-                {/* Email Input */}
+                {/* 1. Email Input */}
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email for tracking details</Label>
-                  <Input id="email" type="email" placeholder="your@email.com" value={email} onChange={e => handleEmailChange(e.target.value)} className="input-warm" />
+                  <Label htmlFor="email" className="text-sm font-semibold text-primary">Your Email</Label>
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    placeholder="you@example.com" 
+                    value={email} 
+                    onChange={e => handleEmailChange(e.target.value)}
+                    className="bg-background border-2 border-[#E8DECF] rounded-xl"
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    We'll send your order confirmation here after checkout.
+                  </p>
                   {emailError && <p className="text-sm text-destructive">{emailError}</p>}
                 </div>
 
-                {/* Security & Delivery Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
-                  <div className="flex items-center space-x-2 text-muted-foreground">
-                    <Shield className="w-4 h-4" />
-                    <span>Secure payment processing</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span>Sent within 3 business days</span>
-                  </div>
+                {/* 2. Payment Options Logos */}
+                <div className="flex justify-center items-center gap-6">
+                  <img src="/128px-Apple_Pay_logo.svg.png" alt="Apple Pay" className="h-8" />
+                  <img src="/128px-Google_Pay_Logo.svg.png" alt="Google Pay" className="h-8" />
                 </div>
 
-                {/* Primary CTA */}
-                <div className="space-y-4">
-                  <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} variant="spotlight" className="w-full h-12 sm:h-14 button-warm text-sm sm:text-base md:text-lg">
-                    {isProcessing ? <>
-                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2 sm:mr-3" />
-                        <span className="truncate">Loading checkout...</span>
-                      </> : <>
-                        <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
-                        <span className="truncate">Pay ${getTotalPrice().toFixed(2)}</span>
-                      </>}
-                  </Button>
-                  
-                  <div className="text-center">
-                    <p className="text-sm text-muted-foreground mb-1">
-                      Payments processed securely — supports <Apple className="w-4 h-4 inline mx-1" /> Apple Pay and Google Pay
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      You'll receive an email confirmation as soon as your order is processed.
-                    </p>
-                  </div>
+                {/* 3. Security Assurance Line */}
+                <div className="flex justify-center items-center gap-2 text-primary">
+                  <Shield className="w-4 h-4" />
+                  <span className="text-sm">Secure Checkout with Stripe</span>
                 </div>
+
+                {/* 4. Primary CTA Button */}
+                <Button 
+                  onClick={handlePayment} 
+                  disabled={!email || !validateEmail(email) || isProcessing} 
+                  variant="spotlight" 
+                  className="w-full h-14 text-lg font-medium"
+                >
+                  {isProcessing ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin mr-3" />
+                      <span>Loading checkout...</span>
+                    </>
+                  ) : (
+                    <span>Checkout — ${getTotalPrice().toFixed(2)}</span>
+                  )}
+                </Button>
+
+                {/* 5. Micro-copy */}
+                <p className="text-sm text-muted-foreground text-center">
+                  You'll receive an email confirmation once your order is processed.
+                </p>
 
                 {/* Footer reassurance */}
                 <p className="text-sm text-muted-foreground text-center">
