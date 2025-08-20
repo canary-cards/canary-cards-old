@@ -166,46 +166,46 @@ export default function PaymentSuccess() {
         {/* 1. Success Header */}
         <div className="text-center mt-8">
           <div className="flex justify-center mb-4">
-            <CheckCircle className="w-12 h-12 text-accent" />
+            <CheckCircle className="w-12 h-12 text-accent shadow-[0_0_0_2px_hsl(var(--primary))]" />
           </div>
           
-          <h1 className="font-display text-3xl font-bold text-primary mb-6">
+          <h1 className="font-display text-3xl font-bold text-primary mb-8">
             Your postcard is on its way.
           </h1>
           
-          <p className="body-text text-muted-foreground mb-6">
+          <p className="body-text text-muted-foreground mb-8">
             We'll email you when it's been mailed.
           </p>
         </div>
 
         {/* 2. Proof of Impact */}
-        <Card className="shadow-sm mb-8">
-          <CardContent className="p-8">
-            <h3 className="eyebrow text-primary mb-2">Proof it matters</h3>
-            <p className="body-text max-w-80 mx-auto">
+        <Card className="shadow-sm mb-10">
+          <CardContent className="p-10">
+            <h3 className="eyebrow text-primary mb-3">Proof it matters</h3>
+            <p className="body-text max-w-72 mx-auto leading-relaxed">
               {proofMessage}
             </p>
           </CardContent>
         </Card>
 
         {/* 3. Share Section */}
-        <div className="space-y-6">
-          <div className="border-t border-border my-8"></div>
+        <div className="space-y-8">
+          <div className="border-t border-border my-10"></div>
           
-          <div className="text-center space-y-5">
-            <h2 className="font-display text-2xl font-semibold text-primary mb-3">
+          <div className="text-center space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-primary mb-4">
               Want to spread the word?
             </h2>
             
-            <p className="body-text mb-5">
+            <p className="body-text mb-6">
               Let a friend know how easy it is to send a real postcard in under 2 minutes.
             </p>
             
-            <div className="space-y-4">
+            <div className="space-y-5">
               <Button 
                 variant="primary" 
                 size="lg"
-                className="w-full h-12"
+                className="w-full h-14 px-6"
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
@@ -218,11 +218,11 @@ export default function PaymentSuccess() {
                   }
                 }}
               >
-                <Share className="w-4 h-4 mr-2" />
+                <Share className="w-5 h-5 mr-3" />
                 Share with a friend
               </Button>
               
-              <Button variant="outline" size="lg" className="w-full h-12 border-border/60">
+              <Button variant="outline" size="lg" className="w-full h-14 px-6 border-border/60">
                 Home
               </Button>
             </div>
@@ -230,8 +230,8 @@ export default function PaymentSuccess() {
         </div>
 
         {/* 4. Next Steps (Closure) */}
-        <div className="text-left pt-6 pb-6">
-          <p className="text-xs leading-relaxed text-muted-foreground/70 font-normal">
+        <div className="text-left pt-8 pb-6">
+          <p className="text-xs leading-relaxed text-muted-foreground/60 font-normal">
             Check your inbox for your order confirmation. We'll notify you again once your card is mailed.
           </p>
         </div>
