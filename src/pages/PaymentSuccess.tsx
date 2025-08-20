@@ -3,7 +3,7 @@ import { useSearchParams, useLocation, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Share, Twitter, Facebook, Copy, Plus, BarChart3, Mail, Clock, ArrowLeft, User } from 'lucide-react';
+import { CheckCircle2, Share } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
 import { Logo } from '@/components/Logo';
@@ -161,54 +161,51 @@ export default function PaymentSuccess() {
       </div>
 
       {/* Main Content */}
-      <div className="pt-24 pb-8 px-4 space-y-8 max-w-4xl mx-auto">
+      <div className="max-w-md mx-auto px-4 space-y-8">
         
         {/* 1. Success Header */}
-        <div className="text-center space-y-6">
-          <div className="flex justify-center">
-            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-              <CheckCircle className="w-8 h-8 text-white" />
-            </div>
+        <div className="text-center mt-8">
+          <div className="flex justify-center mb-4">
+            <CheckCircle2 className="w-12 h-12 text-secondary" />
           </div>
           
-          <div className="space-y-4">
-            <h1 className="display-title text-primary">
-              Your postcard is on its way.
-            </h1>
-            
-            <p className="body-text text-muted-foreground">
-              We'll email you when it's been mailed.
-            </p>
-          </div>
+          <h1 className="font-display text-3xl font-bold text-primary mb-3">
+            Your postcard is on its way.
+          </h1>
+          
+          <p className="body-text text-muted-foreground mb-6">
+            We'll email you when it's been mailed.
+          </p>
         </div>
 
         {/* 2. Proof of Impact */}
-        <Card className="bg-card border shadow-lg">
-          <CardContent className="p-8 space-y-6">
-            <h3 className="eyebrow text-secondary">Proof it matters</h3>
+        <Card className="shadow-sm mb-8">
+          <CardContent className="p-6">
+            <h3 className="eyebrow text-secondary mb-2">Proof it matters</h3>
             <p className="body-text">
               {proofMessage}
             </p>
           </CardContent>
         </Card>
 
-        {/* 3. Share Section (Optional, Gentle) */}
+        {/* 3. Share Section */}
         <div className="space-y-6">
-          <hr className="border-[#E8DECF]" />
+          <div className="border-t border-border my-8"></div>
           
-          <div className="text-center space-y-4">
-            <h2 className="display-title text-primary">
+          <div className="text-center space-y-5">
+            <h2 className="font-display text-2xl font-semibold text-primary">
               Want to spread the word?
             </h2>
             
-            <p className="body-text">
+            <p className="body-text mb-5">
               Let a friend know how easy it is to send a real postcard in under 2 minutes.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+            <div className="space-y-4">
               <Button 
-                variant="default" 
-                className="flex-1"
+                variant="primary" 
+                size="lg"
+                className="w-full h-12"
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
@@ -221,11 +218,11 @@ export default function PaymentSuccess() {
                   }
                 }}
               >
-                <Share className="w-4 h-4" />
+                <Share className="w-4 h-4 mr-2" />
                 Share with a friend
               </Button>
               
-              <Button variant="outline" className="flex-1 border-secondary text-secondary hover:bg-secondary hover:text-white">
+              <Button variant="secondary" size="lg" className="w-full h-12">
                 Not now
               </Button>
             </div>
@@ -233,7 +230,7 @@ export default function PaymentSuccess() {
         </div>
 
         {/* 4. Next Steps (Closure) */}
-        <div className="text-center">
+        <div className="text-left pt-10">
           <p className="text-sm leading-relaxed text-muted-foreground">
             Check your inbox for your order confirmation. We'll notify you again once your card is mailed.
           </p>
