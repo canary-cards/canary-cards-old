@@ -156,7 +156,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "Canary Cards <hello@canarycards.com>",
+      from: "Canary Cards <hello@canary.cards>",
       to: [userInfo.email],
       subject: `Your Postcard to ${representative.name} Has Been Ordered!`,
       html: emailHtml,
