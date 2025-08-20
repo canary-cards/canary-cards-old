@@ -21,7 +21,7 @@ export function CheckoutScreen() {
   const [emailError, setEmailError] = useState('');
   const [senators, setSenators] = useState<Representative[]>([]);
   const [loadingSenators, setLoadingSenators] = useState(false);
-  const [selectedSenators, setSelectedSenators] = useState<boolean[]>([true, false]); // Senator 1 checked by default
+  const [selectedSenators, setSelectedSenators] = useState<boolean[]>([true, true]); // Both senators checked by default
   const [isProcessing, setIsProcessing] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -170,13 +170,8 @@ export function CheckoutScreen() {
         <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
           {/* Header Section - Outside of cards */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-display font-bold text-foreground mb-2">You've created a masterful postcard</h1>
-            <h3 className="subtitle text-base">Let's get it out into the world</h3>
-          </div>
-
-          {/* Social Proof - Outside of cards */}
-          <div className="text-center mb-6">
-            <p className="text-sm text-muted-foreground">You can choose just your Rep — most send to all three.</p>
+            <h1 className="text-2xl font-display font-bold text-foreground mb-2">Let's get your masterful postcard out the door</h1>
+            <h3 className="subtitle text-base">You have three congresspeople in Washington. Most send to all of them.</h3>
           </div>
 
           {/* Lawmaker Selection Card */}
