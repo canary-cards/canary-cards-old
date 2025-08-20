@@ -239,15 +239,13 @@ export function CheckoutScreen() {
             <CardContent className="p-4 md:p-5">
               <Label className="block text-base md:text-lg font-semibold text-primary mb-4">Your Order</Label>
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Rep. {rep?.name.split(' ').pop() || 'Representative'}</span>
-                  <span>$5.00</span>
+                <div className="text-right">
+                  <span>Rep. {rep?.name.split(' ').pop() || 'Representative'} — $5.00</span>
                 </div>
                 {selectedSenators.map((isSelected, index) => 
                   isSelected && senators[index] ? (
-                    <div key={index} className="flex justify-between">
-                      <span>Sen. {senators[index].name.split(' ').pop()}</span>
-                      <span>$3.00</span>
+                    <div key={index} className="text-right">
+                      <span>Sen. {senators[index].name.split(' ').pop()} — $3.00</span>
                     </div>
                   ) : null
                 )}
