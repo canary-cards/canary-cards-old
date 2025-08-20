@@ -230,8 +230,8 @@ export default function PaymentSuccess() {
         </div>
 
         {/* 4. Next Steps (Closure) */}
-        <div className="text-left pt-8 pb-6">
-          <p className="text-xs leading-relaxed text-muted-foreground/60 font-normal">
+        <div className="text-center pt-8 pb-6">
+          <p className="text-xs leading-[18px] font-sans font-normal" style={{ color: '#3E5C76', opacity: 0.6 }}>
             Check your inbox for your order confirmation. We'll notify you again once your card is mailed.
           </p>
         </div>
