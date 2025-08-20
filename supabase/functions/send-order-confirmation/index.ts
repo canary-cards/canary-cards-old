@@ -151,11 +151,11 @@ const handler = async (req: Request): Promise<Response> => {
                         <tr>
                           <td class="text-center">
                             <h1 class="font-spectral text-white" style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; color: #ffffff; margin: 0 0 8px 0; font-size: 28px; font-weight: 700; line-height: 1.2;">
-                              Order Confirmed — Your Voice Is Heard
+                              Your Message Is On Its Way!
                             </h1>
-                            <!-- Canary Icon Placeholder -->
-                            <div style="width: 64px; height: 64px; background-color: #FFD44D; border-radius: 50%; margin: 16px auto 0; display: flex; align-items: center; justify-content: center; font-size: 32px;">
-                              🐤
+                            <!-- Check Icon -->
+                            <div style="width: 48px; height: 48px; background-color: #3FA556; border-radius: 50%; margin: 16px auto 0; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 24px; font-weight: bold;">
+                              ✓
                             </div>
                           </td>
                         </tr>
@@ -220,10 +220,13 @@ const handler = async (req: Request): Promise<Response> => {
                         <tr>
                           <td style="padding: 24px;">
                             <h3 class="font-inter text-secondary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #B25549; margin: 0 0 12px 0; font-size: 18px; font-weight: 600;">
-                              Why this matters
+                              Your voice matters
                             </h3>
-                            <p class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; margin: 0; font-size: 16px; line-height: 1.6;">
-                              Handwritten postcards bypass security delays and land directly on congressional desks—unlike emails and petitions. That means your voice is noticed sooner.
+                            <p class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; margin: 0 0 12px 0; font-size: 16px; line-height: 1.6;">
+                              Physical mail gets prioritized attention in congressional offices—bypassing security delays that slow down emails and petitions by weeks.
+                            </p>
+                            <p class="font-inter text-muted" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #9A9289; margin: 0; font-size: 14px; line-height: 1.5;">
+                              <em>Research shows handwritten advocacy receives 3x more attention than digital communications.</em>
                             </p>
                           </td>
                         </tr>
@@ -245,7 +248,7 @@ const handler = async (req: Request): Promise<Response> => {
                                   </div>
                                 </td>
                                 <td class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 16px; line-height: 1.6;">
-                                  We'll update you as soon as your card is dropped in the mail. Until then, know that your effort—combined with thousands of others—helps amplify real issues.
+                                  We'll notify you when your postcard ships. You're joining thousands of Americans using their voice to create meaningful change.
                                 </td>
                               </tr>
                             </table>
@@ -262,17 +265,17 @@ const handler = async (req: Request): Promise<Response> => {
                         <tr>
                           <td style="padding: 24px;">
                             <h3 class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">
-                              Want to share?
+                              Inspire others to act
                             </h3>
                             <p class="font-inter text-muted" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #9A9289; margin: 0 0 16px 0; font-size: 14px; line-height: 1.5;">
-                              Let your circle know you did something meaningful today.
+                              When you share your action, you help build a community of engaged citizens.
                             </p>
                             <!-- Share Button -->
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                               <tr>
                                 <td style="background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 12px; padding: 12px 20px;">
                                   <a href="https://canary.cards" class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; text-decoration: none; font-weight: 600; font-size: 14px;">
-                                    Share you sent a postcard
+                                    Share your civic action
                                   </a>
                                 </td>
                               </tr>
@@ -294,7 +297,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <tr>
                     <td class="bg-cream" style="background-color: #FEF4E9; padding: 24px; text-align: center;">
                       <p class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; margin: 0 0 12px 0; font-size: 14px; line-height: 1.5;">
-                        You're a verified constituent. That means your message will be prioritized by your elected officials.
+                        As a verified constituent, your message carries the weight of authentic local voices that representatives prioritize.
                       </p>
                       
                       <!-- Footer Links -->
