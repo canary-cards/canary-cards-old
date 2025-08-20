@@ -331,6 +331,14 @@ serve(async (req) => {
 
     console.log(`Postcard sending complete: ${successCount} successful, ${errorCount} failed`);
 
+    // Debug email sending
+    console.log('Email sending debug:', {
+      successCount,
+      hasEmail: !!postcardData.email,
+      email: postcardData.email,
+      shouldSendEmail: successCount > 0 && postcardData.email
+    });
+
     // Send confirmation email if postcards were successfully ordered and email is provided
     if (successCount > 0 && postcardData.email) {
       try {
