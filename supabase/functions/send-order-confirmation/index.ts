@@ -112,8 +112,8 @@ const handler = async (req: Request): Promise<Response> => {
             .w-full { width: 100% !important; }
             .text-center { text-align: center !important; }
             .text-left { text-align: left !important; }
-            .rounded { border-radius: 12px !important; }
-            .rounded-lg { border-radius: 14px !important; }
+            .rounded { border-radius: 0.75rem !important; }
+            .rounded-lg { border-radius: 0.75rem !important; }
             .shadow { box-shadow: 0 4px 12px rgba(47, 65, 86, 0.08) !important; }
             .border-muted { border: 1px solid #E8DECF !important; }
             
@@ -141,89 +141,84 @@ const handler = async (req: Request): Promise<Response> => {
             <tr>
               <td style="padding: 32px 20px;">
                 
-                <!-- Main Content Card -->
-                <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded-lg shadow" style="width: 100%; background-color: #ffffff; border-radius: 14px; box-shadow: 0 4px 12px rgba(47, 65, 86, 0.08); overflow: hidden;">
-                  
-                  <!-- Header -->
+                <!-- Header Section -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-primary rounded-lg shadow" style="width: 100%; background-color: #2F4156; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(47, 65, 86, 0.08); margin-bottom: 32px;">
                   <tr>
-                    <td class="bg-primary" style="background-color: #2F4156; padding: 32px; text-align: center;">
-                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 0 auto;">
-                        <tr>
-                          <td class="text-center">
-                            <h1 class="font-spectral text-white" style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; color: #ffffff; margin: 0 0 8px 0; font-size: 28px; font-weight: 700; line-height: 1.2;">
-                              Your Message Is On Its Way!
-                            </h1>
-                            <!-- Check Icon -->
-                            <div style="width: 48px; height: 48px; background-color: #3FA556; border-radius: 50%; margin: 16px auto 0; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 24px; font-weight: bold;">
-                              ✓
-                            </div>
-                          </td>
-                        </tr>
-                      </table>
+                    <td class="bg-primary" style="background-color: #2F4156; padding: 32px; text-align: center; border-radius: 0.75rem;">
+                      <!-- Canary Icon Stamp -->
+                      <div style="width: 56px; height: 56px; background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                        🐤
+                      </div>
+                      <h1 class="font-spectral text-white" style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2;">
+                        Your Message Is On Its Way!
+                      </h1>
                     </td>
                   </tr>
-                  
-                  <!-- Order Summary Card -->
+                </table>
+                
+                <!-- Order Details Card -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded-lg shadow" style="width: 100%; background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(47, 65, 86, 0.08); margin-bottom: 32px;">
                   <tr>
                     <td style="padding: 24px;">
-                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded border-muted" style="width: 100%; background-color: #ffffff; border-radius: 12px; border: 1px solid #E8DECF; box-shadow: 0 2px 8px rgba(47, 65, 86, 0.04);">
+                      
+                      <!-- Order Number & Status -->
+                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 16px;">
                         <tr>
-                          <td style="padding: 24px;">
-                            
-                            <!-- Order Number & Status -->
-                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 16px;">
-                              <tr>
-                                <td style="vertical-align: top;">
-                                  <h2 class="font-spectral text-primary" style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; color: #2F4156; margin: 0; font-size: 20px; font-weight: 600;">
-                                    Order #${successfulOrders[0]?.orderId?.substring(0, 8) || 'N/A'}
-                                  </h2>
-                                </td>
-                                <td style="text-align: right; vertical-align: top;">
-                                  <span style="background-color: #3FA556; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    ✓ Confirmed
-                                  </span>
-                                </td>
-                              </tr>
-                            </table>
-                            
-                            <!-- Order Details -->
-                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
-                              <tr>
-                                <td class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
-                                  <strong>Recipient(s):</strong> ${recipientList}
-                                </td>
-                              </tr>
-                              <tr>
-                                <td class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
-                                  <strong>Next step:</strong> We'll email you once your card is in the mail.
-                                </td>
-                              </tr>
-                            </table>
-                            
+                          <td style="vertical-align: top;">
+                            <h2 class="font-spectral text-primary" style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; color: #2F4156; margin: 0; font-size: 20px; font-weight: 600;">
+                              Order #${successfulOrders[0]?.orderId?.substring(0, 8) || 'N/A'}
+                            </h2>
+                          </td>
+                          <td style="text-align: right; vertical-align: top;">
+                            <span style="background-color: #3FA556; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                              ✓ Confirmed
+                            </span>
                           </td>
                         </tr>
                       </table>
+                      
+                      <!-- Recipients -->
+                      <div style="margin-bottom: 16px;">
+                        <div class="font-inter text-secondary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #B25549; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                          RECIPIENTS
+                        </div>
+                        <div class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; font-size: 16px; font-weight: 400;">
+                          ${recipientList}
+                        </div>
+                      </div>
+                      
+                      <!-- Next Step -->
+                      <div>
+                        <div class="font-inter text-secondary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #B25549; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                          NEXT STEP
+                        </div>
+                        <div class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 16px; line-height: 1.5;">
+                          We'll email you once your card is in the mail.
+                        </div>
+                      </div>
+                      
                     </td>
                   </tr>
-                  
-                  <!-- Divider -->
+                </table>
+                
+                <!-- Why This Matters Card -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded-lg shadow" style="width: 100%; background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(47, 65, 86, 0.08); margin-bottom: 32px;">
                   <tr>
-                    <td style="padding: 0 24px;">
-                      <div style="height: 1px; background-color: #E8DECF; margin: 16px 0;"></div>
-                    </td>
-                  </tr>
-                  
-                  <!-- Why This Matters Card -->
-                  <tr>
-                    <td style="padding: 0 24px 24px;">
-                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded" style="width: 100%; background-color: #ffffff; border-radius: 12px;">
+                    <td style="padding: 24px;">
+                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
                         <tr>
-                          <td style="padding: 24px;">
+                          <td style="width: 32px; vertical-align: top; padding-right: 12px;">
+                            <!-- Mail Icon -->
+                            <div style="width: 24px; height: 24px; color: #2F4156; font-size: 18px;">
+                              ✉️
+                            </div>
+                          </td>
+                          <td>
                             <h3 class="font-inter text-secondary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #B25549; margin: 0 0 12px 0; font-size: 18px; font-weight: 600;">
-                              Your voice matters
+                              Why This Matters
                             </h3>
                             <p class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; margin: 0 0 12px 0; font-size: 16px; line-height: 1.6;">
-                              Physical mail gets prioritized attention in congressional offices—bypassing security delays that slow down emails and petitions by weeks.
+                              Handwritten postcards bypass security and land directly on congressional desks—unlike emails and petitions. That means your voice is noticed sooner.
                             </p>
                             <p class="font-inter text-muted" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #9A9289; margin: 0; font-size: 14px; line-height: 1.5;">
                               <em>Research shows handwritten advocacy receives 3x more attention than digital communications.</em>
@@ -233,84 +228,76 @@ const handler = async (req: Request): Promise<Response> => {
                       </table>
                     </td>
                   </tr>
-                  
-                  <!-- Update Promise Card -->
+                </table>
+                
+                <!-- Reassurance Card -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded-lg shadow" style="width: 100%; background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(47, 65, 86, 0.08); margin-bottom: 32px;">
                   <tr>
-                    <td style="padding: 0 24px 24px;">
-                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded" style="width: 100%; background-color: #ffffff; border-radius: 12px;">
+                    <td style="padding: 24px;">
+                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
                         <tr>
-                          <td style="padding: 24px;">
-                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
-                              <tr>
-                                <td style="width: 32px; vertical-align: top; padding-right: 12px;">
-                                  <div style="width: 24px; height: 24px; background-color: #3FA556; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 12px; font-weight: bold;">
-                                    ✓
-                                  </div>
-                                </td>
-                                <td class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 16px; line-height: 1.6;">
-                                  We'll notify you when your postcard ships. You're joining thousands of Americans using their voice to create meaningful change.
-                                </td>
-                              </tr>
-                            </table>
+                          <td style="width: 32px; vertical-align: top; padding-right: 12px;">
+                            <!-- Check Circle Icon -->
+                            <div style="width: 24px; height: 24px; background-color: #3FA556; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 12px; font-weight: bold;">
+                              ✓
+                            </div>
+                          </td>
+                          <td class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 16px; line-height: 1.6;">
+                            We'll update you as soon as your card is in the mail. Until then, know that your effort—combined with thousands of others—helps amplify real issues.
                           </td>
                         </tr>
                       </table>
                     </td>
                   </tr>
-                  
-                  <!-- Share Card -->
+                </table>
+                
+                <!-- Share Card -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded-lg shadow" style="width: 100%; background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(47, 65, 86, 0.08); margin-bottom: 32px;">
                   <tr>
-                    <td style="padding: 0 24px 24px;">
-                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded" style="width: 100%; background-color: #ffffff; border-radius: 12px;">
+                    <td style="padding: 24px;">
+                      <!-- Optional Eyebrow -->
+                      <div class="font-inter text-muted" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #9A9289; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                        OPTIONAL
+                      </div>
+                      <h3 class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">
+                        Want to share?
+                      </h3>
+                      <p class="font-inter text-muted" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #9A9289; margin: 0 0 16px 0; font-size: 14px; line-height: 1.5;">
+                        When you share your action, you help build a community of engaged citizens.
+                      </p>
+                      <!-- Share Button -->
+                      <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                         <tr>
-                          <td style="padding: 24px;">
-                            <h3 class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">
-                              Inspire others to act
-                            </h3>
-                            <p class="font-inter text-muted" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #9A9289; margin: 0 0 16px 0; font-size: 14px; line-height: 1.5;">
-                              When you share your action, you help build a community of engaged citizens.
-                            </p>
-                            <!-- Share Button -->
-                            <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                              <tr>
-                                <td style="background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 12px; padding: 12px 20px;">
-                                  <a href="https://canary.cards" class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; text-decoration: none; font-weight: 600; font-size: 14px;">
-                                    Share your civic action
-                                  </a>
-                                </td>
-                              </tr>
-                            </table>
+                          <td style="background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 0.75rem; padding: 12px 20px;">
+                            <a href="https://canary.cards" class="font-inter text-primary" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2F4156; text-decoration: none; font-weight: 600; font-size: 14px;">
+                              Share your civic action
+                            </a>
                           </td>
                         </tr>
                       </table>
                     </td>
                   </tr>
-                  
-                  <!-- Final Divider -->
+                </table>
+                
+                <!-- Footer -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="w-full bg-white rounded-lg shadow" style="width: 100%; background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(47, 65, 86, 0.08);">
                   <tr>
-                    <td style="padding: 0 24px;">
-                      <div style="height: 1px; background-color: #E8DECF; margin: 16px 0;"></div>
-                    </td>
-                  </tr>
-                  
-                  <!-- Footer -->
-                  <tr>
-                    <td class="bg-cream" style="background-color: #FEF4E9; padding: 24px; text-align: center;">
+                    <td style="padding: 24px; text-align: center;">
                       <p class="font-inter text-neutral" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; margin: 0 0 12px 0; font-size: 14px; line-height: 1.5;">
-                        As a verified constituent, your message carries the weight of authentic local voices that representatives prioritize.
+                        You're a <strong class="text-primary" style="color: #2F4156;">verified constituent</strong>. That means your message will be prioritized by your elected officials.
                       </p>
                       
                       <!-- Footer Links -->
                       <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 16px auto 0;">
                         <tr>
                           <td style="padding: 0 8px;">
-                            <a href="https://canarycards.com/privacy" class="text-primary" style="color: #2F4156; text-decoration: none; font-size: 12px;">Privacy Policy</a>
+                            <a href="https://canarycards.com/privacy" class="text-primary" style="color: #2F4156; text-decoration: none; font-size: 12px;">Privacy</a>
                           </td>
-                          <td style="padding: 0 8px; color: #9A9289;">•</td>
+                          <td style="padding: 0 8px; color: #9A9289;">|</td>
                           <td style="padding: 0 8px;">
                             <a href="https://canarycards.com/help" class="text-primary" style="color: #2F4156; text-decoration: none; font-size: 12px;">Help</a>
                           </td>
-                          <td style="padding: 0 8px; color: #9A9289;">•</td>
+                          <td style="padding: 0 8px; color: #9A9289;">|</td>
                           <td style="padding: 0 8px;">
                             <a href="https://canarycards.com" class="text-primary" style="color: #2F4156; text-decoration: none; font-size: 12px;">CanaryCards.com</a>
                           </td>
@@ -318,14 +305,11 @@ const handler = async (req: Request): Promise<Response> => {
                       </table>
                     </td>
                   </tr>
-                  
                 </table>
-                <!-- End Main Content Card -->
                 
               </td>
             </tr>
           </table>
-          <!-- End Email Container -->
           
         </body>
       </html>
