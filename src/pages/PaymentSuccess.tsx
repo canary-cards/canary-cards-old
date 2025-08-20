@@ -157,157 +157,81 @@ export default function PaymentSuccess() {
       {/* Main Content */}
       <div className="pt-24 pb-8 px-4 space-y-8 max-w-4xl mx-auto">
         
-        {/* Section 1: Hero Celebration Card */}
-        <Card className="bg-card border shadow-lg">
-          <CardContent className="p-8 text-center space-y-6">
-            <div className="flex justify-center">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-8 h-8 text-white" />
-              </div>
+        {/* 1. Success Header */}
+        <div className="text-center space-y-6">
+          <div className="flex justify-center">
+            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+              <CheckCircle className="w-8 h-8 text-white" />
             </div>
+          </div>
+          
+          <div className="space-y-4">
+            <h1 className="display-title text-primary">
+              Your postcard is on its way.
+            </h1>
             
-            <div className="space-y-4">
-              <h1 className="display-title text-primary">
-                Your voice is on its way to Washington
-              </h1>
-              
-              <p className="subtitle text-secondary">
-                Your postcard to {representative?.type === 'senator' ? 'Sen.' : 'Rep.'} {representative?.name?.split(' ').pop() || 'Your Representative'} will be handwritten and mailed within 24 hours
-              </p>
-              
-              {/* Hero Postcard Image Placeholder */}
-              <div className="flex justify-center">
-                <div className="w-80 h-48 bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-muted-foreground/30">
-                  <div className="text-center space-y-2">
-                    <p className="text-muted-foreground font-medium">Image Here</p>
-                    <p className="text-xs text-muted-foreground">Sample handwritten postcard</p>
-                  </div>
-                </div>
-              </div>
-              
-              <p className="text-sm text-muted-foreground">
-                Expected delivery: {deliveryDate}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+            <p className="body-text text-muted-foreground">
+              We'll email you when it's been mailed.
+            </p>
+          </div>
+        </div>
 
-        {/* Section 2: Impact Proof Card */}
+        {/* 2. Proof of Impact */}
         <Card className="bg-card border shadow-lg">
           <CardContent className="p-8 space-y-6">
-            <div className="text-center">
-              <h2 className="display-title text-primary mb-6">
-                You're one of {contactVolume} people contacting {representative?.type === 'senator' ? 'Sen.' : 'Rep.'} {representative?.name?.split(' ').pop() || 'Your Representative'} this week
-              </h2>
-              
-              <div className="space-y-4 text-left max-w-2xl mx-auto">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                  <span className="body-text">Handwritten postcards get read first</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                  <span className="body-text">No spam folder, no screening delays</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                  <span className="body-text">Just 50 personalized postcards can influence a congressional vote</span>
-                </div>
-              </div>
-              
-              <p className="text-sm text-muted-foreground italic mt-6">
-                — Congressional Management Foundation study
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Section 3: Sharing Invitation Card */}
-        <Card className="bg-card border shadow-lg">
-          <CardHeader>
-            <div className="eyebrow text-primary">HELP OTHERS SPEAK UP</div>
-            <CardTitle className="subtitle text-secondary">Help someone else find their voice</CardTitle>
+            <h3 className="eyebrow text-secondary">Proof it matters</h3>
             <p className="body-text">
-              Your friends can send their own postcard in under 2 minutes. Handwritten mail gets noticed.
+              You're one of {contactVolume} people who wrote to {representative?.type === 'senator' ? 'Sen.' : 'Rep.'} {representative?.name?.split(' ').pop() || 'Your Representative'} today. Together, small actions add up.
             </p>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Primary Sharing Button */}
-            <Button 
-              variant="spotlight" 
-              size="lg" 
-              className="w-full"
-              onClick={() => {
-                if (navigator.share) {
-                  navigator.share({
-                    title: 'Contact Your Representatives with Canary Cards',
-                    text: 'Make your voice heard by sending postcards to your representatives!',
-                    url: shareableLink
-                  });
-                } else {
-                  copyShareableLink();
-                }
-              }}
-            >
-              <Share className="w-5 h-5" />
-              Share with Friends
-            </Button>
-
-            {/* Social Media Quick Shares */}
-            <div className="grid grid-cols-3 gap-3">
-              <Button variant="secondary" onClick={shareViaTwitter} className="p-3">
-                <Twitter className="w-4 h-4" />
-              </Button>
-              <Button variant="secondary" onClick={shareViaFacebook} className="p-3">
-                <Facebook className="w-4 h-4" />
-              </Button>
-              <Button variant="secondary" onClick={copyShareableLink} className="p-3">
-                <Copy className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {shareableLink && (
-              <div className="space-y-2">
-                <label className="text-xs text-muted-foreground">Share this link:</label>
-                <Input value={shareableLink} readOnly className="text-sm" />
-              </div>
-            )}
           </CardContent>
         </Card>
 
-        {/* Section 4: Next Steps Card */}
-        <Card className="bg-muted/30 border shadow-lg">
-          <CardHeader>
-            <div className="eyebrow text-primary">WHAT'S NEXT</div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <span className="body-text">Check your email for order confirmation and tracking</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <span className="body-text">We'll email you when your postcard is mailed</span>
-              </div>
+        {/* 3. Share Section (Optional, Gentle) */}
+        <div className="space-y-6">
+          <hr className="border-[#E8DECF]" />
+          
+          <div className="text-center space-y-4">
+            <h2 className="display-title text-primary">
+              Want to spread the word?
+            </h2>
+            
+            <p className="body-text">
+              Let a friend know how easy it is to send a real postcard in under 2 minutes.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+              <Button 
+                variant="default" 
+                className="flex-1"
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: 'Contact Your Representatives with Canary Cards',
+                      text: 'Make your voice heard by sending postcards to your representatives!',
+                      url: shareableLink
+                    });
+                  } else {
+                    copyShareableLink();
+                  }
+                }}
+              >
+                <Share className="w-4 h-4" />
+                Share with a friend
+              </Button>
+              
+              <Button variant="outline" className="flex-1 border-secondary text-secondary hover:bg-secondary hover:text-white">
+                Not now
+              </Button>
             </div>
+          </div>
+        </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button size="lg" className="flex-1" asChild>
-                <Link to="/">
-                  <Plus className="w-5 h-5" />
-                  Send Another Postcard
-                </Link>
-              </Button>
-              <Button variant="secondary" size="lg" className="flex-1" asChild>
-                <Link to="/">
-                  <User className="w-5 h-5" />
-                  Home
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        {/* 4. Next Steps (Closure) */}
+        <div className="text-center">
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            Check your inbox for your order confirmation. We'll notify you again once your card is mailed.
+          </p>
+        </div>
 
       </div>
     </div>
