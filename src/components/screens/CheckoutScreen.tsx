@@ -238,21 +238,32 @@ export function CheckoutScreen() {
           <Card className="card-warm">
             <CardContent className="p-8">
               <div className="space-y-6">
-                {/* Order Summary - Sticky on mobile */}
-                <Card className="bg-primary/5 border-primary/20 sticky top-4 z-10">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-foreground">Your order:</span>
-                        <span className="text-sm text-muted-foreground">
-                          {getSendOption() === 'single' && '1 postcard'}
-                          {getSendOption() === 'double' && '2 postcards'}
-                          {getSendOption() === 'triple' && '3 postcards'}
-                        </span>
+                {/* Order Summary */}
+                <Card className="bg-white border-[#E8DECF] shadow-[0_2px_6px_rgba(0,0,0,0.12)]">
+                  <CardContent className="p-4 md:p-5">
+                    <Label className="block text-base md:text-lg font-semibold text-primary mb-4">Your Order</Label>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Your Representative</span>
+                        <span>$5.00</span>
                       </div>
-                      <span className="font-bold text-xl text-primary">
-                        ${getTotalPrice().toFixed(2)}
-                      </span>
+                      {selectedSenators.map((isSelected, index) => 
+                        isSelected ? (
+                          <div key={index} className="flex justify-between">
+                            <span>Senator {index === 0 ? 'one' : 'two'}</span>
+                            <span>$3.00</span>
+                          </div>
+                        ) : null
+                      )}
+                      <div className="border-t border-[#E8DECF] pt-2 mt-2">
+                        <div className="flex justify-between text-lg md:text-xl font-bold text-primary">
+                          <span>Total</span>
+                          <span>${getTotalPrice().toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-3">
+                        Price includes high‑quality postcards, written with real ballpoint pen, plus First‑Class postage and mailing.
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
