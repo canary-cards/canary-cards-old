@@ -80,7 +80,7 @@ export default function PaymentSuccess() {
   }, []);
 
   const showConfetti = () => {
-    const colors = ['hsl(46, 100%, 66%)', 'hsl(212, 29%, 25%)', 'hsl(3, 62%, 52%)'];
+    const colors = ['hsl(46, 100%, 66%)', 'hsl(212, 29%, 25%)', 'hsl(120, 50%, 60%)'];
     for (let i = 0; i < 50; i++) {
       createConfettiPiece(colors[Math.floor(Math.random() * colors.length)]);
     }
@@ -166,7 +166,10 @@ export default function PaymentSuccess() {
         {/* 1. Success Header */}
         <div className="text-center mt-8">
           <div className="flex justify-center mb-4">
-            <CheckCircle2 className="w-12 h-12 text-secondary" />
+            <div className="relative">
+              <div className="absolute inset-0 bg-accent/10 rounded-full scale-125"></div>
+              <CheckCircle2 className="w-12 h-12 text-accent relative" />
+            </div>
           </div>
           
           <h1 className="font-display text-3xl font-bold text-primary mb-3">
@@ -181,7 +184,7 @@ export default function PaymentSuccess() {
         {/* 2. Proof of Impact */}
         <Card className="shadow-sm mb-8">
           <CardContent className="p-6">
-            <h3 className="eyebrow text-secondary mb-2">Proof it matters</h3>
+            <h3 className="eyebrow text-accent mb-2">Proof it matters</h3>
             <p className="body-text">
               {proofMessage}
             </p>
