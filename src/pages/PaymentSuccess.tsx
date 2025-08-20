@@ -57,9 +57,15 @@ export default function PaymentSuccess() {
     });
   };
 
-  // Generate realistic contact volume
-  const getContactVolume = () => {
-    return Math.floor(Math.random() * (75 - 25) + 25); // Random between 25-75
+  // Fallback messages for proof of impact
+  const getProofMessage = () => {
+    const messages = [
+      "Handwritten postcards reach Congressional offices faster than letters or emails. Every card makes your voice harder to ignore.",
+      "Postcards reach Congressional offices faster than letters—no security delays, no spam filters.",
+      "Real ink and paper get noticed. Handwritten postcards stand out when emails and petitions don't.",
+      "Every card adds to a growing chorus of voices your representative can't ignore."
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
   };
 
   useEffect(() => {
@@ -144,7 +150,7 @@ export default function PaymentSuccess() {
 
   const representative = getRepresentativeData();
   const deliveryDate = getDeliveryDate();
-  const contactVolume = getContactVolume();
+  const proofMessage = getProofMessage();
 
   return (
     <div className="min-h-screen bg-background">
@@ -181,7 +187,7 @@ export default function PaymentSuccess() {
           <CardContent className="p-8 space-y-6">
             <h3 className="eyebrow text-secondary">Proof it matters</h3>
             <p className="body-text">
-              You're one of {contactVolume} people who wrote to {representative?.type === 'senator' ? 'Sen.' : 'Rep.'} {representative?.name?.split(' ').pop() || 'Your Representative'} today. Together, small actions add up.
+              {proofMessage}
             </p>
           </CardContent>
         </Card>
