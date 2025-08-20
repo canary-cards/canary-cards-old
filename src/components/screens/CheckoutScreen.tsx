@@ -171,7 +171,7 @@ export function CheckoutScreen() {
           {/* Header Section - Outside of cards */}
           <div className="text-center mb-8">
             <h1 className="text-2xl font-display font-bold text-foreground mb-2">Let's get your masterful postcard out the door</h1>
-            <h3 className="subtitle text-base">You have three congresspeople in Washington. Most send to all of them.</h3>
+            <h3 className="subtitle text-base">You have three congresspeople in D.C. Most send to all of them.</h3>
           </div>
 
           {/* Lawmaker Selection Card */}
