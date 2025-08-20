@@ -167,7 +167,7 @@ export default function PaymentSuccess() {
         <div className="text-center mt-8">
           <div className="flex justify-center mb-4">
             <CheckCircle 
-              className="w-12 h-12 text-accent" 
+              className="w-12 h-12 text-accent fill-accent" 
               stroke="hsl(var(--primary))" 
               strokeWidth={1}
             />
