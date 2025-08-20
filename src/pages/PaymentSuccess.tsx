@@ -161,7 +161,7 @@ export default function PaymentSuccess() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-md mx-auto px-4 space-y-8">
+      <div className="max-w-md mx-auto px-4 pt-20 space-y-8">
         
         {/* 1. Success Header */}
         <div className="text-center mt-8">
