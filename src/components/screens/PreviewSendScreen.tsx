@@ -208,18 +208,16 @@ export function PreviewSendScreen() {
 
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
-        {/* Header and subtitle outside the main card */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-display text-primary font-bold mb-3">
-            You've created an amazing postcard
-          </h1>
-          <h3 className="text-xl text-rust font-semibold">
-            Let's get it out the door
-          </h3>
-        </div>
-        
         <Card className="card-warm">
           <CardContent className="p-8">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold text-foreground mb-2">
+                Review Your Card
+              </h1>
+              <h3 className="subtitle text-base">
+                We'll send this card to a robot that will use real pen and paper to write it
+              </h3>
+            </div>
 
             {/* Postcard Preview */}
             <div className="mb-8">
@@ -278,12 +276,6 @@ export function PreviewSendScreen() {
                     </Card>}
                   
                   {/* Senators */}
-                  {/* Add text above senators */}
-                  {senators.length > 0 && (
-                    <div className="col-span-3 text-center mb-2">
-                      <p className="text-sm text-muted-foreground">Your two senators represent your whole state</p>
-                    </div>
-                  )}
                   {loadingSenators ? <>
                       <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
                         <CardContent className="p-2 text-center">
