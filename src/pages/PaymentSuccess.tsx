@@ -223,7 +223,7 @@ export default function PaymentSuccess() {
               </Button>
               
               <Button variant="secondary" size="lg" className="w-full h-12">
-                Not now
+                Home
               </Button>
             </div>
           </div>
