@@ -13,10 +13,34 @@ import { searchAddressAutocomplete, getPlaceDetails, GooglePlacesAddressPredicti
 
 export function ReturnAddressScreen() {
   const { state: appState, dispatch } = useAppContext();
-  const [fullName, setFullName] = useState('');
-  const [streetAddress, setStreetAddress] = useState('');
-  const [apartmentUnit, setApartmentUnit] = useState('');
-  const [showApartmentField, setShowApartmentField] = useState(false);
+  
+  // Initialize state with existing data from app context
+  const existingUserInfo = appState.postcardData.userInfo;
+  const [fullName, setFullName] = useState(existingUserInfo?.fullName || '');
+  const [streetAddress, setStreetAddress] = useState(() => {
+    // Reconstruct the full address if we have separate components
+    if (existingUserInfo?.streetAddress && existingUserInfo?.city && existingUserInfo?.state) {
+      return `${existingUserInfo.streetAddress}, ${existingUserInfo.city}, ${existingUserInfo.state} ${existingUserInfo.zipCode || ''}`.trim();
+    }
+    return existingUserInfo?.streetAddress || '';
+  });
+  const [apartmentUnit, setApartmentUnit] = useState(() => {
+    // Extract apartment info if it exists in the stored address
+    if (existingUserInfo?.streetAddress) {
+      const aptMatch = existingUserInfo.streetAddress.match(/,\s*(Apt|Unit|Suite|#)\s*(.+)$/i);
+      return aptMatch ? `${aptMatch[1]} ${aptMatch[2]}` : '';
+    }
+    return '';
+  });
+  const [showApartmentField, setShowApartmentField] = useState(() => {
+    // Check if existing address might contain apartment info
+    const hasApartmentInfo = existingUserInfo?.streetAddress && 
+      (existingUserInfo.streetAddress.includes('Apt') || 
+       existingUserInfo.streetAddress.includes('Unit') || 
+       existingUserInfo.streetAddress.includes('Suite') ||
+       existingUserInfo.streetAddress.includes('#'));
+    return hasApartmentInfo || false;
+  });
   const [addressSuggestions, setAddressSuggestions] = useState<GooglePlacesAddressPrediction[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -24,6 +48,32 @@ export function ReturnAddressScreen() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const zipCode = appState.postcardData.zipCode || '';
+
+  // Save data to context as user types (debounced)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (fullName.trim() || streetAddress.trim()) {
+        // Parse address components for temporary storage
+        const { city, state, zipCode: parsedZip } = parseAddressComponents(streetAddress);
+        
+        // Only save if we have meaningful data
+        const userInfo = {
+          fullName: fullName.trim(),
+          streetAddress: streetAddress.trim(),
+          city: city || existingUserInfo?.city || '',
+          state: state || existingUserInfo?.state || '',
+          zipCode: parsedZip || zipCode || existingUserInfo?.zipCode || ''
+        };
+
+        dispatch({ 
+          type: 'UPDATE_POSTCARD_DATA', 
+          payload: { userInfo }
+        });
+      }
+    }, 1000); // 1 second debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [fullName, streetAddress, dispatch, existingUserInfo, zipCode]);
 
   const handleAddressSearch = async (query: string) => {
     if (query.length < 3) {
