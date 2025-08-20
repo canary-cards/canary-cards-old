@@ -63,7 +63,7 @@ export default function PaymentSuccess() {
       "Handwritten postcards reach Congressional offices faster than letters or emails. Every card makes your voice harder to ignore.",
       "Postcards reach Congressional offices faster than letters—no security delays, no spam filters.",
       "Real ink and paper get noticed. Handwritten postcards stand out when emails and petitions don't.",
-      "Every card adds to a growing chorus of voices your representative can't ignore."
+      "Every card adds to a growing chorus of voices — voices your representative can't ignore."
     ];
     return messages[Math.floor(Math.random() * messages.length)];
   };
@@ -180,7 +180,7 @@ export default function PaymentSuccess() {
 
         {/* 2. Proof of Impact */}
         <Card className="shadow-sm mb-10">
-          <CardContent className="p-10">
+          <CardContent className="px-10 py-12">
             <h3 className="eyebrow text-primary mb-3">Proof it matters</h3>
             <p className="body-text max-w-72 mx-auto leading-relaxed">
               {proofMessage}
