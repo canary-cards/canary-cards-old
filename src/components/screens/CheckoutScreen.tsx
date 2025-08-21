@@ -23,7 +23,7 @@ export function CheckoutScreen() {
     state,
     dispatch
   } = useAppContext();
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile(); // Fixed mobile hook import
   const [email, setEmail] = useState(state.postcardData.email || '');
   const [emailError, setEmailError] = useState('');
   const [senators, setSenators] = useState<Representative[]>([]);
