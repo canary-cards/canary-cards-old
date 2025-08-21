@@ -348,10 +348,11 @@ export function CheckoutScreen() {
                   </div>
                 </div>
 
-                {/* Mix & Match Link */}
-                <div className="mt-3">
+                {/* Mix & Match */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium text-primary">Mix & Match Recipients</Label>
                   <button onClick={() => setShowMixMatch(true)} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Mix & match recipients
+                    Choose your own combination
                   </button>
                   <p className="text-xs text-muted-foreground mt-1">
                     $5 each · Choose any combination (Save $3 when you pick all three)
