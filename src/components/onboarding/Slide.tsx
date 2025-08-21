@@ -16,7 +16,7 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, imageSrc, i
     <div className="h-full flex flex-col">
       {/* Top half - Icon placeholder */}
       <div className="flex-1 flex items-center justify-center px-6 py-4">
-        <div className={`aspect-[1/1.1] flex items-center justify-center relative ${currentSlide === 3 ? 'w-3/4' : 'w-3/5'}`}>
+        <div className={`aspect-[1/1.1] flex items-center justify-center relative ${currentSlide === 3 ? 'w-5/6' : 'w-2/3'}`}>
           {/* Render all images at once for instant transitions */}
           {allImages.map((image, index) => (
             <img 
