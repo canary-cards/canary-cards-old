@@ -9,7 +9,7 @@ export const EmailTestButton = () => {
       const testData = {
         userInfo: {
           fullName: "Test User",
-          email: "your-test@email.com", // Change this to your email
+          email: "bwolfgang13@gmail.com",
           streetAddress: "123 Main St",
           city: "Sacramento",
           state: "CA",
