@@ -405,7 +405,7 @@ export function CheckoutScreen() {
         </div>
 
         {/* Sticky CTA for Mobile */}
-        {isMobile && <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 z-40 space-y-3">
+        {isMobile && <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 z-40 space-y-2">
             <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} variant="spotlight" className="w-full h-12 text-base font-medium">
               {isProcessing ? <>
                   <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin mr-2" />
@@ -413,16 +413,14 @@ export function CheckoutScreen() {
                 </> : <span>Checkout — ${getTotalPrice()}</span>}
             </Button>
             
-            {/* Payment Options Logos */}
-            <div className="flex justify-center items-center gap-3">
+            {/* Payment Options and Security */}
+            <div className="flex justify-center items-center gap-4 text-muted-foreground">
               <img src="/128px-Apple_Pay_logo.svg.png" alt="Apple Pay" className="h-3" />
               <img src="/128px-Google_Pay_Logo.svg.png" alt="Google Pay" className="h-4" />
-            </div>
-
-            {/* Security Assurance */}
-            <div className="flex justify-center items-center gap-1 text-muted-foreground">
-              <Shield className="w-3 h-3" />
-              <span className="text-xs">Secure checkout with Stripe</span>
+              <div className="flex items-center gap-1">
+                <Shield className="w-3 h-3" />
+                <span className="text-xs">Secure checkout with Stripe</span>
+              </div>
             </div>
           </div>}
       </div>
