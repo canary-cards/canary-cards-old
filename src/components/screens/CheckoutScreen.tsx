@@ -229,7 +229,7 @@ export function CheckoutScreen() {
                 {/* Single Voice Label */}
                 <div className="space-y-3">
                   <Label className="text-sm font-medium text-primary">Single Voice</Label>
-                  <div className={`cursor-pointer rounded-lg border p-4 transition-all relative ${selection === 'rep-only' ? 'border-2 border-primary bg-primary/[0.02]' : 'border-primary/[0.01] bg-input hover:border-primary/20'}`} onClick={() => handleSelectionChange('rep-only')}>
+                  <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative ${selection === 'rep-only' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('rep-only')}>
                     {/* Checkbox in top-right corner */}
                     <div className="absolute top-4 right-4">
                       <Checkbox 
@@ -274,7 +274,7 @@ export function CheckoutScreen() {
                 {/* Maximum Impact Label */}
                 <div className="space-y-3">
                   <Label className="text-sm font-medium text-primary">Maximum Impact</Label>
-                  <div className={`cursor-pointer rounded-lg border p-4 transition-all relative ${selection === 'all-three' ? 'border-2 border-primary bg-primary/[0.02]' : 'border-primary/[0.01] bg-input hover:border-primary/20'}`} onClick={() => handleSelectionChange('all-three')}>
+                  <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative ${selection === 'all-three' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('all-three')}>
                     {/* Badge in top-left corner */}
                     <div className="absolute top-4 left-4">
                       <Badge className="bg-black text-yellow-400 font-medium">Save $3 - Recommended</Badge>
