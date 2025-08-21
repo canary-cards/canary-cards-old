@@ -16,19 +16,19 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, imageSrc, i
     <div className="h-full flex flex-col">
       {/* Top half - Icon placeholder */}
       <div className="flex-1 flex items-center justify-center px-6 py-4">
-        <div className={`aspect-[1/1.1] flex items-center justify-center relative ${currentSlide === 3 ? 'w-5/6' : 'w-2/3'}`}>
-          {/* Render all images at once for instant transitions */}
+        <div className={`aspect-[1/1.1] flex items-center justify-center relative transition-[width] duration-200 ease-in-out ${currentSlide === 3 ? 'w-5/6' : 'w-2/3'}`}>
+          {/* Render all images at once for smooth transitions */}
           {allImages.map((image, index) => (
             <img 
               key={index}
               src={image.src} 
               alt={image.alt}
-              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-75 ${
-                index === currentSlide ? 'opacity-100' : 'opacity-0'
+              className={`absolute inset-0 w-full h-full object-contain transition-[opacity,transform] duration-200 ease-in-out motion-reduce:transition-none motion-reduce:transform-none pointer-events-none select-none ${
+                index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               }`}
               loading="eager"
               decoding="async"
-              style={{ willChange: 'opacity' }}
+              style={{ willChange: 'opacity, transform' }}
             />
           ))}
           {!imageSrc && (
