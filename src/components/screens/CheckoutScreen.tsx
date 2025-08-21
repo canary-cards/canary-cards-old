@@ -373,19 +373,12 @@ export function CheckoutScreen() {
                   <Label htmlFor="email" className="text-sm font-semibold text-primary">Your Email</Label>
                   <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={e => handleEmailChange(e.target.value)} className="bg-white" />
                   <p className="text-sm text-muted-foreground">
-                    We'll send your order confirmation here after checkout.
+                    We'll send you an order confirmation here after checkout and when your card is mailed.
                   </p>
                   {emailError && <p className="text-sm text-destructive">{emailError}</p>}
                 </div>
 
 
-                {/* Primary CTA Button */}
-                <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} variant="spotlight" className="w-full h-14 text-lg font-medium">
-                  {isProcessing ? <>
-                      <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin mr-3" />
-                      <span>Loading checkout...</span>
-                    </> : <span>Checkout — ${getTotalPrice()}</span>}
-                </Button>
 
                 {/* Micro-copy */}
                 <p className="text-sm text-muted-foreground text-center">
