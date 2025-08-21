@@ -2,29 +2,44 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
-import { LawmakerSelectCard } from '@/components/ui/lawmaker-select-card';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { BottomSheet, BottomSheetContent, BottomSheetHeader, BottomSheetTitle } from '@/components/ui/bottom-sheet';
 import { useAppContext } from '../../context/AppContext';
 import { EmbeddedCheckout } from '../EmbeddedCheckout';
-import { ArrowLeft, Apple, CreditCard, Shield, Clock } from 'lucide-react';
+import { ArrowLeft, Shield, ChevronDown, ChevronUp } from 'lucide-react';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
+import { useIsMobile } from '@/hooks/use-mobile';
+
+type RecipientSelection = 'rep-only' | 'all-three' | 'custom';
 
 export function CheckoutScreen() {
   const {
     state,
     dispatch
   } = useAppContext();
+  const isMobile = useIsMobile();
   const [email, setEmail] = useState(state.postcardData.email || '');
   const [emailError, setEmailError] = useState('');
   const [senators, setSenators] = useState<Representative[]>([]);
   const [loadingSenators, setLoadingSenators] = useState(false);
-  const [selectedSenators, setSelectedSenators] = useState<boolean[]>([true, true]); // Both senators checked by default
+  const [selection, setSelection] = useState<RecipientSelection>('rep-only'); // Default to "Just your Representative"
+  const [customSelection, setCustomSelection] = useState({
+    representative: true,
+    senator1: false,
+    senator2: false
+  });
+  const [showMixMatch, setShowMixMatch] = useState(false);
+  const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(!isMobile);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState('');
   const rep = state.postcardData.representative;
   const userInfo = state.postcardData.userInfo;
 
@@ -60,26 +75,61 @@ export function CheckoutScreen() {
     }
   };
 
-  const handleSenatorToggle = (index: number, checked: boolean) => {
-    const newSelectedSenators = [...selectedSenators];
-    newSelectedSenators[index] = checked;
-    setSelectedSenators(newSelectedSenators);
+  const getSelectedRecipients = () => {
+    if (selection === 'rep-only') {
+      return { representative: true, senator1: false, senator2: false };
+    } else if (selection === 'all-three') {
+      return { representative: true, senator1: true, senator2: true };
+    } else {
+      return customSelection;
+    }
   };
 
-  const getSelectedSenatorsCount = () => {
-    return selectedSenators.filter(Boolean).length;
+  const getSelectedCount = () => {
+    const selected = getSelectedRecipients();
+    return (selected.representative ? 1 : 0) + (selected.senator1 ? 1 : 0) + (selected.senator2 ? 1 : 0);
   };
 
   const getTotalPrice = () => {
-    const senatorCount = getSelectedSenatorsCount();
-    return 5.00 + senatorCount * 3.00;
+    const count = getSelectedCount();
+    if (count === 3) {
+      return 12; // Bundle price with $3 savings
+    }
+    return count * 5; // $5 each
   };
 
   const getSendOption = (): 'single' | 'double' | 'triple' => {
-    const senatorCount = getSelectedSenatorsCount();
-    if (senatorCount === 0) return 'single';
-    if (senatorCount === 1) return 'double';
+    const count = getSelectedCount();
+    if (count === 1) return 'single';
+    if (count === 2) return 'double';
     return 'triple';
+  };
+
+  const handleSelectionChange = (newSelection: RecipientSelection) => {
+    setSelection(newSelection);
+    setValidationError('');
+  };
+
+  const handleCustomSelection = (recipient: keyof typeof customSelection, checked: boolean) => {
+    setCustomSelection(prev => ({ ...prev, [recipient]: checked }));
+  };
+
+  const validateSelection = () => {
+    const count = getSelectedCount();
+    if (count === 0) {
+      setValidationError('Pick at least one recipient.');
+      return false;
+    }
+    setValidationError('');
+    return true;
+  };
+
+  const getSelectedSenators = () => {
+    const selected = getSelectedRecipients();
+    const result: Representative[] = [];
+    if (selected.senator1 && senators[0]) result.push(senators[0]);
+    if (selected.senator2 && senators[1]) result.push(senators[1]);
+    return result;
   };
 
   const handlePayment = async () => {
@@ -87,11 +137,16 @@ export function CheckoutScreen() {
       setEmailError('Please enter a valid email address');
       return;
     }
+    
+    if (!validateSelection()) {
+      return;
+    }
+
     setIsProcessing(true);
     setEmailError('');
     try {
       const sendOption = getSendOption();
-      const selectedSenatorsList = senators.filter((_, index) => selectedSenators[index]);
+      const selectedSenatorsList = getSelectedSenators();
 
       // Call Stripe payment function with complete postcard data
       const {
@@ -165,109 +220,209 @@ export function CheckoutScreen() {
       </div>;
   }
 
-  return <TooltipProvider>
+  return <>
       <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
-          {/* Header Section - Outside of cards */}
+        <div className="container mx-auto px-4 pt-20 pb-24 max-w-2xl">
+          {/* Header Section */}
           <div className="text-center mb-8">
             <h1 className="text-2xl font-display font-bold text-foreground mb-2">Let's get your masterful postcard out the door</h1>
             <h3 className="subtitle text-base">You have three congresspeople in D.C. Most send to all of them.</h3>
           </div>
 
-          {/* Lawmaker Selection Card */}
+          {/* Section 1 - Recipients Panel */}
           <Card className="card-warm mb-6">
-            <CardContent className="p-8">
+            <CardContent className="p-6">
               <div className="space-y-4">
-                {/* Lawmaker Cards */}
-                <div className="space-y-6">
-                  {/* Representative Section */}
-                  {rep && <div className="space-y-4">
-                      <Label className="block">
-                        Your representative is directly accountable to your district.
-                      </Label>
-                      <LawmakerSelectCard lawmaker={{
-                    ...rep,
-                    type: 'Representative'
-                  }} isSelected={true} isDisabled={true} price="$5" valueText="" supportText="" showTooltip={false} />
-                    </div>}
-
-                  {/* Senators Section */}
-                  <div className="space-y-4">
-                    <Label className="block">Your two senators represent your whole state.</Label>
-                    <div className="space-y-3">
-                      {loadingSenators ? <>
-                          {/* Loading skeleton for senators */}
-                          {[0, 1].map(index => <Card key={index} className="bg-gradient-to-br from-muted/20 to-muted/40">
-                              <CardContent className="p-4">
-                                <div className="space-y-3">
-                                  <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-muted rounded-lg animate-pulse" />
-                                    <div className="flex-1 space-y-2">
-                                      <div className="h-4 bg-muted rounded animate-pulse" />
-                                      <div className="h-3 bg-muted rounded w-1/2 animate-pulse" />
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                      <div className="w-12 h-5 bg-muted rounded animate-pulse" />
-                                      <div className="w-4 h-4 bg-muted rounded animate-pulse" />
-                                    </div>
-                                  </div>
-                                  <div className="space-y-1">
-                                    <div className="h-3 bg-muted rounded animate-pulse" />
-                                    <div className="h-3 bg-muted rounded w-3/4 animate-pulse" />
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>)}
-                        </> : senators.slice(0, 2).map((senator, index) => <LawmakerSelectCard key={senator.id} lawmaker={{
-                      ...senator,
-                      type: 'Senator'
-                    }} isSelected={selectedSenators[index]} price="$3" valueText="" supportText="" onSelectionChange={checked => handleSenatorToggle(index, checked)} showTooltip={false} />)}
+                {/* Card A - Just your Representative */}
+                <div
+                  className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${
+                    selection === 'rep-only' 
+                      ? 'border-primary bg-primary/5' 
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                  onClick={() => handleSelectionChange('rep-only')}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        checked={selection === 'rep-only'}
+                        onChange={() => handleSelectionChange('rep-only')}
+                        className="text-primary focus:ring-primary"
+                      />
+                      <Badge variant="secondary" className="text-xs">Single Voice</Badge>
                     </div>
                   </div>
+                  
+                  <h3 className="font-semibold text-lg mb-2">
+                    Send to Rep. {rep?.name.split(' ').pop() || 'Representative'} only
+                  </h3>
+                  
+                  <div className="flex items-center gap-3 mb-3">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={rep?.photo} alt={`Photo of Rep. ${rep?.name}`} />
+                      <AvatarFallback>{rep?.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  
+                  <p className="text-sm text-foreground mb-2">
+                    ✓ Rep. {rep?.name}
+                  </p>
+                  
+                  <p className="text-primary font-semibold mb-2">$5 total</p>
+                  
+                  <p className="text-sm text-muted-foreground">
+                    Quieter reach — one office hears you today.
+                  </p>
                 </div>
 
-                {/* Address reassurance */}
-                {senators.length > 0 && !loadingSenators && <div className="text-center">
-                    <p className="text-sm text-muted-foreground">✓ We'll add the correct senator addresses automatically.</p>
-                  </div>}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Order Summary */}
-          <Card className="bg-white border-[#E8DECF] shadow-[0_2px_6px_rgba(0,0,0,0.12)] mb-6">
-            <CardContent className="p-4 md:p-5">
-              <Label className="block text-base md:text-lg font-semibold text-primary mb-4">Your Order</Label>
-              <div className="space-y-2">
-                <div className="text-right">
-                  <span>Rep. {rep?.name.split(' ').pop() || 'Representative'} — $5.00</span>
-                </div>
-                {selectedSenators.map((isSelected, index) => 
-                  isSelected && senators[index] ? (
-                    <div key={index} className="text-right">
-                      <span>Sen. {senators[index].name.split(' ').pop()} — $3.00</span>
+                {/* Card B - All Three (Recommended) */}
+                <div
+                  className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${
+                    selection === 'all-three' 
+                      ? 'border-primary bg-primary/5' 
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                  onClick={() => handleSelectionChange('all-three')}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        checked={selection === 'all-three'}
+                        onChange={() => handleSelectionChange('all-three')}
+                        className="text-primary focus:ring-primary"
+                      />
+                      <Badge variant="secondary" className="text-xs">Maximum Impact</Badge>
                     </div>
-                  ) : null
+                    <Badge className="bg-primary text-primary-foreground">Recommended</Badge>
+                  </div>
+                  
+                  <h3 className="font-semibold text-lg mb-2">
+                    Send to Rep. {rep?.name.split(' ').pop() || 'Representative'}, 
+                    {senators[0] && ` Sen. ${senators[0].name.split(' ').pop()}`}
+                    {senators[1] && `, and Sen. ${senators[1].name.split(' ').pop()}`}
+                  </h3>
+                  
+                  <div className="flex items-center gap-2 mb-3">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={rep?.photo} alt={`Photo of Rep. ${rep?.name}`} />
+                      <AvatarFallback>{rep?.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                    {senators[0] && (
+                      <>
+                        <span className="text-muted-foreground">·</span>
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={senators[0].photo} alt={`Photo of Sen. ${senators[0].name}`} />
+                          <AvatarFallback>{senators[0].name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                      </>
+                    )}
+                    {senators[1] && (
+                      <>
+                        <span className="text-muted-foreground">·</span>
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={senators[1].photo} alt={`Photo of Sen. ${senators[1].name}`} />
+                          <AvatarFallback>{senators[1].name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                      </>
+                    )}
+                  </div>
+                  
+                  <p className="text-primary font-semibold mb-2">$12 total · Save $3</p>
+                  
+                  <p className="text-sm text-muted-foreground">
+                    Your message lands on every federal office that represents you.
+                  </p>
+                </div>
+
+                {/* Mix & Match Link */}
+                <div className="mt-3">
+                  <button
+                    onClick={() => setShowMixMatch(true)}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Mix & match recipients
+                  </button>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    $5 each · Choose any combination (Save $3 when you pick all three)
+                  </p>
+                </div>
+
+                {/* Validation Error */}
+                {validationError && (
+                  <p className="text-sm text-destructive">{validationError}</p>
                 )}
-                <div className="border-t border-[#E8DECF] pt-2 mt-2">
-                  <div className="flex justify-between text-lg md:text-xl font-bold text-primary">
-                    <span>Total</span>
-                    <span>${getTotalPrice().toFixed(2)}</span>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground mt-3">
-                  Price includes high‑quality postcards, written with real ballpoint pen, plus First‑Class postage and mailing.
-                </p>
               </div>
             </CardContent>
           </Card>
 
-          {/* Payment Card */}
-          <Card className="card-warm">
-            <CardContent className="p-8">
-              <div className="space-y-6">
+          {/* Section 3 - Order Summary */}
+          <Collapsible open={isOrderSummaryOpen} onOpenChange={setIsOrderSummaryOpen}>
+            <Card className="bg-white border-[#E8DECF] shadow-[0_2px_6px_rgba(0,0,0,0.12)] mb-6">
+              <CollapsibleTrigger className="w-full">
+                <CardHeader className="p-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base font-semibold text-primary">
+                      {isMobile ? (
+                        `Order summary — ${getSelectedCount()} recipients · $${getTotalPrice()}`
+                      ) : (
+                        'Order summary'
+                      )}
+                    </CardTitle>
+                    {isMobile && (
+                      isOrderSummaryOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    )}
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="p-4 pt-0">
+                  <div className="space-y-2">
+                    {getSelectedRecipients().representative && (
+                      <div className="flex justify-between">
+                        <span>Rep. {rep?.name.split(' ').pop() || 'Representative'}</span>
+                        <span>$5.00</span>
+                      </div>
+                    )}
+                    {getSelectedRecipients().senator1 && senators[0] && (
+                      <div className="flex justify-between">
+                        <span>Sen. {senators[0].name.split(' ').pop()}</span>
+                        <span>$5.00</span>
+                      </div>
+                    )}
+                    {getSelectedRecipients().senator2 && senators[1] && (
+                      <div className="flex justify-between">
+                        <span>Sen. {senators[1].name.split(' ').pop()}</span>
+                        <span>$5.00</span>
+                      </div>
+                    )}
+                    {getSelectedCount() === 3 && (
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>Bundle savings</span>
+                        <span>−$3.00</span>
+                      </div>
+                    )}
+                    <div className="border-t border-[#E8DECF] pt-2 mt-2">
+                      <div className="flex justify-between text-lg font-bold text-primary">
+                        <span>Total</span>
+                        <span>${getTotalPrice()}</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-3">
+                      Price includes high-quality postcards, real ballpoint pen, and First-Class postage & mailing.
+                    </p>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
 
-                {/* 1. Email Input */}
+          {/* Section 4 - Email & Payments */}
+          <Card className="card-warm">
+            <CardContent className="p-6">
+              <div className="space-y-6">
+                {/* Email Input */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-semibold text-primary">Your Email</Label>
                   <Input 
@@ -284,19 +439,19 @@ export function CheckoutScreen() {
                   {emailError && <p className="text-sm text-destructive">{emailError}</p>}
                 </div>
 
-                {/* 2. Payment Options Logos */}
+                {/* Payment Options Logos */}
                 <div className="flex justify-center items-center gap-6">
                   <img src="/128px-Apple_Pay_logo.svg.png" alt="Apple Pay" className="h-6" />
                   <img src="/128px-Google_Pay_Logo.svg.png" alt="Google Pay" className="h-8" />
                 </div>
 
-                {/* 3. Security Assurance Line */}
-                <div className="flex justify-center items-center gap-2 text-primary">
+                {/* Security Assurance */}
+                <div className="flex justify-center items-center gap-2 text-muted-foreground">
                   <Shield className="w-4 h-4" />
-                  <span className="text-sm">Secure Checkout with Stripe</span>
+                  <span className="text-sm">Secure checkout with Stripe</span>
                 </div>
 
-                {/* 4. Primary CTA Button */}
+                {/* Primary CTA Button */}
                 <Button 
                   onClick={handlePayment} 
                   disabled={!email || !validateEmail(email) || isProcessing} 
@@ -309,18 +464,13 @@ export function CheckoutScreen() {
                       <span>Loading checkout...</span>
                     </>
                   ) : (
-                    <span>Checkout — ${getTotalPrice().toFixed(2)}</span>
+                    <span>Checkout — ${getTotalPrice()}</span>
                   )}
                 </Button>
 
-                {/* 5. Micro-copy */}
+                {/* Micro-copy */}
                 <p className="text-sm text-muted-foreground text-center">
-                  You'll receive an email confirmation once your order is processed.
-                </p>
-
-                {/* Footer reassurance */}
-                <p className="text-sm text-muted-foreground text-center">
-                  We include the details staff look for to process constituent mail swiftly.
+                  You'll get an email when your card is mailed.
                 </p>
 
                 {/* Navigation */}
@@ -334,6 +484,131 @@ export function CheckoutScreen() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Sticky CTA for Mobile */}
+        {isMobile && (
+          <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 z-40">
+            <Button 
+              onClick={handlePayment} 
+              disabled={!email || !validateEmail(email) || isProcessing} 
+              variant="spotlight" 
+              className="w-full h-12 text-base font-medium"
+            >
+              {isProcessing ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin mr-2" />
+                  <span>Loading...</span>
+                </>
+              ) : (
+                <span>Checkout — ${getTotalPrice()}</span>
+              )}
+            </Button>
+            <p className="text-xs text-muted-foreground text-center mt-2">
+              You'll get an email when your card is mailed.
+            </p>
+          </div>
+        )}
       </div>
-    </TooltipProvider>;
+
+      {/* Mix & Match Bottom Sheet */}
+      <BottomSheet open={showMixMatch} onOpenChange={setShowMixMatch}>
+        <BottomSheetContent>
+          <BottomSheetHeader className="p-6 pb-4">
+            <BottomSheetTitle>Mix & match recipients</BottomSheetTitle>
+            <p className="text-sm text-muted-foreground">$5 each. Choose any combination.</p>
+          </BottomSheetHeader>
+          
+          <div className="px-6 pb-6 space-y-4">
+            {/* Representative Option */}
+            <div className="flex items-center justify-between p-3 border rounded-lg">
+              <div className="flex items-center space-x-3">
+                <Checkbox
+                  checked={customSelection.representative}
+                  onCheckedChange={(checked) => handleCustomSelection('representative', checked as boolean)}
+                />
+                <div>
+                  <span className="font-medium">Rep. {rep?.name}</span>
+                  <span className="text-sm text-muted-foreground ml-2">— $5</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Senator Options */}
+            {senators.slice(0, 2).map((senator, index) => (
+              <div key={senator.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <Checkbox
+                    checked={index === 0 ? customSelection.senator1 : customSelection.senator2}
+                    onCheckedChange={(checked) => 
+                      handleCustomSelection(index === 0 ? 'senator1' : 'senator2', checked as boolean)
+                    }
+                  />
+                  <div>
+                    <span className="font-medium">Sen. {senator.name}</span>
+                    <span className="text-sm text-muted-foreground ml-2">— $5</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Guardrail */}
+            <p className="text-xs text-muted-foreground">Pick at least one recipient.</p>
+
+            {/* Quick Actions */}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCustomSelection({ representative: true, senator1: true, senator2: true })}
+              >
+                Select all
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCustomSelection({ representative: false, senator1: false, senator2: false })}
+              >
+                Clear all
+              </Button>
+            </div>
+
+            {/* Totals Bar */}
+            <div className="sticky bottom-0 bg-background border-t pt-4 mt-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="font-medium">
+                  {Object.values(customSelection).filter(Boolean).length} selected
+                </span>
+                <span className="font-semibold">
+                  {Object.values(customSelection).filter(Boolean).length === 3 ? (
+                    <>$15 <span className="line-through text-muted-foreground">$12</span> total · Save $3</>
+                  ) : (
+                    `$${Object.values(customSelection).filter(Boolean).length * 5} total`
+                  )}
+                </span>
+              </div>
+              
+              <div className="flex gap-3">
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowMixMatch(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    setSelection('custom');
+                    setShowMixMatch(false);
+                  }}
+                  className="flex-1"
+                  disabled={Object.values(customSelection).filter(Boolean).length === 0}
+                >
+                  Continue — ${Object.values(customSelection).filter(Boolean).length === 3 ? 12 : Object.values(customSelection).filter(Boolean).length * 5}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </BottomSheetContent>
+      </BottomSheet>
+    </>;
 }
