@@ -66,16 +66,24 @@ const handler = async (req: Request): Promise<Response> => {
     // Try to get logo from Supabase Storage
     let logoUrl = '';
     try {
+      console.log('Attempting to fetch files from Email logo bucket...');
       const { data: files, error } = await supabase.storage
         .from('Email logo bucket')
-        .list();
+        .list('', {
+          limit: 100,
+          offset: 0
+        });
+
+      console.log('Storage response:', { files, error });
 
       if (!error && files && files.length > 0) {
+        console.log('Found files:', files.map(f => f.name));
+        
         // Look for PNG files containing 'logo' or 'canary', or use the first PNG
         const logoFile = files.find(file => 
-          file.name.toLowerCase().includes('.png') && 
+          file.name.toLowerCase().endsWith('.png') && 
           (file.name.toLowerCase().includes('logo') || file.name.toLowerCase().includes('canary'))
-        ) || files.find(file => file.name.toLowerCase().includes('.png'));
+        ) || files.find(file => file.name.toLowerCase().endsWith('.png'));
 
         if (logoFile) {
           const { data: { publicUrl } } = supabase.storage
@@ -83,10 +91,14 @@ const handler = async (req: Request): Promise<Response> => {
             .getPublicUrl(logoFile.name);
           logoUrl = publicUrl;
           console.log('Using logo from storage:', logoUrl);
+        } else {
+          console.log('No PNG files found in bucket');
         }
+      } else {
+        console.log('Storage error or no files:', error);
       }
     } catch (storageError) {
-      console.log('Failed to fetch logo from storage, using fallback:', storageError);
+      console.log('Failed to fetch logo from storage:', storageError);
     }
 
     // Fallback to SVG if storage fetch fails
