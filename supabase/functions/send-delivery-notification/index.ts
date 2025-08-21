@@ -317,13 +317,24 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Sending delivery notification email to:', userEmail);
 
     const emailResponse = await resend.emails.send({
-      from: "Canary Cards <noreply@resend.dev>",
+      from: "Canary Cards <hello@canary.cards>",
       to: [userEmail],
       subject: `📬 Your Postcard to ${recipientName} Has Been Delivered!`,
       html: emailHtml,
     });
 
-    console.log("Delivery notification email sent successfully:", emailResponse);
+    // Enhanced logging for debugging email delivery issues
+    if (emailResponse.error) {
+      console.error("Resend API error:", emailResponse.error);
+      console.error("Error details:", {
+        statusCode: emailResponse.error.statusCode,
+        message: emailResponse.error.message,
+        userEmail,
+        postcardId
+      });
+    } else {
+      console.log("Delivery notification email sent successfully:", emailResponse);
+    }
 
     return new Response(JSON.stringify({ 
       success: true, 

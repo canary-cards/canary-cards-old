@@ -82,6 +82,8 @@ serve(async (req) => {
         if (metadata.userEmail) {
           userEmail = metadata.userEmail;
           console.log('User email from metadata:', userEmail);
+        } else {
+          console.warn('⚠️ No userEmail found in metadata - delivery notification cannot be sent');
         }
         
         // Get recipient type and ID for context
@@ -94,6 +96,8 @@ serve(async (req) => {
           representativeId = metadata.representative_id;
           console.log('Representative ID:', representativeId);
         }
+      } else {
+        console.warn('⚠️ No metadata found in webhook payload - delivery notification cannot be sent');
       }
 
       // Call the delivery notification function
