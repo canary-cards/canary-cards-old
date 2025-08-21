@@ -20,6 +20,8 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, imageSrc, i
               src={imageSrc} 
               alt={imageAlt || iconPlaceholder}
               className="w-full h-full object-contain"
+              loading="eager"
+              decoding="async"
             />
           ) : (
             <span className="text-xs font-medium text-muted-foreground text-center px-2">

@@ -50,6 +50,16 @@ export default function Onboarding() {
   const [showSharedBanner, setShowSharedBanner] = useState(false);
   const [sharedBy, setSharedBy] = useState('');
 
+  // Preload images
+  useEffect(() => {
+    slides.forEach((slide) => {
+      if (slide.imageSrc) {
+        const img = new Image();
+        img.src = slide.imageSrc;
+      }
+    });
+  }, []);
+
   // Check for shared link
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -266,7 +276,7 @@ export default function Onboarding() {
         onClick={handleClick}
       >
         <div className="h-full max-w-lg mx-auto w-full">
-          <Slide {...slides[currentSlide]} />
+          <Slide key={currentSlide} {...slides[currentSlide]} />
         </div>
       </div>
     </div>
