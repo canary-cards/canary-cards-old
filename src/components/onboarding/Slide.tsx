@@ -5,20 +5,27 @@ interface SlideProps {
   subtitle: string;
   finePrint?: string;
   iconPlaceholder: string;
+  imageSrc?: string;
+  imageAlt?: string;
 }
 
-export function Slide({ title, subtitle, finePrint, iconPlaceholder }: SlideProps) {
+export function Slide({ title, subtitle, finePrint, iconPlaceholder, imageSrc, imageAlt }: SlideProps) {
   return (
     <div className="h-full flex flex-col">
       {/* Top half - Icon placeholder */}
       <div className="flex-1 flex items-center justify-center px-6 py-8">
-        <div 
-          className="w-3/5 aspect-[1/1.1] bg-muted border border-border rounded-2xl flex items-center justify-center"
-          style={{ backgroundColor: 'hsl(var(--muted))' }}
-        >
-          <span className="text-xs font-medium text-muted-foreground text-center px-2">
-            {iconPlaceholder}
-          </span>
+        <div className="w-3/5 aspect-[1/1.1] flex items-center justify-center">
+          {imageSrc ? (
+            <img 
+              src={imageSrc} 
+              alt={imageAlt || iconPlaceholder}
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <span className="text-xs font-medium text-muted-foreground text-center px-2">
+              {iconPlaceholder}
+            </span>
+          )}
         </div>
       </div>
 

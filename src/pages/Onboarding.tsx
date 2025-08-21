@@ -13,23 +13,31 @@ const slides = [
     title: "Handwritten postcards are the gold standard in D.C.",
     subtitle: "15× more likely to have influence than form emails*.",
     finePrint: "* 2019 Congressional Management Foundation study",
-    iconPlaceholder: "ICON / WHY POSTCARDS"
+    iconPlaceholder: "ICON / WHY POSTCARDS",
+    imageSrc: "/onboarding1.svg",
+    imageAlt: "Why postcards are effective in D.C."
   },
   {
     title: "Canary does the hard work for you.",
     subtitle: "It researches the issues you care about — then writes a clear, persuasive postcard in seconds.",
-    iconPlaceholder: "ICON / CANARY RESEARCH"
+    iconPlaceholder: "ICON / CANARY RESEARCH",
+    imageSrc: "/onboarding2.svg",
+    imageAlt: "Canary research process"
   },
   {
     title: "Your words, written in real ink with a real pen.",
     subtitle: "Indistinguishable from human handwriting. Authentic and personal.",
     finePrint: "Written by a robot holding a blue ballpoint. Authentic & affordable",
-    iconPlaceholder: "ICON / REAL INK HANDWRITING"
+    iconPlaceholder: "ICON / REAL INK HANDWRITING",
+    imageSrc: "/onboarding3.svg",
+    imageAlt: "Real handwriting with ink and pen"
   },
   {
     title: "No stamps. No hassle.",
     subtitle: "Your postcard is mailed straight to your representative's desk.",
-    iconPlaceholder: "ICON / MAILED FOR YOU"
+    iconPlaceholder: "ICON / MAILED FOR YOU",
+    imageSrc: "/onboarding4.svg",
+    imageAlt: "Postcard delivery service"
   }
 ];
 
