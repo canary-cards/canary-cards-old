@@ -282,7 +282,6 @@ export default function Onboarding() {
       >
         <div className="h-full max-w-lg mx-auto w-full">
           <Slide 
-            key={currentSlide} 
             {...slides[currentSlide]} 
             currentSlide={currentSlide}
             allImages={slides.map(slide => ({ 
