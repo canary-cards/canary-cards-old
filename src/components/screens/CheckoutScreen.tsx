@@ -15,9 +15,7 @@ import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useIsMobile } from '@/hooks/use-mobile';
-
 type RecipientSelection = 'rep-only' | 'all-three' | 'custom';
-
 export function CheckoutScreen() {
   const {
     state,
@@ -62,34 +60,37 @@ export function CheckoutScreen() {
     };
     fetchSenatorsFromZip();
   }, [userInfo?.zipCode]);
-
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
-
   const handleEmailChange = (value: string) => {
     setEmail(value);
     if (emailError && validateEmail(value)) {
       setEmailError('');
     }
   };
-
   const getSelectedRecipients = () => {
     if (selection === 'rep-only') {
-      return { representative: true, senator1: false, senator2: false };
+      return {
+        representative: true,
+        senator1: false,
+        senator2: false
+      };
     } else if (selection === 'all-three') {
-      return { representative: true, senator1: true, senator2: true };
+      return {
+        representative: true,
+        senator1: true,
+        senator2: true
+      };
     } else {
       return customSelection;
     }
   };
-
   const getSelectedCount = () => {
     const selected = getSelectedRecipients();
     return (selected.representative ? 1 : 0) + (selected.senator1 ? 1 : 0) + (selected.senator2 ? 1 : 0);
   };
-
   const getTotalPrice = () => {
     const count = getSelectedCount();
     if (count === 3) {
@@ -97,23 +98,22 @@ export function CheckoutScreen() {
     }
     return count * 5; // $5 each
   };
-
   const getSendOption = (): 'single' | 'double' | 'triple' => {
     const count = getSelectedCount();
     if (count === 1) return 'single';
     if (count === 2) return 'double';
     return 'triple';
   };
-
   const handleSelectionChange = (newSelection: RecipientSelection) => {
     setSelection(newSelection);
     setValidationError('');
   };
-
   const handleCustomSelection = (recipient: keyof typeof customSelection, checked: boolean) => {
-    setCustomSelection(prev => ({ ...prev, [recipient]: checked }));
+    setCustomSelection(prev => ({
+      ...prev,
+      [recipient]: checked
+    }));
   };
-
   const validateSelection = () => {
     const count = getSelectedCount();
     if (count === 0) {
@@ -123,7 +123,6 @@ export function CheckoutScreen() {
     setValidationError('');
     return true;
   };
-
   const getSelectedSenators = () => {
     const selected = getSelectedRecipients();
     const result: Representative[] = [];
@@ -131,17 +130,14 @@ export function CheckoutScreen() {
     if (selected.senator2 && senators[1]) result.push(senators[1]);
     return result;
   };
-
   const handlePayment = async () => {
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       return;
     }
-    
     if (!validateSelection()) {
       return;
     }
-
     setIsProcessing(true);
     setEmailError('');
     try {
@@ -198,12 +194,10 @@ export function CheckoutScreen() {
       setIsProcessing(false);
     }
   };
-
   const handleBackFromCheckout = () => {
     setShowCheckout(false);
     setClientSecret(null);
   };
-
   const goBack = () => {
     dispatch({
       type: 'SET_STEP',
@@ -219,7 +213,6 @@ export function CheckoutScreen() {
         </div>
       </div>;
   }
-
   return <>
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-24 max-w-2xl">
@@ -234,22 +227,10 @@ export function CheckoutScreen() {
             <CardContent className="p-6">
               <div className="space-y-4">
                 {/* Card A - Just your Representative */}
-                <div
-                  className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${
-                    selection === 'rep-only' 
-                      ? 'border-primary bg-primary/5' 
-                      : 'border-border hover:border-primary/50'
-                  }`}
-                  onClick={() => handleSelectionChange('rep-only')}
-                >
+                <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${selection === 'rep-only' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('rep-only')}>
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        checked={selection === 'rep-only'}
-                        onChange={() => handleSelectionChange('rep-only')}
-                        className="text-primary focus:ring-primary"
-                      />
+                      <input type="radio" checked={selection === 'rep-only'} onChange={() => handleSelectionChange('rep-only')} className="text-primary focus:ring-primary" />
                       <Badge variant="secondary" className="text-xs">Single Voice</Badge>
                     </div>
                   </div>
@@ -277,22 +258,10 @@ export function CheckoutScreen() {
                 </div>
 
                 {/* Card B - All Three (Recommended) */}
-                <div
-                  className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${
-                    selection === 'all-three' 
-                      ? 'border-primary bg-primary/5' 
-                      : 'border-border hover:border-primary/50'
-                  }`}
-                  onClick={() => handleSelectionChange('all-three')}
-                >
+                <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${selection === 'all-three' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('all-three')}>
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        checked={selection === 'all-three'}
-                        onChange={() => handleSelectionChange('all-three')}
-                        className="text-primary focus:ring-primary"
-                      />
+                      <input type="radio" checked={selection === 'all-three'} onChange={() => handleSelectionChange('all-three')} className="text-primary focus:ring-primary" />
                       <Badge variant="secondary" className="text-xs">Maximum Impact</Badge>
                     </div>
                     <Badge className="bg-primary text-primary-foreground">Recommended</Badge>
@@ -309,24 +278,20 @@ export function CheckoutScreen() {
                       <AvatarImage src={rep?.photo} alt={`Photo of Rep. ${rep?.name}`} />
                       <AvatarFallback>{rep?.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
-                    {senators[0] && (
-                      <>
+                    {senators[0] && <>
                         <span className="text-muted-foreground">·</span>
                         <Avatar className="w-8 h-8">
                           <AvatarImage src={senators[0].photo} alt={`Photo of Sen. ${senators[0].name}`} />
                           <AvatarFallback>{senators[0].name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
-                      </>
-                    )}
-                    {senators[1] && (
-                      <>
+                      </>}
+                    {senators[1] && <>
                         <span className="text-muted-foreground">·</span>
                         <Avatar className="w-8 h-8">
                           <AvatarImage src={senators[1].photo} alt={`Photo of Sen. ${senators[1].name}`} />
                           <AvatarFallback>{senators[1].name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
-                      </>
-                    )}
+                      </>}
                   </div>
                   
                   <p className="text-primary font-semibold mb-2">$12 total · Save $3</p>
@@ -338,10 +303,7 @@ export function CheckoutScreen() {
 
                 {/* Mix & Match Link */}
                 <div className="mt-3">
-                  <button
-                    onClick={() => setShowMixMatch(true)}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
+                  <button onClick={() => setShowMixMatch(true)} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                     Mix & match recipients
                   </button>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -350,9 +312,7 @@ export function CheckoutScreen() {
                 </div>
 
                 {/* Validation Error */}
-                {validationError && (
-                  <p className="text-sm text-destructive">{validationError}</p>
-                )}
+                {validationError && <p className="text-sm text-destructive">{validationError}</p>}
               </div>
             </CardContent>
           </Card>
@@ -364,45 +324,31 @@ export function CheckoutScreen() {
                 <CardHeader className="p-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base font-semibold text-primary">
-                      {isMobile ? (
-                        `Order summary — ${getSelectedCount()} recipients · $${getTotalPrice()}`
-                      ) : (
-                        'Order summary'
-                      )}
+                      {isMobile ? `Order summary — ${getSelectedCount()} recipients · $${getTotalPrice()}` : 'Order summary'}
                     </CardTitle>
-                    {isMobile && (
-                      isOrderSummaryOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    )}
+                    {isMobile && (isOrderSummaryOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
                   </div>
                 </CardHeader>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <CardContent className="p-4 pt-0">
                   <div className="space-y-2">
-                    {getSelectedRecipients().representative && (
-                      <div className="flex justify-between">
+                    {getSelectedRecipients().representative && <div className="flex justify-between">
                         <span>Rep. {rep?.name.split(' ').pop() || 'Representative'}</span>
                         <span>$5.00</span>
-                      </div>
-                    )}
-                    {getSelectedRecipients().senator1 && senators[0] && (
-                      <div className="flex justify-between">
+                      </div>}
+                    {getSelectedRecipients().senator1 && senators[0] && <div className="flex justify-between">
                         <span>Sen. {senators[0].name.split(' ').pop()}</span>
                         <span>$5.00</span>
-                      </div>
-                    )}
-                    {getSelectedRecipients().senator2 && senators[1] && (
-                      <div className="flex justify-between">
+                      </div>}
+                    {getSelectedRecipients().senator2 && senators[1] && <div className="flex justify-between">
                         <span>Sen. {senators[1].name.split(' ').pop()}</span>
                         <span>$5.00</span>
-                      </div>
-                    )}
-                    {getSelectedCount() === 3 && (
-                      <div className="flex justify-between text-sm text-muted-foreground">
+                      </div>}
+                    {getSelectedCount() === 3 && <div className="flex justify-between text-sm text-muted-foreground">
                         <span>Bundle savings</span>
                         <span>−$3.00</span>
-                      </div>
-                    )}
+                      </div>}
                     <div className="border-t border-[#E8DECF] pt-2 mt-2">
                       <div className="flex justify-between text-lg font-bold text-primary">
                         <span>Total</span>
@@ -425,14 +371,7 @@ export function CheckoutScreen() {
                 {/* Email Input */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-semibold text-primary">Your Email</Label>
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    placeholder="you@example.com" 
-                    value={email} 
-                    onChange={e => handleEmailChange(e.target.value)}
-                    className="bg-white"
-                  />
+                  <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={e => handleEmailChange(e.target.value)} className="bg-white" />
                   <p className="text-sm text-muted-foreground">
                     We'll send your order confirmation here after checkout.
                   </p>
@@ -452,20 +391,11 @@ export function CheckoutScreen() {
                 </div>
 
                 {/* Primary CTA Button */}
-                <Button 
-                  onClick={handlePayment} 
-                  disabled={!email || !validateEmail(email) || isProcessing} 
-                  variant="spotlight" 
-                  className="w-full h-14 text-lg font-medium"
-                >
-                  {isProcessing ? (
-                    <>
+                <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} variant="spotlight" className="w-full h-14 text-lg font-medium">
+                  {isProcessing ? <>
                       <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin mr-3" />
                       <span>Loading checkout...</span>
-                    </>
-                  ) : (
-                    <span>Checkout — ${getTotalPrice()}</span>
-                  )}
+                    </> : <span>Checkout — ${getTotalPrice()}</span>}
                 </Button>
 
                 {/* Micro-copy */}
@@ -486,28 +416,15 @@ export function CheckoutScreen() {
         </div>
 
         {/* Sticky CTA for Mobile */}
-        {isMobile && (
-          <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 z-40">
-            <Button 
-              onClick={handlePayment} 
-              disabled={!email || !validateEmail(email) || isProcessing} 
-              variant="spotlight" 
-              className="w-full h-12 text-base font-medium"
-            >
-              {isProcessing ? (
-                <>
+        {isMobile && <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 z-40">
+            <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} variant="spotlight" className="w-full h-12 text-base font-medium">
+              {isProcessing ? <>
                   <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin mr-2" />
                   <span>Loading...</span>
-                </>
-              ) : (
-                <span>Checkout — ${getTotalPrice()}</span>
-              )}
+                </> : <span>Checkout — ${getTotalPrice()}</span>}
             </Button>
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              You'll get an email when your card is mailed.
-            </p>
-          </div>
-        )}
+            
+          </div>}
       </div>
 
       {/* Mix & Match Bottom Sheet */}
@@ -522,10 +439,7 @@ export function CheckoutScreen() {
             {/* Representative Option */}
             <div className="flex items-center justify-between p-3 border rounded-lg">
               <div className="flex items-center space-x-3">
-                <Checkbox
-                  checked={customSelection.representative}
-                  onCheckedChange={(checked) => handleCustomSelection('representative', checked as boolean)}
-                />
+                <Checkbox checked={customSelection.representative} onCheckedChange={checked => handleCustomSelection('representative', checked as boolean)} />
                 <div>
                   <span className="font-medium">Rep. {rep?.name}</span>
                   <span className="text-sm text-muted-foreground ml-2">— $5</span>
@@ -534,22 +448,15 @@ export function CheckoutScreen() {
             </div>
 
             {/* Senator Options */}
-            {senators.slice(0, 2).map((senator, index) => (
-              <div key={senator.id} className="flex items-center justify-between p-3 border rounded-lg">
+            {senators.slice(0, 2).map((senator, index) => <div key={senator.id} className="flex items-center justify-between p-3 border rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <Checkbox
-                    checked={index === 0 ? customSelection.senator1 : customSelection.senator2}
-                    onCheckedChange={(checked) => 
-                      handleCustomSelection(index === 0 ? 'senator1' : 'senator2', checked as boolean)
-                    }
-                  />
+                  <Checkbox checked={index === 0 ? customSelection.senator1 : customSelection.senator2} onCheckedChange={checked => handleCustomSelection(index === 0 ? 'senator1' : 'senator2', checked as boolean)} />
                   <div>
                     <span className="font-medium">Sen. {senator.name}</span>
                     <span className="text-sm text-muted-foreground ml-2">— $5</span>
                   </div>
                 </div>
-              </div>
-            ))}
+              </div>)}
 
             {/* Guardrail */}
             <p className="text-xs text-muted-foreground">Pick at least one recipient.</p>
@@ -561,30 +468,18 @@ export function CheckoutScreen() {
                   {Object.values(customSelection).filter(Boolean).length} selected
                 </span>
                 <span className="font-semibold">
-                  {Object.values(customSelection).filter(Boolean).length === 3 ? (
-                    <>$15 <span className="line-through text-muted-foreground">$12</span> total · Save $3</>
-                  ) : (
-                    `$${Object.values(customSelection).filter(Boolean).length * 5} total`
-                  )}
+                  {Object.values(customSelection).filter(Boolean).length === 3 ? <>$15 <span className="line-through text-muted-foreground">$12</span> total · Save $3</> : `$${Object.values(customSelection).filter(Boolean).length * 5} total`}
                 </span>
               </div>
               
               <div className="flex gap-3">
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowMixMatch(false)}
-                  className="flex-1"
-                >
+                <Button variant="secondary" onClick={() => setShowMixMatch(false)} className="flex-1">
                   Cancel
                 </Button>
-                <Button
-                  onClick={() => {
-                    setSelection('custom');
-                    setShowMixMatch(false);
-                  }}
-                  className="flex-1"
-                  disabled={Object.values(customSelection).filter(Boolean).length === 0}
-                >
+                <Button onClick={() => {
+                setSelection('custom');
+                setShowMixMatch(false);
+              }} className="flex-1" disabled={Object.values(customSelection).filter(Boolean).length === 0}>
                   Continue — ${Object.values(customSelection).filter(Boolean).length === 3 ? 12 : Object.values(customSelection).filter(Boolean).length * 5}
                 </Button>
               </div>
