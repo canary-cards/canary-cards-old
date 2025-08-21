@@ -296,7 +296,7 @@ export function CheckoutScreen() {
                     </h3>
                     
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                         {rep?.photo ? (
                           <img 
                             src={rep.photo} 
@@ -311,7 +311,7 @@ export function CheckoutScreen() {
                       </div>
                       {senators[0] && <>
                           <span className="text-muted-foreground">·</span>
-                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                          <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                             {senators[0].photo ? (
                               <img 
                                 src={senators[0].photo} 
@@ -327,7 +327,7 @@ export function CheckoutScreen() {
                         </>}
                       {senators[1] && <>
                           <span className="text-muted-foreground">·</span>
-                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                          <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                             {senators[1].photo ? (
                               <img 
                                 src={senators[1].photo} 
