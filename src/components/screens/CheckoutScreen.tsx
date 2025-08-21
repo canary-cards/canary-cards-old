@@ -239,7 +239,7 @@ export function CheckoutScreen() {
                       />
                     </div>
                     
-                    <h3 className="font-semibold text-lg mb-3 pr-8">
+                    <h3 className="subtitle mb-3 pr-8">
                       Send to Rep. {rep?.name.split(' ').pop() || 'Representative'} only
                     </h3>
                     
@@ -277,7 +277,7 @@ export function CheckoutScreen() {
                   <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative ${selection === 'all-three' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('all-three')}>
                     {/* Badge in top-left corner */}
                     <div className="absolute top-4 left-4">
-                      <Badge className="bg-black text-yellow-400 font-medium">Save $3 - Recommended</Badge>
+                      <Badge className="bg-primary text-yellow-400 font-medium">Save $3 - Recommended</Badge>
                     </div>
                     
                     {/* Checkbox in top-right corner */}
@@ -289,7 +289,7 @@ export function CheckoutScreen() {
                       />
                     </div>
                     
-                    <h3 className="font-semibold text-lg mb-3 pr-8 pt-6">
+                    <h3 className="subtitle mb-3 pr-8 pt-6">
                       Send to Rep. {rep?.name.split(' ').pop() || 'Representative'}, 
                       {senators[0] && ` Sen. ${senators[0].name.split(' ').pop()}`}
                       {senators[1] && `, and Sen. ${senators[1].name.split(' ').pop()}`}
