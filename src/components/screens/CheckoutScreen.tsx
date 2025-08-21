@@ -380,10 +380,6 @@ export function CheckoutScreen() {
 
 
 
-                {/* Micro-copy */}
-                <p className="text-sm text-muted-foreground text-center">
-                  You'll get an email when your card is mailed.
-                </p>
 
                 {/* Navigation */}
                 <div className="flex gap-2 sm:gap-4 pt-4 border-t">
