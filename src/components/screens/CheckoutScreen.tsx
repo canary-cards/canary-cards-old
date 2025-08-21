@@ -232,7 +232,11 @@ export function CheckoutScreen() {
                   <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative ${selection === 'rep-only' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('rep-only')}>
                     {/* Checkbox in top-right corner */}
                     <div className="absolute top-4 right-4">
-                      <Checkbox checked={selection === 'rep-only'} onCheckedChange={checked => checked && handleSelectionChange('rep-only')} onClick={e => e.stopPropagation()} />
+                      <Checkbox 
+                        checked={selection === 'rep-only'} 
+                        onCheckedChange={(checked) => checked && handleSelectionChange('rep-only')}
+                        onClick={(e) => e.stopPropagation()}
+                      />
                     </div>
                     
                     <h3 className="subtitle mb-3 pr-8">
@@ -241,13 +245,23 @@ export function CheckoutScreen() {
                     
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                        {rep?.photo ? <img src={rep.photo} alt={`Photo of Rep. ${rep.name}`} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
+                        {rep?.photo ? (
+                          <img 
+                            src={rep.photo} 
+                            alt={`Photo of Rep. ${rep.name}`} 
+                            className="w-full h-full object-cover" 
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
                             {rep?.name.split(' ').map(n => n[0]).join('')}
-                          </div>}
+                          </div>
+                        )}
                       </div>
                     </div>
                     
-                    
+                    <p className="text-sm text-foreground mb-2">
+                      Rep. {rep?.name}
+                    </p>
                     
                     <p className="text-primary font-semibold mb-2">$5 total</p>
                     
@@ -265,7 +279,11 @@ export function CheckoutScreen() {
                     
                     {/* Checkbox in top-right corner */}
                     <div className="absolute top-4 right-4">
-                      <Checkbox checked={selection === 'all-three'} onCheckedChange={checked => checked && handleSelectionChange('all-three')} onClick={e => e.stopPropagation()} />
+                      <Checkbox 
+                        checked={selection === 'all-three'} 
+                        onCheckedChange={(checked) => checked && handleSelectionChange('all-three')}
+                        onClick={(e) => e.stopPropagation()}
+                      />
                     </div>
                     
                     <h3 className="subtitle mb-3 pr-8">
@@ -276,24 +294,48 @@ export function CheckoutScreen() {
                     
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                        {rep?.photo ? <img src={rep.photo} alt={`Photo of Rep. ${rep.name}`} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
+                        {rep?.photo ? (
+                          <img 
+                            src={rep.photo} 
+                            alt={`Photo of Rep. ${rep.name}`} 
+                            className="w-full h-full object-cover" 
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
                             {rep?.name.split(' ').map(n => n[0]).join('')}
-                          </div>}
+                          </div>
+                        )}
                       </div>
                       {senators[0] && <>
                           <span className="text-muted-foreground">·</span>
                           <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                            {senators[0].photo ? <img src={senators[0].photo} alt={`Photo of Sen. ${senators[0].name}`} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
+                            {senators[0].photo ? (
+                              <img 
+                                src={senators[0].photo} 
+                                alt={`Photo of Sen. ${senators[0].name}`} 
+                                className="w-full h-full object-cover" 
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
                                 {senators[0].name.split(' ').map(n => n[0]).join('')}
-                              </div>}
+                              </div>
+                            )}
                           </div>
                         </>}
                       {senators[1] && <>
                           <span className="text-muted-foreground">·</span>
                           <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                            {senators[1].photo ? <img src={senators[1].photo} alt={`Photo of Sen. ${senators[1].name}`} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
+                            {senators[1].photo ? (
+                              <img 
+                                src={senators[1].photo} 
+                                alt={`Photo of Sen. ${senators[1].name}`} 
+                                className="w-full h-full object-cover" 
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
                                 {senators[1].name.split(' ').map(n => n[0]).join('')}
-                              </div>}
+                              </div>
+                            )}
                           </div>
                         </>}
                     </div>
