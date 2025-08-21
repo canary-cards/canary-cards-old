@@ -225,130 +225,74 @@ export function CheckoutScreen() {
           {/* Section 1 - Recipients Panel */}
           <Card className="card-warm mb-6">
             <CardContent className="p-6">
-              <div className="space-y-6">
-                {/* Single Voice Label */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-primary">Single Voice</Label>
-                  <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative ${selection === 'rep-only' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('rep-only')}>
-                    {/* Checkbox in top-right corner */}
-                    <div className="absolute top-4 right-4">
-                      <Checkbox 
-                        checked={selection === 'rep-only'} 
-                        onCheckedChange={(checked) => checked && handleSelectionChange('rep-only')}
-                        onClick={(e) => e.stopPropagation()}
-                      />
+              <div className="space-y-4">
+                {/* Card A - Just your Representative */}
+                <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${selection === 'rep-only' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('rep-only')}>
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <input type="radio" checked={selection === 'rep-only'} onChange={() => handleSelectionChange('rep-only')} className="text-primary focus:ring-primary" />
+                      <Badge variant="secondary" className="text-xs">Single Voice</Badge>
                     </div>
-                    
-                    <h3 className="subtitle mb-3 pr-8">
-                      Send to Rep. {rep?.name.split(' ').pop() || 'Representative'} only
-                    </h3>
-                    
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                        {rep?.photo ? (
-                          <img 
-                            src={rep.photo} 
-                            alt={`Photo of Rep. ${rep.name}`} 
-                            className="w-full h-full object-cover" 
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
-                            {rep?.name.split(' ').map(n => n[0]).join('')}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <p className="text-sm text-foreground mb-2">
-                      ✓ Rep. {rep?.name}
-                    </p>
-                    
-                    <p className="text-primary font-semibold mb-2">$5 total</p>
-                    
-                    <p className="text-sm text-muted-foreground">
-                      Quieter reach — one office hears you today.
-                    </p>
                   </div>
+                  
+                  <h3 className="font-semibold text-lg mb-2">
+                    Send to Rep. {rep?.name.split(' ').pop() || 'Representative'} only
+                  </h3>
+                  
+                  <div className="flex items-center gap-3 mb-3">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={rep?.photo} alt={`Photo of Rep. ${rep?.name}`} />
+                      <AvatarFallback>{rep?.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  
+                  <p className="text-sm text-foreground mb-2">
+                    ✓ Rep. {rep?.name}
+                  </p>
+                  
+                  <p className="text-primary font-semibold mb-2">$5 total</p>
+                  
+                  <p className="text-sm text-muted-foreground">
+                    Quieter reach — one office hears you today.
+                  </p>
                 </div>
 
-                {/* Maximum Impact Label */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-primary">Maximum Impact</Label>
-                  <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative ${selection === 'all-three' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('all-three')}>
-                    {/* Badge in top-left corner */}
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-primary text-yellow-400 font-medium">Save $3 - Recommended</Badge>
-                    </div>
-                    
-                    {/* Checkbox in top-right corner */}
-                    <div className="absolute top-4 right-4">
-                      <Checkbox 
-                        checked={selection === 'all-three'} 
-                        onCheckedChange={(checked) => checked && handleSelectionChange('all-three')}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    </div>
-                    
-                    <h3 className="subtitle mb-3 pr-8 pt-6">
-                      Send to Rep. {rep?.name.split(' ').pop() || 'Representative'}, 
-                      {senators[0] && ` Sen. ${senators[0].name.split(' ').pop()}`}
-                      {senators[1] && `, and Sen. ${senators[1].name.split(' ').pop()}`}
-                    </h3>
-                    
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                        {rep?.photo ? (
-                          <img 
-                            src={rep.photo} 
-                            alt={`Photo of Rep. ${rep.name}`} 
-                            className="w-full h-full object-cover" 
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
-                            {rep?.name.split(' ').map(n => n[0]).join('')}
-                          </div>
-                        )}
-                      </div>
-                      {senators[0] && <>
-                          <span className="text-muted-foreground">·</span>
-                          <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                            {senators[0].photo ? (
-                              <img 
-                                src={senators[0].photo} 
-                                alt={`Photo of Sen. ${senators[0].name}`} 
-                                className="w-full h-full object-cover" 
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
-                                {senators[0].name.split(' ').map(n => n[0]).join('')}
-                              </div>
-                            )}
-                          </div>
-                        </>}
-                      {senators[1] && <>
-                          <span className="text-muted-foreground">·</span>
-                          <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                            {senators[1].photo ? (
-                              <img 
-                                src={senators[1].photo} 
-                                alt={`Photo of Sen. ${senators[1].name}`} 
-                                className="w-full h-full object-cover" 
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-primary text-sm font-medium">
-                                {senators[1].name.split(' ').map(n => n[0]).join('')}
-                              </div>
-                            )}
-                          </div>
-                        </>}
-                    </div>
-                    
-                    <p className="text-primary font-semibold mb-2">$12 total · Save $3</p>
-                    
-                    <p className="text-sm text-muted-foreground">
-                      Your message lands on every federal office that represents you.
-                    </p>
+                {/* Card B - All Three (Recommended) */}
+                <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${selection === 'all-three' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('all-three')}>
+                  
+                  
+                  <h3 className="font-semibold text-lg mb-2">
+                    Send to Rep. {rep?.name.split(' ').pop() || 'Representative'}, 
+                    {senators[0] && ` Sen. ${senators[0].name.split(' ').pop()}`}
+                    {senators[1] && `, and Sen. ${senators[1].name.split(' ').pop()}`}
+                  </h3>
+                  
+                  <div className="flex items-center gap-2 mb-3">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={rep?.photo} alt={`Photo of Rep. ${rep?.name}`} />
+                      <AvatarFallback>{rep?.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                    {senators[0] && <>
+                        <span className="text-muted-foreground">·</span>
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={senators[0].photo} alt={`Photo of Sen. ${senators[0].name}`} />
+                          <AvatarFallback>{senators[0].name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                      </>}
+                    {senators[1] && <>
+                        <span className="text-muted-foreground">·</span>
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={senators[1].photo} alt={`Photo of Sen. ${senators[1].name}`} />
+                          <AvatarFallback>{senators[1].name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                      </>}
                   </div>
+                  
+                  <p className="text-primary font-semibold mb-2">$12 total · Save $3</p>
+                  
+                  <p className="text-sm text-muted-foreground">
+                    Your message lands on every federal office that represents you.
+                  </p>
                 </div>
 
                 {/* Mix & Match Link */}
@@ -423,13 +367,35 @@ export function CheckoutScreen() {
                   <Label htmlFor="email" className="text-sm font-semibold text-primary">Your Email</Label>
                   <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={e => handleEmailChange(e.target.value)} className="bg-white" />
                   <p className="text-sm text-muted-foreground">
-                    We'll send you an order confirmation here after checkout and when your card is mailed.
+                    We'll send your order confirmation here after checkout.
                   </p>
                   {emailError && <p className="text-sm text-destructive">{emailError}</p>}
                 </div>
 
+                {/* Payment Options Logos */}
+                <div className="flex justify-center items-center gap-6">
+                  <img src="/128px-Apple_Pay_logo.svg.png" alt="Apple Pay" className="h-6" />
+                  <img src="/128px-Google_Pay_Logo.svg.png" alt="Google Pay" className="h-8" />
+                </div>
 
+                {/* Security Assurance */}
+                <div className="flex justify-center items-center gap-2 text-muted-foreground">
+                  <Shield className="w-4 h-4" />
+                  <span className="text-sm">Secure checkout with Stripe</span>
+                </div>
 
+                {/* Primary CTA Button */}
+                <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} variant="spotlight" className="w-full h-14 text-lg font-medium">
+                  {isProcessing ? <>
+                      <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin mr-3" />
+                      <span>Loading checkout...</span>
+                    </> : <span>Checkout — ${getTotalPrice()}</span>}
+                </Button>
+
+                {/* Micro-copy */}
+                <p className="text-sm text-muted-foreground text-center">
+                  You'll get an email when your card is mailed.
+                </p>
 
                 {/* Navigation */}
                 <div className="flex gap-2 sm:gap-4 pt-4 border-t">
@@ -444,7 +410,7 @@ export function CheckoutScreen() {
         </div>
 
         {/* Sticky CTA for Mobile */}
-        {isMobile && <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 z-40 space-y-2">
+        {isMobile && <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 z-40">
             <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} variant="spotlight" className="w-full h-12 text-base font-medium">
               {isProcessing ? <>
                   <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin mr-2" />
@@ -452,15 +418,6 @@ export function CheckoutScreen() {
                 </> : <span>Checkout — ${getTotalPrice()}</span>}
             </Button>
             
-            {/* Payment Options and Security */}
-            <div className="flex justify-center items-center gap-4 text-muted-foreground">
-              <img src="/128px-Apple_Pay_logo.svg.png" alt="Apple Pay" className="h-3" />
-              <img src="/128px-Google_Pay_Logo.svg.png" alt="Google Pay" className="h-4" />
-              <div className="flex items-center gap-1">
-                <Shield className="w-3 h-3" />
-                <span className="text-xs">Secure checkout with Stripe</span>
-              </div>
-            </div>
           </div>}
       </div>
 
