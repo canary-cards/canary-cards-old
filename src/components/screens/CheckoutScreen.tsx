@@ -554,24 +554,6 @@ export function CheckoutScreen() {
             {/* Guardrail */}
             <p className="text-xs text-muted-foreground">Pick at least one recipient.</p>
 
-            {/* Quick Actions */}
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCustomSelection({ representative: true, senator1: true, senator2: true })}
-              >
-                Select all
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCustomSelection({ representative: false, senator1: false, senator2: false })}
-              >
-                Clear all
-              </Button>
-            </div>
-
             {/* Totals Bar */}
             <div className="sticky bottom-0 bg-background border-t pt-4 mt-6">
               <div className="flex items-center justify-between mb-4">
