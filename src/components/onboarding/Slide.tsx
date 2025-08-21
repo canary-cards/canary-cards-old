@@ -7,23 +7,30 @@ interface SlideProps {
   iconPlaceholder: string;
   imageSrc?: string;
   imageAlt?: string;
+  currentSlide: number;
+  allImages: Array<{ src: string; alt: string; }>;
 }
 
-export function Slide({ title, subtitle, finePrint, iconPlaceholder, imageSrc, imageAlt }: SlideProps) {
+export function Slide({ title, subtitle, finePrint, iconPlaceholder, imageSrc, imageAlt, currentSlide, allImages }: SlideProps) {
   return (
     <div className="h-full flex flex-col">
       {/* Top half - Icon placeholder */}
       <div className="flex-1 flex items-center justify-center px-6 py-8">
-        <div className="w-3/5 aspect-[1/1.1] flex items-center justify-center">
-          {imageSrc ? (
+        <div className="w-3/5 aspect-[1/1.1] flex items-center justify-center relative">
+          {/* Render all images at once for instant transitions */}
+          {allImages.map((image, index) => (
             <img 
-              src={imageSrc} 
-              alt={imageAlt || iconPlaceholder}
-              className="w-full h-full object-contain"
+              key={index}
+              src={image.src} 
+              alt={image.alt}
+              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-200 ${
+                index === currentSlide ? 'opacity-100' : 'opacity-0'
+              }`}
               loading="eager"
               decoding="async"
             />
-          ) : (
+          ))}
+          {!imageSrc && (
             <span className="text-xs font-medium text-muted-foreground text-center px-2">
               {iconPlaceholder}
             </span>

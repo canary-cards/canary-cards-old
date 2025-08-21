@@ -50,14 +50,19 @@ export default function Onboarding() {
   const [showSharedBanner, setShowSharedBanner] = useState(false);
   const [sharedBy, setSharedBy] = useState('');
 
-  // Preload images
+  // Preload and decode images for instant display
   useEffect(() => {
-    slides.forEach((slide) => {
+    const preloadPromises = slides.map((slide) => {
       if (slide.imageSrc) {
         const img = new Image();
         img.src = slide.imageSrc;
+        return img.decode().catch(() => {}); // Silently handle decode errors
       }
+      return Promise.resolve();
     });
+    
+    // Wait for all images to be decoded
+    Promise.all(preloadPromises);
   }, []);
 
   // Check for shared link
@@ -276,7 +281,15 @@ export default function Onboarding() {
         onClick={handleClick}
       >
         <div className="h-full max-w-lg mx-auto w-full">
-          <Slide key={currentSlide} {...slides[currentSlide]} />
+          <Slide 
+            key={currentSlide} 
+            {...slides[currentSlide]} 
+            currentSlide={currentSlide}
+            allImages={slides.map(slide => ({ 
+              src: slide.imageSrc || '', 
+              alt: slide.imageAlt || slide.iconPlaceholder 
+            }))}
+          />
         </div>
       </div>
     </div>
