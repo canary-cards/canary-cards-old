@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -54,6 +55,44 @@ const handler = async (req: Request): Promise<Response> => {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
+    }
+
+    // Initialize Supabase client to fetch logo
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+
+    // Try to get logo from Supabase Storage
+    let logoUrl = '';
+    try {
+      const { data: files, error } = await supabase.storage
+        .from('Email logo bucket')
+        .list();
+
+      if (!error && files && files.length > 0) {
+        // Look for PNG files containing 'logo' or 'canary', or use the first PNG
+        const logoFile = files.find(file => 
+          file.name.toLowerCase().includes('.png') && 
+          (file.name.toLowerCase().includes('logo') || file.name.toLowerCase().includes('canary'))
+        ) || files.find(file => file.name.toLowerCase().includes('.png'));
+
+        if (logoFile) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('Email logo bucket')
+            .getPublicUrl(logoFile.name);
+          logoUrl = publicUrl;
+          console.log('Using logo from storage:', logoUrl);
+        }
+      }
+    } catch (storageError) {
+      console.log('Failed to fetch logo from storage, using fallback:', storageError);
+    }
+
+    // Fallback to SVG if storage fetch fails
+    if (!logoUrl) {
+      logoUrl = 'https://www.canary.cards/postallogov1.svg';
+      console.log('Using fallback SVG logo');
     }
 
     const successfulOrders = orderResults.filter(order => order.status === 'success');
@@ -368,7 +407,7 @@ const handler = async (req: Request): Promise<Response> => {
               
               <!-- Canary Logo -->
               <div style="text-align: center; margin-bottom: 1.5rem;">
-                <img src="https://www.canary.cards/postallogov1.svg" alt="Canary Cards" style="width: 48px; height: auto;">
+                <img src="${logoUrl}" alt="Canary Cards" width="48" style="width: 48px; height: auto; display: block; margin: 0 auto;">
               </div>
               
               <!-- H1: Thanks for speaking up -->
