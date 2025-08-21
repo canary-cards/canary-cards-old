@@ -11,6 +11,7 @@ import { CheckoutScreen } from './screens/CheckoutScreen';
 import { SuccessScreen } from './screens/SuccessScreen';
 import { DraftingScreen } from './screens/DraftingScreen';
 import { Logo } from './Logo';
+import { EmailTestButton } from './EmailTestButton';
 
 export function CivicPostcardApp() {
   const { state } = useAppContext();
@@ -55,8 +56,9 @@ export function CivicPostcardApp() {
         {/* Spacer to push hamburger menu to the right when no branding */}
         {state.currentStep === 1 && <div className="flex-1" />}
         
-        {/* Hamburger menu - show on all pages */}
-        <div className="flex-shrink-0">
+        {/* Test button and Hamburger menu - show on all pages */}
+        <div className="flex-shrink-0 flex items-center gap-2">
+          <EmailTestButton />
           <HamburgerMenu />
         </div>
       </div>
