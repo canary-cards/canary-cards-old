@@ -226,9 +226,8 @@ export function CheckoutScreen() {
           <Card className="card-warm mb-6">
             <CardContent className="p-6">
               <div className="space-y-6">
-                {/* Single Voice Label */}
+                {/* Single Voice Card */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium text-primary">Single Voice</Label>
                   <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative ${selection === 'rep-only' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('rep-only')}>
                     {/* Checkbox in top-right corner */}
                     <div className="absolute top-4 right-4">
@@ -238,10 +237,16 @@ export function CheckoutScreen() {
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>
-                    
-                    <h3 className="subtitle mb-3 pr-8">
-                      Send to Rep. {rep?.name.split(' ').pop() || 'Representative'} only
-                    </h3>
+
+                    <div className="mb-2">
+                      <span className="display-title text-lg">Single Voice</span>
+                    </div>
+                    <div className="flex items-center justify-between mb-3 pr-8">
+                      <p className="text-sm text-muted-foreground">
+                        Send to Rep. {rep?.name.split(' ').pop() || 'Representative'} only
+                      </p>
+                      <span className="font-bold text-lg">$5</span>
+                    </div>
                     
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
@@ -263,7 +268,7 @@ export function CheckoutScreen() {
                       Rep. {rep?.name}
                     </p>
                     
-                    <p className="text-primary font-semibold mb-2">$5 total</p>
+                    
                     
                     <p className="text-sm text-muted-foreground">
                       Quieter reach — one office hears you today.
@@ -271,11 +276,15 @@ export function CheckoutScreen() {
                   </div>
                 </div>
 
-                {/* Recommended - Maximum Impact Label */}
+                {/* Recommended - Maximum Impact Card */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium text-primary">Recommended - Maximum Impact</Label>
                   <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative ${selection === 'all-three' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('all-three')}>
-                    {/* Removed badge */}
+                    {/* Save $3 Badge */}
+                    <div className="absolute -top-2 -left-2 z-10">
+                      <div className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-semibold shadow-md">
+                        Save $3
+                      </div>
+                    </div>
                     
                     {/* Checkbox in top-right corner */}
                     <div className="absolute top-4 right-4">
@@ -286,11 +295,20 @@ export function CheckoutScreen() {
                       />
                     </div>
                     
-                    <h3 className="subtitle mb-3 pr-8">
-                      Send to Rep. {rep?.name.split(' ').pop() || 'Representative'}, 
-                      {senators[0] && ` Sen. ${senators[0].name.split(' ').pop()}`}
-                      {senators[1] && `, and Sen. ${senators[1].name.split(' ').pop()}`}
-                    </h3>
+                    <div className="mb-2">
+                      <span className="display-title text-lg">Recommended – Maximum Impact</span>
+                    </div>
+                    <div className="flex items-center justify-between mb-3 pr-8">
+                      <p className="text-sm text-muted-foreground">
+                        Send to Rep. {rep?.name.split(' ').pop() || 'Representative'}{senators[0] ? `, Sen. ${senators[0].name.split(' ').pop()}` : ''}{senators[1] ? `, and Sen. ${senators[1].name.split(' ').pop()}` : ''}
+                      </p>
+                      <div className="text-right">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground line-through">$15</span>
+                          <span className="font-bold text-lg">$12 total</span>
+                        </div>
+                      </div>
+                    </div>
                     
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
@@ -340,7 +358,7 @@ export function CheckoutScreen() {
                         </>}
                     </div>
                     
-                    <p className="text-primary font-semibold mb-2">$12 total · Save $3</p>
+                    
                     
                     <p className="text-sm text-muted-foreground">
                       Your message lands on every federal office that represents you.
