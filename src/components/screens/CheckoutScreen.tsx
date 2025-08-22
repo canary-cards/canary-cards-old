@@ -33,7 +33,7 @@ export function CheckoutScreen() {
     senator2: false
   });
   const [showMixMatch, setShowMixMatch] = useState(false);
-  const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(!isMobile);
+  const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(false); // Closed by default on mobile
   const [isProcessing, setIsProcessing] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -385,49 +385,55 @@ export function CheckoutScreen() {
 
           {/* Section 3 - Order Summary */}
           <Collapsible open={isOrderSummaryOpen} onOpenChange={setIsOrderSummaryOpen}>
-            <Card className="bg-white border-[#E8DECF] shadow-[0_2px_6px_rgba(0,0,0,0.12)] mb-6">
-              <CollapsibleTrigger className="w-full">
-                <CardHeader className="p-4">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base font-semibold text-primary">
-                      {isMobile ? `Order summary — ${getSelectedCount()} recipients · $${getTotalPrice()}` : 'Order summary'}
-                    </CardTitle>
-                    {isMobile && (isOrderSummaryOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-                  </div>
-                </CardHeader>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <CardContent className="p-4 pt-0">
-                  <div className="space-y-2">
-                    {getSelectedRecipients().representative && <div className="flex justify-between">
-                        <span>Rep. {rep?.name.split(' ').pop() || 'Representative'}</span>
-                        <span>$5.00</span>
-                      </div>}
-                    {getSelectedRecipients().senator1 && senators[0] && <div className="flex justify-between">
-                        <span>Sen. {senators[0].name.split(' ').pop()}</span>
-                        <span>$5.00</span>
-                      </div>}
-                    {getSelectedRecipients().senator2 && senators[1] && <div className="flex justify-between">
-                        <span>Sen. {senators[1].name.split(' ').pop()}</span>
-                        <span>$5.00</span>
-                      </div>}
-                    {getSelectedCount() === 3 && <div className="flex justify-between text-sm text-muted-foreground">
-                        <span>Bundle savings</span>
-                        <span>−$3.00</span>
-                      </div>}
-                    <div className="border-t border-[#E8DECF] pt-2 mt-2">
-                      <div className="flex justify-between text-lg font-bold text-primary">
-                        <span>Total</span>
-                        <span>${getTotalPrice()}</span>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-3">
+            <div className={`rounded-lg border-2 p-4 transition-all mb-6 ${isOrderSummaryOpen ? 'border-primary bg-primary/5' : 'border-border'}`}>
+              <CollapsibleTrigger className="w-full text-left">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <span className="display-title text-lg">
+                      Order summary — {getSelectedCount()} recipient{getSelectedCount() !== 1 ? 's' : ''} · ${getTotalPrice()}
+                    </span>
+                    <p className="text-sm text-muted-foreground">
                       Price includes high-quality postcards, real ballpoint pen, and First-Class postage & mailing.
                     </p>
                   </div>
-                </CardContent>
+                  {isOrderSummaryOpen ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+                </div>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="pt-4 space-y-2">
+                  {getSelectedRecipients().representative && (
+                    <div className="flex justify-between">
+                      <span>Rep. {rep?.name.split(' ').pop() || 'Representative'}</span>
+                      <span>$5.00</span>
+                    </div>
+                  )}
+                  {getSelectedRecipients().senator1 && senators[0] && (
+                    <div className="flex justify-between">
+                      <span>Sen. {senators[0].name.split(' ').pop()}</span>
+                      <span>$5.00</span>
+                    </div>
+                  )}
+                  {getSelectedRecipients().senator2 && senators[1] && (
+                    <div className="flex justify-between">
+                      <span>Sen. {senators[1].name.split(' ').pop()}</span>
+                      <span>$5.00</span>
+                    </div>
+                  )}
+                  {getSelectedCount() === 3 && (
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Bundle savings</span>
+                      <span>−$3.00</span>
+                    </div>
+                  )}
+                  <div className="border-t border-border pt-2 mt-2">
+                    <div className="flex justify-between text-lg font-bold text-foreground">
+                      <span>Total</span>
+                      <span>${getTotalPrice()}</span>
+                    </div>
+                  </div>
+                </div>
               </CollapsibleContent>
-            </Card>
+            </div>
           </Collapsible>
 
           {/* Section 4 - Email & Payments */}
