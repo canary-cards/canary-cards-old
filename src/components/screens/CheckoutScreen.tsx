@@ -367,15 +367,21 @@ export function CheckoutScreen() {
                   </div>
                 </div>
 
-                {/* Mix & Match */}
+                {/* Mix & Match Card */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium text-primary">Mix & Match Recipients</Label>
-                  <button onClick={() => setShowMixMatch(true)} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Choose your own combination
-                  </button>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    $5 each · Choose any combination (Save $3 when you pick all three)
-                  </p>
+                  <div className="cursor-pointer rounded-lg border-2 p-4 transition-all relative border-border hover:border-primary/50" onClick={() => setShowMixMatch(true)}>
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="display-title text-lg">Mix & Match Recipients</h3>
+                    </div>
+                    
+                    <div className="mb-3">
+                      <span className="font-bold text-lg text-foreground">$5 each</span>
+                    </div>
+                    
+                    <p className="text-sm text-muted-foreground">
+                      Choose any combination (Save $3 when you pick all three)
+                    </p>
+                  </div>
                 </div>
 
                 {/* Validation Error */}
