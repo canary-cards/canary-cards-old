@@ -372,6 +372,9 @@ export function CheckoutScreen() {
                   <button onClick={() => setShowMixMatch(true)} className="text-sm text-primary hover:text-primary/80 transition-colors font-medium">
                     Mix and Match Recipients
                   </button>
+                  <p className="text-sm text-muted-foreground">
+                    $5 each. Choose any combination
+                  </p>
                 </div>
 
                 {/* Validation Error */}
