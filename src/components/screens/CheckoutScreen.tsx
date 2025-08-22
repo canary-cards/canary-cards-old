@@ -264,7 +264,7 @@ export function CheckoutScreen() {
                     </div>
                     
                     <div className="mb-3">
-                      <span className="font-bold text-lg">Total: $5</span>
+                      <span className="font-bold text-lg text-foreground">Total: $5</span>
                     </div>
                     
                     
@@ -354,7 +354,7 @@ export function CheckoutScreen() {
                     <div className="mb-3">
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-muted-foreground line-through">Total: $15</span>
-                        <span className="font-bold text-lg">$12</span>
+                        <span className="font-bold text-lg text-foreground">$12</span>
                       </div>
                     </div>
                     
