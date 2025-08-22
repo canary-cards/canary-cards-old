@@ -245,11 +245,10 @@ export function CheckoutScreen() {
                       <p className="text-sm text-muted-foreground">
                         Send to Rep. {rep?.name.split(' ').pop() || 'Representative'} only
                       </p>
-                      <span className="font-bold text-lg">$5</span>
                     </div>
                     
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                         {rep?.photo ? (
                           <img 
                             src={rep.photo} 
@@ -264,9 +263,9 @@ export function CheckoutScreen() {
                       </div>
                     </div>
                     
-                    <p className="text-sm text-foreground mb-2">
-                      Rep. {rep?.name}
-                    </p>
+                    <div className="mb-3">
+                      <span className="font-bold text-lg">Total: $5</span>
+                    </div>
                     
                     
                     
@@ -281,7 +280,7 @@ export function CheckoutScreen() {
                   <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative ${selection === 'all-three' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('all-three')}>
                     {/* Save $3 Badge */}
                     <div className="absolute -top-2 -left-2 z-10">
-                      <div className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-semibold shadow-md">
+                      <div className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full text-xs font-semibold shadow-md">
                         Save $3
                       </div>
                     </div>
@@ -302,12 +301,6 @@ export function CheckoutScreen() {
                       <p className="text-sm text-muted-foreground">
                         Send to Rep. {rep?.name.split(' ').pop() || 'Representative'}{senators[0] ? `, Sen. ${senators[0].name.split(' ').pop()}` : ''}{senators[1] ? `, and Sen. ${senators[1].name.split(' ').pop()}` : ''}
                       </p>
-                      <div className="text-right">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground line-through">$15</span>
-                          <span className="font-bold text-lg">$12 total</span>
-                        </div>
-                      </div>
                     </div>
                     
                     <div className="flex items-center gap-2 mb-3">
@@ -356,6 +349,13 @@ export function CheckoutScreen() {
                             )}
                           </div>
                         </>}
+                    </div>
+                    
+                    <div className="mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground line-through">Total: $15</span>
+                        <span className="font-bold text-lg">Total: $12</span>
+                      </div>
                     </div>
                     
                     
