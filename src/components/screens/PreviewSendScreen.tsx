@@ -315,37 +315,48 @@ export function PreviewSendScreen() {
                           <RadioGroupItem value="single" id="single" />
                           <div className="flex-1">
                             <Label htmlFor="single" className="cursor-pointer">
+                              <div className="mb-2">
+                                <span className="display-title text-lg">Single Voice</span>
+                              </div>
                               <div className="flex items-center justify-between">
-                                <span className="font-medium">Single Postcard</span>
+                                <p className="text-sm text-muted-foreground">
+                                  Send to Rep. {rep?.name.split(' ').slice(-1)[0]} only
+                                </p>
                                 <span className="font-bold text-lg">${singlePrice}</span>
                               </div>
-                              <p className="text-xs text-muted-foreground">
-                                Send to Rep. {rep?.name.split(' ').slice(-1)[0]}
-                              </p>
                             </Label>
                           </div>
                         </div>
                       </CardContent>
                     </Card>
 
-                    <Card className={`cursor-pointer transition-all ${sendOption === 'triple' ? 'ring-2 ring-primary' : ''}`}>
+                    <Card className={`cursor-pointer transition-all relative ${sendOption === 'triple' ? 'ring-2 ring-primary' : ''}`}>
+                      {/* Save $3 Badge */}
+                      <div className="absolute -top-2 -left-2 z-10">
+                        <div className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-semibold shadow-md">
+                          Save $3
+                        </div>
+                      </div>
+                      
                       <CardContent className="p-4">
                         <div className="flex items-center space-x-3">
                           <RadioGroupItem value="triple" id="triple" />
                           <div className="flex-1">
                             <Label htmlFor="triple" className="cursor-pointer">
+                              <div className="mb-2">
+                                <span className="display-title text-lg">Recommended – Maximum Impact</span>
+                              </div>
                               <div className="flex items-center justify-between">
-                                <span className="font-medium">Triple Postcard Package</span>
+                                <p className="text-sm text-muted-foreground">
+                                  Send to Rep. {rep ? rep.name.split(' ').slice(-1)[0] : 'Representative'}{senators.length > 0 ? `, ${senators.map(s => s.name.split(' ').slice(-1)[0]).join(', and ')}` : ''}
+                                </p>
                                 <div className="text-right">
-                                  <span className="font-bold text-lg">${triplePrice}</span>
-                                  <Badge variant="secondary" className="ml-2">
-                                    Save ${savings.toFixed(2)}
-                                  </Badge>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm text-muted-foreground line-through">$15</span>
+                                    <span className="font-bold text-lg">${triplePrice} total</span>
+                                  </div>
                                 </div>
                               </div>
-                              <p className="text-xs text-muted-foreground">
-                                Send to Reps. {rep ? rep.name.split(' ').slice(-1)[0] : 'Representative'}{senators.length > 0 ? `, ${senators.map(s => s.name.split(' ').slice(-1)[0]).join(', and ')}` : ''}
-                              </p>
                             </Label>
                           </div>
                         </div>
