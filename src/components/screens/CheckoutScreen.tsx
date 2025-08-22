@@ -368,7 +368,7 @@ export function CheckoutScreen() {
                 </div>
 
                 {/* Mix & Match */}
-                <div className="space-y-3">
+                <div className="space-y-1">
                   <button onClick={() => setShowMixMatch(true)} className="text-sm text-primary hover:text-primary/80 transition-colors font-medium">
                     Mix and Match Recipients
                   </button>
