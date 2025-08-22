@@ -277,7 +277,7 @@ export function CheckoutScreen() {
 
                 {/* Recommended - Maximum Impact Card */}
                 <div className="space-y-3">
-                  <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative ${selection === 'all-three' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('all-three')}>
+                  <div className={`cursor-pointer rounded-lg border-2 p-4 transition-all relative shadow-lg hover:shadow-xl ${selection === 'all-three' ? 'border-primary bg-primary/5 shadow-xl' : 'border-border hover:border-primary/50'}`} onClick={() => handleSelectionChange('all-three')}>
                     {/* Save $3 Badge */}
                     <div className="absolute -top-2 -left-2 z-10">
                       <div className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full text-xs font-semibold shadow-md">
