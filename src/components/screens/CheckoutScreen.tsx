@@ -385,7 +385,7 @@ export function CheckoutScreen() {
 
           {/* Section 3 - Order Summary */}
           <Collapsible open={isOrderSummaryOpen} onOpenChange={setIsOrderSummaryOpen}>
-            <div className={`rounded-lg border-2 p-4 transition-all mb-6 ${isOrderSummaryOpen ? 'border-primary bg-primary/5' : 'border-border'}`}>
+            <div className={`rounded-lg border-2 p-4 transition-all mb-6 bg-white ${isOrderSummaryOpen ? 'border-primary' : 'border-border'}`}>
               <CollapsibleTrigger className="w-full text-left">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
