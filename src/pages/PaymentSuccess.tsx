@@ -191,11 +191,7 @@ export default function PaymentSuccess() {
         <Card className="shadow-sm">
           <CardContent className="p-5 text-center">
             <div className="flex justify-center mb-4">
-              <div className="relative">
-                <div className="w-12 h-12 border-2 border-primary rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-8 h-8 text-accent" />
-                </div>
-              </div>
+              <CheckCircle className="w-8 h-8 text-accent" />
             </div>
             
             <h1 className="display-title text-primary mb-2">
