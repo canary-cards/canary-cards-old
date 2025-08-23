@@ -46,8 +46,8 @@ export function CivicPostcardApp() {
 
   return (
     <div className="civic-postcard-app">
-      {/* Header - show on all pages except step 1 (landing) */}
-      {state.currentStep > 1 && <Header />}
+      {/* Header - show on all pages */}
+      <Header />
       
       {/* Progress bar - for steps 2-6 and 8 (exclude drafting step 7) */}
       {state.currentStep > 1 && state.currentStep <= 6 || state.currentStep === 8 && (
