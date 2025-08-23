@@ -198,11 +198,11 @@ export default function PaymentSuccess() {
               </div>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-spectral font-bold text-primary mb-2">
+            <h1 className="display-title text-primary mb-2">
               Payment Successful
             </h1>
             
-            <h2 className="display-title mb-4">
+            <h2 className="subtitle mb-4">
               Your postcards are being prepared
             </h2>
             
