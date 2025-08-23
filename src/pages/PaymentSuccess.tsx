@@ -3,7 +3,7 @@ import { useSearchParams, useLocation, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Share } from 'lucide-react';
+import { CheckCircle, Share, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
 import { Logo } from '@/components/Logo';
@@ -57,15 +57,37 @@ export default function PaymentSuccess() {
     });
   };
 
-  // Fallback messages for proof of impact
-  const getProofMessage = () => {
-    const messages = [
-      "Handwritten postcards reach Congressional offices faster than letters or emails. Every card makes your voice harder to ignore.",
-      "Postcards reach Congressional offices faster than letters—no security delays, no spam filters.",
-      "Real ink and paper get noticed. Handwritten postcards stand out when emails and petitions don't.",
-      "Every card adds to a growing chorus of voices — voices your representative can't ignore."
-    ];
-    return messages[Math.floor(Math.random() * messages.length)];
+  // Get order data from search params or localStorage
+  const getOrderData = () => {
+    const sessionId = searchParams.get('session_id');
+    const amount = searchParams.get('amount') || '2.50';
+    const orderNumber = sessionId ? sessionId.slice(-8).toUpperCase() : 'CC' + Math.random().toString(36).substr(2, 6).toUpperCase();
+    
+    try {
+      const storedData = localStorage.getItem('postcardData');
+      if (storedData) {
+        const data = JSON.parse(storedData);
+        const recipients = [];
+        if (data.representative) recipients.push(data.representative.name);
+        if (data.senators) recipients.push(...data.senators.map((s: any) => s.name));
+        
+        return {
+          orderNumber,
+          amount: `$${amount}`,
+          recipients: recipients.length > 0 ? recipients : ['Your Representative'],
+          message: data.finalMessage || data.draftMessage || 'Your message'
+        };
+      }
+    } catch (error) {
+      console.error('Error getting order data:', error);
+    }
+    
+    return {
+      orderNumber,
+      amount: `$${amount}`,
+      recipients: ['Your Representative'],
+      message: 'Your message'
+    };
   };
 
   useEffect(() => {
@@ -150,7 +172,7 @@ export default function PaymentSuccess() {
 
   const representative = getRepresentativeData();
   const deliveryDate = getDeliveryDate();
-  const proofMessage = getProofMessage();
+  const orderData = getOrderData();
 
   return (
     <div className="min-h-screen bg-background">
@@ -161,51 +183,90 @@ export default function PaymentSuccess() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-md mx-auto px-4 pt-20 space-y-8">
+      <div className="max-w-md mx-auto px-4 pt-20 space-y-6">
         
-        {/* 1. Success Header */}
-        <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <CheckCircle className="w-12 h-12 text-accent" />
-          </div>
-          
-          <h1 className="font-display text-3xl font-bold text-primary mb-8">
-            Your postcard is on its way.
-          </h1>
-          
-          <p className="body-text text-muted-foreground mb-8">
-            We'll email you when it's been mailed.
-          </p>
-        </div>
-
-        {/* 2. Proof of Impact */}
-        <Card className="shadow-sm mb-10">
-          <CardContent className="px-10 py-12">
-            <h3 className="eyebrow text-primary mb-3">Proof it matters</h3>
-            <p className="body-text max-w-72 mx-auto leading-relaxed">
-              {proofMessage}
+        {/* 1. Success Card */}
+        <Card className="shadow-sm">
+          <CardContent className="p-5 text-center">
+            <div className="flex justify-center mb-4">
+              <CheckCircle className="w-10 h-10 text-accent" />
+            </div>
+            
+            <h1 className="text-[32px] leading-[38px] font-display font-bold text-primary mb-2">
+              Payment Successful
+            </h1>
+            
+            <p className="text-base text-muted-foreground mb-4">
+              Your postcards are being prepared
+            </p>
+            
+            <p className="text-base text-foreground">
+              We'll email you once your card is in the mail. Your effort lands directly on their desk — not their spam folder.
             </p>
           </CardContent>
         </Card>
 
-        {/* 3. Share Section */}
-        <div className="space-y-8">
-          <div className="border-t border-border my-10"></div>
-          
-          <div className="text-center space-y-6">
-            <h2 className="font-display text-2xl font-semibold text-primary mb-7">
-              Want to spread the word?
-            </h2>
+        {/* 2. Order Summary Card */}
+        <Card className="shadow-sm">
+          <CardContent className="p-5">
+            <h3 className="text-[20px] leading-[26px] font-semibold text-secondary mb-4">Order details</h3>
             
-            <p className="body-text mb-6">
-              Let a friend know how easy it is to send a real postcard in under 2 minutes.
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-base font-medium text-foreground">Order #{orderData.orderNumber}</span>
+                <span className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded">✅ Confirmed</span>
+              </div>
+              
+              <div className="border-t border-[#E8DECF] pt-3">
+                <p className="text-sm font-semibold text-secondary mb-1">Recipients</p>
+                <p className="text-base text-foreground">{orderData.recipients.join(', ')}</p>
+              </div>
+              
+              <div className="border-t border-[#E8DECF] pt-3">
+                <p className="text-sm font-semibold text-secondary mb-1">Message preview</p>
+                <p className="text-base text-foreground line-clamp-2">{orderData.message.substring(0, 60)}...</p>
+              </div>
+              
+              <div className="border-t border-[#E8DECF] pt-3">
+                <p className="text-sm font-semibold text-secondary mb-1">Next Step</p>
+                <p className="text-base text-foreground">Delivery by {deliveryDate}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 3. Proof of Impact Card */}
+        <Card className="shadow-sm">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Mail className="w-4 h-4 text-primary" />
+              <h3 className="text-[20px] leading-[26px] font-semibold text-secondary">Why this matters</h3>
+            </div>
+            
+            <p className="text-base leading-6 text-foreground mb-4">
+              Handwritten postcards reach Congressional offices faster than letters or emails. Verified constituent mail is prioritized by staff.
             </p>
             
-            <div className="space-y-5">
+            <p className="text-sm leading-5 text-foreground opacity-75">
+              You're one of many voices reaching your representatives today — and that volume matters.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* 4. Share Card */}
+        <Card className="shadow-sm">
+          <CardContent className="p-5">
+            <h3 className="text-[20px] leading-[26px] font-semibold text-primary mb-3">Want to share?</h3>
+            
+            <p className="text-base text-foreground mb-4">
+              Let your circle know you did something meaningful today.
+            </p>
+            
+            <div className="space-y-3">
               <Button 
-                variant="primary" 
+                variant="spotlight" 
                 size="lg"
-                className="w-full h-16 px-6"
+                className="w-full"
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
@@ -218,22 +279,27 @@ export default function PaymentSuccess() {
                   }
                 }}
               >
-                <Share className="w-5 h-5 mr-3 flex-shrink-0" />
-                Share with a friend
+                <Share className="w-4 h-4 mr-2" />
+                Share
               </Button>
               
-              <Button variant="secondary" size="lg" className="w-full h-14 px-6">
-                Home
+              <Button variant="primary" size="lg" className="w-full" asChild>
+                <Link to="/">Home</Link>
               </Button>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* 4. Next Steps (Closure) */}
-        <div className="text-center pt-8 pb-6">
-          <p className="text-xs leading-[18px] font-sans font-normal" style={{ color: '#3E5C76', opacity: 0.6 }}>
-            Check your inbox for your order confirmation. We'll notify you again once your card is mailed.
+        {/* 5. Footer */}
+        <div className="text-center pt-4 pb-6">
+          <p className="text-sm text-foreground mb-2">
+            <span className="font-semibold text-primary">You're a verified constituent.</span> That means your message will be prioritized by your elected officials.
           </p>
+          <div className="flex justify-center gap-4 text-sm">
+            <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
+            <Link to="/help" className="text-primary hover:underline">Help</Link>
+            <a href="https://canarycards.com" className="text-primary hover:underline">CanaryCards.com</a>
+          </div>
         </div>
 
       </div>
