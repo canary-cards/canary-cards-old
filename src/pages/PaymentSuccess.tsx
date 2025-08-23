@@ -290,7 +290,18 @@ export default function PaymentSuccess() {
         {/* 5. Footer */}
         <div className="text-center pt-4 pb-6">
           <p className="text-sm text-foreground mb-2">
-            <span className="font-semibold text-primary">You're a verified constituent.</span> That means your message will be prioritized by your elected officials.
+            <span className="font-semibold text-primary">You're a verified constituent of {(() => {
+              try {
+                const storedData = localStorage.getItem('postcardData');
+                if (storedData) {
+                  const data = JSON.parse(storedData);
+                  return data.userInfo?.city || 'your district';
+                }
+              } catch (error) {
+                console.error('Error getting user city:', error);
+              }
+              return 'your district';
+            })()}.</span> That means your message will be prioritized by your elected officials.
           </p>
           <div className="flex justify-center gap-4 text-sm">
             <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
