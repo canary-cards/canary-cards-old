@@ -193,7 +193,7 @@ export default function PaymentSuccess() {
             <div className="flex justify-center mb-4">
               <div className="relative">
                 <div className="w-12 h-12 border-2 border-primary rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-8 h-8 text-accent" />
+                  <CheckCircle className="w-12 h-12 text-accent" />
                 </div>
               </div>
             </div>
