@@ -219,7 +219,7 @@ export default function PaymentSuccess() {
             
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-base font-medium text-foreground">Order #{orderData.orderNumber}</span>
+                <span className="field-label">Order #{orderData.orderNumber}</span>
                 <div className="flex items-center gap-2 px-3 py-1 bg-accent text-accent-foreground text-sm rounded-md">
                   <CheckCircle className="w-3 h-3" />
                   Confirmed
@@ -227,12 +227,12 @@ export default function PaymentSuccess() {
               </div>
               
               <div className="border-t border-border pt-3">
-                <p className="eyebrow mb-1">Recipients</p>
+                <p className="field-label mb-1">Recipients</p>
                 <p className="body-text">{orderData.recipients.join(', ')}</p>
               </div>
               
               <div className="border-t border-border pt-3">
-                <p className="eyebrow mb-1">Next Step</p>
+                <p className="field-label mb-1">Next Step</p>
                 <p className="body-text">Delivery by {deliveryDate}</p>
               </div>
             </div>
