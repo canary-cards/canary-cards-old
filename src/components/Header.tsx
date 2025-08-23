@@ -1,5 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
 import { Logo } from './Logo';
 
 interface HeaderProps {
@@ -8,10 +9,21 @@ interface HeaderProps {
 
 export function Header({ className }: HeaderProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { dispatch } = useAppContext();
 
   const handleLogoClick = () => {
-    console.log('🖱️ Logo clicked - navigating to home');
-    navigate('/', { state: { skipOnboarding: true } });
+    console.log('🖱️ Logo clicked - current path:', location.pathname);
+    
+    if (location.pathname === '/') {
+      // Already on home page, directly reset state
+      console.log('🏠 Already on home - directly resetting state');
+      dispatch({ type: 'RESET_TO_HOME' });
+    } else {
+      // Navigate to home page
+      console.log('🔄 Navigating to home');
+      navigate('/', { state: { skipOnboarding: true } });
+    }
   };
 
   return (
