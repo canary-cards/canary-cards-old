@@ -191,19 +191,23 @@ export default function PaymentSuccess() {
         <Card className="shadow-sm">
           <CardContent className="p-5 text-center">
             <div className="flex justify-center mb-4">
-              <CheckCircle className="w-10 h-10 text-accent" />
+              <div className="relative">
+                <div className="w-12 h-12 border-2 border-primary rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-8 h-8 text-accent" />
+                </div>
+              </div>
             </div>
             
-            <h1 className="text-[32px] leading-[38px] font-display font-bold text-primary mb-2">
+            <h1 className="display-title mb-2">
               Payment Successful
             </h1>
             
-            <p className="text-base text-muted-foreground mb-4">
+            <h2 className="text-2xl leading-8 font-spectral font-semibold text-primary mb-4">
               Your postcards are being prepared
-            </p>
+            </h2>
             
             <p className="text-base text-foreground">
-              We'll email you once your card is in the mail. Your effort lands directly on their desk — not their spam folder.
+              We'll email you as soon as your card is mailed. Your effort lands directly on their desk — not their spam folder.
             </p>
           </CardContent>
         </Card>
@@ -211,21 +215,24 @@ export default function PaymentSuccess() {
         {/* 2. Order Summary Card */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <h3 className="text-[20px] leading-[26px] font-semibold text-secondary mb-4">Order details</h3>
+            <h3 className="eyebrow text-sm mb-4">Order details</h3>
             
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-base font-medium text-foreground">Order #{orderData.orderNumber}</span>
-                <span className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded">✅ Confirmed</span>
+                <div className="flex items-center gap-2 px-3 py-1 bg-accent text-accent-foreground text-sm rounded-md">
+                  <CheckCircle className="w-3 h-3" />
+                  Confirmed
+                </div>
               </div>
               
-              <div className="border-t border-[#E8DECF] pt-3">
-                <p className="text-sm font-semibold text-secondary mb-1">Recipients</p>
+              <div className="border-t border-border pt-3">
+                <p className="eyebrow text-xs mb-1">Recipients</p>
                 <p className="text-base text-foreground">{orderData.recipients.join(', ')}</p>
               </div>
               
-              <div className="border-t border-[#E8DECF] pt-3">
-                <p className="text-sm font-semibold text-secondary mb-1">Next Step</p>
+              <div className="border-t border-border pt-3">
+                <p className="eyebrow text-xs mb-1">Next Step</p>
                 <p className="text-base text-foreground">Delivery by {deliveryDate}</p>
               </div>
             </div>
@@ -237,14 +244,14 @@ export default function PaymentSuccess() {
           <CardContent className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <Mail className="w-4 h-4 text-primary" />
-              <h3 className="text-[20px] leading-[26px] font-semibold text-secondary">Why this matters</h3>
+              <h3 className="eyebrow text-sm">Why this matters</h3>
             </div>
             
             <p className="text-base leading-6 text-foreground mb-4">
               Handwritten postcards reach Congressional offices faster than letters or emails. Verified constituent mail is prioritized by staff.
             </p>
             
-            <p className="text-sm leading-5 text-foreground opacity-75">
+            <p className="text-sm text-muted-foreground">
               You're one of many voices reaching your representatives today — and that volume matters.
             </p>
           </CardContent>
@@ -253,13 +260,13 @@ export default function PaymentSuccess() {
         {/* 4. Share Card */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <h3 className="text-[20px] leading-[26px] font-semibold text-primary mb-3">Want to share?</h3>
+            <h3 className="eyebrow text-xl text-primary mb-3">Want to share?</h3>
             
             <p className="text-base text-foreground mb-4">
               Let your circle know you did something meaningful today.
             </p>
             
-            <div className="space-y-3">
+            <div className="space-y-4">
               <Button 
                 variant="spotlight" 
                 size="lg"
@@ -288,8 +295,8 @@ export default function PaymentSuccess() {
         </Card>
 
         {/* 5. Footer */}
-        <div className="text-center pt-4 pb-6">
-          <p className="text-sm text-foreground mb-2">
+        <div className="text-center pt-6 pb-6">
+          <p className="text-sm mb-2">
             <span className="font-semibold text-primary">You're a verified constituent of {(() => {
               try {
                 const storedData = localStorage.getItem('postcardData');
@@ -301,7 +308,7 @@ export default function PaymentSuccess() {
                 console.error('Error getting user city:', error);
               }
               return 'your district';
-            })()}.</span> That means your message will be prioritized by your elected officials.
+            })()}.</span> <span className="text-foreground">That means your message will be prioritized by your elected officials.</span>
           </p>
           <div className="flex justify-center gap-4 text-sm">
             <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
