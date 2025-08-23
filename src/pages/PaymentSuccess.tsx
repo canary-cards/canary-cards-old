@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CheckCircle, Share, Mail } from 'lucide-react';
+import { BreakthroughCheckmark } from '@/components/ui/breakthrough-checkmark';
 import { useToast } from '@/hooks/use-toast';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
 import { Logo } from '@/components/Logo';
@@ -191,11 +192,7 @@ export default function PaymentSuccess() {
         <Card className="shadow-sm">
           <CardContent className="p-5 text-center">
             <div className="flex justify-center mb-4">
-              <div className="relative">
-                <div className="w-12 h-12 border-2 border-primary rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-12 h-12 text-accent" />
-                </div>
-              </div>
+              <BreakthroughCheckmark size={48} />
             </div>
             
             <h1 className="display-title text-primary mb-2">
