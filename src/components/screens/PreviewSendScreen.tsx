@@ -194,7 +194,7 @@ export function PreviewSendScreen() {
   if (showCheckout && clientSecret) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
+        <div className="container mx-auto px-4 pb-8 max-w-2xl">
           <EmbeddedCheckout 
             clientSecret={clientSecret}
             onBack={handleBackFromCheckout}
@@ -207,7 +207,7 @@ export function PreviewSendScreen() {
   }
 
   return <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 pt-20 pb-8 max-w-2xl">
+      <div className="container mx-auto px-4 pb-8 max-w-2xl">
         <Card className="card-warm">
           <CardContent className="p-8">
             <div className="text-center mb-8">
