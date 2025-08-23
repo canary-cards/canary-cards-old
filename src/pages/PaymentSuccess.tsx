@@ -206,7 +206,7 @@ export default function PaymentSuccess() {
               Your postcards are being prepared
             </h2>
             
-            <p className="text-base text-foreground">
+            <p className="body-text">
               We'll email you as soon as your card is mailed. Your effort lands directly on their desk — not their spam folder.
             </p>
           </CardContent>
@@ -215,7 +215,7 @@ export default function PaymentSuccess() {
         {/* 2. Order Summary Card */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <h3 className="subtitle text-lg mb-4">Order details</h3>
+            <h3 className="subtitle mb-4">Order details</h3>
             
             <div className="space-y-4">
               <div className="flex justify-between items-center">
@@ -227,13 +227,13 @@ export default function PaymentSuccess() {
               </div>
               
               <div className="border-t border-border pt-3">
-                <p className="eyebrow text-xs mb-1">Recipients</p>
-                <p className="text-base text-foreground">{orderData.recipients.join(', ')}</p>
+                <p className="eyebrow mb-1">Recipients</p>
+                <p className="body-text">{orderData.recipients.join(', ')}</p>
               </div>
               
               <div className="border-t border-border pt-3">
-                <p className="eyebrow text-xs mb-1">Next Step</p>
-                <p className="text-base text-foreground">Delivery by {deliveryDate}</p>
+                <p className="eyebrow mb-1">Next Step</p>
+                <p className="body-text">Delivery by {deliveryDate}</p>
               </div>
             </div>
           </CardContent>
@@ -244,14 +244,14 @@ export default function PaymentSuccess() {
           <CardContent className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <Mail className="w-4 h-4 text-primary" />
-              <h3 className="eyebrow text-sm">Why this matters</h3>
+              <h3 className="subtitle">Proof of Impact</h3>
             </div>
             
-            <p className="text-base leading-6 text-foreground mb-4">
+            <p className="body-text mb-4">
               Handwritten postcards reach Congressional offices faster than letters or emails. Verified constituent mail is prioritized by staff.
             </p>
             
-            <p className="text-sm text-muted-foreground">
+            <p className="body-text text-muted-foreground">
               You're one of many voices reaching your representatives today — and that volume matters.
             </p>
           </CardContent>
@@ -260,9 +260,9 @@ export default function PaymentSuccess() {
         {/* 4. Share Card */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <h3 className="eyebrow text-xl text-primary mb-3">Want to share?</h3>
+            <h3 className="subtitle mb-3">Share</h3>
             
-            <p className="text-base text-foreground mb-4">
+            <p className="body-text mb-4">
               Let your circle know you did something meaningful today.
             </p>
             
