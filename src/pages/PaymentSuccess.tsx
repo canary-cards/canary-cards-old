@@ -198,11 +198,11 @@ export default function PaymentSuccess() {
               </div>
             </div>
             
-            <h1 className="display-title mb-2">
+            <h1 className="text-4xl md:text-5xl font-spectral font-bold text-primary mb-2">
               Payment Successful
             </h1>
             
-            <h2 className="text-2xl leading-8 font-spectral font-semibold text-primary mb-4">
+            <h2 className="display-title mb-4">
               Your postcards are being prepared
             </h2>
             
@@ -215,7 +215,7 @@ export default function PaymentSuccess() {
         {/* 2. Order Summary Card */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <h3 className="eyebrow text-sm mb-4">Order details</h3>
+            <h3 className="subtitle text-lg mb-4">Order details</h3>
             
             <div className="space-y-4">
               <div className="flex justify-between items-center">
