@@ -3,7 +3,7 @@ import { useSearchParams, useLocation, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Share } from 'lucide-react';
+import { CheckCircle, Share, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { HamburgerMenu } from '@/components/HamburgerMenu';
 import { Logo } from '@/components/Logo';
@@ -161,51 +161,101 @@ export default function PaymentSuccess() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-md mx-auto px-4 pt-20 space-y-8">
+      <div className="max-w-md mx-auto px-4 pt-20 pb-32 space-y-8">
         
-        {/* 1. Success Header */}
-        <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <CheckCircle className="w-12 h-12 text-accent" />
+        {/* 1. Success Header with Canary Spotlight */}
+        <div className="bg-primary text-white p-6 rounded-t-lg text-center relative">
+          {/* Canary Icon with Spotlight Treatment */}
+          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <div className="w-12 h-12 bg-accent rounded-full border-2 border-primary flex items-center justify-center">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                <span className="text-accent font-bold text-lg">🐦</span>
+              </div>
+            </div>
           </div>
           
-          <h1 className="font-display text-3xl font-bold text-primary mb-8">
-            Your postcard is on its way.
-          </h1>
-          
-          <p className="body-text text-muted-foreground mb-8">
-            We'll email you when it's been mailed.
-          </p>
+          <div className="pt-6">
+            <h1 className="display-title text-white mb-2">
+              Your postcard is confirmed
+            </h1>
+            
+            <p className="text-white/80 text-sm">
+              We'll email you when it's been mailed.
+            </p>
+          </div>
         </div>
 
-        {/* 2. Proof of Impact */}
-        <Card className="shadow-sm mb-10">
-          <CardContent className="px-10 py-12">
-            <h3 className="eyebrow text-primary mb-3">Proof it matters</h3>
-            <p className="body-text max-w-72 mx-auto leading-relaxed">
-              {proofMessage}
+        {/* 2. Order Details Card */}
+        <Card className="bg-white shadow-md rounded-b-lg rounded-t-none">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="display-title text-primary">Order #{searchParams.get('order_id') || '12345'}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-accent" />
+                <span className="text-sm font-medium text-accent">Confirmed</span>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <div>
+                <p className="eyebrow text-secondary mb-1">Recipients</p>
+                <p className="text-primary">{representative?.name || 'Your Representative'}</p>
+              </div>
+              
+              <div>
+                <p className="eyebrow text-secondary mb-1">Next Step</p>
+                <p className="text-primary">Delivery by {deliveryDate}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 3. Why This Matters Card */}
+        <Card className="bg-white shadow-md">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Mail className="w-4 h-4 text-primary" />
+              <h3 className="eyebrow text-secondary">Why This Matters</h3>
+            </div>
+            <p className="body-text leading-relaxed">
+              Handwritten postcards bypass security and land directly on congressional desks—unlike emails and petitions. That means your voice is noticed sooner.
             </p>
           </CardContent>
         </Card>
 
-        {/* 3. Share Section */}
-        <div className="space-y-8">
-          <div className="border-t border-border my-10"></div>
-          
-          <div className="text-center space-y-6">
-            <h2 className="font-display text-2xl font-semibold text-primary mb-7">
-              Want to spread the word?
-            </h2>
-            
-            <p className="body-text mb-6">
-              Let a friend know how easy it is to send a real postcard in under 2 minutes.
+        {/* 4. Reassurance Card */}
+        <Card className="bg-white shadow-md">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-3">
+              <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
+              <h3 className="eyebrow text-secondary">You're All Set</h3>
+            </div>
+            <p className="body-text leading-relaxed">
+              We'll update you as soon as your card is in the mail. Until then, know that your effort—combined with thousands of others—helps amplify real issues.
             </p>
-            
-            <div className="space-y-5">
+          </CardContent>
+        </Card>
+
+        {/* 5. Share Card */}
+        <Card className="bg-white shadow-md">
+          <CardContent className="p-6">
+            <div className="text-center space-y-4">
+              <div>
+                <p className="eyebrow text-secondary mb-2">Optional</p>
+                <h2 className="display-title text-primary mb-3">
+                  Want to share?
+                </h2>
+                <p className="body-text text-muted-foreground">
+                  Let a friend know how easy it is to send a real postcard in under 2 minutes.
+                </p>
+              </div>
+              
               <Button 
-                variant="primary" 
+                variant="spotlight" 
                 size="lg"
-                className="w-full h-16 px-6"
+                className="w-full border-2 border-primary"
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
@@ -221,19 +271,23 @@ export default function PaymentSuccess() {
                 <Share className="w-5 h-5 mr-3 flex-shrink-0" />
                 Share with a friend
               </Button>
-              
-              <Button variant="secondary" size="lg" className="w-full h-14 px-6">
-                Home
-              </Button>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* 4. Next Steps (Closure) */}
-        <div className="text-center pt-8 pb-6">
-          <p className="text-xs leading-[18px] font-sans font-normal" style={{ color: '#3E5C76', opacity: 0.6 }}>
-            Check your inbox for your order confirmation. We'll notify you again once your card is mailed.
+        {/* 6. Footer */}
+        <div className="text-center pt-4">
+          <p className="text-sm text-muted-foreground mb-4">
+            <span className="font-bold text-primary">You're a verified constituent.</span> That means your message will be prioritized by your elected officials.
           </p>
+          
+          <div className="flex justify-center space-x-4 text-xs">
+            <a href="#" className="text-primary hover:underline">Privacy</a>
+            <span className="text-muted-foreground">|</span>
+            <a href="#" className="text-primary hover:underline">Help</a>
+            <span className="text-muted-foreground">|</span>
+            <a href="#" className="text-primary hover:underline">CanaryCards.com</a>
+          </div>
         </div>
 
       </div>
