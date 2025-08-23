@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
-import { HamburgerMenu } from '@/components/HamburgerMenu';
+import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { RobotLoadingScreen } from '@/components/RobotLoadingScreen';
@@ -338,10 +338,9 @@ export default function PaymentReturn() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-4">
-      <div className="absolute top-4 right-4 z-10">
-        <HamburgerMenu />
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col">
+      <Header />
+      <div className="flex-1 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardContent className="p-8 text-center space-y-6">
           {status === 'loading' && (
@@ -381,6 +380,7 @@ export default function PaymentReturn() {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CheckCircle, Share, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { HamburgerMenu } from '@/components/HamburgerMenu';
-import { Logo } from '@/components/Logo';
+import { Header } from '@/components/Header';
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
@@ -178,14 +177,10 @@ export default function PaymentSuccess() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
-        <Logo className="h-8" />
-        <HamburgerMenu />
-      </div>
+      <Header />
 
       {/* Main Content */}
-      <div className="max-w-md mx-auto px-4 pt-20 space-y-6">
+      <div className="max-w-md mx-auto px-4 pt-4 space-y-6">
         
         {/* 1. Success Card */}
         <Card className="shadow-sm">

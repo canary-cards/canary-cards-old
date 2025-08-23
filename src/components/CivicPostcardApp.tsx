@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
-import { HamburgerMenu } from './HamburgerMenu';
+import { Header } from './Header';
 import { ProgressIndicator } from './ProgressIndicator';
 import { LandingScreen } from './screens/LandingScreen';
 import { ReturnAddressScreen } from './screens/ReturnAddressScreen';
@@ -46,32 +46,18 @@ export function CivicPostcardApp() {
 
   return (
     <div className="civic-postcard-app">
-      {/* Header with Canary Cards branding and hamburger menu - show on all pages */}
-      <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between gap-4">
-        {/* Logo - show on all pages except step 1 */}
-        {state.currentStep > 1 && (
-          <Logo />
-        )}
-        
-        {/* Spacer to push hamburger menu to the right when no branding */}
-        {state.currentStep === 1 && <div className="flex-1" />}
-        
-        {/* Test button and Hamburger menu - show on all pages */}
-        <div className="flex-shrink-0 flex items-center gap-2">
-          <EmailTestButton />
-          <HamburgerMenu />
-        </div>
-      </div>
+      {/* Header - show on all pages except step 1 (landing) */}
+      {state.currentStep > 1 && <Header />}
       
-      {/* Progress bar - full width below header for steps 2-6 and 8 (exclude drafting step 7) */}
+      {/* Progress bar - for steps 2-6 and 8 (exclude drafting step 7) */}
       {state.currentStep > 1 && state.currentStep <= 6 || state.currentStep === 8 && (
-        <div className="absolute top-20 left-0 right-0 z-10 px-4">
+        <div className="px-4 py-2">
           <ProgressIndicator currentStep={state.currentStep} totalSteps={7} />
         </div>
       )}
       
-      {/* Content with proper spacing */}
-      <div className={state.currentStep > 1 && state.currentStep !== 7 ? "pt-12" : ""}>
+      {/* Content */}
+      <div>
         {renderCurrentScreen()}
       </div>
     </div>
