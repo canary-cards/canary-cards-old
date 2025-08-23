@@ -15,6 +15,8 @@ import { EmailTestButton } from './EmailTestButton';
 
 export function CivicPostcardApp() {
   const { state } = useAppContext();
+  
+  console.log('🎯 CivicPostcardApp rendering - currentStep:', state.currentStep);
 
   // Scroll to top when step changes
   useEffect(() => {

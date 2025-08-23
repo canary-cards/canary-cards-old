@@ -10,6 +10,7 @@ export function Header({ className }: HeaderProps) {
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
+    console.log('🖱️ Logo clicked - navigating to home');
     navigate('/', { state: { skipOnboarding: true } });
   };
 
