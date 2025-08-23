@@ -60,7 +60,6 @@ export default function PaymentSuccess() {
   // Get order data from search params or localStorage
   const getOrderData = () => {
     const sessionId = searchParams.get('session_id');
-    const amount = searchParams.get('amount') || '2.50';
     const orderNumber = sessionId ? sessionId.slice(-8).toUpperCase() : 'CC' + Math.random().toString(36).substr(2, 6).toUpperCase();
     
     try {
@@ -68,14 +67,19 @@ export default function PaymentSuccess() {
       if (storedData) {
         const data = JSON.parse(storedData);
         const recipients = [];
-        if (data.representative) recipients.push(data.representative.name);
-        if (data.senators) recipients.push(...data.senators.map((s: any) => s.name));
+        
+        // Get actual recipients based on send option
+        if (data.sendOption === 'single' && data.representative) {
+          recipients.push(data.representative.name);
+        } else if (data.sendOption === 'double' && data.representative && data.senators?.[0]) {
+          recipients.push(data.representative.name, data.senators[0].name);
+        } else if (data.sendOption === 'triple' && data.representative && data.senators?.length >= 2) {
+          recipients.push(data.representative.name, data.senators[0].name, data.senators[1].name);
+        }
         
         return {
           orderNumber,
-          amount: `$${amount}`,
-          recipients: recipients.length > 0 ? recipients : ['Your Representative'],
-          message: data.finalMessage || data.draftMessage || 'Your message'
+          recipients: recipients.length > 0 ? recipients : ['Your Representative']
         };
       }
     } catch (error) {
@@ -84,9 +88,7 @@ export default function PaymentSuccess() {
     
     return {
       orderNumber,
-      amount: `$${amount}`,
-      recipients: ['Your Representative'],
-      message: 'Your message'
+      recipients: ['Your Representative']
     };
   };
 
@@ -220,11 +222,6 @@ export default function PaymentSuccess() {
               <div className="border-t border-[#E8DECF] pt-3">
                 <p className="text-sm font-semibold text-secondary mb-1">Recipients</p>
                 <p className="text-base text-foreground">{orderData.recipients.join(', ')}</p>
-              </div>
-              
-              <div className="border-t border-[#E8DECF] pt-3">
-                <p className="text-sm font-semibold text-secondary mb-1">Message preview</p>
-                <p className="text-base text-foreground line-clamp-2">{orderData.message.substring(0, 60)}...</p>
               </div>
               
               <div className="border-t border-[#E8DECF] pt-3">
