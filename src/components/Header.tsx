@@ -50,6 +50,9 @@ export function Header({ className }: HeaderProps) {
             <span className="font-semibold text-primary" style={{ fontFamily: 'Spectral', fontWeight: 600 }}>
               Canary Cards
             </span>
+            <span className="text-sm text-muted-foreground hidden sm:block">
+              Real postcards. Real impact.
+            </span>
           </div>
         </button>
         
