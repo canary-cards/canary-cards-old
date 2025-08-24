@@ -61,9 +61,6 @@ export function HamburgerMenu() {
             <h2 id="menu-title" className="subtitle text-secondary">
               Menu
             </h2>
-            <p className="field-label text-muted-foreground mt-1">
-              Real postcards. Real impact.
-            </p>
           </div>
           
           <nav className="flex-1 px-4 md:px-5 lg:px-6 py-2">
