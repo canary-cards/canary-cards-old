@@ -221,14 +221,11 @@ export function ReturnAddressScreen() {
                   id="fullName"
                   type="text"
                   value={fullName}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    // Capitalize first letter of each word (after spaces)
-                    const capitalizedValue = value.replace(/\b\w/g, (char) => char.toUpperCase());
-                    setFullName(capitalizedValue);
-                  }}
+                  onChange={(e) => setFullName(e.target.value)}
                   placeholder="Enter your full name"
                   className="input-warm h-12 text-base"
+                  autoCapitalize="words"
+                  autoComplete="name"
                   required
                 />
               </div>
