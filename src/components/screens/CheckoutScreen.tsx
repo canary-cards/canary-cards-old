@@ -476,7 +476,7 @@ export function CheckoutScreen() {
             
             {/* Payment Options and Security */}
             <div className="flex justify-center items-center gap-3 text-muted-foreground">
-              <img src="/128px-Apple_Pay_logo.svg.png" alt="Apple Pay" className="h-5" />
+              <img src="/128px-Apple_Pay_logo.svg.png" alt="Apple Pay" className="h-4" />
               <img src="/128px-Google_Pay_Logo.svg.png" alt="Google Pay" className="h-5" />
               <div className="flex items-center gap-1">
                 <Shield className="w-4 h-4" />
