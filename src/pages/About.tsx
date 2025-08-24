@@ -42,6 +42,89 @@ export default function About() {
                     Our robots use real blue ballpoint pens on high-quality cardstock. Each postcard is written in a handwriting style that looks like it came from an actual person—not a printer. Small variations in pressure, spacing, and letter forms make every card unique.
                   </p>
                 </div>
+
+                {/* Step 3 */}
+                <div className="space-y-3">
+                  <div className="eyebrow">We mail it directly.</div>
+                  <p className="body-text">
+                    Your card skips the long screening lines that typed letters face and lands faster on your representative's desk.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Why Postcards Matter Section */}
+          <Card className="card-warm">
+            <CardContent className="p-8 space-y-6">
+              <h2 className="subtitle text-center">Why postcards matter</h2>
+              
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <div className="eyebrow">Read first.</div>
+                  <p className="body-text">
+                    Handwritten mail consistently gets opened and read before email or petitions.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="eyebrow">Constituents count more.</div>
+                  <p className="body-text">
+                    Offices prioritize physical mail from verified constituents over mass campaigns.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="eyebrow">Small effort, big impact.</div>
+                  <p className="body-text">
+                    Just a few handwritten notes on one issue can be enough to raise its profile in congressional offices.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Why Canary is Different Section */}
+          <Card className="card-warm">
+            <CardContent className="p-8 space-y-6">
+              <h2 className="subtitle text-center">Why Canary is different</h2>
+              
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <div className="eyebrow">Authentic handwriting:</div>
+                  <p className="body-text">
+                    Robots with pens—not fonts—so your card looks real.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="eyebrow">No friction:</div>
+                  <p className="body-text">
+                    We handle printing, handwriting, and mailing.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="eyebrow">Proof of impact:</div>
+                  <p className="body-text">
+                    You'll get confirmations when your postcard is in the mail, and you can see your part in the collective volume.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Our Promise Section */}
+          <Card className="card-warm">
+            <CardContent className="p-8 space-y-4">
+              <h2 className="subtitle text-center">Our promise</h2>
+              <div className="space-y-4">
+                <p className="body-text">
+                  You don't need to be an activist to matter. Canary Cards lowers the barrier, removes the busywork, and reassures you that your voice is reaching the right place.
+                </p>
+                <p className="body-text">
+                  Your words, in real ink, on a real postcard—delivered straight to the desk of the people elected to represent you.
+                </p>
               </div>
             </CardContent>
           </Card>
