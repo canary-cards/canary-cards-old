@@ -44,7 +44,7 @@ export function HamburgerMenu() {
       </SheetTrigger>
       <SheetContent 
         side="right" 
-        className="w-[320px] md:w-[360px] bg-white text-primary border-l-0"
+        className="bg-white text-primary border-l-0 max-h-screen overflow-y-auto w-[min(92vw,360px)] md:w-[min(88vw,380px)] lg:w-[400px]"
         style={{
           '--sheet-overlay-bg': 'rgba(47, 65, 86, 0.35)',
           animationDuration: 'var(--motion-duration-200, 200ms)',
@@ -56,21 +56,30 @@ export function HamburgerMenu() {
           id="site-menu"
           aria-labelledby="menu-title"
         >
-          <h2 id="menu-title" className="px-4 pt-4 text-base font-semibold">
-            Menu
-          </h2>
+          <div className="px-4 md:px-5 lg:px-6 pt-4 pb-2 border-b border-[#E8DECF]">
+            <h2 id="menu-title" className="subtitle text-secondary">
+              Menu
+            </h2>
+            <p className="field-label text-muted-foreground mt-1">
+              Real postcards. Real impact.
+            </p>
+          </div>
           
-          <nav className="mt-2">
-            <Link
-              to="/about"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-3 text-base hover:bg-[#FEF4E9] focus:outline-none focus:ring-2 focus:ring-[--ring] rounded-[var(--radius)] motion-safe:transition-colors motion-safe:duration-200"
-            >
-              About Canary
-              <p className="text-sm text-muted-foreground">
-                Real postcards. Real impact.
-              </p>
-            </Link>
+          <nav className="flex-1 px-4 md:px-5 lg:px-6 py-2">
+            <div className="space-y-2">
+              <Link
+                to="/about"
+                onClick={() => setOpen(false)}
+                className="block py-3 body-text hover:bg-[#FEF4E9] focus:outline-none focus:ring-2 focus:ring-primary rounded-[var(--radius)] motion-safe:transition-colors motion-safe:duration-200 min-h-[44px] flex items-center"
+              >
+                <div>
+                  <div className="text-primary">About Canary</div>
+                  <div className="field-label text-muted-foreground mt-1">
+                    Real postcards. Real impact.
+                  </div>
+                </div>
+              </Link>
+            </div>
           </nav>
         </div>
       </SheetContent>
