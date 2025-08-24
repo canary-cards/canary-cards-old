@@ -75,6 +75,9 @@ export function HamburgerMenu() {
               >
                 <div>
                   <div className="text-primary">About Canary</div>
+                  <div className="field-label text-muted-foreground mt-1">
+                    Real postcards. Real impact.
+                  </div>
                 </div>
               </Link>
             </div>
