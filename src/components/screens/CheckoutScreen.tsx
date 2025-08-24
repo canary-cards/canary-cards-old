@@ -475,12 +475,12 @@ export function CheckoutScreen() {
             </Button>
             
             {/* Payment Options and Security */}
-            <div className="flex justify-center items-center gap-4 text-muted-foreground">
-              <img src="/128px-Apple_Pay_logo.svg.png" alt="Apple Pay" className="h-3" />
-              <img src="/128px-Google_Pay_Logo.svg.png" alt="Google Pay" className="h-4" />
+            <div className="flex justify-center items-center gap-3 text-muted-foreground">
+              <img src="/128px-Apple_Pay_logo.svg.png" alt="Apple Pay" className="h-5" />
+              <img src="/128px-Google_Pay_Logo.svg.png" alt="Google Pay" className="h-5" />
               <div className="flex items-center gap-1">
-                <Shield className="w-3 h-3" />
-                <span className="text-xs">Secure checkout with Stripe</span>
+                <Shield className="w-4 h-4" />
+                <span className="text-sm leading-5">Secure checkout with Stripe</span>
               </div>
             </div>
           </div>}
