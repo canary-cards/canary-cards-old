@@ -29,7 +29,7 @@ export default function About() {
               <div className="space-y-8">
                 {/* Step 1 */}
                 <div className="space-y-3">
-                  <div className="eyebrow">You write (or choose a template).</div>
+                  <div className="eyebrow normal-case">You write (or choose a template).</div>
                   <p className="body-text">
                     Type your message, or let our AI help draft a clear and persuasive note.
                   </p>
@@ -37,7 +37,7 @@ export default function About() {
 
                 {/* Step 2 */}
                 <div className="space-y-3">
-                  <div className="eyebrow">We hand-write it for you.</div>
+                  <div className="eyebrow normal-case">We hand-write it for you.</div>
                   <p className="body-text">
                     Our robots use real blue ballpoint pens on high-quality cardstock. Each postcard is written in a handwriting style that looks like it came from an actual person—not a printer. Small variations in pressure, spacing, and letter forms make every card unique.
                   </p>
@@ -45,7 +45,7 @@ export default function About() {
 
                 {/* Step 3 */}
                 <div className="space-y-3">
-                  <div className="eyebrow">We mail it directly.</div>
+                  <div className="eyebrow normal-case">We mail it directly.</div>
                   <p className="body-text">
                     Your card skips the long screening lines that typed letters face and lands faster on your representative's desk.
                   </p>
@@ -61,21 +61,21 @@ export default function About() {
               
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <div className="eyebrow">Read first.</div>
+                  <div className="eyebrow normal-case">Read first.</div>
                   <p className="body-text">
                     Handwritten mail consistently gets opened and read before email or petitions.
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="eyebrow">Constituents count more.</div>
+                  <div className="eyebrow normal-case">Constituents count more.</div>
                   <p className="body-text">
                     Offices prioritize physical mail from verified constituents over mass campaigns.
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="eyebrow">Small effort, big impact.</div>
+                  <div className="eyebrow normal-case">Small effort, big impact.</div>
                   <p className="body-text">
                     Just a few handwritten notes on one issue can be enough to raise its profile in congressional offices.
                   </p>
@@ -91,21 +91,21 @@ export default function About() {
               
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <div className="eyebrow">Authentic handwriting:</div>
+                  <div className="eyebrow normal-case">Authentic handwriting:</div>
                   <p className="body-text">
                     Robots with pens—not fonts—so your card looks real.
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="eyebrow">No friction:</div>
+                  <div className="eyebrow normal-case">No friction:</div>
                   <p className="body-text">
                     We handle printing, handwriting, and mailing.
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="eyebrow">Proof of impact:</div>
+                  <div className="eyebrow normal-case">Proof of impact:</div>
                   <p className="body-text">
                     You'll get confirmations when your postcard is in the mail, and you can see your part in the collective volume.
                   </p>
