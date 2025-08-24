@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { useToast } from '@/hooks/use-toast';
+import { HamburgerMenu } from './HamburgerMenu';
 import { Logo } from './Logo';
 
 interface HeaderProps {
@@ -54,6 +55,11 @@ export function Header({ className }: HeaderProps) {
             </span>
           </div>
         </button>
+        
+        {/* Only show hamburger menu if NOT on onboarding page */}
+        {!location.pathname.startsWith('/onboarding') && (
+          <HamburgerMenu />
+        )}
       </div>
     </header>
   );
