@@ -58,6 +58,22 @@ All colors MUST be HSL.
     --logo-size: 3.25rem; /* ~13, 30% larger than h-10 (2.5rem) */
     --menu-icon-size: 2.25rem; /* ~9, 50% larger than h-6 (1.5rem) */
     --menu-icon-stroke: 1; /* Half thickness of default stroke (2) */
+
+    /* Responsive drawer widths */
+    --drawer-width: min(92vw, 360px);
+  }
+
+  /* Responsive drawer width breakpoints */
+  @media (min-width: 641px) {
+    :root {
+      --drawer-width: min(88vw, 380px);
+    }
+  }
+
+  @media (min-width: 1025px) {
+    :root {
+      --drawer-width: 400px;
+    }
   }
 }
 

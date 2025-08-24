@@ -44,10 +44,11 @@ export function HamburgerMenu() {
       </SheetTrigger>
       <SheetContent 
         side="right" 
-        className="bg-white text-primary border-l-0 max-h-screen overflow-y-auto w-[min(92vw,360px)] md:w-[min(88vw,380px)] lg:w-[400px]"
+        className="bg-white text-primary border-l-0 max-h-screen overflow-y-auto"
         style={{
           '--sheet-overlay-bg': 'rgba(47, 65, 86, 0.35)',
           animationDuration: 'var(--motion-duration-200, 200ms)',
+          width: 'var(--drawer-width)',
         } as React.CSSProperties}
       >
         <div 
