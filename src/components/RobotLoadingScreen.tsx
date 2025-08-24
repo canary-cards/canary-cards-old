@@ -29,15 +29,19 @@ export const RobotLoadingScreen = ({ status, message, onRetry }: RobotLoadingScr
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 flex items-center justify-center p-4">
       <div className="text-center space-y-8 max-w-md">
-        {/* Robot Icon with Animation */}
+        {/* Icon 2 Animation */}
         <div className="relative flex justify-center">
           {status === 'loading' && (
             <>
               <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping scale-150"></div>
-              <div className="relative w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center border-4 border-primary/20 animate-pulse">
-                <Bot className="w-12 h-12 text-primary animate-bounce" />
+              <div className="relative w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center border-4 border-primary/20 animate-pulse">
+                <img 
+                  src="/smallonboarding2.svg" 
+                  alt="Processing" 
+                  className="w-20 h-20 animate-bounce" 
+                />
               </div>
-              {/* Zap animations around the robot */}
+              {/* Zap animations around the icon */}
               <Zap className="absolute top-2 right-2 w-6 h-6 text-accent animate-pulse" style={{ animationDelay: '0.5s' }} />
               <Zap className="absolute bottom-2 left-2 w-4 h-4 text-secondary animate-pulse" style={{ animationDelay: '1s' }} />
             </>
