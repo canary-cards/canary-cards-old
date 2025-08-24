@@ -75,6 +75,12 @@ All colors MUST be HSL.
       --drawer-width: 400px;
     }
   }
+
+  /* Override Sheet component's hardcoded width classes with responsive drawer width */
+  [data-state] > div[role="dialog"] {
+    width: var(--drawer-width) !important;
+    max-width: var(--drawer-width) !important;
+  }
 }
 
 @layer base {
