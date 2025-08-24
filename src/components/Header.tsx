@@ -38,8 +38,8 @@ export function Header({ className }: HeaderProps) {
   };
 
   return (
-    <header className={`bg-background border-b border-border ${className || ''}`}>
-      <div className="flex items-center justify-between px-4 py-4">
+    <header className={`h-14 md:h-16 bg-background border-b border-[#E8DECF] ${className || ''}`}>
+      <div className="flex items-center justify-between px-4 h-full">
         <button 
           onClick={handleLogoClick}
           className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
@@ -47,7 +47,7 @@ export function Header({ className }: HeaderProps) {
         >
           <Logo className="h-8" />
           <div className="flex flex-col">
-            <span className="display-title text-primary">
+            <span className="font-semibold text-primary" style={{ fontFamily: 'Spectral', fontWeight: 600 }}>
               Canary Cards
             </span>
             <span className="text-sm text-muted-foreground hidden sm:block">

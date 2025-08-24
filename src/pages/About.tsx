@@ -1,18 +1,11 @@
 import React from 'react';
 import { Header } from '@/components/Header';
 import { Card, CardContent } from '@/components/ui/card';
-import { HamburgerMenu } from '@/components/HamburgerMenu';
 
 export default function About() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Header with Hamburger Menu */}
-      <div className="relative">
-        <Header />
-        <div className="absolute top-4 right-4">
-          <HamburgerMenu />
-        </div>
-      </div>
+      <Header />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-4xl">
