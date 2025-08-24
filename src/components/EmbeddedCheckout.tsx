@@ -217,11 +217,10 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
             </p>
           </div>
           
-          {/* Stripe Embedded Checkout will mount here with fixed height container */}
+          {/* Stripe Embedded Checkout will mount here */}
           <div 
             id="embedded-checkout" 
-            className="min-h-[500px] max-h-[600px] overflow-hidden"
-            style={{ height: '500px' }}
+            className="min-h-[500px] overflow-auto w-full"
           />
           
           <div className="mt-6 pt-4 border-t">
