@@ -11,7 +11,7 @@ export const RobotLoadingScreen = ({ status, message, onRetry }: RobotLoadingScr
   const [currentMessage, setCurrentMessage] = useState(0);
   
   const loadingMessages = [
-    "Sending postcards to robots...",
+    "Your payment went through. Our robots are picking up their pens. This only takes a few seconds.",
     "Preparing your civic message...", 
     "Connecting to representative networks...",
     "Dispatching your voice to democracy..."
@@ -57,14 +57,14 @@ export const RobotLoadingScreen = ({ status, message, onRetry }: RobotLoadingScr
 
         {/* Status Messages */}
         <div className="space-y-4">
-          <h1 className="text-2xl font-bold text-foreground">
-            {status === 'loading' && "Processing Your Order"}
+          <h1 className="display-title text-primary">
+            {status === 'loading' && "We're writing your postcard..."}
             {status === 'error' && "Oops! Something Went Wrong"}
           </h1>
           
           <div className="space-y-2">
             {status === 'loading' && (
-              <p className="text-lg text-muted-foreground animate-fade-in" key={currentMessage}>
+              <p className="body-text text-muted-foreground animate-fade-in" key={currentMessage}>
                 {loadingMessages[currentMessage]}
               </p>
             )}
@@ -88,12 +88,15 @@ export const RobotLoadingScreen = ({ status, message, onRetry }: RobotLoadingScr
           </div>
         </div>
 
-        {/* Fun Robot Facts */}
+        {/* Fun Fact Card */}
         {status === 'loading' && (
           <div className="bg-card/80 backdrop-blur-sm rounded-xl p-4 card-warm">
-            <p className="text-sm text-muted-foreground italic">
-              🤖 Did you know? Our digital robots work 24/7 to ensure your voice reaches the right representatives at lightning speed!
-            </p>
+            <div className="space-y-2">
+              <p className="eyebrow text-accent-foreground">Did you know?</p>
+              <p className="text-sm text-muted-foreground">
+                Our robots use real pens so your card looks just like one you'd write yourself.
+              </p>
+            </div>
           </div>
         )}
       </div>
