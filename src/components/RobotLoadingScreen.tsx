@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Bot, Zap, CheckCircle, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 interface RobotLoadingScreenProps {
   status: 'loading' | 'error';
@@ -8,43 +7,21 @@ interface RobotLoadingScreenProps {
 }
 
 export const RobotLoadingScreen = ({ status, message, onRetry }: RobotLoadingScreenProps) => {
-  const [currentMessage, setCurrentMessage] = useState(0);
-  
-  const loadingMessages = [
-    "Your payment went through. Our robots are picking up their pens. This only takes a few seconds.",
-    "Preparing your civic message...", 
-    "Connecting to representative networks...",
-    "Dispatching your voice to democracy..."
-  ];
-
-  useEffect(() => {
-    if (status === 'loading') {
-      const interval = setInterval(() => {
-        setCurrentMessage(prev => (prev + 1) % loadingMessages.length);
-      }, 2000);
-      return () => clearInterval(interval);
-    }
-  }, [status]);
+  const staticMessage = "Your payment went through. Our robots are picking up their pens. This only takes a few seconds.";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 flex items-center justify-center p-4">
       <div className="text-center space-y-8 max-w-md">
-        {/* Icon 2 Animation */}
-        <div className="relative flex justify-center">
+        {/* Static Icon */}
+        <div className="flex justify-center">
           {status === 'loading' && (
-            <>
-              <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping scale-150"></div>
-              <div className="relative w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center border-4 border-primary/20 animate-pulse">
-                <img 
-                  src="/smallonboarding2.svg" 
-                  alt="Processing" 
-                  className="w-20 h-20 animate-bounce" 
-                />
-              </div>
-              {/* Zap animations around the icon */}
-              <Zap className="absolute top-2 right-2 w-6 h-6 text-accent animate-pulse" style={{ animationDelay: '0.5s' }} />
-              <Zap className="absolute bottom-2 left-2 w-4 h-4 text-secondary animate-pulse" style={{ animationDelay: '1s' }} />
-            </>
+            <div className="w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center border-4 border-primary/20">
+              <img 
+                src="/smallonboarding2.svg" 
+                alt="Processing" 
+                className="w-20 h-20" 
+              />
+            </div>
           )}
           
           
@@ -64,8 +41,8 @@ export const RobotLoadingScreen = ({ status, message, onRetry }: RobotLoadingScr
           
           <div className="space-y-2">
             {status === 'loading' && (
-              <p className="body-text text-muted-foreground animate-fade-in" key={currentMessage}>
-                {loadingMessages[currentMessage]}
+              <p className="body-text text-muted-foreground">
+                {staticMessage}
               </p>
             )}
             
