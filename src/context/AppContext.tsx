@@ -9,7 +9,8 @@ type AppAction =
   | { type: 'RESET_STATE' }
   | { type: 'RESET_TO_HOME' }
   | { type: 'RESTORE_STATE'; payload: AppState }
-  | { type: 'SET_RESTORING'; payload: boolean };
+  | { type: 'SET_RESTORING'; payload: boolean }
+  | { type: 'SET_PAYMENT_LOADING'; payload: boolean };
 
 const initialState: AppState = {
   currentStep: 1, // Start at landing screen instead of 0
@@ -17,6 +18,7 @@ const initialState: AppState = {
   isLoading: false,
   error: null,
   isRestoring: false, // Start with false since we no longer auto-restore
+  isPaymentLoading: false, // Track global payment loading state
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -56,7 +58,8 @@ function appReducer(state: AppState, action: AppAction): AppState {
         postcardData: {}, 
         isLoading: false, 
         error: null, 
-        isRestoring: false 
+        isRestoring: false,
+        isPaymentLoading: false
       };
       break;
     case 'RESTORE_STATE':
@@ -64,6 +67,9 @@ function appReducer(state: AppState, action: AppAction): AppState {
       break;
     case 'SET_RESTORING':
       newState = { ...state, isRestoring: action.payload };
+      break;
+    case 'SET_PAYMENT_LOADING':
+      newState = { ...state, isPaymentLoading: action.payload };
       break;
     default:
       newState = state;
@@ -188,7 +194,8 @@ export function restoreStateFromStorage(dispatch: React.Dispatch<AppAction>): bo
         postcardData: parsedLocalData,
         isLoading: false,
         error: null,
-        isRestoring: false
+        isRestoring: false,
+        isPaymentLoading: false
       };
       
       if (validateRestoredState(migratedState)) {

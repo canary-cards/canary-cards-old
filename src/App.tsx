@@ -17,26 +17,28 @@ import PasswordReset from "./pages/PasswordReset";
 import Profile from "./pages/Profile";
 import { useEffect, useState } from "react";
 
-import { AppProvider } from "./context/AppContext";
+import { AppProvider, useAppContext } from "./context/AppContext";
 
 const queryClient = new QueryClient();
 
 // Component to detect payment returns and show immediate loading
 const PaymentLoadingDetector = () => {
   const location = useLocation();
-  const [showPaymentLoading, setShowPaymentLoading] = useState(false);
+  const { state, dispatch } = useAppContext();
 
   useEffect(() => {
     // Detect payment return with session_id parameter
     if (location.pathname === '/payment-return' && location.search.includes('session_id=')) {
-      setShowPaymentLoading(true);
-      // Hide after a short delay to allow PaymentReturn component to take over
-      const timer = setTimeout(() => setShowPaymentLoading(false), 100);
-      return () => clearTimeout(timer);
+      dispatch({ type: 'SET_PAYMENT_LOADING', payload: true });
+    } else {
+      // Clear payment loading when navigating away from payment-return
+      if (state.isPaymentLoading && location.pathname !== '/payment-return') {
+        dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
+      }
     }
-  }, [location]);
+  }, [location, dispatch, state.isPaymentLoading]);
 
-  if (showPaymentLoading) {
+  if (state.isPaymentLoading) {
     return <RobotLoadingScreen status="loading" />;
   }
 
@@ -45,7 +47,9 @@ const PaymentLoadingDetector = () => {
 
 const AppContent = () => (
   <>
-    <PaymentLoadingDetector />
+    <AppProvider>
+      <PaymentLoadingDetector />
+    </AppProvider>
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/onboarding" element={<Onboarding />} />

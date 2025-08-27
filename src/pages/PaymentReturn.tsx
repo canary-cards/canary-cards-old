@@ -99,6 +99,8 @@ export default function PaymentReturn() {
         const remainingTime = Math.max(0, minTime - elapsed);
         
         setTimeout(() => {
+          // Clear global payment loading before navigating to success
+          dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
           navigate('/payment-success', { 
             state: { 
               sessionId: searchParams.get('session_id'),
@@ -108,6 +110,8 @@ export default function PaymentReturn() {
         }, remainingTime);
       } else {
         setStatus('error');
+        // Clear global payment loading on error
+        dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
         toast({
           title: "Some postcards failed to order",
           description: `${data.summary.totalSent} ordered, ${data.summary.totalFailed} failed.`,
@@ -117,6 +121,8 @@ export default function PaymentReturn() {
     } catch (error) {
       setStatus('error');
       setOrderingResults({ error: error.message });
+      // Clear global payment loading on error
+      dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
       toast({
         title: "Failed to order postcards",
         description: "Please try again or contact support if the issue persists.",
@@ -173,6 +179,8 @@ export default function PaymentReturn() {
         orderPostcardsWithData(verificationResult.postcardData);
       } else {
         setStatus('error');
+        // Clear global payment loading on error
+        dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
         toast({
           title: "Session data missing",
           description: "Unable to find your postcard data. Please start over.",
@@ -186,6 +194,8 @@ export default function PaymentReturn() {
       
     } catch (error) {
       setStatus('error');
+      // Clear global payment loading on error
+      dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
       toast({
         title: "Payment verification failed",
         description: "Unable to verify payment. Please try again or contact support.",
@@ -202,11 +212,13 @@ export default function PaymentReturn() {
       verifyPaymentAndOrder(sessionId);
     } else {
       setStatus('error');
+      // Clear global payment loading on error
+      dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
       setTimeout(() => {
         navigate('/payment-canceled');
       }, 3000);
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, dispatch]);
 
   // Always show the RobotLoadingScreen - no fallback card
   return (
