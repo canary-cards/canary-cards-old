@@ -1,9 +1,6 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
-import { Header } from '@/components/Header';
-import { Button } from '@/components/ui/button';
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { RobotLoadingScreen } from '@/components/RobotLoadingScreen';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -172,8 +169,6 @@ export default function PaymentReturn() {
           payload: verificationResult.postcardData 
         });
         
-        setStatus('ordering');
-        
         // Start ordering immediately with session data (pass data directly to avoid state timing issues)
         orderPostcardsWithData(verificationResult.postcardData);
       } else {
@@ -204,6 +199,7 @@ export default function PaymentReturn() {
     
     if (sessionId) {
       setStartTime(Date.now());
+      // Start with loading state immediately - no separate processing screen
       setStatus('loading');
       verifyPaymentAndOrder(sessionId);
     } else {
@@ -214,60 +210,11 @@ export default function PaymentReturn() {
     }
   }, [searchParams, navigate]);
 
-  // Show robot loading screen for ordering state, fallback card for error
-  if (status === 'ordering') {
-    return (
-      <RobotLoadingScreen 
-        status="loading"
-        onRetry={retryAttempts < 3 ? retryPostcardOrdering : undefined}
-      />
-    );
-  }
-
+  // Always show the RobotLoadingScreen - no fallback card
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col">
-      <Header />
-      <div className="flex-1 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardContent className="p-8 text-center space-y-6">
-          {status === 'loading' && (
-            <>
-              <Loader2 className="h-16 w-16 text-primary animate-spin mx-auto" />
-              <div className="space-y-2">
-                <h1 className="text-2xl font-bold text-foreground">
-                  Processing Payment...
-                </h1>
-                <p className="text-muted-foreground">
-                  Please wait while we confirm your payment.
-                </p>
-              </div>
-            </>
-          )}
-          
-          {status === 'error' && (
-            <>
-              <XCircle className="h-16 w-16 text-red-500 mx-auto" />
-              <div className="space-y-2">
-                <h1 className="text-2xl font-bold text-foreground">
-                  {orderingResults?.error ? 'Postcard Ordering Failed' : 'Payment Failed'}
-                </h1>
-                <p className="text-muted-foreground">
-                  {orderingResults?.error 
-                    ? 'Your payment was successful, but we had trouble ordering your postcards.'
-                    : 'Redirecting you back to try again...'
-                  }
-                </p>
-                {orderingResults?.error && retryAttempts < 3 && (
-                  <Button onClick={retryPostcardOrdering} className="mt-4">
-                    Retry Ordering ({retryAttempts}/3)
-                  </Button>
-                )}
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-      </div>
-    </div>
+    <RobotLoadingScreen 
+      status={status === 'ordering' ? 'loading' : status}
+      onRetry={retryAttempts < 3 ? retryPostcardOrdering : undefined}
+    />
   );
 }
