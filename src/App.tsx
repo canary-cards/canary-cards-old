@@ -2,8 +2,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { RobotLoadingScreen } from "./components/RobotLoadingScreen";
 import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
 import About from "./pages/About";
@@ -14,10 +15,53 @@ import PaymentReturn from "./pages/PaymentReturn";
 import Auth from "./pages/Auth";
 import PasswordReset from "./pages/PasswordReset";
 import Profile from "./pages/Profile";
+import { useEffect, useState } from "react";
 
 import { AppProvider } from "./context/AppContext";
 
 const queryClient = new QueryClient();
+
+// Component to detect payment returns and show immediate loading
+const PaymentLoadingDetector = () => {
+  const location = useLocation();
+  const [showPaymentLoading, setShowPaymentLoading] = useState(false);
+
+  useEffect(() => {
+    // Detect payment return with session_id parameter
+    if (location.pathname === '/payment-return' && location.search.includes('session_id=')) {
+      setShowPaymentLoading(true);
+      // Hide after a short delay to allow PaymentReturn component to take over
+      const timer = setTimeout(() => setShowPaymentLoading(false), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
+
+  if (showPaymentLoading) {
+    return <RobotLoadingScreen status="loading" />;
+  }
+
+  return null;
+};
+
+const AppContent = () => (
+  <>
+    <PaymentLoadingDetector />
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/about" element={<AppProvider><About /></AppProvider>} />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/password-reset" element={<PasswordReset />} />
+      
+      <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
+      <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
+      <Route path="/payment-canceled" element={<PaymentCanceled />} />
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -26,20 +70,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/about" element={<AppProvider><About /></AppProvider>} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/password-reset" element={<PasswordReset />} />
-            
-            <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
-            <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
-            <Route path="/payment-canceled" element={<PaymentCanceled />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AppContent />
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>

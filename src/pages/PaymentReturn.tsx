@@ -12,7 +12,7 @@ export default function PaymentReturn() {
   const [status, setStatus] = useState<'loading' | 'ordering' | 'error'>('loading');
   const [orderingResults, setOrderingResults] = useState<any>(null);
   const [retryAttempts, setRetryAttempts] = useState(0);
-  const [startTime, setStartTime] = useState<number>(Date.now());
+  const [startTime] = useState<number>(Date.now()); // Remove setStartTime since we don't update it
   const { toast } = useToast();
   const { state, dispatch } = useAppContext();
 
@@ -198,9 +198,7 @@ export default function PaymentReturn() {
     const sessionId = searchParams.get('session_id');
     
     if (sessionId) {
-      setStartTime(Date.now());
-      // Start with loading state immediately - no separate processing screen
-      setStatus('loading');
+      // Immediately start verification without any delay
       verifyPaymentAndOrder(sessionId);
     } else {
       setStatus('error');
