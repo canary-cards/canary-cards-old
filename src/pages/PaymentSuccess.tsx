@@ -3,14 +3,16 @@ import { useSearchParams, useLocation, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Share, Mail } from 'lucide-react';
+import { CheckCircle, Share, Mail, ChevronDown, ChevronUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Header } from '@/components/Header';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const [shareableLink, setShareableLink] = useState('');
+  const [isOrderDetailsOpen, setIsOrderDetailsOpen] = useState(false);
   const { toast } = useToast();
 
   // Get representative data from localStorage
@@ -120,7 +122,7 @@ export default function PaymentSuccess() {
       top: -10px;
       z-index: 1000;
       border-radius: 50%;
-      animation: confetti-fall ${Math.random() * 2 + 1.2}s linear forwards;
+      animation: confetti-fall ${Math.random() * 4 + 2.4}s linear forwards;
     `;
     document.body.appendChild(confetti);
 
@@ -138,7 +140,7 @@ export default function PaymentSuccess() {
       document.head.appendChild(style);
     }
     
-    setTimeout(() => confetti.remove(), 3000);
+    setTimeout(() => confetti.remove(), 6000);
   };
 
   const copyShareableLink = async () => {
@@ -182,84 +184,89 @@ export default function PaymentSuccess() {
       {/* Main Content */}
       <div className="max-w-md mx-auto px-4 pt-4 space-y-6">
         
-        {/* 1. Success Card */}
-        <Card className="shadow-sm">
-          <CardContent className="p-5 text-center">
-            <div className="flex justify-center mb-4">
-              <CheckCircle className="w-8 h-8 text-accent" />
-            </div>
-            
-            <h1 className="display-title text-primary mb-2">
-              Payment Successful
-            </h1>
-            
-            <h2 className="subtitle mb-4">
-              Your postcards are being prepared
-            </h2>
-            
-            <p className="body-text">
-              We'll email you as soon as your card is mailed. Your effort lands directly on their desk — not their spam folder.
-            </p>
-          </CardContent>
-        </Card>
+        {/* Top section with checkmark and headlines */}
+        <div className="text-center space-y-4">
+          <div className="flex justify-center">
+            <CheckCircle className="w-8 h-8 text-accent" />
+          </div>
+          
+          <h1 className="display-title">
+            Order Successful
+          </h1>
+          
+          <p className="subtitle">
+            We're getting to work writing your postcard.
+          </p>
+        </div>
 
-        {/* 2. Order Summary Card */}
-        <Card className="shadow-sm">
-          <CardContent className="p-5">
-            <h3 className="subtitle mb-4">Order details</h3>
-            
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="field-label">Order #{orderData.orderNumber}</span>
-                <div className="flex items-center gap-2 px-3 py-1 bg-accent text-accent-foreground text-sm rounded-md">
-                  <CheckCircle className="w-3 h-3" />
-                  Confirmed
+        {/* Card 1 - Order details (collapsible, default closed) */}
+        <Collapsible open={isOrderDetailsOpen} onOpenChange={setIsOrderDetailsOpen}>
+          <div className={`rounded-lg border-2 p-4 transition-all bg-white ${isOrderDetailsOpen ? 'border-primary' : 'border-border'}`}>
+            <CollapsibleTrigger className="w-full text-left">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <span className="display-title text-lg">
+                    Order {orderData.orderNumber} – {orderData.recipients.length} Card{orderData.recipients.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 px-3 py-1 bg-accent text-accent-foreground text-sm rounded-md">
+                    <CheckCircle className="w-3 h-3" />
+                    Confirmed
+                  </div>
+                  {isOrderDetailsOpen ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
                 </div>
               </div>
-              
-              <div className="border-t border-border pt-3">
-                <p className="field-label mb-1">Recipients</p>
-                <p className="body-text">{orderData.recipients.join(', ')}</p>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="pt-4 space-y-2">
+                {orderData.recipients.map((recipient, index) => (
+                  <div key={index} className="body-text">
+                    {recipient}
+                  </div>
+                ))}
               </div>
-              
-              <div className="border-t border-border pt-3">
-                <p className="field-label mb-1">Next Step</p>
-                <p className="body-text">Delivery by {deliveryDate}</p>
+            </CollapsibleContent>
+          </div>
+        </Collapsible>
+
+        {/* Card 2 - What Happens Next */}
+        <Card className="shadow-sm">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3 mb-4">
+              <img src="/smallonboarding3.svg" alt="Robot arm" className="w-6 h-6" />
+              <h3 className="subtitle">What Happens Next</h3>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-foreground mt-2 flex-shrink-0"></div>
+                <p className="body-text">A copy of your postcard is already in your inbox.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-foreground mt-2 flex-shrink-0"></div>
+                <p className="body-text">We'll hand-write and mail it within 3 business days.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-foreground mt-2 flex-shrink-0"></div>
+                <p className="body-text">You'll get an email once it's in the mail.</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* 3. Proof of Impact Card */}
+        {/* Card 3 - Share section */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Mail className="w-4 h-4 text-primary" />
-              <h3 className="subtitle">Proof of Impact</h3>
-            </div>
+            <h3 className="subtitle text-rust mb-2">Friends listen to friends.</h3>
             
             <p className="body-text mb-4">
-              Handwritten postcards reach Congressional offices faster than letters or emails. Verified constituent mail is prioritized by staff.
-            </p>
-            
-            <p className="body-text text-muted-foreground">
-              You're one of many voices reaching your representatives today — and that volume matters.
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* 4. Share Card */}
-        <Card className="shadow-sm">
-          <CardContent className="p-5">
-            <h3 className="subtitle mb-3">Share</h3>
-            
-            <p className="body-text mb-4">
-              Let your circle know you did something meaningful today.
+              Thanks for taking real action. Your postcard is part of a growing wave reaching leaders' desks.
             </p>
             
             <div className="space-y-4">
               <Button 
-                variant="spotlight" 
+                variant="primary" 
                 size="lg"
                 className="w-full"
                 onClick={() => {
@@ -274,39 +281,15 @@ export default function PaymentSuccess() {
                   }
                 }}
               >
-                <Share className="w-4 h-4 mr-2" />
                 Share
               </Button>
               
-              <Button variant="primary" size="lg" className="w-full" asChild>
+              <Button variant="spotlight" size="lg" className="w-full" asChild>
                 <Link to="/">Home</Link>
               </Button>
             </div>
           </CardContent>
         </Card>
-
-        {/* 5. Footer */}
-        <div className="text-center pt-6 pb-6">
-          <p className="text-sm mb-2">
-            <span className="font-semibold text-primary">You're a verified constituent of {(() => {
-              try {
-                const storedData = localStorage.getItem('postcardData');
-                if (storedData) {
-                  const data = JSON.parse(storedData);
-                  return data.userInfo?.city || 'your district';
-                }
-              } catch (error) {
-                console.error('Error getting user city:', error);
-              }
-              return 'your district';
-            })()}.</span> <span className="text-foreground">That means your message will be prioritized by your elected officials.</span>
-          </p>
-          <div className="flex justify-center gap-4 text-sm">
-            <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
-            <Link to="/help" className="text-primary hover:underline">Help</Link>
-            <a href="https://canarycards.com" className="text-primary hover:underline">CanaryCards.com</a>
-          </div>
-        </div>
 
       </div>
     </div>
