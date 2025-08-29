@@ -42,9 +42,9 @@ const BottomSheetContent = React.forwardRef<
     ref={ref}
     side="bottom"
     className={cn(
-      // Force mobile to be full width and bottom positioned
-      "!fixed !inset-x-0 !bottom-0 !left-0 !right-0 !w-full !border-t !p-0 !rounded-t-[10px]",
-      // Desktop: centered with max-width and margin
+      // Mobile: full-bleed width, pinned bottom, no horizontal overflow
+      "!fixed !inset-x-0 !bottom-0 !left-0 !right-0 !w-full !max-w-full !border-t !p-0 !rounded-t-[10px] pb-[env(safe-area-inset-bottom)]",
+      // Desktop: centered with max-width and margin via transform
       "md:!left-1/2 md:!right-auto md:!w-auto md:!max-w-md md:!-translate-x-1/2 md:!bottom-4 md:!rounded-lg md:!border md:!border-t",
       bottomSheetVariants({ size }),
       className

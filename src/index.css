@@ -76,16 +76,6 @@ All colors MUST be HSL.
     }
   }
 
-  /* Override Sheet component's hardcoded width classes with responsive drawer width */
-  /* Multiple selectors to target the Sheet content element */
-  [data-state] > div[role="dialog"],
-  [data-radix-dialog-content],
-  .fixed.z-50.gap-4.bg-background.p-6.shadow-lg,
-  div[data-state="open"][role="dialog"],
-  div[data-state="closed"][role="dialog"] {
-    width: var(--drawer-width) !important;
-    max-width: var(--drawer-width) !important;
-  }
 }
 
 @layer base {
