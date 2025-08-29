@@ -465,8 +465,9 @@ export function CheckoutScreen() {
           </Card>
         </div>
 
-        {/* Sticky CTA for Mobile */}
-        {isMobile && <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 z-40 space-y-2">
+        {/* Sticky CTA for Both Mobile and Desktop */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 z-40 space-y-2 pb-[env(safe-area-inset-bottom)]">
+          <div className="max-w-2xl mx-auto">
             <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} variant="spotlight" className="w-full h-12 text-base font-medium">
               {isProcessing ? <>
                   <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin mr-2" />
@@ -483,7 +484,8 @@ export function CheckoutScreen() {
                 <span className="text-sm leading-5">Secure checkout with Stripe</span>
               </div>
             </div>
-          </div>}
+          </div>
+        </div>
       </div>
 
       {/* Mix & Match Bottom Sheet */}
