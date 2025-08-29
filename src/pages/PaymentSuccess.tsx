@@ -208,12 +208,12 @@ export default function PaymentSuccess() {
         </div>
 
         {/* Robot arm icon - above order card */}
-        <div className="flex justify-center -my-6">
+        <div className="flex justify-center" style={{ marginTop: 0, marginBottom: 0 }}>
           <img src="/smallonboarding3.svg" alt="Robot arm" className="w-full max-w-96 h-96" />
         </div>
 
         {/* Card 1 - Order details (collapsible, default closed) */}
-        <div className="relative">
+        <div className="relative" style={{ marginTop: 0 }}>
           <Collapsible open={isOrderDetailsOpen} onOpenChange={setIsOrderDetailsOpen}>
             <div className={`rounded-lg border-2 p-4 transition-all bg-white ${isOrderDetailsOpen ? 'border-primary' : 'border-border'}`}>
               <CollapsibleTrigger className="w-full text-left">
