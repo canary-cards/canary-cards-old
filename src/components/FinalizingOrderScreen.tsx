@@ -1,3 +1,5 @@
+import { Loader2 } from 'lucide-react';
+
 interface FinalizingOrderScreenProps {
   status: 'loading' | 'error';
   onRetry?: () => void;
@@ -9,6 +11,7 @@ export const FinalizingOrderScreen = ({ status, onRetry }: FinalizingOrderScreen
       <div className="text-center space-y-6 max-w-md">
         {status === 'loading' && (
           <div className="space-y-4">
+            <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto" />
             <h1 className="display-title">
               Finalizing your order…
             </h1>
