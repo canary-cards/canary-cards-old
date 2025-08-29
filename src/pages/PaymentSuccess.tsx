@@ -217,7 +217,7 @@ export default function PaymentSuccess() {
         </div>
 
         {/* Robot arm icon - positioned with minimal spacing */}
-        <div className="flex justify-center my-0">
+        <div className="flex justify-center my-1">
           <img src="/smallonboarding3.svg" alt="Robot arm" className="w-full max-w-80 h-48 sm:h-56 md:h-64" />
         </div>
 
