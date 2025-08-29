@@ -237,9 +237,10 @@ export default function PaymentSuccess() {
         {/* Card 2 - What Happens Next */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <div className="flex items-center gap-3 mb-4">
-              <img src="/smallonboarding3.svg" alt="Robot arm" className="w-6 h-6" />
-              <h3 className="subtitle">What Happens Next</h3>
+            <h3 className="subtitle text-rust mb-4">What Happens Next</h3>
+            
+            <div className="flex justify-center mb-6">
+              <img src="/smallonboarding3.svg" alt="Robot arm" className="w-32 h-32" />
             </div>
             
             <div className="space-y-3">
@@ -262,7 +263,7 @@ export default function PaymentSuccess() {
         {/* Card 3 - Share section */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <h3 className="subtitle text-rust mb-2">Friends listen to friends.</h3>
+            <h3 className="subtitle text-rust mb-2">FRIENDS LISTEN to FRIENDS</h3>
             
             <p className="body-text mb-4">
               Thanks for taking real action. Your postcard is part of a growing wave reaching leaders' desks.
@@ -270,7 +271,7 @@ export default function PaymentSuccess() {
             
             <div className="space-y-4">
               <Button 
-                variant="primary" 
+                variant="spotlight" 
                 size="lg"
                 className="w-full"
                 onClick={() => {
@@ -288,7 +289,7 @@ export default function PaymentSuccess() {
                 Share
               </Button>
               
-              <Button variant="spotlight" size="lg" className="w-full" asChild>
+              <Button variant="primary" size="lg" className="w-full" asChild>
                 <Link to="/">Home</Link>
               </Button>
             </div>
