@@ -234,14 +234,15 @@ export default function PaymentSuccess() {
           </div>
         </div>
 
+        {/* Robot arm icon - full width between cards */}
+        <div className="flex justify-center py-4">
+          <img src="/smallonboarding3.svg" alt="Robot arm" className="w-full max-w-32 h-32" />
+        </div>
+
         {/* Card 2 - What Happens Next */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
             <h3 className="subtitle text-rust mb-4">What Happens Next</h3>
-            
-            <div className="flex justify-center mb-6">
-              <img src="/smallonboarding3.svg" alt="Robot arm" className="w-32 h-32" />
-            </div>
             
             <div className="space-y-3">
               <div className="flex items-start gap-3">
@@ -263,7 +264,7 @@ export default function PaymentSuccess() {
         {/* Card 3 - Share section */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <h3 className="subtitle text-rust mb-2">FRIENDS LISTEN to FRIENDS</h3>
+            <h3 className="subtitle text-rust mb-2">Friends Listen To Friends</h3>
             
             <p className="body-text mb-4">
               Thanks for taking real action. Your postcard is part of a growing wave reaching leaders' desks.
@@ -286,6 +287,7 @@ export default function PaymentSuccess() {
                   }
                 }}
               >
+                <Share className="w-4 h-4 mr-2" />
                 Share
               </Button>
               
