@@ -42,10 +42,10 @@ const BottomSheetContent = React.forwardRef<
     ref={ref}
     side="bottom"
     className={cn(
-      // Override the default sheet styling for proper responsive behavior
-      "!inset-x-0 !bottom-0 !border-t !p-0",
-      // Mobile: full width, Desktop: centered with max-width
-      "md:!inset-x-auto md:!left-1/2 md:!transform md:!-translate-x-1/2 md:!max-w-md md:!bottom-4 md:!rounded-lg md:!border",
+      // Force mobile to be full width and bottom positioned
+      "!fixed !inset-x-0 !bottom-0 !left-0 !right-0 !w-full !border-t !p-0 !rounded-t-[10px]",
+      // Desktop: centered with max-width and margin
+      "md:!left-1/2 md:!right-auto md:!w-auto md:!max-w-md md:!-translate-x-1/2 md:!bottom-4 md:!rounded-lg md:!border md:!border-t",
       bottomSheetVariants({ size }),
       className
     )}
