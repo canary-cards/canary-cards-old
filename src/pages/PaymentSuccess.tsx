@@ -206,7 +206,7 @@ export default function PaymentSuccess() {
       <div className="max-w-md mx-auto px-4 pt-4">
         
         {/* Top section with checkmark and headlines */}
-        <div className="text-center space-y-4 mb-2">
+        <div className="text-center space-y-2 mb-0">
           <div className="flex justify-center">
             <CheckCircle className="w-8 h-8 text-accent" />
           </div>
@@ -215,14 +215,14 @@ export default function PaymentSuccess() {
             Order Successful
           </h1>
           
-          <p className="subtitle">
+          <p className="subtitle mb-0">
             We're getting to work writing your postcard.
           </p>
         </div>
 
         {/* Robot arm icon - positioned with minimal spacing */}
-        <div className="flex justify-center mb-2">
-          <img src="/smallonboarding3.svg" alt="Robot arm" className="w-full max-w-96 h-96" />
+        <div className="flex justify-center my-0">
+          <img src="/smallonboarding3.svg" alt="Robot arm" className="w-full max-w-80 h-48 sm:h-56 md:h-64" />
         </div>
 
         {/* Card 1 - Order details (collapsible, default closed) */}
