@@ -207,10 +207,6 @@ export default function PaymentSuccess() {
         
         {/* Top section with checkmark and headlines */}
         <div className="text-center space-y-2 mb-0">
-          <div className="flex justify-center">
-            <CheckCircle className="w-8 h-8 text-accent" />
-          </div>
-          
           <h1 className="display-title">
             Order Successful
           </h1>
