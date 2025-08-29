@@ -58,6 +58,18 @@ export default function PaymentSuccess() {
     });
   };
 
+  // Calculate mailing date (4 days from now)
+  const getMailingDate = () => {
+    const today = new Date();
+    const mailingDate = new Date(today);
+    mailingDate.setDate(mailingDate.getDate() + 4);
+    
+    return mailingDate.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric'
+    });
+  };
+
   // Get order data from search params or localStorage
   const getOrderData = () => {
     const sessionId = searchParams.get('session_id');
@@ -183,6 +195,7 @@ export default function PaymentSuccess() {
 
   const representative = getRepresentativeData();
   const deliveryDate = getDeliveryDate();
+  const mailingDate = getMailingDate();
   const orderData = getOrderData();
 
   return (
@@ -222,6 +235,9 @@ export default function PaymentSuccess() {
                     <span className="display-title text-lg">
                       Order #{orderData.orderNumber} – {orderData.recipients.length} Card{orderData.recipients.length !== 1 ? 's' : ''}
                     </span>
+                    <p className="body-text text-muted-foreground text-sm">
+                      Expected mailing date: {mailingDate}
+                    </p>
                   </div>
                   {isOrderDetailsOpen ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
                 </div>
