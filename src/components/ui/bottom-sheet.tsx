@@ -5,13 +5,13 @@ import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
 const bottomSheetVariants = cva(
-  "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
+  "fixed z-50 flex h-auto flex-col border bg-background",
   {
     variants: {
       size: {
-        default: "max-h-[80vh]",
-        large: "max-h-[90vh]",
-        full: "h-screen",
+        default: "max-h-[80vh] md:max-w-md md:mx-auto md:inset-x-4 md:bottom-4 md:rounded-lg inset-x-0 bottom-0 rounded-t-[10px]",
+        large: "max-h-[90vh] md:max-w-lg md:mx-auto md:inset-x-4 md:bottom-4 md:rounded-lg inset-x-0 bottom-0 rounded-t-[10px]", 
+        full: "h-screen md:max-w-2xl md:mx-auto md:inset-x-4 md:top-4 md:bottom-4 md:rounded-lg inset-x-0 inset-y-0 rounded-none",
       }
     },
     defaultVariants: {
