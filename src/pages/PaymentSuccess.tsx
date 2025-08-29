@@ -199,6 +199,11 @@ export default function PaymentSuccess() {
           </p>
         </div>
 
+        {/* Robot arm icon - above order card */}
+        <div className="flex justify-center py-1">
+          <img src="/smallonboarding3.svg" alt="Robot arm" className="w-full max-w-96 h-96" />
+        </div>
+
         {/* Card 1 - Order details (collapsible, default closed) */}
         <div className="relative">
           <Collapsible open={isOrderDetailsOpen} onOpenChange={setIsOrderDetailsOpen}>
@@ -225,18 +230,13 @@ export default function PaymentSuccess() {
             </div>
           </Collapsible>
           
-          {/* Confirmed badge positioned over top right corner */}
+          {/* Confirmed badge positioned over top left corner */}
           <div className="absolute -top-2 -left-2 z-10">
             <div className="flex items-center gap-2 px-3 py-1 bg-accent text-accent-foreground text-sm rounded-md shadow-md">
               <CheckCircle className="w-3 h-3" />
               Confirmed
             </div>
           </div>
-        </div>
-
-        {/* Robot arm icon - full width between cards */}
-        <div className="flex justify-center py-4">
-          <img src="/smallonboarding3.svg" alt="Robot arm" className="w-full max-w-96 h-96" />
         </div>
 
         {/* Card 2 - What Happens Next */}
