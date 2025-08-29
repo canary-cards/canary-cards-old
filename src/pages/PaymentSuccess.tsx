@@ -190,10 +190,10 @@ export default function PaymentSuccess() {
       <Header />
 
       {/* Main Content */}
-      <div className="max-w-md mx-auto px-4 pt-4 space-y-6">
+      <div className="max-w-md mx-auto px-4 pt-4">
         
         {/* Top section with checkmark and headlines */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 mb-6">
           <div className="flex justify-center">
             <CheckCircle className="w-8 h-8 text-accent" />
           </div>
@@ -207,13 +207,13 @@ export default function PaymentSuccess() {
           </p>
         </div>
 
-        {/* Robot arm icon - above order card */}
-        <div className="flex justify-center" style={{ marginTop: 0, marginBottom: 0 }}>
+        {/* Robot arm icon - positioned with minimal spacing */}
+        <div className="flex justify-center mb-4">
           <img src="/smallonboarding3.svg" alt="Robot arm" className="w-full max-w-96 h-96" />
         </div>
 
         {/* Card 1 - Order details (collapsible, default closed) */}
-        <div className="relative" style={{ marginTop: 0 }}>
+        <div className="relative mb-6">
           <Collapsible open={isOrderDetailsOpen} onOpenChange={setIsOrderDetailsOpen}>
             <div className={`rounded-lg border-2 p-4 transition-all bg-white ${isOrderDetailsOpen ? 'border-primary' : 'border-border'}`}>
               <CollapsibleTrigger className="w-full text-left">
@@ -248,7 +248,7 @@ export default function PaymentSuccess() {
         </div>
 
         {/* Card 2 - What Happens Next */}
-        <Card className="shadow-sm">
+        <Card className="shadow-sm mb-6">
           <CardContent className="p-5">
             <h3 className="subtitle mb-4">What Happens Next</h3>
             
