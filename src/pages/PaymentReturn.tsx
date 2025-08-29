@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { RobotLoadingScreen } from '@/components/RobotLoadingScreen';
+import { FinalizingOrderScreen } from '@/components/FinalizingOrderScreen';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAppContext } from '@/context/AppContext';
@@ -220,9 +220,9 @@ export default function PaymentReturn() {
     }
   }, [searchParams, navigate, dispatch]);
 
-  // Always show the RobotLoadingScreen - no fallback card
+  // Always show the FinalizingOrderScreen - no fallback card
   return (
-    <RobotLoadingScreen 
+    <FinalizingOrderScreen 
       status={status === 'ordering' ? 'loading' : status}
       onRetry={retryAttempts < 3 ? retryPostcardOrdering : undefined}
     />

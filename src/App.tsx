@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeProvider";
-import { RobotLoadingScreen } from "./components/RobotLoadingScreen";
+import { FinalizingOrderScreen } from "./components/FinalizingOrderScreen";
 import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
 import About from "./pages/About";
@@ -39,7 +39,7 @@ const PaymentLoadingDetector = () => {
   }, [location, dispatch, state.isPaymentLoading]);
 
   if (state.isPaymentLoading) {
-    return <RobotLoadingScreen status="loading" />;
+    return <FinalizingOrderScreen status="loading" />;
   }
 
   return null;
