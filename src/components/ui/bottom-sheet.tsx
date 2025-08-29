@@ -41,7 +41,14 @@ const BottomSheetContent = React.forwardRef<
   <SheetContent
     ref={ref}
     side="bottom"
-    className={cn(bottomSheetVariants({ size }), className)}
+    className={cn(
+      // Override the default sheet styling for proper responsive behavior
+      "!inset-x-0 !bottom-0 !border-t !p-0",
+      // Mobile: full width, Desktop: centered with max-width
+      "md:!inset-x-auto md:!left-1/2 md:!transform md:!-translate-x-1/2 md:!max-w-md md:!bottom-4 md:!rounded-lg md:!border",
+      bottomSheetVariants({ size }),
+      className
+    )}
     {...props}
   >
     {children}
