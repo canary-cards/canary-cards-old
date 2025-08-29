@@ -61,7 +61,8 @@ export default function PaymentSuccess() {
   // Get order data from search params or localStorage
   const getOrderData = () => {
     const sessionId = searchParams.get('session_id');
-    const orderNumber = sessionId ? sessionId.slice(-8).toUpperCase() : 'CC' + Math.random().toString(36).substr(2, 6).toUpperCase();
+    // Use a consistent order number based on session_id, not random
+    const orderNumber = sessionId ? sessionId.slice(-8).toUpperCase() : 'CC000000';
     
     try {
       const storedData = localStorage.getItem('postcardData');
@@ -69,13 +70,20 @@ export default function PaymentSuccess() {
         const data = JSON.parse(storedData);
         const recipients = [];
         
+        // Helper function to format representative name with title
+        const formatRepName = (rep: any) => {
+          if (!rep) return '';
+          const title = rep.type === 'senator' ? 'Sen.' : 'Rep.';
+          return `${title} ${rep.name}`;
+        };
+        
         // Get actual recipients based on send option
         if (data.sendOption === 'single' && data.representative) {
-          recipients.push(data.representative.name);
+          recipients.push(formatRepName(data.representative));
         } else if (data.sendOption === 'double' && data.representative && data.senators?.[0]) {
-          recipients.push(data.representative.name, data.senators[0].name);
+          recipients.push(formatRepName(data.representative), formatRepName(data.senators[0]));
         } else if (data.sendOption === 'triple' && data.representative && data.senators?.length >= 2) {
-          recipients.push(data.representative.name, data.senators[0].name, data.senators[1].name);
+          recipients.push(formatRepName(data.representative), formatRepName(data.senators[0]), formatRepName(data.senators[1]));
         }
         
         return {
@@ -200,7 +208,7 @@ export default function PaymentSuccess() {
         </div>
 
         {/* Robot arm icon - above order card */}
-        <div className="flex justify-center py-1">
+        <div className="flex justify-center -my-2">
           <img src="/smallonboarding3.svg" alt="Robot arm" className="w-full max-w-96 h-96" />
         </div>
 
