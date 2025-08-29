@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
 import { useAppContext } from '../../context/AppContext';
-import { MapPin, ArrowLeft, Home, Plus, Minus } from 'lucide-react';
+import { MapPin, ArrowLeft, ArrowRight, Home, Plus, Minus } from 'lucide-react';
 import { searchAddressAutocomplete, getPlaceDetails, GooglePlacesAddressPrediction } from '../../services/googlePlaces';
 
 // Interface removed - now using GooglePlacesAddressPrediction from service
@@ -356,6 +356,7 @@ export function ReturnAddressScreen() {
                   disabled={!isFormComplete}
                 >
                   Continue
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
             </form>
