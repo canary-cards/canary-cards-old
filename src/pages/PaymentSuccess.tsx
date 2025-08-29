@@ -200,35 +200,39 @@ export default function PaymentSuccess() {
         </div>
 
         {/* Card 1 - Order details (collapsible, default closed) */}
-        <Collapsible open={isOrderDetailsOpen} onOpenChange={setIsOrderDetailsOpen}>
-          <div className={`rounded-lg border-2 p-4 transition-all bg-white ${isOrderDetailsOpen ? 'border-primary' : 'border-border'}`}>
-            <CollapsibleTrigger className="w-full text-left">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <span className="display-title text-lg">
-                    Order {orderData.orderNumber} – {orderData.recipients.length} Card{orderData.recipients.length !== 1 ? 's' : ''}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 px-3 py-1 bg-accent text-accent-foreground text-sm rounded-md">
-                    <CheckCircle className="w-3 h-3" />
-                    Confirmed
+        <div className="relative">
+          <Collapsible open={isOrderDetailsOpen} onOpenChange={setIsOrderDetailsOpen}>
+            <div className={`rounded-lg border-2 p-4 transition-all bg-white ${isOrderDetailsOpen ? 'border-primary' : 'border-border'}`}>
+              <CollapsibleTrigger className="w-full text-left">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <span className="display-title text-lg">
+                      Order #{orderData.orderNumber} – {orderData.recipients.length} Card{orderData.recipients.length !== 1 ? 's' : ''}
+                    </span>
                   </div>
                   {isOrderDetailsOpen ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
                 </div>
-              </div>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <div className="pt-4 space-y-2">
-                {orderData.recipients.map((recipient, index) => (
-                  <div key={index} className="body-text">
-                    {recipient}
-                  </div>
-                ))}
-              </div>
-            </CollapsibleContent>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="pt-4 space-y-2">
+                  {orderData.recipients.map((recipient, index) => (
+                    <div key={index} className="body-text">
+                      {recipient}
+                    </div>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </div>
+          </Collapsible>
+          
+          {/* Confirmed badge positioned over top right corner */}
+          <div className="absolute -top-2 -right-2 z-10">
+            <div className="flex items-center gap-2 px-3 py-1 bg-accent text-accent-foreground text-sm rounded-md shadow-md">
+              <CheckCircle className="w-3 h-3" />
+              Confirmed
+            </div>
           </div>
-        </Collapsible>
+        </div>
 
         {/* Card 2 - What Happens Next */}
         <Card className="shadow-sm">
