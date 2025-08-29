@@ -30,7 +30,7 @@ export function RepresentativeCard({
       onClick={onClick}
     >
       <CardContent className={`flex items-center ${isCompact ? 'p-2' : 'p-4'}`}>
-        <div className={`${isCompact ? 'w-12 h-12' : 'w-12 h-12 md:w-16 md:h-16'} rounded-lg bg-muted mr-3 md:mr-4 flex-shrink-0 overflow-hidden`}>
+        <div className={`${isCompact ? 'w-12 h-12' : 'w-16 h-16'} rounded-lg bg-muted mr-3 md:mr-4 flex-shrink-0 overflow-hidden`}>
           <img 
             src={representative.photo} 
             alt={representative.name}
