@@ -242,7 +242,7 @@ export default function PaymentSuccess() {
         {/* Card 2 - What Happens Next */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <h3 className="subtitle text-rust mb-4">What Happens Next</h3>
+            <h3 className="subtitle !text-rust mb-4">What Happens Next</h3>
             
             <div className="space-y-3">
               <div className="flex items-start gap-3">
@@ -264,7 +264,7 @@ export default function PaymentSuccess() {
         {/* Card 3 - Share section */}
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <h3 className="subtitle text-rust mb-2">Friends Listen To Friends</h3>
+            <h3 className="subtitle !text-rust mb-2">Friends Listen To Friends</h3>
             
             <p className="body-text mb-4">
               Thanks for taking real action. Your postcard is part of a growing wave reaching leaders' desks.
