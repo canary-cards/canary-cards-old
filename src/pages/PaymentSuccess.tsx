@@ -208,7 +208,7 @@ export default function PaymentSuccess() {
         </div>
 
         {/* Robot arm icon - above order card */}
-        <div className="flex justify-center -my-2">
+        <div className="flex justify-center -my-6">
           <img src="/smallonboarding3.svg" alt="Robot arm" className="w-full max-w-96 h-96" />
         </div>
 
