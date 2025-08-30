@@ -308,10 +308,10 @@ export default function PaymentSuccess() {
                 }}
               >
                 <Share className="w-4 h-4 mr-2" />
-                Share in the group chat.
+                Share in the group chat
               </Button>
               
-              <Button variant="outline" size="lg" className="w-full" asChild>
+              <Button variant="secondary" size="lg" className="w-full button-warm" asChild>
                 <Link to="/">Home</Link>
               </Button>
             </div>
