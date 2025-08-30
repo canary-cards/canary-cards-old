@@ -271,7 +271,7 @@ export default function PaymentSuccess() {
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-foreground mt-2 flex-shrink-0"></div>
-                <p className="body-text">We'll hand-write and mail it within 3 business days.</p>
+                <p className="body-text">We'll write and mail it within 3 business days.</p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-foreground mt-2 flex-shrink-0"></div>
@@ -308,10 +308,10 @@ export default function PaymentSuccess() {
                 }}
               >
                 <Share className="w-4 h-4 mr-2" />
-                Share
+                Share in the group chat.
               </Button>
               
-              <Button variant="primary" size="lg" className="w-full" asChild>
+              <Button variant="outline" size="lg" className="w-full" asChild>
                 <Link to="/">Home</Link>
               </Button>
             </div>
