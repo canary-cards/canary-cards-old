@@ -213,7 +213,9 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           <div className="text-center mb-6">
             <h2 className="text-xl font-semibold mb-2">Complete Your Payment</h2>
             <p className="text-muted-foreground mb-4">
-              {sendOption === 'single' ? 'Single postcard' : 'Triple postcard package'} - ${amount}
+              {sendOption === 'single' ? 'Single postcard package' : 
+               sendOption === 'double' ? 'Double postcard package' : 
+               'Triple postcard package'} - ${amount}
             </p>
           </div>
           

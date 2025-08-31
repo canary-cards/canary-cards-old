@@ -150,6 +150,12 @@ serve(async (req) => {
         send_option: sendOption,
         user_email: email,
         user_full_name: fullName || "",
+        recipient_count: postcardData?.senators ? (sendOption === 'triple' ? postcardData.senators.length + 1 : 
+                                                    sendOption === 'double' ? Math.min(postcardData.senators.length + 1, 2) : 1) : 1,
+        recipient_list: postcardData ? JSON.stringify([
+          postcardData.representative?.name,
+          ...(postcardData.senators || []).slice(0, sendOption === 'triple' ? 2 : sendOption === 'double' ? 1 : 0).map(s => s.name)
+        ].filter(Boolean)) : "[]",
         ...postcardMetadata // Include all postcard data in session metadata
       }
     });

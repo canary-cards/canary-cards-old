@@ -291,10 +291,11 @@ serve(async (req) => {
       });
     }
 
-    // Send to senators if triple package
-    if (sendOption === 'triple' && senators && senators.length > 0) {
-      console.log(`Sending to ${senators.length} senators for triple package`);
-      for (const senator of senators) {
+    // Send to senators based on sendOption
+    if ((sendOption === 'double' || sendOption === 'triple') && senators && senators.length > 0) {
+      const senatorsToSend = sendOption === 'double' ? senators.slice(0, 1) : senators;
+      console.log(`Sending to ${senatorsToSend.length} senators for ${sendOption} package`);
+      for (const senator of senatorsToSend) {
         try {
           // Replace "Dear Rep." with "Dear Sen." for senators, or replace any Rep references with Sen
           let senMessage = finalMessage;
