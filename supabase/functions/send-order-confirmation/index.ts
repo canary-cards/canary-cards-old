@@ -29,13 +29,14 @@ interface OrderConfirmationRequest {
     state: string;
     party: string;
   }>;
-  sendOption: 'single' | 'triple';
+  sendOption: 'single' | 'double' | 'triple';
   orderResults: Array<{
     type: string;
     recipient: string;
     orderId: string;
     status: string;
   }>;
+  finalMessage?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -45,7 +46,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { userInfo, representative, senators, sendOption, orderResults }: OrderConfirmationRequest = await req.json();
+    const { userInfo, representative, senators, sendOption, orderResults, finalMessage }: OrderConfirmationRequest = await req.json();
 
     console.log('Sending order confirmation email to:', userInfo.email);
 
@@ -130,7 +131,43 @@ const handler = async (req: Request): Promise<Response> => {
 
     const successfulOrders = orderResults.filter(order => order.status === 'success');
     
-    // Dynamic recipient rendering - single line for one, list for multiple
+    // Calculate current date and expected dates for email
+    const orderPlacedDate = new Date().toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    const expectedMailingDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    // Generate order number from successful orders
+    const orderNumber = successfulOrders.map(order => order.orderId).join('-');
+    
+    // Calculate total amount based on sendOption
+    let totalAmount;
+    switch (sendOption) {
+      case 'single':
+        totalAmount = '$5.00';
+        break;
+      case 'double':
+        totalAmount = '$8.00';
+        break;
+      case 'triple':
+        totalAmount = '$11.00';
+        break;
+      default:
+        totalAmount = '$11.00';
+    }
+    
+    const cardCount = successfulOrders.length;
+    
+    // Dynamic recipient rendering
     let recipientList;
     if (successfulOrders.length === 1) {
       recipientList = `<span style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6;">${successfulOrders[0].recipient}</span>`;
@@ -138,6 +175,23 @@ const handler = async (req: Request): Promise<Response> => {
       recipientList = `<ul class="unordered-list" style="padding-left: 1.5rem; margin: 0; list-style-type: disc;">
         ${successfulOrders.map(order => `<li style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6; margin-bottom: 0.5rem;">${order.recipient}</li>`).join('')}
       </ul>`;
+    }
+    
+    // Build postcard messages section
+    let postcardMessagesSection = '';
+    if (finalMessage) {
+      // Build individual postcard messages
+      const allRepresentatives = [representative, ...(senators || [])];
+      const representativesToShow = allRepresentatives.slice(0, successfulOrders.length);
+      
+      postcardMessagesSection = representativesToShow.map((rep, index) => `
+        <div style="background-color: #ffffff; padding: 1.5rem; border-radius: 12px; border: 1px solid #E8DECF; margin-bottom: 1rem;">
+          <p style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 15px; line-height: 1.6; margin: 0;">
+            Dear ${rep.type === 'representative' ? 'Representative' : 'Senator'} ${rep.name},<br><br>
+            ${finalMessage}
+          </p>
+        </div>
+      `).join('');
     }
     
     const emailHtml = `<!DOCTYPE html>
@@ -433,49 +487,51 @@ const handler = async (req: Request): Promise<Response> => {
     <tr>
       <td class="container" style="padding: 2rem 1.25rem;">
         
-        <!-- Timeline Card -->
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
+        <!-- Email Header -->
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <h1 style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 2rem; line-height: 1.2; color: #2F4156; margin: 0 0 0.5rem 0;">Order confirmed</h1>
+          <h3 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.25rem; line-height: 1.3; color: #B25549; margin: 0;">Your message is in motion</h3>
+        </div>
+        
+        <!-- Your Order Card - Moved to top -->
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%; position: relative;">
           <tr>
-            <td class="mobile-padding" style="padding: 2rem;">
+            <td class="mobile-padding" style="padding: 2rem; position: relative;">
               
-              <!-- Canary Logo -->
-              <div style="text-align: center; margin-bottom: 1.5rem;">
-                <img src="${logoUrl}" alt="Canary Cards" width="48" style="width: 48px; height: auto; display: block; margin: 0 auto;">
+              <!-- Confirmed Badge -->
+              <div style="position: absolute; top: -12px; left: 24px; background-color: #FFD44D; color: #2F4156; padding: 8px 16px; border-radius: 20px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 600;">
+                ✓ Confirmed
               </div>
               
-              <!-- H1: Thanks for speaking up -->
-              <h1 class="h1">Thanks for speaking up.</h1>
+              <!-- Order Header -->
+              <h2 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.5rem; line-height: 1.25; color: #2F4156; margin: 1rem 0 0.5rem 0;">Order #${orderNumber} — ${cardCount} Cards</h2>
               
-              <!-- H3: Here's what happens next -->
-              <h3 class="h3">Here's what happens next.</h3>
+              <!-- Order Details -->
+              <p class="meta-text" style="margin-bottom: 0.5rem;">Order placed: ${orderPlacedDate}</p>
+              <p class="meta-text" style="margin-bottom: 0.5rem;">Total charged: ${totalAmount}</p>
+              <p class="meta-text" style="margin-bottom: 1.5rem;">Expected mailing date: ${expectedMailingDate}</p>
               
-              <!-- Combined Timeline (Ordered List) -->
-              <ol class="ordered-list" style="padding-left: 1.5rem; margin: 0 0 1.5rem 0;">
-                <li style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6; margin-bottom: 0.5rem;">Over the next several days, your postcard will be written with a real ballpoint pen on premium card stock.</li>
-                <li style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6; margin-bottom: 0.5rem;">You'll get another email as soon as your postcards are dropped in the mail.</li>
-                <li style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6; margin-bottom: 0.5rem;">About a week later, your message will be on your representatives' desks in Washington.</li>
-              </ol>
+              <!-- Recipient List -->
+              ${recipientList}
               
             </td>
           </tr>
         </table>
         
-        <!-- Your Order Card -->
+        <!-- Timeline Card -->
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
           <tr>
             <td class="mobile-padding" style="padding: 2rem;">
               
-              <!-- H2: Your Order -->
-              <h2 class="h2">Your Order</h2>
+              <!-- H3: Here's What Happens Next -->
+              <h3 class="h3">Here's What Happens Next</h3>
               
-              <!-- Order Details -->
-              <p class="body-text" style="margin-bottom: 0.5rem;">Postcard(s) sent to:</p>
-              
-              <!-- Recipient List -->
-              ${recipientList}
-              
-              <!-- Help Text -->
-              <p class="meta-text" style="margin-top: 1rem;">The postcards will be indistinguishable from if you had written them with your own hand.</p>
+              <!-- Combined Timeline (Ordered List) -->
+              <ol class="ordered-list">
+                <li>Over the next several days, your postcard will be written with a real ballpoint pen on premium card stock.</li>
+                <li>You'll get another email as soon as your postcards are dropped in the mail.</li>
+                <li>About a week later, your message will be on your representatives' desks in Washington.</li>
+              </ol>
               
             </td>
           </tr>
@@ -486,22 +542,26 @@ const handler = async (req: Request): Promise<Response> => {
           <tr>
             <td class="mobile-padding" style="padding: 2rem;">
               
-              <!-- H2: Friends listen to friends -->
-              <h2 class="h2">Friends listen to friends.</h2>
+              <!-- H2: Friends listen to friends - Same size and color as order number -->
+              <h2 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.5rem; line-height: 1.25; color: #2F4156; margin: 0 0 1rem 0;">Friends Listen To Friends</h2>
               
               <!-- Share Pitch -->
               <p class="body-text">Your voice is powerful — and even stronger when more join in. Most people join because a friend shared Canary with them. Pass it on and make your impact multiply.</p>
               
-              <!-- Micro-copy -->
-              <p class="meta-text" style="text-align: center; margin: 1rem 0 0.5rem 0;">Share while it's on your mind</p>
-              
-              <!-- Primary CTA Button -->
+              <!-- Primary CTA Button with Icon -->
               <div style="text-align: center;">
                 <div style="display: inline-block; background-color: #2F4156; padding: 2px; border-radius: 14px; max-width: calc(100% - 2rem);">
                   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #FFD44D; border-radius: 12px; overflow: hidden;">
                     <tr>
-                      <td style="padding: 20px 24px; text-align: center; vertical-align: middle;">
-                        <a href="https://www.canary.cards" target="_blank" rel="noopener" style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; font-size: 24px; font-weight: 600; color: #2F4156; text-decoration: none; display: block; line-height: 1;">Share Canary</a>
+                      <td style="padding: 24px 24px; text-align: center; vertical-align: middle;">
+                        <a href="https://www.canary.cards" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 24px; font-weight: 600; color: #2F4156; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1;">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
+                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                            <polyline points="16,6 12,2 8,6"/>
+                            <line x1="12" y1="2" x2="12" y2="15"/>
+                          </svg>
+                          Share in the group chat
+                        </a>
                       </td>
                     </tr>
                   </table>
@@ -511,6 +571,22 @@ const handler = async (req: Request): Promise<Response> => {
             </td>
           </tr>
         </table>
+        
+        ${finalMessage ? `
+        <!-- Postcard Content Card -->
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
+          <tr>
+            <td class="mobile-padding" style="padding: 2rem;">
+              
+              <!-- H4: Your Postcard Messages -->
+              <h4 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.125rem; line-height: 1.3; color: #2F4156; margin: 0 0 1rem 0;">Your Postcard Messages</h4>
+              
+              ${postcardMessagesSection}
+              
+            </td>
+          </tr>
+        </table>
+        ` : ''}
         
         <!-- Closing Card -->
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
@@ -527,8 +603,9 @@ const handler = async (req: Request): Promise<Response> => {
         
         <!-- Footer Links -->
         <div class="footer-links">
-          <a href="mailto:hello@canary.cards" target="_blank" rel="noopener">Support</a>
-          <a href="https://canary.cards/privacy" target="_blank" rel="noopener">Privacy</a>
+          <a href="mailto:hello@canary.cards">Support</a>
+          <a href="https://canary.cards/privacy">Privacy</a>
+          <a href="https://canary.cards/unsubscribe">Unsubscribe</a>
         </div>
         
       </td>

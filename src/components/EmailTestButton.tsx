@@ -22,7 +22,8 @@ export const EmailTestButton = () => {
           {"type": "representative", "recipient": "Doris Matsui", "orderId": "TEST-001", "status": "success"},
           {"type": "senator", "recipient": "Alex Padilla", "orderId": "TEST-002", "status": "success"},
           {"type": "senator", "recipient": "Laphonza Butler", "orderId": "TEST-003", "status": "success"}
-        ]
+        ],
+        finalMessage: "Dear Rep. Matsui,\n\nI am writing to you as your constituent from Sacramento, California. As someone who cares deeply about our community and our nation's future, I want to share my thoughts on an issue that's important to me.\n\nClimate change continues to be one of the most pressing challenges of our time. I've seen the impacts firsthand in our state - from devastating wildfires to extreme weather events. I believe we need bold action to transition to clean energy and protect our environment for future generations.\n\nI urge you to support legislation that invests in renewable energy infrastructure, creates good-paying green jobs, and holds polluters accountable. The time for incremental change has passed - we need transformative action now.\n\nThank you for your time and consideration. I look forward to seeing your leadership on this critical issue.\n\nSincerely,\n[First Name] [Last Name]"
       };
 
       const recipients = [
