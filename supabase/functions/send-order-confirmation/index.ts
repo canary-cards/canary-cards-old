@@ -511,29 +511,23 @@ const handler = async (req: Request): Promise<Response> => {
           <h3 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.25rem; line-height: 1.3; color: #B25549; margin: 0;">Your message is in motion</h3>
         </div>
         
-        <!-- Order Details Section with Confirmed Badge -->
-        <table style="width: 100%; margin: 24px 0;">
-          <!-- Confirmed Badge Row -->
+        <!-- Order Details Section -->
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%; margin: 24px 0;">
           <tr>
-            <td style="text-align: left; padding: 0 0 8px 0;">
-              <table style="border-collapse: collapse;">
-                <tr>
-                  <td style="background-color: hsl(46 100% 65%); color: hsl(212 29% 26%); padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); white-space: nowrap;">
-                    Confirmed
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <!-- Order Card Row -->
-          <tr>
-            <td>
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
-                <tr>
-                  <td class="mobile-padding" style="padding: 2rem;">
+            <td class="mobile-padding" style="padding: 2rem;">
               
-               <!-- Top line: Order Number (H2, Ink Blue, strong) -->
-               <h2 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.5rem; line-height: 1.25; color: #2F4156; margin: 1rem 0 0.5rem 0;">Order #${orderNumber}</h2>
+              <!-- Confirmed Badge - First row, right-aligned -->
+              <div style="text-align: right; margin-bottom: 1rem;">
+                <span style="display: inline-flex; align-items: center; gap: 6px; background-color: #FFD44D; color: #2F4156; padding: 6px 12px; border-radius: 9999px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; font-weight: 600; box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1); white-space: nowrap;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
+                    <polyline points="20,6 9,17 4,12"/>
+                  </svg>
+                  Confirmed
+                </span>
+              </div>
+              
+              <!-- Top line: Order Number (H2, Ink Blue, strong) -->
+              <h2 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.5rem; line-height: 1.25; color: #2F4156; margin: 0 0 0.5rem 0;">Order #${orderNumber}</h2>
 
                <!-- Subline: Card count and date (H3, neutral) -->
                <h3 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 400; font-size: 1.125rem; line-height: 1.3; color: #222222; margin: 0 0 1rem 0;">${cardCount} postcards • Placed ${orderPlacedDate}</h3>
@@ -547,10 +541,8 @@ const handler = async (req: Request): Promise<Response> => {
                <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6;">
                  ${recipientList}
                </div>
-              
+               
             </td>
-          </tr>
-            </table>
           </tr>
         </table>
         
