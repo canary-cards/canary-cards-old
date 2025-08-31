@@ -73,14 +73,27 @@ const handler = async (req: Request): Promise<Response> => {
       day: 'numeric'
     });
 
-    // Create the delivery notification email with new brand design
+    // Calculate expected delivery date (9 days after sent date)
+    const expectedDeliveryDate = new Date(sentDate);
+    expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 9);
+    const formattedExpectedDate = expectedDeliveryDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    // Escape the message content to prevent HTML injection
+    const escapedMessage = message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+
+    // Create the delivery notification email with new "In the Mail" design
     const emailHtml = `
       <!DOCTYPE html>
       <html>
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Your postcard has been delivered!</title>
+          <title>Your postcard is in the mail!</title>
           <style>
             @import url('https://fonts.googleapis.com/css2?family=Spectral:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
             
@@ -256,8 +269,8 @@ const handler = async (req: Request): Promise<Response> => {
             <!-- Header Card -->
             <div class="card header-card">
               <img src="https://xwsgyxlvxntgpochonwe.supabase.co/storage/v1/object/public/Email%20logo%20bucket/smallonboarding4.svg" alt="Canary Cards" class="logo" />
-              <h1 class="title">Your postcard has been delivered!</h1>
-              <p class="subtitle">Democracy in action — your voice reached its destination.</p>
+              <h1 class="title">Your postcard is in the mail!</h1>
+              <p class="subtitle">On its way to make democracy happen.</p>
             </div>
             
             <!-- Delivery Details Card -->
@@ -265,7 +278,7 @@ const handler = async (req: Request): Promise<Response> => {
               <div class="eyebrow">Delivery details</div>
               
               <div class="delivery-item">
-                <div class="delivery-label">Delivered to</div>
+                <div class="delivery-label">Sending to</div>
                 <div class="delivery-value">${recipientName}</div>
               </div>
               
@@ -275,8 +288,13 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               
               <div class="delivery-item">
-                <div class="delivery-label">Delivered on</div>
+                <div class="delivery-label">Sent on</div>
                 <div class="delivery-value">${formattedDate}</div>
+              </div>
+              
+              <div class="delivery-item">
+                <div class="delivery-label">Expected delivery</div>
+                <div class="delivery-value">${formattedExpectedDate}</div>
               </div>
               
               <div class="delivery-item">
@@ -288,13 +306,13 @@ const handler = async (req: Request): Promise<Response> => {
             <!-- Message Card -->
             <div class="card message-card">
               <div class="eyebrow">Your message</div>
-              <div class="message-content">"${message}"</div>
+              <div class="message-content">"${escapedMessage}"</div>
             </div>
             
             <!-- Impact Card -->
             <div class="card impact-card">
-              <p class="impact-text">Your card landed on their desk — not their spam folder.</p>
-              <p class="impact-text">You're one of hundreds of voices reaching your representatives today.</p>
+              <p class="impact-text">Your postcard is on its way to ${recipientName}'s office.</p>
+              <p class="impact-text">In 9 days, it will land on their desk — not their spam folder.</p>
             </div>
             
             <!-- CTA Card -->
@@ -319,7 +337,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await resend.emails.send({
       from: "Canary Cards <hello@canary.cards>",
       to: [userEmail],
-      subject: `📬 Your Postcard to ${recipientName} Has Been Delivered!`,
+      subject: `📮 Your Postcard to ${recipientName} is in the Mail!`,
       html: emailHtml,
     });
 

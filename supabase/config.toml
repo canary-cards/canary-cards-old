@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.ignitepost-webhook]
 verify_jwt = false
+
+[functions.send-delivery-notification]
+verify_jwt = false
