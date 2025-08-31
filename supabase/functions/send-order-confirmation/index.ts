@@ -532,16 +532,21 @@ const handler = async (req: Request): Promise<Response> => {
                 <tr>
                   <td class="mobile-padding" style="padding: 2rem;">
               
-              <!-- Order Header -->
-              <h2 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.5rem; line-height: 1.25; color: #2F4156; margin: 1rem 0 0.5rem 0;">Order #${orderNumber} — ${cardCount} Cards</h2>
-              
-              <!-- Order Details -->
-              <p class="meta-text" style="margin-bottom: 0.5rem;">Order placed: ${orderPlacedDate}</p>
-              <p class="meta-text" style="margin-bottom: 0.5rem;">Total charged: ${totalAmount}</p>
-              <p class="meta-text" style="margin-bottom: 1.5rem;">Expected mailing date: ${expectedMailingDate}</p>
-              
-              <!-- Recipient List -->
-              ${recipientList}
+               <!-- Top line: Order Number (H2, Ink Blue, strong) -->
+               <h2 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.5rem; line-height: 1.25; color: #2F4156; margin: 1rem 0 0.5rem 0;">Order #${orderNumber}</h2>
+
+               <!-- Subline: Card count and date (H3, neutral) -->
+               <h3 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 400; font-size: 1.125rem; line-height: 1.3; color: #222222; margin: 0 0 1rem 0;">${cardCount} postcards • Placed ${orderPlacedDate}</h3>
+
+               <!-- Key meta (small, muted, stacked) -->
+               <p style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.875rem; color: #9A9289; line-height: 1.5; margin-bottom: 0.5rem;">Total charged: ${totalAmount}</p>
+               <p style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.875rem; color: #9A9289; line-height: 1.5; margin-bottom: 1.5rem;">Expected mailing date: ${expectedMailingDate}</p>
+
+               <!-- Recipients section -->
+               <p style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.875rem; color: #9A9289; line-height: 1.5; margin-bottom: 0.5rem;">Postcards sent to:</p>
+               <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6;">
+                 ${recipientList}
+               </div>
               
             </td>
           </tr>
