@@ -518,8 +518,8 @@ const handler = async (req: Request): Promise<Response> => {
             <td style="text-align: left; padding: 0 0 8px 0;">
               <table style="border-collapse: collapse;">
                 <tr>
-                  <td style="background-color: #16a34a; color: white; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); white-space: nowrap;">
-                    CONFIRMED
+                  <td style="background-color: #F59E0B; color: #2F4156; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); white-space: nowrap;">
+                    Confirmed
                   </td>
                 </tr>
               </table>
@@ -550,8 +550,6 @@ const handler = async (req: Request): Promise<Response> => {
               
             </td>
           </tr>
-                </td>
-              </tr>
             </table>
           </tr>
         </table>
