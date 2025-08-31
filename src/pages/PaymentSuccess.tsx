@@ -212,7 +212,7 @@ export default function PaymentSuccess() {
           </h1>
           
           <p className="subtitle mb-0">
-            We're getting to work writing your postcard.
+            We're getting to work writing your postcard
           </p>
         </div>
 
@@ -287,7 +287,7 @@ export default function PaymentSuccess() {
             <h3 className="subtitle mb-2">Friends Listen To Friends</h3>
             
             <p className="body-text mb-4">
-              Thanks for taking real action. Your postcard is part of a growing wave reaching leaders' desks.
+              Thanks for speaking up. Your postcard is part of a growing wave reaching leaders' desks.
             </p>
             
             <div className="space-y-4">
