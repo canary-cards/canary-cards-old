@@ -255,7 +255,7 @@ const handler = async (req: Request): Promise<Response> => {
           <div class="email-container">
             <!-- Header Card -->
             <div class="card header-card">
-              <img src="https://canary.cards/postallogov1.svg" alt="Canary Cards" class="logo" />
+              <img src="https://xwsgyxlvxntgpochonwe.supabase.co/storage/v1/object/public/Email%20logo%20bucket/smallonboarding4.svg" alt="Canary Cards" class="logo" />
               <h1 class="title">Your postcard has been delivered!</h1>
               <p class="subtitle">Democracy in action — your voice reached its destination.</p>
             </div>
