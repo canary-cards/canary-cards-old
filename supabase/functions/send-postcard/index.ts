@@ -345,7 +345,7 @@ serve(async (req) => {
         console.log('Triggering order confirmation email...');
         
         // Calculate amount based on send option
-        const amount = sendOption === 'single' ? 5.00 : sendOption === 'double' ? 8.00 : 11.00;
+        const amount = sendOption === 'single' ? 5.00 : sendOption === 'double' ? 10.00 : 12.00;
         
         // Generate order ID
         const orderId = `CC-${Date.now()}${Math.floor(Math.random() * 1000)}`;

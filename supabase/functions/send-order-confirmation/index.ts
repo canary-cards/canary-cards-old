@@ -156,24 +156,36 @@ const handler = async (req: Request): Promise<Response> => {
         totalAmount = '$5.00';
         break;
       case 'double':
-        totalAmount = '$8.00';
+        totalAmount = '$10.00';
         break;
       case 'triple':
-        totalAmount = '$11.00';
+        totalAmount = '$12.00';
         break;
       default:
-        totalAmount = '$11.00';
+        totalAmount = '$12.00';
     }
     
     const cardCount = successfulOrders.length;
     
-    // Dynamic recipient rendering
+    // Dynamic recipient rendering with proper title formatting
+    const formatRepresentativeName = (rep: any, fullName: string) => {
+      const nameParts = fullName.split(' ');
+      const lastName = nameParts[nameParts.length - 1];
+      return rep.type === 'representative' ? `Rep. ${lastName}` : `Sen. ${lastName}`;
+    };
+    
     let recipientList;
     if (successfulOrders.length === 1) {
-      recipientList = `<span style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6;">${successfulOrders[0].recipient}</span>`;
+      const orderRep = successfulOrders[0].type === 'representative' ? representative : senators?.find(s => s.name === successfulOrders[0].recipient);
+      const formattedName = orderRep ? formatRepresentativeName(orderRep, successfulOrders[0].recipient) : successfulOrders[0].recipient;
+      recipientList = `<span style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6;">${formattedName}</span>`;
     } else {
       recipientList = `<ul class="unordered-list" style="padding-left: 1.5rem; margin: 0; list-style-type: disc;">
-        ${successfulOrders.map(order => `<li style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6; margin-bottom: 0.5rem;">${order.recipient}</li>`).join('')}
+        ${successfulOrders.map(order => {
+          const orderRep = order.type === 'representative' ? representative : senators?.find(s => s.name === order.recipient);
+          const formattedName = orderRep ? formatRepresentativeName(orderRep, order.recipient) : order.recipient;
+          return `<li style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 1rem; line-height: 1.6; margin-bottom: 0.5rem;">${formattedName}</li>`;
+        }).join('')}
       </ul>`;
     }
     
@@ -184,14 +196,20 @@ const handler = async (req: Request): Promise<Response> => {
       const allRepresentatives = [representative, ...(senators || [])];
       const representativesToShow = allRepresentatives.slice(0, successfulOrders.length);
       
-      postcardMessagesSection = representativesToShow.map((rep, index) => `
+      postcardMessagesSection = representativesToShow.map((rep, index) => {
+        const nameParts = rep.name.split(' ');
+        const lastName = nameParts[nameParts.length - 1];
+        const shortTitle = rep.type === 'representative' ? 'Rep.' : 'Sen.';
+        
+        return `
         <div style="background-color: #ffffff; padding: 1.5rem; border-radius: 12px; border: 1px solid #E8DECF; margin-bottom: 1rem;">
           <p style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222222; font-size: 15px; line-height: 1.6; margin: 0;">
-            Dear ${rep.type === 'representative' ? 'Representative' : 'Senator'} ${rep.name},<br><br>
+            Dear ${shortTitle} ${lastName},<br><br>
             ${finalMessage}
           </p>
         </div>
-      `).join('');
+        `;
+      }).join('');
     }
     
     const emailHtml = `<!DOCTYPE html>
@@ -494,14 +512,14 @@ const handler = async (req: Request): Promise<Response> => {
         </div>
         
         <!-- Your Order Card - Moved to top -->
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%; position: relative;">
-          <tr>
-            <td class="mobile-padding" style="padding: 2rem; position: relative;">
-              
-              <!-- Confirmed Badge -->
-              <div style="position: absolute; top: -12px; left: 24px; background-color: #FFD44D; color: #2F4156; padding: 8px 16px; border-radius: 20px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 600;">
-                ✓ Confirmed
-              </div>
+        <div style="position: relative; margin-bottom: 1.5rem;">
+          <!-- Confirmed Badge -->
+          <div style="position: absolute; top: -12px; left: 24px; background-color: #FFD44D; color: #2F4156; padding: 8px 16px; border-radius: 20px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 600; z-index: 10;">
+            ✓ Confirmed
+          </div>
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
+            <tr>
+              <td class="mobile-padding" style="padding: 2rem;">
               
               <!-- Order Header -->
               <h2 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.5rem; line-height: 1.25; color: #2F4156; margin: 1rem 0 0.5rem 0;">Order #${orderNumber} — ${cardCount} Cards</h2>
@@ -517,6 +535,7 @@ const handler = async (req: Request): Promise<Response> => {
             </td>
           </tr>
         </table>
+        </div>
         
         <!-- Timeline Card -->
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
