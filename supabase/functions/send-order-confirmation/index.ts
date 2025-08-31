@@ -511,15 +511,26 @@ const handler = async (req: Request): Promise<Response> => {
           <h3 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.25rem; line-height: 1.3; color: #B25549; margin: 0;">Your message is in motion</h3>
         </div>
         
-        <!-- Your Order Card - Moved to top -->
-        <div style="position: relative; margin-bottom: 1.5rem;">
-          <!-- Confirmed Badge -->
-          <div style="position: absolute; top: -12px; left: 24px; background-color: #FFD44D; color: #2F4156; padding: 8px 16px; border-radius: 20px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 600; z-index: 10;">
-            ✓ Confirmed
-          </div>
-          <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
-            <tr>
-              <td class="mobile-padding" style="padding: 2rem;">
+        <!-- Order Details Section with Confirmed Badge -->
+        <table style="width: 100%; margin: 24px 0;">
+          <!-- Confirmed Badge Row -->
+          <tr>
+            <td style="text-align: left; padding: 0 0 8px 0;">
+              <table style="border-collapse: collapse;">
+                <tr>
+                  <td style="background-color: #16a34a; color: white; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); white-space: nowrap;">
+                    CONFIRMED
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- Order Card Row -->
+          <tr>
+            <td>
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
+                <tr>
+                  <td class="mobile-padding" style="padding: 2rem;">
               
               <!-- Order Header -->
               <h2 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.5rem; line-height: 1.25; color: #2F4156; margin: 1rem 0 0.5rem 0;">Order #${orderNumber} — ${cardCount} Cards</h2>
@@ -534,8 +545,11 @@ const handler = async (req: Request): Promise<Response> => {
               
             </td>
           </tr>
+                </td>
+              </tr>
+            </table>
+          </tr>
         </table>
-        </div>
         
         <!-- Timeline Card -->
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
