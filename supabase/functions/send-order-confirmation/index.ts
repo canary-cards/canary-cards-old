@@ -508,7 +508,8 @@ const handler = async (req: Request): Promise<Response> => {
         <!-- Email Header -->
         <div style="text-align: center; margin-bottom: 2rem;">
           <h1 style="font-family: 'Spectral', Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 2rem; line-height: 1.2; color: #2F4156; margin: 0 0 0.5rem 0;">Order confirmed</h1>
-          <h3 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.25rem; line-height: 1.3; color: #B25549; margin: 0;">Your message is in motion</h3>
+          <h3 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.25rem; line-height: 1.3; color: #B25549; margin: 0 0 1rem 0;">Your message is in motion</h3>
+          <img src="https://xwsgyxlvxntgpochonwe.supabase.co/storage/v1/object/public/Email%20logo%20bucket/canaryholdingpen.png" alt="Canary holding pen" style="max-width: 150px; height: auto; margin: 0;" />
         </div>
         
         <!-- Order Details Section -->
