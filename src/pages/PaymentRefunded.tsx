@@ -14,6 +14,7 @@ export default function PaymentRefunded() {
     totalCount = 1, 
     refundAmountCents, 
     refundId, 
+    results = [],
     errors = [] 
   } = location.state || {};
   
@@ -30,6 +31,10 @@ export default function PaymentRefunded() {
     (refundAmountCents ? (refundAmountCents / 100).toFixed(2) : null);
   const displayRefundId = urlRefundId || refundId;
   const displayErrors = urlError ? [urlError] : (errors.length > 0 ? errors : []);
+  
+  // Process results for detailed display
+  const successfulPostcards = results.filter((r: any) => r.status === 'success');
+  const failedPostcards = results.filter((r: any) => r.status === 'error');
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col">
@@ -68,7 +73,44 @@ export default function PaymentRefunded() {
                 </div>
               )}
               
-              {displayErrors.length > 0 && (
+              {/* Show detailed postcard results when available */}
+              {results.length > 0 && (
+                <div className="space-y-3 mt-4">
+                  {successfulPostcards.length > 0 && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <div className="flex items-start gap-2">
+                        <div className="h-4 w-4 bg-green-500 rounded-full mt-0.5 flex-shrink-0"></div>
+                        <div className="text-sm text-green-800 text-left">
+                          <p className="font-medium">Sent successfully:</p>
+                          {successfulPostcards.map((result: any, idx: number) => (
+                            <p key={idx} className="mt-1">{result.recipient}</p>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {failedPostcards.length > 0 && (
+                    <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                        <div className="text-sm text-destructive text-left">
+                          <p className="font-medium">Couldn't send:</p>
+                          {failedPostcards.map((result: any, idx: number) => (
+                            <div key={idx} className="mt-1">
+                              <p className="font-medium">{result.recipient}</p>
+                              {result.error && <p className="text-xs opacity-75">{result.error}</p>}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Fallback to legacy error display */}
+              {results.length === 0 && displayErrors.length > 0 && (
                 <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 mt-4">
                   <div className="flex items-start gap-2">
                     <AlertCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />

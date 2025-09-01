@@ -92,24 +92,34 @@ export default function PaymentReturn() {
       
       // Simulate failure for testing if flag is set
       if (simulateFailure) {
-        const totalRecipients = 1 + (postcardData.senators?.length || 0);
+        const totalRecipients = 1 + (postcardData.sendOption === 'double' ? 1 : postcardData.sendOption === 'triple' ? 2 : 0);
         const failedCount = Math.min(simulatedFailedCount, totalRecipients);
         const successCount = totalRecipients - failedCount;
         
         console.log(`Simulating ${failedCount} failures out of ${totalRecipients} total recipients`);
         
+        // Create realistic results with type and recipient info
+        const allRecipients = [
+          { type: 'representative', recipient: postcardData.representative?.name },
+          ...(postcardData.sendOption === 'double' || postcardData.sendOption === 'triple' ? 
+            (postcardData.senators || []).slice(0, postcardData.sendOption === 'double' ? 1 : 2).map(s => ({ type: 'senator', recipient: s.name })) : [])
+        ];
+        
         data = {
           success: failedCount === 0,
+          results: allRecipients.map((r, i) => ({
+            type: r.type,
+            recipient: r.recipient,
+            status: i < failedCount ? 'error' : 'success',
+            error: i < failedCount ? 'Simulated failure for testing' : undefined,
+            orderId: i >= failedCount ? `SIM-${Date.now()}-${i}` : undefined
+          })),
           summary: {
             totalSent: successCount,
             totalFailed: failedCount,
-            total: totalRecipients
-          },
-          orderResults: Array.from({ length: totalRecipients }, (_, i) => ({
-            recipient: i === 0 ? postcardData.representative?.name : postcardData.senators?.[i-1]?.name,
-            success: i >= failedCount,
-            error: i < failedCount ? 'Simulated failure for testing' : null
-          }))
+            total: totalRecipients,
+            sendOption: postcardData.sendOption
+          }
         };
         error = null;
       } else {
@@ -128,7 +138,7 @@ export default function PaymentReturn() {
       
       // Check if any postcards failed
       const totalFailed = data.summary?.totalFailed || 0;
-      const totalRecipients = data.summary?.total || 1;
+      const totalRecipients = data.summary?.total || data.results?.length || 1;
       
       if (totalFailed === 0) {
         // All postcards succeeded
@@ -184,7 +194,7 @@ export default function PaymentReturn() {
                 totalCount: totalRecipients,
                 refundAmountCents,
                 refundId: refundData?.refund_id || null,
-                errors: data.orderResults?.filter((r: any) => !r.success).map((r: any) => r.error) || []
+                results: data.results || []
               }
             });
             return;
@@ -234,7 +244,12 @@ export default function PaymentReturn() {
               totalCount: 1,
               refundAmountCents,
               refundId: refundData?.refund_id || null,
-              errors: [error.message]
+              results: [{
+                type: 'representative',
+                recipient: postcardData?.representative?.name || 'Unknown',
+                status: 'error',
+                error: error.message
+              }]
             }
           });
           return;

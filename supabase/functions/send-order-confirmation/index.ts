@@ -149,20 +149,18 @@ const handler = async (req: Request): Promise<Response> => {
     // Generate order number from successful orders
     const orderNumber = successfulOrders.map(order => order.orderId).join('-');
     
-    // Calculate total amount based on sendOption
+    // Calculate total amount based on number of successful postcards
+    const unitPrice = 5.00;
+    const successCount = successfulOrders.length;
     let totalAmount;
-    switch (sendOption) {
-      case 'single':
-        totalAmount = '$5.00';
-        break;
-      case 'double':
-        totalAmount = '$10.00';
-        break;
-      case 'triple':
-        totalAmount = '$12.00';
-        break;
-      default:
-        totalAmount = '$12.00';
+    if (successCount === 1) {
+      totalAmount = '$5.00';
+    } else if (successCount === 2) {
+      totalAmount = '$10.00';
+    } else if (successCount >= 3) {
+      totalAmount = '$12.00';
+    } else {
+      totalAmount = '$5.00'; // fallback
     }
     
     const cardCount = successfulOrders.length;

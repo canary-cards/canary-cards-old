@@ -340,13 +340,14 @@ serve(async (req) => {
       shouldSendEmail: successCount > 0 && postcardData.email
     });
 
-    // Send confirmation email only if all postcards succeeded and email is provided
-    if (errorCount === 0 && postcardData.email) {
+    // Send confirmation email if any postcards succeeded and email is provided
+    if (successCount > 0 && postcardData.email) {
       try {
         console.log('Triggering order confirmation email...');
         
-        // Calculate amount based on send option
-        const amount = sendOption === 'single' ? 5.00 : sendOption === 'double' ? 10.00 : 12.00;
+        // Calculate amount based on successful postcards only
+        const unitPrice = 5.00;
+        const amount = successCount === 2 ? 10.00 : successCount >= 3 ? 12.00 : unitPrice;
         
         // Generate order ID
         const orderId = `CC-${Date.now()}${Math.floor(Math.random() * 1000)}`;
@@ -392,7 +393,8 @@ serve(async (req) => {
         summary: {
           totalSent: successCount,
           totalFailed: errorCount,
-          sendOption
+          sendOption,
+          total: results.length
         }
       }),
       { 
