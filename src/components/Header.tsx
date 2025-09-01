@@ -47,11 +47,11 @@ export function Header({ className }: HeaderProps) {
           aria-label="Go to home"
         >
           <Logo className="h-8" />
-          <div className="hidden md:flex flex-col">
-            <span className="font-semibold text-primary" style={{ fontFamily: 'Spectral', fontWeight: 600 }}>
+          <div className="hidden md:flex flex-col text-left">
+            <span className="font-semibold text-primary text-left" style={{ fontFamily: 'Spectral', fontWeight: 600 }}>
               Canary Cards
             </span>
-            <span className="text-sm text-muted-foreground hidden sm:block">
+            <span className="text-sm text-muted-foreground hidden sm:block text-left">
               Real postcards. Real impact.
             </span>
           </div>
