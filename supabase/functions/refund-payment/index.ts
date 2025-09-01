@@ -13,13 +13,13 @@ serve(async (req) => {
   }
 
   try {
-    const { sessionId, reason } = await req.json();
+    const { sessionId, reason, amount } = await req.json();
     
     if (!sessionId) {
       throw new Error("Session ID is required");
     }
 
-    console.log(`[REFUND-PAYMENT] Processing refund for session: ${sessionId}`);
+    console.log(`[REFUND-PAYMENT] Processing refund for session: ${sessionId}, amount: ${amount || 'full'}`);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2023-10-16",
@@ -34,17 +34,30 @@ serve(async (req) => {
 
     console.log(`[REFUND-PAYMENT] Found payment intent: ${session.payment_intent}`);
 
-    // Create the refund
-    const refund = await stripe.refunds.create({
+    // Create refund parameters
+    const refundParams: any = {
       payment_intent: session.payment_intent as string,
       reason: "requested_by_customer",
       metadata: {
         reason: reason || "Postcard creation failed",
         session_id: sessionId,
       },
+    };
+
+    // Add amount if specified (for partial refunds)
+    if (amount && typeof amount === 'number' && amount > 0) {
+      refundParams.amount = amount;
+    }
+
+    // Add idempotency key to prevent duplicate refunds
+    const idempotencyKey = `refund-session-${sessionId}-${amount || 'full'}`;
+
+    // Create the refund
+    const refund = await stripe.refunds.create(refundParams, {
+      idempotencyKey,
     });
 
-    console.log(`[REFUND-PAYMENT] Refund created: ${refund.id}, Status: ${refund.status}`);
+    console.log(`[REFUND-PAYMENT] Refund created: ${refund.id}, Status: ${refund.status}, Amount: ${refund.amount}`);
 
     return new Response(
       JSON.stringify({

@@ -5,6 +5,7 @@ import { FinalizingOrderScreen } from '@/components/FinalizingOrderScreen';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAppContext } from '@/context/AppContext';
+import { getUnitPriceCents, getTotalPriceCents } from '@/lib/pricing';
 
 export default function PaymentReturn() {
   const [searchParams] = useSearchParams();
@@ -65,9 +66,10 @@ export default function PaymentReturn() {
     try {
       setStatus('ordering');
       
-      // Simulation flags for testing (only active in development)
-      const simulateFailure = process.env.NODE_ENV === 'development' && 
-        new URLSearchParams(window.location.search).has('simulate_failure');
+      // Simulation flags for testing (now works in production too)
+      const urlParams = new URLSearchParams(window.location.search);
+      const simulateFailure = urlParams.has('simulate_failure');
+      const simulatedFailedCount = parseInt(urlParams.get('simulate_failed') || '1');
       
       if (!postcardData || !validatePostcardData(postcardData)) {
         // Clear any corrupted storage data
@@ -86,14 +88,37 @@ export default function PaymentReturn() {
         return;
       }
       
+      let data, error;
+      
       // Simulate failure for testing if flag is set
       if (simulateFailure) {
-        throw new Error("Simulated postcard creation failure for testing");
+        const totalRecipients = 1 + (postcardData.senators?.length || 0);
+        const failedCount = Math.min(simulatedFailedCount, totalRecipients);
+        const successCount = totalRecipients - failedCount;
+        
+        console.log(`Simulating ${failedCount} failures out of ${totalRecipients} total recipients`);
+        
+        data = {
+          success: failedCount === 0,
+          summary: {
+            totalSent: successCount,
+            totalFailed: failedCount,
+            total: totalRecipients
+          },
+          orderResults: Array.from({ length: totalRecipients }, (_, i) => ({
+            recipient: i === 0 ? postcardData.representative?.name : postcardData.senators?.[i-1]?.name,
+            success: i >= failedCount,
+            error: i < failedCount ? 'Simulated failure for testing' : null
+          }))
+        };
+        error = null;
+      } else {
+        const result = await supabase.functions.invoke('send-postcard', {
+          body: { postcardData }
+        });
+        data = result.data;
+        error = result.error;
       }
-      
-      const { data, error } = await supabase.functions.invoke('send-postcard', {
-        body: { postcardData }
-      });
       
       if (error) {
         throw error;
@@ -101,14 +126,17 @@ export default function PaymentReturn() {
       
       setOrderingResults(data);
       
-      if (data.success) {
-        // Ensure minimum 4 seconds before navigating
+      // Check if any postcards failed
+      const totalFailed = data.summary?.totalFailed || 0;
+      const totalRecipients = data.summary?.total || 1;
+      
+      if (totalFailed === 0) {
+        // All postcards succeeded
         const elapsed = Date.now() - startTime;
         const minTime = 4000; // 4 seconds
         const remainingTime = Math.max(0, minTime - elapsed);
         
         setTimeout(() => {
-          // Clear global payment loading before navigating to success
           dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
           navigate('/payment-success', { 
             state: { 
@@ -118,42 +146,95 @@ export default function PaymentReturn() {
           });
         }, remainingTime);
       } else {
-        // Handle partial failure - still navigate to error but don't refund
+        // Some or all postcards failed - issue partial refund
+        const sessionId = searchParams.get('session_id');
+        const sendOption = postcardData.sendOption;
+        
+        let refundAmountCents: number;
+        if (totalFailed === totalRecipients) {
+          // All failed - refund full amount
+          refundAmountCents = getTotalPriceCents(sendOption);
+        } else {
+          // Partial failure - refund per failed postcard
+          refundAmountCents = totalFailed * getUnitPriceCents();
+        }
+        
+        console.log(`${totalFailed} of ${totalRecipients} postcards failed. Refunding $${refundAmountCents / 100}`);
+        
+        if (sessionId) {
+          try {
+            const { data: refundData, error: refundError } = await supabase.functions.invoke('refund-payment', {
+              body: { 
+                sessionId,
+                amount: refundAmountCents,
+                reason: `${totalFailed} postcard${totalFailed > 1 ? 's' : ''} failed to send`
+              }
+            });
+            
+            if (refundError) {
+              console.error("Refund failed:", refundError);
+            } else {
+              console.log("Partial refund successful:", refundData);
+            }
+            
+            dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
+            navigate('/payment-refunded', {
+              state: {
+                failedCount: totalFailed,
+                totalCount: totalRecipients,
+                refundAmountCents,
+                refundId: refundData?.refund_id || null,
+                errors: data.orderResults?.filter((r: any) => !r.success).map((r: any) => r.error) || []
+              }
+            });
+            return;
+          } catch (refundError) {
+            console.error("Error during partial refund process:", refundError);
+          }
+        }
+        
+        // Fallback if refund fails
         setStatus('error');
         dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
         toast({
-          title: "Some postcards failed to order",
-          description: `${data.summary.totalSent} ordered, ${data.summary.totalFailed} failed.`,
+          title: "Some postcards failed",
+          description: `${totalFailed} of ${totalRecipients} postcards failed. Please contact support.`,
           variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Postcard ordering failed:", error);
       
-      // Try to refund the payment
+      // Full failure - refund entire amount
       const sessionId = searchParams.get('session_id');
       if (sessionId) {
         try {
-          console.log("Attempting refund for failed postcard creation...");
+          const sendOption = postcardData?.sendOption || 'single';
+          const refundAmountCents = getTotalPriceCents(sendOption);
+          
+          console.log("Attempting full refund for total failure...");
           const { data: refundData, error: refundError } = await supabase.functions.invoke('refund-payment', {
             body: { 
               sessionId,
-              reason: "Postcard creation failed: " + error.message 
+              amount: refundAmountCents,
+              reason: "Total postcard creation failure: " + error.message 
             }
           });
           
           if (refundError) {
             console.error("Refund failed:", refundError);
           } else {
-            console.log("Refund successful:", refundData);
+            console.log("Full refund successful:", refundData);
           }
           
-          // Navigate to refund page regardless of refund success/failure
           dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
           navigate('/payment-refunded', {
             state: {
-              error: error.message,
-              refundId: refundData?.refund_id || null
+              failedCount: 1,
+              totalCount: 1,
+              refundAmountCents,
+              refundId: refundData?.refund_id || null,
+              errors: [error.message]
             }
           });
           return;

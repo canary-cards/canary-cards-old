@@ -340,8 +340,8 @@ serve(async (req) => {
       shouldSendEmail: successCount > 0 && postcardData.email
     });
 
-    // Send confirmation email if postcards were successfully ordered and email is provided
-    if (successCount > 0 && postcardData.email) {
+    // Send confirmation email only if all postcards succeeded and email is provided
+    if (errorCount === 0 && postcardData.email) {
       try {
         console.log('Triggering order confirmation email...');
         

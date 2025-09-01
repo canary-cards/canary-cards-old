@@ -14,7 +14,7 @@ serve(async (req) => {
 
   try {
     // Parse request body
-    const { sendOption, email, fullName, postcardData } = await req.json();
+    const { sendOption, email, fullName, postcardData, simulateFailure, simulatedFailed } = await req.json();
     
     console.log("=== CREATE PAYMENT DEBUG ===");
     console.log("Request data:", { sendOption, email, fullName });
@@ -119,7 +119,15 @@ serve(async (req) => {
 
     // Get the origin for the return URL
     const origin = req.headers.get("origin");
-    const returnUrl = `${origin}/payment-return?session_id={CHECKOUT_SESSION_ID}`;
+    let returnUrl = `${origin}/payment-return?session_id={CHECKOUT_SESSION_ID}`;
+    
+    // Add simulation flags to return URL if provided
+    if (simulateFailure) {
+      returnUrl += `&simulate_failure=1`;
+      if (simulatedFailed) {
+        returnUrl += `&simulate_failed=${simulatedFailed}`;
+      }
+    }
     
     console.log("Setting up Stripe session with return URL:", returnUrl);
     console.log("Origin header:", origin);

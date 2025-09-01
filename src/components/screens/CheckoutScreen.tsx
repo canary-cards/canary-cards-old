@@ -15,6 +15,7 @@ import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { getTotalPriceDollars } from '@/lib/pricing';
 type RecipientSelection = 'rep-only' | 'all-three' | 'custom';
 export function CheckoutScreen() {
   const {
@@ -92,11 +93,8 @@ export function CheckoutScreen() {
     return (selected.representative ? 1 : 0) + (selected.senator1 ? 1 : 0) + (selected.senator2 ? 1 : 0);
   };
   const getTotalPrice = () => {
-    const count = getSelectedCount();
-    if (count === 3) {
-      return 12; // Bundle price with $3 savings
-    }
-    return count * 5; // $5 each
+    const sendOption = getSendOption();
+    return getTotalPriceDollars(sendOption);
   };
   const getSendOption = (): 'single' | 'double' | 'triple' => {
     const count = getSelectedCount();
@@ -144,6 +142,11 @@ export function CheckoutScreen() {
       const sendOption = getSendOption();
       const selectedSenatorsList = getSelectedSenators();
 
+      // Check for simulation flags in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const simulateFailure = urlParams.get('simulate_failure');
+      const simulatedFailed = urlParams.get('simulate_failed');
+
       // Call Stripe payment function with complete postcard data
       const {
         data,
@@ -153,6 +156,8 @@ export function CheckoutScreen() {
           sendOption,
           email,
           fullName: userInfo?.fullName,
+          simulateFailure: simulateFailure === '1',
+          simulatedFailed: simulatedFailed ? parseInt(simulatedFailed) : undefined,
           postcardData: {
             userInfo,
             representative: rep,

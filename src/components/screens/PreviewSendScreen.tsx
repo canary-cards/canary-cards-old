@@ -12,6 +12,7 @@ import { ArrowLeft, Mail, CreditCard, Shield, Clock, Heart, Users, Zap } from 'l
 import { supabase } from '@/integrations/supabase/client';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
+import { getTotalPriceDollars } from '@/lib/pricing';
 export function PreviewSendScreen() {
   const {
     state,
@@ -25,9 +26,9 @@ export function PreviewSendScreen() {
   const [loadingSenators, setLoadingSenators] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const singlePrice = 5.00;
-  const triplePrice = 11.00;
-  const savings = singlePrice * 3 - triplePrice;
+  const singlePrice = getTotalPriceDollars('single');
+  const triplePrice = getTotalPriceDollars('triple');
+  const savings = (singlePrice * 3) - triplePrice;
   const rep = state.postcardData.representative;
   const userInfo = state.postcardData.userInfo;
   const finalMessage = state.postcardData.finalMessage;
