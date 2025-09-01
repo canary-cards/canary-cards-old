@@ -406,10 +406,12 @@ const handler = async (req) => {
               </table>
 
               <!-- Main Content Card -->
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="card">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border: none;">
                 <tr>
-                  <td style="padding: 32px;">
-                    <h2 class="h3" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 20px; color: #B25549; margin: 0 0 20px 0;">Done! Your Postcard Is On Its Way To D.C.</h2>
+                  <td>
+                    <div class="card">
+                      <div style="padding: 32px;">
+                        <h2 class="h3" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 20px; color: #B25549; margin: 0 0 20px 0;">Done! Your Postcard Is On Its Way To D.C.</h2>
                     
                     <p style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 500; color: #222222; margin: 0 0 20px 0;">
                       Expected delivery date: <strong style="color: #2F4156;">${formattedExpectedDate}</strong>
@@ -419,31 +421,39 @@ const handler = async (req) => {
                       We wrote your message with a real ballpoint pen on premium cardstock, stamped it first-class, and sent it to ${repTitleAndLastName}.
                     </p>
                     
-                    <p class="body-text" style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; color: #222222; margin: 0;">
-                      Congressional mailrooms do a quick security screen—then your card moves upstairs. Unlike a package, postcards don't come with tracking. But they arrive faster than letters, and they get read.
-                    </p>
+                        <p class="body-text" style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; color: #222222; margin: 0;">
+                          Congressional mailrooms do a quick security screen—then your card moves upstairs. Unlike a package, postcards don't come with tracking. But they arrive faster than letters, and they get read.
+                        </p>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </table>
               
               <!-- Thanks Card -->
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="card">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border: none;">
                 <tr>
-                  <td style="padding: 32px;">
-                    <h2 class="h3" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 20px; color: #B25549; margin: 0 0 20px 0;">Thanks For Speaking Up</h2>
-                    
-                    <p class="body-text" style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; color: #222222; margin: 0;">
-                      Research shows that just 50 handwritten postcards can influence a member's vote. <em>— 2019 Congressional Management Foundation Study</em>
-                    </p>
+                  <td>
+                    <div class="card">
+                      <div style="padding: 32px;">
+                        <h2 class="h3" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 20px; color: #B25549; margin: 0 0 20px 0;">Thanks For Speaking Up</h2>
+                        
+                        <p class="body-text" style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; color: #222222; margin: 0;">
+                          Research shows that just 50 handwritten postcards can influence a member's vote. <em>— 2019 Congressional Management Foundation Study</em>
+                        </p>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </table>
               
               <!-- Share Card -->
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="card">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border: none;">
                 <tr>
-                  <td style="padding: 32px;">
-                    <h2 style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 24px; color: #2F4156; margin: 0 0 8px 0;">Movements Grow One Friend At A Time</h2>
+                  <td>
+                    <div class="card">
+                      <div style="padding: 32px;">
+                        <h2 style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 24px; color: #2F4156; margin: 0 0 8px 0;">Movements Grow One Friend At A Time</h2>
                     
                     <p class="body-text" style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; color: #222222; margin: 0 0 24px 0;">
                       Invite a friend to send their own postcard—together, we're impossible to ignore.
@@ -455,21 +465,27 @@ const handler = async (req) => {
                     
                     <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #5A646E; margin: 8px 0 20px 0; text-align: center;">Your share today could help another postcard land next week.</p>
                     
-                    <a href="https://www.canary.cards" class="secondary-cta" style="background-color: transparent; border: 2px solid #B25549; border-radius: 12px; padding: 12px 24px; text-align: center; text-decoration: none; display: block;">
-                      <p class="secondary-cta-text" style="font-family: 'Inter', sans-serif; font-weight: 500; font-size: 16px; color: #B25549; margin: 0;">Write Another Postcard</p>
-                    </a>
+                        <a href="https://www.canary.cards" class="secondary-cta" style="background-color: transparent; border: 2px solid #B25549; border-radius: 12px; padding: 12px 24px; text-align: center; text-decoration: none; display: block;">
+                          <p class="secondary-cta-text" style="font-family: 'Inter', sans-serif; font-weight: 500; font-size: 16px; color: #B25549; margin: 0;">Write Another Postcard</p>
+                        </a>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </table>
               
               <!-- Postcard Message Card -->
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="card">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border: none;">
                 <tr>
-                  <td style="padding: 32px;">
-                    <h4 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.125rem; line-height: 1.3; color: #2F4156; margin: 0 0 1rem 0;">Your Message To ${repTitleAndLastName}</h4>
-                    
-                    <div class="postcard-content" style="background-color: #FFFFFF; border-radius: 8px; padding: 20px; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; color: #222222;">
-                      ${safeMessage}
+                  <td>
+                    <div class="card">
+                      <div style="padding: 32px;">
+                        <h4 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.125rem; line-height: 1.3; color: #2F4156; margin: 0 0 1rem 0;">Your Message To ${repTitleAndLastName}</h4>
+                        
+                        <div class="postcard-content" style="background-color: #FFFFFF; border-radius: 8px; padding: 20px; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; color: #222222; border: 1px solid #E8DECF;">
+                          ${safeMessage}
+                        </div>
+                      </div>
                     </div>
                   </td>
                 </tr>
