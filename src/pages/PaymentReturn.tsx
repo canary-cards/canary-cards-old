@@ -65,6 +65,10 @@ export default function PaymentReturn() {
     try {
       setStatus('ordering');
       
+      // Simulation flags for testing (only active in development)
+      const simulateFailure = process.env.NODE_ENV === 'development' && 
+        new URLSearchParams(window.location.search).has('simulate_failure');
+      
       if (!postcardData || !validatePostcardData(postcardData)) {
         // Clear any corrupted storage data
         sessionStorage.removeItem('appContextBackup');
@@ -80,6 +84,11 @@ export default function PaymentReturn() {
           navigate('/onboarding');
         }, 3000);
         return;
+      }
+      
+      // Simulate failure for testing if flag is set
+      if (simulateFailure) {
+        throw new Error("Simulated postcard creation failure for testing");
       }
       
       const { data, error } = await supabase.functions.invoke('send-postcard', {
@@ -109,8 +118,8 @@ export default function PaymentReturn() {
           });
         }, remainingTime);
       } else {
+        // Handle partial failure - still navigate to error but don't refund
         setStatus('error');
-        // Clear global payment loading on error
         dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
         toast({
           title: "Some postcards failed to order",
@@ -119,13 +128,47 @@ export default function PaymentReturn() {
         });
       }
     } catch (error) {
+      console.error("Postcard ordering failed:", error);
+      
+      // Try to refund the payment
+      const sessionId = searchParams.get('session_id');
+      if (sessionId) {
+        try {
+          console.log("Attempting refund for failed postcard creation...");
+          const { data: refundData, error: refundError } = await supabase.functions.invoke('refund-payment', {
+            body: { 
+              sessionId,
+              reason: "Postcard creation failed: " + error.message 
+            }
+          });
+          
+          if (refundError) {
+            console.error("Refund failed:", refundError);
+          } else {
+            console.log("Refund successful:", refundData);
+          }
+          
+          // Navigate to refund page regardless of refund success/failure
+          dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
+          navigate('/payment-refunded', {
+            state: {
+              error: error.message,
+              refundId: refundData?.refund_id || null
+            }
+          });
+          return;
+        } catch (refundError) {
+          console.error("Error during refund process:", refundError);
+        }
+      }
+      
+      // Fallback if no session ID or refund fails
       setStatus('error');
       setOrderingResults({ error: error.message });
-      // Clear global payment loading on error
       dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
       toast({
         title: "Failed to order postcards",
-        description: "Please try again or contact support if the issue persists.",
+        description: "Please contact support. Your payment may need to be refunded manually.",
         variant: "destructive",
       });
     }

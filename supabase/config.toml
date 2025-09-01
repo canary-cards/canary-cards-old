@@ -6,6 +6,9 @@ verify_jwt = false
 [functions.verify-payment]
 verify_jwt = false
 
+[functions.refund-payment]
+verify_jwt = false
+
 [functions.draft-postcard-message]
 verify_jwt = false
 
