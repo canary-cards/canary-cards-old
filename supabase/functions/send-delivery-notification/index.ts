@@ -432,17 +432,9 @@ const handler = async (req) => {
                   <td style="padding: 32px;">
                     <h2 class="h3" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 20px; color: #B25549; margin: 0 0 20px 0;">Thanks For Speaking Up</h2>
                     
-                    <p class="body-text" style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; color: #222222; margin: 0 0 24px 0;">
+                    <p class="body-text" style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; color: #222222; margin: 0;">
                       Research shows that just 50 handwritten postcards can influence a member's vote. <em>— 2019 Congressional Management Foundation Study</em>
                     </p>
-                    
-                    <a href="#" class="primary-cta" style="background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 12px; padding: 16px 24px; text-align: center; text-decoration: none; display: block; margin-bottom: 16px;">
-                      <p class="primary-cta-text" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 18px; color: #2F4156; margin: 0;">Share Canary Cards</p>
-                    </a>
-                    
-                    <a href="https://www.canary.cards" class="secondary-cta" style="background-color: transparent; border: 2px solid #B25549; border-radius: 12px; padding: 12px 24px; text-align: center; text-decoration: none; display: block;">
-                      <p class="secondary-cta-text" style="font-family: 'Inter', sans-serif; font-weight: 500; font-size: 16px; color: #B25549; margin: 0;">Write Another Postcard</p>
-                    </a>
                   </td>
                 </tr>
               </table>
