@@ -10,7 +10,6 @@ import Onboarding from "./pages/Onboarding";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import PaymentSuccess from "./pages/PaymentSuccess";
-import PaymentCanceled from "./pages/PaymentCanceled";
 import PaymentReturn from "./pages/PaymentReturn";
 import PaymentRefunded from "./pages/PaymentRefunded";
 import { useEffect, useState } from "react";
@@ -55,7 +54,6 @@ const AppContent = () => (
       
       <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
       <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
-      <Route path="/payment-canceled" element={<AppProvider><PaymentCanceled /></AppProvider>} />
       <Route path="/payment-refunded" element={<AppProvider><PaymentRefunded /></AppProvider>} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />

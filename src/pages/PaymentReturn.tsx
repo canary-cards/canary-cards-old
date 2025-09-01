@@ -285,8 +285,9 @@ export default function PaymentReturn() {
           description: "Unable to confirm payment. Please contact support.",
           variant: "destructive",
         });
+        dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
         setTimeout(() => {
-          navigate('/payment-canceled');
+          navigate('/onboarding');
         }, 3000);
         return;
       }
@@ -338,8 +339,13 @@ export default function PaymentReturn() {
       setStatus('error');
       // Clear global payment loading on error
       dispatch({ type: 'SET_PAYMENT_LOADING', payload: false });
+      toast({
+        title: "No session found",
+        description: "Please start the postcard process again.",
+        variant: "destructive",
+      });
       setTimeout(() => {
-        navigate('/payment-canceled');
+        navigate('/onboarding');
       }, 3000);
     }
   }, [searchParams, navigate, dispatch]);
