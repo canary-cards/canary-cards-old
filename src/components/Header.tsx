@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
@@ -46,7 +47,7 @@ export function Header({ className }: HeaderProps) {
           aria-label="Go to home"
         >
           <Logo className="h-8" />
-          <div className="flex flex-col">
+          <div className="hidden md:flex flex-col">
             <span className="font-semibold text-primary" style={{ fontFamily: 'Spectral', fontWeight: 600 }}>
               Canary Cards
             </span>
