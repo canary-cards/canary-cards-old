@@ -17,14 +17,19 @@ export default function PaymentRefunded() {
     errors = [] 
   } = location.state || {};
   
-  const fallbackError = urlParams.get('error');
-  const fallbackRefundId = urlParams.get('refundId');
+  // URL params for testing (override state if present)
+  const urlFailedCount = urlParams.get('failedCount');
+  const urlTotalCount = urlParams.get('totalCount');
+  const urlRefundAmount = urlParams.get('refundAmountCents');
+  const urlRefundId = urlParams.get('refundId');
+  const urlError = urlParams.get('error');
   
-  const displayFailedCount = failedCount;
-  const displayTotalCount = totalCount;
-  const displayRefundAmount = refundAmountCents ? (refundAmountCents / 100).toFixed(2) : null;
-  const displayRefundId = refundId || fallbackRefundId;
-  const displayErrors = errors.length > 0 ? errors : (fallbackError ? [fallbackError] : []);
+  const displayFailedCount = urlFailedCount ? parseInt(urlFailedCount) : failedCount;
+  const displayTotalCount = urlTotalCount ? parseInt(urlTotalCount) : totalCount;
+  const displayRefundAmount = urlRefundAmount ? (parseInt(urlRefundAmount) / 100).toFixed(2) : 
+    (refundAmountCents ? (refundAmountCents / 100).toFixed(2) : null);
+  const displayRefundId = urlRefundId || refundId;
+  const displayErrors = urlError ? [urlError] : (errors.length > 0 ? errors : []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col">
