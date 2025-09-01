@@ -12,9 +12,6 @@ import NotFound from "./pages/NotFound";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 import PaymentReturn from "./pages/PaymentReturn";
-import Auth from "./pages/Auth";
-import PasswordReset from "./pages/PasswordReset";
-import Profile from "./pages/Profile";
 import { useEffect, useState } from "react";
 
 import { AppProvider, useAppContext } from "./context/AppContext";
@@ -54,9 +51,6 @@ const AppContent = () => (
       <Route path="/" element={<Index />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<AppProvider><About /></AppProvider>} />
-      <Route path="/auth" element={<Auth />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/password-reset" element={<PasswordReset />} />
       
       <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
       <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
