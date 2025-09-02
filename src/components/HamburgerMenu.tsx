@@ -7,45 +7,10 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 export function HamburgerMenu() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const isMobile = useIsMobile();
-
-  // Calculate width based on screen size
-  const getSheetWidth = () => {
-    const width = window.innerWidth;
-    console.log('🔍 Screen width:', width, 'isMobile:', isMobile);
-    
-    if (isMobile) {
-      const result = Math.min(width * 0.92, 360);
-      console.log('📱 Mobile width calculated:', result);
-      return result;
-    } else if (width >= 1024) {
-      console.log('🖥️ Desktop width: 400');
-      return 400;
-    } else {
-      const result = Math.min(width * 0.88, 380);
-      console.log('📟 Tablet width calculated:', result);
-      return result;
-    }
-  };
-
-  const [sheetWidth, setSheetWidth] = useState(getSheetWidth);
-
-  // Update width on resize
-  useEffect(() => {
-    const handleResize = () => {
-      const newWidth = getSheetWidth();
-      console.log('📏 Resize detected, new width:', newWidth);
-      setSheetWidth(newWidth);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isMobile]);
 
   // Handle ESC key to close menu
   useEffect(() => {
@@ -80,12 +45,7 @@ export function HamburgerMenu() {
       <SheetContent 
         side="right" 
         className="bg-white text-primary border-l-0 max-h-screen overflow-y-auto"
-        style={{
-          width: `${sheetWidth}px !important`,
-          maxWidth: `${sheetWidth}px !important`,
-          '--sheet-overlay-bg': 'rgba(47, 65, 86, 0.35)',
-          animationDuration: 'var(--motion-duration-200, 200ms)',
-        } as React.CSSProperties}
+        data-hamburger-menu="true"
       >
         <div 
           className="flex flex-col h-full"

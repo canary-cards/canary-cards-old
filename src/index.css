@@ -198,4 +198,24 @@ All colors MUST be HSL.
     70% { box-shadow: 0 0 0 10px hsl(var(--destructive) / 0); }
     100% { box-shadow: 0 0 0 0 hsl(var(--destructive) / 0); }
   }
+
+  /* Hamburger menu responsive widths - higher specificity override */
+  [data-hamburger-menu="true"] {
+    width: min(92vw, 360px) !important;
+    max-width: min(92vw, 360px) !important;
+  }
+
+  @media (min-width: 640px) {
+    [data-hamburger-menu="true"] {
+      width: min(88vw, 380px) !important;
+      max-width: min(88vw, 380px) !important;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    [data-hamburger-menu="true"] {
+      width: 400px !important;
+      max-width: 400px !important;
+    }
+  }
 }
