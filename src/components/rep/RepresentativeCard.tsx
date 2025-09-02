@@ -49,7 +49,7 @@ export function RepresentativeCard({
           </p>
         </div>
         {showBadge && isSelected && (
-          <Badge variant="accent" className="ml-2 text-xs">
+          <Badge variant="accent" className="ml-2 text-xs whitespace-nowrap">
             My Rep
           </Badge>
         )}
