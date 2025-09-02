@@ -14,7 +14,7 @@ const slides = [
     subtitle: "15× more likely to have influence than form emails*.",
     finePrint: "* 2019 Congressional Management Foundation study",
     iconPlaceholder: "ICON / WHY POSTCARDS",
-    imageSrc: "/smallonboarding1.svg",
+    imageSrc: "/onboarding-icon.svg",
     imageAlt: "Why postcards are effective in D.C."
   },
   {
