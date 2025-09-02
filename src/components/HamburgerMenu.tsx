@@ -7,10 +7,35 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function HamburgerMenu() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const isMobile = useIsMobile();
+
+  // Calculate width based on screen size
+  const getSheetWidth = () => {
+    if (isMobile) {
+      return Math.min(window.innerWidth * 0.92, 360);
+    } else if (window.innerWidth >= 1024) {
+      return 400;
+    } else {
+      return Math.min(window.innerWidth * 0.88, 380);
+    }
+  };
+
+  const [sheetWidth, setSheetWidth] = useState(getSheetWidth);
+
+  // Update width on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setSheetWidth(getSheetWidth());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobile]);
 
   // Handle ESC key to close menu
   useEffect(() => {
@@ -44,8 +69,9 @@ export function HamburgerMenu() {
       </SheetTrigger>
       <SheetContent 
         side="right" 
-        className="bg-white text-primary border-l-0 max-h-screen overflow-y-auto !w-80 sm:!w-96 lg:!w-[400px]"
+        className="bg-white text-primary border-l-0 max-h-screen overflow-y-auto"
         style={{
+          width: `${sheetWidth}px`,
           '--sheet-overlay-bg': 'rgba(47, 65, 86, 0.35)',
           animationDuration: 'var(--motion-duration-200, 200ms)',
         } as React.CSSProperties}
