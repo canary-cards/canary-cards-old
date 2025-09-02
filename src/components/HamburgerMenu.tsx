@@ -44,7 +44,7 @@ export function HamburgerMenu() {
       </SheetTrigger>
       <SheetContent 
         side="right" 
-        className="bg-white text-primary border-l-0 max-h-screen overflow-y-auto w-[92vw] max-w-[360px] sm:w-[88vw] sm:max-w-[380px] lg:w-[400px] lg:max-w-none"
+        className="bg-white text-primary border-l-0 max-h-screen overflow-y-auto !w-[92vw] !max-w-[360px] sm:!w-[88vw] sm:!max-w-[380px] lg:!w-[400px] lg:!max-w-none"
         style={{
           '--sheet-overlay-bg': 'rgba(47, 65, 86, 0.35)',
           animationDuration: 'var(--motion-duration-200, 200ms)',
