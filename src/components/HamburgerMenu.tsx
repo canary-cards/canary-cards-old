@@ -16,12 +16,20 @@ export function HamburgerMenu() {
 
   // Calculate width based on screen size
   const getSheetWidth = () => {
+    const width = window.innerWidth;
+    console.log('🔍 Screen width:', width, 'isMobile:', isMobile);
+    
     if (isMobile) {
-      return Math.min(window.innerWidth * 0.92, 360);
-    } else if (window.innerWidth >= 1024) {
+      const result = Math.min(width * 0.92, 360);
+      console.log('📱 Mobile width calculated:', result);
+      return result;
+    } else if (width >= 1024) {
+      console.log('🖥️ Desktop width: 400');
       return 400;
     } else {
-      return Math.min(window.innerWidth * 0.88, 380);
+      const result = Math.min(width * 0.88, 380);
+      console.log('📟 Tablet width calculated:', result);
+      return result;
     }
   };
 
@@ -30,7 +38,9 @@ export function HamburgerMenu() {
   // Update width on resize
   useEffect(() => {
     const handleResize = () => {
-      setSheetWidth(getSheetWidth());
+      const newWidth = getSheetWidth();
+      console.log('📏 Resize detected, new width:', newWidth);
+      setSheetWidth(newWidth);
     };
 
     window.addEventListener('resize', handleResize);
@@ -71,7 +81,8 @@ export function HamburgerMenu() {
         side="right" 
         className="bg-white text-primary border-l-0 max-h-screen overflow-y-auto"
         style={{
-          width: `${sheetWidth}px`,
+          width: `${sheetWidth}px !important`,
+          maxWidth: `${sheetWidth}px !important`,
           '--sheet-overlay-bg': 'rgba(47, 65, 86, 0.35)',
           animationDuration: 'var(--motion-duration-200, 200ms)',
         } as React.CSSProperties}
