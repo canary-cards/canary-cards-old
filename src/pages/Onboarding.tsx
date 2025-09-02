@@ -21,7 +21,7 @@ const slides = [
     title: "Canary does the hard work for you.",
     subtitle: "It researches the issues you care about — then writes a clear, persuasive postcard in seconds.",
     iconPlaceholder: "ICON / CANARY RESEARCH",
-    imageSrc: "/smallonboarding2.svg",
+    imageSrc: "/onboarding-icon-2.svg",
     imageAlt: "Canary research process"
   },
   {
