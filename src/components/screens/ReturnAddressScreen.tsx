@@ -222,8 +222,28 @@ export function ReturnAddressScreen() {
                   id="fullName"
                   type="text"
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  onBlur={(e) => setFullName(capitalizeName(e.target.value))}
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    const cursorPosition = e.target.selectionStart;
+                    
+                    // Capitalize first letter of each word as they type
+                    const capitalizedInput = input
+                      .split(' ')
+                      .map((word, index) => {
+                        if (!word) return word;
+                        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                      })
+                      .join(' ');
+                    
+                    setFullName(capitalizedInput);
+                    
+                    // Restore cursor position after state update
+                    setTimeout(() => {
+                      if (e.target.setSelectionRange) {
+                        e.target.setSelectionRange(cursorPosition, cursorPosition);
+                      }
+                    }, 0);
+                  }}
                   placeholder="Enter your full name"
                   className="input-warm h-12 text-base"
                   autoCapitalize="words"
