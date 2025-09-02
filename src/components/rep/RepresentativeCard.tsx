@@ -29,7 +29,7 @@ export function RepresentativeCard({
       } ${onClick ? 'cursor-pointer' : 'cursor-default'}`}
       onClick={onClick}
     >
-      <CardContent className={`flex items-center ${isCompact ? 'p-2' : 'p-4'}`}>
+      <CardContent className={`flex items-center ${isCompact ? 'p-3' : 'p-6'}`}>
         <div className={`${isCompact ? 'w-12 h-12' : 'w-16 h-16'} rounded-lg bg-muted mr-3 md:mr-4 flex-shrink-0 overflow-hidden`}>
           <img 
             src={representative.photo} 
