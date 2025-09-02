@@ -8,6 +8,7 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@
 import { useAppContext } from '../../context/AppContext';
 import { MapPin, ArrowLeft, ArrowRight, Home, Plus, Minus } from 'lucide-react';
 import { searchAddressAutocomplete, getPlaceDetails, GooglePlacesAddressPrediction } from '../../services/googlePlaces';
+import { capitalizeName } from '../../lib/utils';
 
 // Interface removed - now using GooglePlacesAddressPrediction from service
 
@@ -222,6 +223,7 @@ export function ReturnAddressScreen() {
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
+                  onBlur={(e) => setFullName(capitalizeName(e.target.value))}
                   placeholder="Enter your full name"
                   className="input-warm h-12 text-base"
                   autoCapitalize="words"
