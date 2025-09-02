@@ -40,7 +40,7 @@ export function RepresentativeCard({
             }}
           />
           {showBadge && isSelected && (
-            <Badge variant="accent" className="absolute -top-1 -right-1 text-xs whitespace-nowrap scale-75">
+            <Badge variant="accent" className="absolute top-1 right-1 text-xs whitespace-nowrap scale-75 shadow-sm">
               My Rep
             </Badge>
           )}
