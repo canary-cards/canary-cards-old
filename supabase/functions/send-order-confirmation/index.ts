@@ -58,6 +58,16 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    // Get app URL for sharing
+    const getAppUrl = () => {
+      // Try to get from environment variable first
+      const frontendUrl = Deno.env.get('FRONTEND_URL');
+      if (frontendUrl) return frontendUrl;
+      
+      // Fallback to canary.cards
+      return 'https://www.canary.cards';
+    };
+
     // Initialize Supabase client to fetch logo
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -564,35 +574,65 @@ const handler = async (req: Request): Promise<Response> => {
           </tr>
         </table>
         
-        <!-- Share Card - Moved up for priority -->
+        <!-- Share Card - Direct Action Buttons -->
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="card" style="width: 100%;">
           <tr>
             <td class="mobile-padding" style="padding: 2rem;">
               
-              <!-- H2: Friends listen to friends - Same size and color as order number -->
+              <!-- H2: Friends listen to friends -->
               <h2 style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 1.5rem; line-height: 1.25; color: #2F4156; margin: 0 0 1rem 0;">Friends Listen To Friends</h2>
               
               <!-- Share Pitch -->
               <p class="body-text">Your voice is powerful — and even stronger when more join in. Most people join because a friend shared Canary with them. Pass it on and make your impact multiply.</p>
               
-              <!-- Primary CTA Button with Icon -->
-              <div style="text-align: center;">
-                <div style="display: inline-block; background-color: #2F4156; padding: 2px; border-radius: 14px; max-width: calc(100% - 2rem);">
-                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #FFD44D; border-radius: 12px; overflow: hidden;">
-                    <tr>
-                      <td style="padding: 24px 24px; text-align: center; vertical-align: middle;">
-                         <a href="${Deno.env.get('SUPABASE_URL') ? new URL('/share?ref=email&order=' + encodeURIComponent(orderNumber), Deno.env.get('SUPABASE_URL')).href.replace('/rest/v1', '') : 'https://www.canary.cards/share?ref=email&order=' + encodeURIComponent(orderNumber)}" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 24px; font-weight: 600; color: #2F4156; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1;">
-                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
-                             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                             <polyline points="16,6 12,2 8,6"/>
-                             <line x1="12" y1="2" x2="12" y2="15"/>
-                           </svg>
-                           Share in the group chat
-                         </a>
-                      </td>
-                    </tr>
-                  </table>
+              <!-- Share Action Buttons -->
+              <div style="text-align: center; margin-top: 1.5rem;">
+                
+                <!-- Primary Share Button - Text Message -->
+                <div style="margin-bottom: 12px;">
+                  <div style="display: inline-block; background-color: #2F4156; padding: 2px; border-radius: 14px; max-width: calc(100% - 2rem);">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #FFD44D; border-radius: 12px; overflow: hidden;">
+                      <tr>
+                        <td style="padding: 18px 24px; text-align: center; vertical-align: middle;">
+                          <a href="sms:?body=${encodeURIComponent(`I just sent a real, handwritten postcard to my representative! It takes 2 minutes and actually gets read. Join me: ${getAppUrl() || 'https://www.canary.cards'}`)}" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; font-weight: 600; color: #2F4156; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
+                              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            Share via Text Message
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
                 </div>
+                
+                <!-- Secondary Buttons Row -->
+                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                  
+                  <!-- Email Share Button -->
+                  <div style="flex: 1; min-width: 140px; max-width: 200px;">
+                    <a href="mailto:?subject=${encodeURIComponent('Join me in civic engagement!')}&body=${encodeURIComponent(`I just sent a handwritten postcard to my representative through this amazing platform. It only took 2 minutes and really helps our voices be heard in Washington.\n\nJoin me: ${getAppUrl() || 'https://www.canary.cards'}\n\nTogether we can make a difference!`)}" class="btn btn-secondary" style="width: 100%; display: inline-block; text-decoration: none; font-size: 14px; padding: 12px 16px;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                      </svg>
+                      Email
+                    </a>
+                  </div>
+                  
+                  <!-- Copy Link Button (opens app to copy) -->
+                  <div style="flex: 1; min-width: 140px; max-width: 200px;">
+                    <a href="${getAppUrl() || 'https://www.canary.cards'}" class="btn btn-secondary" style="width: 100%; display: inline-block; text-decoration: none; font-size: 14px; padding: 12px 16px;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                      </svg>
+                      Copy Link
+                    </a>
+                  </div>
+                  
+                </div>
+                
               </div>
               
             </td>
