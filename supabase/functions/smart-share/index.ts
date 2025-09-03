@@ -6,8 +6,13 @@ const corsHeaders = {
 };
 
 const handler = async (req: Request): Promise<Response> => {
+  console.log("=== SMART-SHARE FUNCTION CALLED ===");
+  console.log("Request URL:", req.url);
+  console.log("Request method:", req.method);
+  
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
+    console.log("Handling OPTIONS request");
     return new Response(null, { headers: corsHeaders });
   }
 
@@ -16,53 +21,49 @@ const handler = async (req: Request): Promise<Response> => {
     const ref = url.searchParams.get('ref') || 'direct';
     const orderNumber = url.searchParams.get('order') || '';
     
+    console.log("Parsed params - ref:", ref, "orderNumber:", orderNumber);
+    
     // Get user agent to detect mobile vs desktop
     const userAgent = req.headers.get('user-agent') || '';
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-    
+    console.log("User agent:", userAgent);
+
     // Get app URL for sharing
     const getAppUrl = () => {
       const frontendUrl = Deno.env.get('FRONTEND_URL');
+      console.log("FRONTEND_URL env var:", frontendUrl);
       if (frontendUrl) return frontendUrl;
-      return 'https://canary.cards'; // Remove www prefix
+      return 'https://canary.cards';
     };
 
     const appUrl = getAppUrl();
+    console.log("App URL:", appUrl);
     
-    // Instead of serving HTML, redirect to the React app's share route
+    // Redirect to the React app's share route
     const shareUrl = `${appUrl}/share?ref=${encodeURIComponent(ref)}&order=${encodeURIComponent(orderNumber)}`;
     
-    console.log('Redirecting to share URL:', shareUrl);
-    console.log('User agent:', userAgent);
+    console.log('REDIRECTING TO:', shareUrl);
     
     return new Response(null, {
       status: 302,
       headers: {
         "Location": shareUrl,
-        "Cache-Control": "no-store, no-cache, must-revalidate",
       },
     });
 
   } catch (error: any) {
-    console.error("Error in smart-share function:", error);
+    console.error("=== ERROR IN SMART-SHARE FUNCTION ===");
+    console.error("Error details:", error);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
     
-    // Return a simple fallback page
-    const fallbackHtml = `<!DOCTYPE html>
-<html>
-<head><title>Share Canary Cards</title></head>
-<body style="font-family: sans-serif; text-align: center; padding: 2rem;">
-  <h1>Share Canary Cards</h1>
-  <p>Help others contact their representatives!</p>
-  <a href="https://www.canary.cards" style="background: #2F4156; color: white; padding: 1rem 2rem; text-decoration: none; border-radius: 8px;">
-    Visit Canary Cards
-  </a>
-</body>
-</html>`;
+    // Return a simple fallback redirect
+    const fallbackUrl = 'https://canary.cards/share?ref=error';
+    console.log("Redirecting to fallback URL:", fallbackUrl);
     
-    return new Response(fallbackHtml, {
-      status: 200,
+    return new Response(null, {
+      status: 302,
       headers: {
-        "Content-Type": "text/html; charset=utf-8",
+        "Location": fallbackUrl,
       },
     });
   }
