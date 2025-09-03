@@ -20,17 +20,29 @@ export default function Share() {
   const orderNumber = orderId || searchParams.get('order') || '';
 
   useEffect(() => {
-    // Set the share URL
-    const baseUrl = window.location.origin;
-    setShareUrl(baseUrl);
+    // Set the share URL - use canary.cards as primary domain
+    const shareUrl = 'https://canary.cards';
+    setShareUrl(shareUrl);
     
     // Generate QR code
-    QRCode.toDataURL(baseUrl, { width: 200, margin: 2 })
+    QRCode.toDataURL(shareUrl, { width: 200, margin: 2 })
       .then(url => setQrCodeDataUrl(url))
       .catch(err => console.error('QR code generation failed:', err));
     
     // Check if native sharing is available (mobile devices)
-    setIsNativeShareAvailable('share' in navigator);
+    const isNativeAvailable = 'share' in navigator;
+    setIsNativeShareAvailable(isNativeAvailable);
+    
+    // Auto-trigger native share on mobile if available and came from email
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromEmail = urlParams.get('ref') === 'email';
+    
+    if (isNativeAvailable && fromEmail) {
+      // Small delay to ensure page is loaded
+      setTimeout(() => {
+        handleNativeShare();
+      }, 500);
+    }
   }, []);
 
   const shareContent = {

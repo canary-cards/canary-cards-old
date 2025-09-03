@@ -58,24 +58,9 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // Get app URL for sharing
+    // Get app URL for sharing - use canary.cards as primary domain
     const getAppUrl = () => {
-      // Try to get from environment variable first
-      const frontendUrl = Deno.env.get('FRONTEND_URL');
-      if (frontendUrl) return frontendUrl;
-      
-      // For Lovable projects, construct from Supabase URL
-      const supabaseUrl = Deno.env.get('SUPABASE_URL');
-      if (supabaseUrl) {
-        // Convert supabase URL to likely frontend URL
-        const projectId = supabaseUrl.match(/https:\/\/([^.]+)\.supabase\.co/)?.[1];
-        if (projectId) {
-          return `https://${projectId}.supabase.co`; // This should be your actual frontend URL
-        }
-      }
-      
-      // Fallback to canary.cards
-      return 'https://www.canary.cards';
+      return 'https://canary.cards';
     };
 
     // Initialize Supabase client to fetch logo
