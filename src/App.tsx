@@ -51,7 +51,7 @@ const AppContent = () => (
     </AppProvider>
     <Routes>
       <Route path="/" element={<Index />} />
-      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin" element={<AppProvider><Admin /></AppProvider>} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<AppProvider><About /></AppProvider>} />
             <Route path="/share" element={<Share />} />
