@@ -63,15 +63,8 @@ const handler = async (req: Request): Promise<Response> => {
       width: 100%;
     }
     .logo {
-      width: 80px;
-      height: 80px;
-      background: #FFD44D;
-      border-radius: 50%;
-      margin: 0 auto 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
+      font-size: 3rem;
+      margin-bottom: 1rem;
     }
     .title {
       color: #2F4156;
@@ -88,6 +81,14 @@ const handler = async (req: Request): Promise<Response> => {
       font-weight: 500;
       margin-top: 1rem;
     }
+    .error {
+      color: #EF4444;
+      margin-top: 1rem;
+    }
+    .fallback-options {
+      margin-top: 1.5rem;
+      display: none;
+    }
     .fallback-btn {
       background: #2F4156;
       color: white;
@@ -98,24 +99,34 @@ const handler = async (req: Request): Promise<Response> => {
       cursor: pointer;
       text-decoration: none;
       display: inline-block;
-      margin-top: 1rem;
+      margin: 0.5rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="logo">📮</div>
-    <h1 class="title">${isMobile ? 'Opening Share Options...' : 'Copying Link...'}</h1>
+    <h1 class="title">Opening Share Options...</h1>
     <p class="message">
       ${isMobile 
-        ? 'Your device\'s share menu will open with all your sharing options.'
-        : 'The link has been copied to your clipboard.'
+        ? 'Your share menu should open any moment with all your apps!'
+        : 'Copying link to clipboard...'
       }
     </p>
     <div id="status"></div>
-    <a href="${appUrl}" class="fallback-btn" style="display: none;" id="fallback">
-      Go to Canary Cards
-    </a>
+    
+    <div id="fallback" class="fallback-options">
+      <h3>Choose how to share:</h3>
+      <a href="sms:?body=${encodeURIComponent(`I just sent a real, handwritten postcard to my representative! It takes 2 minutes and actually gets read. Join me: ${appUrl}`)}" class="fallback-btn">
+        📱 Text Message
+      </a>
+      <a href="mailto:?subject=${encodeURIComponent('Join me in civic engagement!')}&body=${encodeURIComponent(`I just sent a handwritten postcard to my representative. Join me: ${appUrl}`)}" class="fallback-btn">
+        ✉️ Email
+      </a>
+      <a href="${appUrl}" class="fallback-btn">
+        🔗 Visit Site
+      </a>
+    </div>
   </div>
 
   <script>
@@ -132,49 +143,42 @@ const handler = async (req: Request): Promise<Response> => {
 
       try {
         if (isMobile && navigator.share) {
-          // Mobile: Use native share
+          // Mobile: Use native share - this will show AirDrop, Messages, WhatsApp, etc.
           await navigator.share(shareData);
-          statusEl.innerHTML = '<div class="success">✓ Shared successfully!</div>';
+          statusEl.innerHTML = '<div class="success">✓ Thanks for sharing!</div>';
           
           // Redirect to app after short delay
           setTimeout(() => {
             window.location.href = '${appUrl}';
-          }, 1500);
+          }, 2000);
           
-        } else {
-          // Desktop: Copy to clipboard
+        } else if (navigator.clipboard) {
+          // Desktop or fallback: Copy to clipboard
           await navigator.clipboard.writeText(shareData.url);
           statusEl.innerHTML = '<div class="success">✓ Link copied to clipboard!</div>';
           
-          // Show fallback button and redirect after delay
-          setTimeout(() => {
-            fallbackEl.style.display = 'inline-block';
-          }, 1000);
-          
+          // Redirect after delay
           setTimeout(() => {
             window.location.href = '${appUrl}';
-          }, 3000);
+          }, 2000);
+        } else {
+          throw new Error('No sharing method available');
         }
       } catch (error) {
-        console.log('Share failed:', error);
+        console.log('Share failed, showing fallback options:', error);
         
-        // Fallback: try clipboard copy
-        try {
-          await navigator.clipboard.writeText(shareData.url);
-          statusEl.innerHTML = '<div class="success">✓ Link copied to clipboard!</div>';
-        } catch (clipboardError) {
-          statusEl.innerHTML = '<div>Please copy this link: <br><strong>${shareData.url}</strong></div>';
-        }
-        
-        fallbackEl.style.display = 'inline-block';
+        // Show fallback options if native share fails
+        statusEl.innerHTML = '<div class="error">Choose how to share:</div>';
+        fallbackEl.style.display = 'block';
       }
     }
 
     // Start sharing immediately when page loads
-    document.addEventListener('DOMContentLoaded', handleShare);
-    
-    // Also try immediately for faster response
-    handleShare();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', handleShare);
+    } else {
+      handleShare();
+    }
   </script>
 </body>
 </html>`;

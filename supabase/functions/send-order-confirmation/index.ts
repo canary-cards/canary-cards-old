@@ -595,26 +595,24 @@ const handler = async (req: Request): Promise<Response> => {
               <!-- Share Pitch -->
               <p class="body-text">Your voice is powerful — and even stronger when more join in. Most people join because a friend shared Canary with them. Pass it on and make your impact multiply.</p>
               
-              <!-- Direct Share Options -->
+              <!-- Single Smart Share Button -->
               <div style="text-align: center; margin-top: 1.5rem;">
-                
-                <!-- Primary Share Button - Text Message -->
-                <div style="margin-bottom: 12px;">
-                  <a href="sms:?body=${encodeURIComponent(`I just sent a real, handwritten postcard to my representative! It takes 2 minutes and actually gets read. Join me: ${getAppUrl()}`)}" style="display: inline-block; background: linear-gradient(135deg, #FFD44D, #FFC940); color: #2F4156; padding: 16px 24px; border-radius: 12px; text-decoration: none; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px;">
-                    📱 Share via Text Message
-                  </a>
+                <div style="display: inline-block; background-color: #2F4156; padding: 2px; border-radius: 14px; max-width: calc(100% - 2rem);">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #FFD44D; border-radius: 12px; overflow: hidden;">
+                    <tr>
+                      <td style="padding: 18px 24px; text-align: center; vertical-align: middle;">
+                        <a href="${getAppUrl()}/functions/v1/smart-share?ref=email&order=${encodeURIComponent(orderNumber)}" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; font-weight: 600; color: #2F4156; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1;">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
+                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                            <polyline points="16,6 12,2 8,6"/>
+                            <line x1="12" y1="2" x2="12" y2="15"/>
+                          </svg>
+                          Share in the group chat
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
-                
-                <!-- Secondary Options -->
-                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 8px;">
-                  <a href="mailto:?subject=${encodeURIComponent('Join me in civic engagement!')}&body=${encodeURIComponent(`I just sent a handwritten postcard to my representative through this amazing platform. It only took 2 minutes and really helps our voices be heard in Washington.\n\nJoin me: ${getAppUrl()}\n\nTogether we can make a difference!`)}" style="display: inline-block; background: #2F4156; color: white; padding: 12px 16px; border-radius: 8px; text-decoration: none; font-size: 14px; margin: 2px;">
-                    ✉️ Email
-                  </a>
-                  <a href="${getAppUrl()}" style="display: inline-block; background: #2F4156; color: white; padding: 12px 16px; border-radius: 8px; text-decoration: none; font-size: 14px; margin: 2px;">
-                    🔗 Copy Link
-                  </a>
-                </div>
-                
               </div>
               
             </td>
