@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentReturn from "./pages/PaymentReturn";
 import PaymentRefunded from "./pages/PaymentRefunded";
+import Share from "./pages/Share";
 import { useEffect, useState } from "react";
 
 import { AppProvider, useAppContext } from "./context/AppContext";
@@ -51,6 +52,7 @@ const AppContent = () => (
       <Route path="/" element={<Index />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<AppProvider><About /></AppProvider>} />
+      <Route path="/share" element={<Share />} />
       
       <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
       <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />

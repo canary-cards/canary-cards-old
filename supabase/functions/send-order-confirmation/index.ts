@@ -581,14 +581,14 @@ const handler = async (req: Request): Promise<Response> => {
                   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #FFD44D; border-radius: 12px; overflow: hidden;">
                     <tr>
                       <td style="padding: 24px 24px; text-align: center; vertical-align: middle;">
-                        <a href="https://www.canary.cards" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 24px; font-weight: 600; color: #2F4156; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1;">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
-                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                            <polyline points="16,6 12,2 8,6"/>
-                            <line x1="12" y1="2" x2="12" y2="15"/>
-                          </svg>
-                          Share in the group chat
-                        </a>
+                         <a href="${Deno.env.get('SUPABASE_URL') ? new URL('/share?ref=email&order=' + encodeURIComponent(orderNumber), Deno.env.get('SUPABASE_URL')).href.replace('/rest/v1', '') : 'https://www.canary.cards/share?ref=email&order=' + encodeURIComponent(orderNumber)}" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 24px; font-weight: 600; color: #2F4156; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1;">
+                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
+                             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                             <polyline points="16,6 12,2 8,6"/>
+                             <line x1="12" y1="2" x2="12" y2="15"/>
+                           </svg>
+                           Share in the group chat
+                         </a>
                       </td>
                     </tr>
                   </table>
