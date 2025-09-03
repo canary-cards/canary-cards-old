@@ -586,7 +586,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #FFD44D; border-radius: 12px; overflow: hidden;">
                     <tr>
                       <td style="padding: 18px 24px; text-align: center; vertical-align: middle;">
-                         <a href="${Deno.env.get('SUPABASE_URL')}/functions/v1/smart-share?ref=email&order=${orderNumber || ''}" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; font-weight: 600; color: #2F4156; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1;">
+                         <a href="https://xwsgyxlvxntgpochonwe.supabase.co/functions/v1/smart-share?ref=email&order=${orderNumber || ''}" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 18px; font-weight: 600; color: #2F4156; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1;">>
                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
                              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                              <polyline points="16,6 12,2 8,6"/>
