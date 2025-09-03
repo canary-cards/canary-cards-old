@@ -13,7 +13,7 @@ import NotFound from "./pages/NotFound";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentReturn from "./pages/PaymentReturn";
 import PaymentRefunded from "./pages/PaymentRefunded";
-import ShareTest from "./pages/ShareTest";
+import SimpleTest from "./pages/SimpleTest";
 import { useEffect, useState } from "react";
 
 import { AppProvider, useAppContext } from "./context/AppContext";
@@ -54,8 +54,8 @@ const AppContent = () => (
       <Route path="/admin" element={<AppProvider><Admin /></AppProvider>} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<AppProvider><About /></AppProvider>} />
-            <Route path="/share" element={<ShareTest />} />
-            <Route path="/share/:orderId" element={<ShareTest />} />
+            <Route path="/share" element={<SimpleTest />} />
+            <Route path="/share/:orderId" element={<SimpleTest />} />
       
       <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
       <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
