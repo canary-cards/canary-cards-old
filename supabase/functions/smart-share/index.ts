@@ -187,8 +187,6 @@ const handler = async (req: Request): Promise<Response> => {
       status: 200,
       headers: {
         "Content-Type": "text/html; charset=utf-8",
-        "Cache-Control": "no-cache",
-        ...corsHeaders,
       },
     });
 
@@ -212,8 +210,6 @@ const handler = async (req: Request): Promise<Response> => {
       status: 200,
       headers: {
         "Content-Type": "text/html; charset=utf-8",
-        "Cache-Control": "no-cache",
-        ...corsHeaders,
       },
     });
   }
