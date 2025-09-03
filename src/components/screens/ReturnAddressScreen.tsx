@@ -114,11 +114,11 @@ export function ReturnAddressScreen() {
       return;
     }
     
-    // Fast search for 3+ characters (100ms delay)
+    // Fast search for 3+ characters (150ms delay)
     setIsSearching(true);
     searchTimeoutRef.current = setTimeout(() => {
       handleAddressSearch(value);
-    }, 100);
+    }, 150);
   };
 
   const handleSuggestionClick = async (suggestion: GooglePlacesAddressPrediction) => {
