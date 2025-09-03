@@ -459,9 +459,9 @@ const handler = async (req) => {
                       Invite a friend to send their own postcard—together, we're impossible to ignore.
                     </p>
                     
-                    <a href="#" class="primary-cta" style="background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 12px; padding: 16px 24px; text-align: center; text-decoration: none; display: block; margin-bottom: 16px;">
-                      <p class="primary-cta-text" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 18px; color: #2F4156; margin: 0;">Share Canary Cards</p>
-                    </a>
+                     <a href="${Deno.env.get('SUPABASE_URL')}/functions/v1/smart-share?ref=delivery&postcard=${postcardId || ''}" class="primary-cta" style="background-color: #FFD44D; border: 2px solid #2F4156; border-radius: 12px; padding: 16px 24px; text-align: center; text-decoration: none; display: block; margin-bottom: 16px;">
+                       <p class="primary-cta-text" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 18px; color: #2F4156; margin: 0;">Share Canary Cards</p>
+                     </a>
                     
                     <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #5A646E; margin: 8px 0 20px 0; text-align: center;">Your share today could help another postcard land next week.</p>
                     
