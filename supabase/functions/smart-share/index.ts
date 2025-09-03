@@ -24,7 +24,7 @@ const handler = async (req: Request): Promise<Response> => {
     const getAppUrl = () => {
       const frontendUrl = Deno.env.get('FRONTEND_URL');
       if (frontendUrl) return frontendUrl;
-      return 'https://www.canary.cards';
+      return 'https://canary.cards'; // Remove www prefix
     };
 
     const appUrl = getAppUrl();

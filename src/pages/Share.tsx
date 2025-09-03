@@ -19,22 +19,34 @@ export default function Share() {
   const ref = searchParams.get('ref') || 'direct';
   const orderNumber = orderId || searchParams.get('order') || '';
 
+  // Set the share URL immediately
+  const baseShareUrl = 'https://canary.cards';
+
   const shareContent = {
     title: 'Canary Cards - Real Postcards to Representatives',
     text: 'I just sent a real postcard with Canary Cards! Friends listen to friends. Show them how easy it is to send a real postcard.',
-    url: shareUrl
+    url: baseShareUrl
   };
 
   const handleNativeShare = async () => {
+    console.log('Attempting native share with ref:', ref);
     if (navigator.share) {
       try {
         await navigator.share(shareContent);
         console.log('Shared successfully via native share');
+        toast({
+          title: "Thanks for sharing!",
+          description: "Your friends can now easily contact their representatives too."
+        });
       } catch (error) {
         console.log('Share cancelled or failed:', error);
-        handleCopyLink();
+        // Don't auto-fallback to copy when coming from email, let user choose
+        if (ref !== 'email' && ref !== 'delivery') {
+          handleCopyLink();
+        }
       }
     } else {
+      console.log('Native share not available, falling back to copy');
       handleCopyLink();
     }
   };
@@ -56,12 +68,11 @@ export default function Share() {
   };
 
   useEffect(() => {
-    // Set the share URL - use canary.cards as primary domain
-    const shareUrl = 'https://canary.cards';
-    setShareUrl(shareUrl);
+    // Set the share URL
+    setShareUrl(baseShareUrl);
     
     // Generate QR code
-    QRCode.toDataURL(shareUrl, { width: 200, margin: 2 })
+    QRCode.toDataURL(baseShareUrl, { width: 200, margin: 2 })
       .then(url => setQrCodeDataUrl(url))
       .catch(err => console.error('QR code generation failed:', err));
     
@@ -69,14 +80,17 @@ export default function Share() {
     const isNativeAvailable = 'share' in navigator;
     setIsNativeShareAvailable(isNativeAvailable);
     
+    console.log('Share page loaded with ref:', ref, 'isNativeAvailable:', isNativeAvailable);
+    
     // Auto-trigger native share if coming from email (ref=email or ref=delivery)
     if ((ref === 'email' || ref === 'delivery') && isNativeAvailable) {
-      // Small delay to ensure page is loaded
+      console.log('Auto-triggering share for email/delivery ref');
+      // Delay to ensure page is fully loaded and user can see the action
       setTimeout(() => {
         handleNativeShare();
-      }, 500);
+      }, 1000); // Increased delay
     }
-  }, [ref]);
+  }, []); // Remove ref dependency to avoid re-triggering
 
 
   const handleTextShare = () => {
