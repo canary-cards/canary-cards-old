@@ -38,10 +38,37 @@ export default function Share() {
     const fromEmail = urlParams.get('ref') === 'email';
     
     if (isNativeAvailable && fromEmail) {
-      // Small delay to ensure page is loaded
-      setTimeout(() => {
-        handleNativeShare();
-      }, 500);
+      // Try to trigger share immediately since user just clicked email link
+      const triggerShare = async () => {
+        try {
+          await navigator.share({
+            title: 'Canary Cards - Real Postcards to Representatives',
+            text: 'I just sent a real postcard with Canary Cards! Friends listen to friends. Show them how easy it is to send a real postcard.',
+            url: shareUrl
+          });
+        } catch (error) {
+          console.log('Auto-share cancelled or failed:', error);
+        }
+      };
+      
+      // Try immediately and also on any user interaction
+      triggerShare();
+      
+      // Backup: trigger on any click/touch
+      const handleAnyInteraction = () => {
+        triggerShare();
+        document.removeEventListener('click', handleAnyInteraction);
+        document.removeEventListener('touchstart', handleAnyInteraction);
+      };
+      
+      document.addEventListener('click', handleAnyInteraction);
+      document.addEventListener('touchstart', handleAnyInteraction);
+      
+      // Cleanup
+      return () => {
+        document.removeEventListener('click', handleAnyInteraction);
+        document.removeEventListener('touchstart', handleAnyInteraction);
+      };
     }
   }, []);
 
