@@ -1,37 +1,40 @@
 import React from 'react';
+import { DynamicSvg } from '../DynamicSvg';
 
 interface SlideProps {
   title: string;
   subtitle: string;
   finePrint?: string;
   iconPlaceholder: string;
-  imageSrc?: string;
+  assetName?: string;
   imageAlt?: string;
   currentSlide: number;
-  allImages: Array<{ src: string; alt: string; }>;
+  allAssets: Array<{ assetName: string; alt: string; }>;
 }
 
-export function Slide({ title, subtitle, finePrint, iconPlaceholder, imageSrc, imageAlt, currentSlide, allImages }: SlideProps) {
+export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, imageAlt, currentSlide, allAssets }: SlideProps) {
   return (
     <div className="h-full flex flex-col">
       {/* Top half - Icon placeholder */}
       <div className="flex-1 flex items-center justify-center px-6 py-4">
         <div className={`aspect-[1/1.1] flex items-center justify-center relative transition-[width] duration-200 ease-in-out ${currentSlide === 3 ? 'w-5/6' : 'w-2/3'}`}>
-          {/* Render all images at once for smooth transitions */}
-          {allImages.map((image, index) => (
-            <img 
+          {/* Render all SVGs at once for smooth transitions */}
+          {allAssets.map((asset, index) => (
+            <div
               key={index}
-              src={image.src} 
-              alt={image.alt}
-              className={`absolute inset-0 w-full h-full object-contain transition-[opacity,transform] duration-200 ease-in-out motion-reduce:transition-none motion-reduce:transform-none pointer-events-none select-none ${
+              className={`absolute inset-0 w-full h-full transition-[opacity,transform] duration-200 ease-in-out motion-reduce:transition-none motion-reduce:transform-none pointer-events-none select-none ${
                 index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               }`}
-              loading="eager"
-              decoding="async"
               style={{ willChange: 'opacity, transform' }}
-            />
+            >
+              <DynamicSvg 
+                assetName={asset.assetName}
+                alt={asset.alt}
+                className="w-full h-full object-contain"
+              />
+            </div>
           ))}
-          {!imageSrc && (
+          {!assetName && (
             <span className="text-xs font-medium text-muted-foreground text-center px-2">
               {iconPlaceholder}
             </span>

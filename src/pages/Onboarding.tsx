@@ -14,14 +14,14 @@ const slides = [
     subtitle: "15× more likely to have influence than form emails*.",
     finePrint: "* 2019 Congressional Management Foundation study",
     iconPlaceholder: "ICON / WHY POSTCARDS",
-    imageSrc: "/onboarding-icon.svg",
+    assetName: "Onboarding Icon 1",
     imageAlt: "Why postcards are effective in D.C."
   },
   {
     title: "Canary does the hard work for you.",
     subtitle: "It researches the issues you care about — then writes a clear, persuasive postcard in seconds.",
     iconPlaceholder: "ICON / CANARY RESEARCH",
-    imageSrc: "/onboarding-icon-2.svg",
+    assetName: "Onboarding Icon 2",
     imageAlt: "Canary research process"
   },
   {
@@ -29,14 +29,14 @@ const slides = [
     subtitle: "Indistinguishable from human handwriting. Authentic and personal.",
     finePrint: "Written by a robot holding a blue ballpoint. Authentic & affordable",
     iconPlaceholder: "ICON / REAL INK HANDWRITING",
-    imageSrc: "/smallonboarding3.svg",
+    assetName: "Onboarding Icon 3",
     imageAlt: "Real handwriting with ink and pen"
   },
   {
     title: "No stamps. No hassle.",
     subtitle: "Your postcard is mailed straight to your representative's desk.",
     iconPlaceholder: "ICON / MAILED FOR YOU",
-    imageSrc: "/smallonboarding4.svg",
+    assetName: "Onboarding Icon 4",
     imageAlt: "Postcard delivery service"
   }
 ];
@@ -50,20 +50,6 @@ export default function Onboarding() {
   const [showSharedBanner, setShowSharedBanner] = useState(false);
   const [sharedBy, setSharedBy] = useState('');
 
-  // Preload and decode images for instant display
-  useEffect(() => {
-    const preloadPromises = slides.map((slide) => {
-      if (slide.imageSrc) {
-        const img = new Image();
-        img.src = slide.imageSrc;
-        return img.decode().catch(() => {}); // Silently handle decode errors
-      }
-      return Promise.resolve();
-    });
-    
-    // Wait for all images to be decoded
-    Promise.all(preloadPromises);
-  }, []);
 
   // Check for shared link
   useEffect(() => {
@@ -284,8 +270,8 @@ export default function Onboarding() {
           <Slide 
             {...slides[currentSlide]} 
             currentSlide={currentSlide}
-            allImages={slides.map(slide => ({ 
-              src: slide.imageSrc || '', 
+            allAssets={slides.map(slide => ({ 
+              assetName: slide.assetName || '', 
               alt: slide.imageAlt || slide.iconPlaceholder 
             }))}
           />
