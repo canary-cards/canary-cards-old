@@ -183,10 +183,14 @@ const handler = async (req: Request): Promise<Response> => {
 </body>
 </html>`;
 
+    console.log('Returning HTML response for user agent:', userAgent);
+    
     return new Response(html, {
       status: 200,
       headers: {
         "Content-Type": "text/html; charset=utf-8",
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "no-store, no-cache, must-revalidate",
       },
     });
 
