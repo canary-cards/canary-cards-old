@@ -1,33 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useSearchParams, useParams, Link } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Share2, Copy, MessageSquare, Mail, Twitter, Facebook, Heart } from 'lucide-react';
+import { Share2, Copy, MessageSquare, Twitter, Facebook, Send, QrCode } from 'lucide-react';
+import QRCode from 'qrcode';
 import { useToast } from '@/hooks/use-toast';
 import { Header } from '@/components/Header';
 
 export default function Share() {
   const [searchParams] = useSearchParams();
+  const { orderId } = useParams();
   const [shareUrl, setShareUrl] = useState('');
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState('');
   const [isNativeShareAvailable, setIsNativeShareAvailable] = useState(false);
   const { toast } = useToast();
 
   const ref = searchParams.get('ref') || 'direct';
-  const orderNumber = searchParams.get('order') || '';
+  const orderNumber = orderId || searchParams.get('order') || '';
 
   useEffect(() => {
     // Set the share URL
     const baseUrl = window.location.origin;
     setShareUrl(baseUrl);
     
+    // Generate QR code
+    QRCode.toDataURL(baseUrl, { width: 200, margin: 2 })
+      .then(url => setQrCodeDataUrl(url))
+      .catch(err => console.error('QR code generation failed:', err));
+    
     // Check if native sharing is available (mobile devices)
     setIsNativeShareAvailable('share' in navigator);
   }, []);
 
   const shareContent = {
-    title: 'Contact Your Representatives with Canary Cards',
-    text: 'I just sent a real, handwritten postcard to my representative. It takes 2 minutes and actually gets read. Make your voice heard!',
+    title: 'Canary Cards - Real Postcards to Representatives',
+    text: 'I just sent a real postcard with Canary Cards! Friends listen to friends. Show them how easy it is to send a real postcard.',
     url: shareUrl
   };
 
@@ -65,9 +73,20 @@ export default function Share() {
   };
 
   const handleTextShare = () => {
-    const message = `${shareContent.text}\n\n${shareUrl}`;
+    const message = `I just sent a real postcard with Canary Cards! ${shareUrl}`;
     const smsUrl = `sms:?body=${encodeURIComponent(message)}`;
     window.open(smsUrl, '_self');
+  };
+
+  const handleWhatsAppShare = () => {
+    const message = `I just sent a real postcard with Canary Cards! ${shareUrl}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const handleMessengerShare = () => {
+    const messengerUrl = `https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`;
+    window.open(messengerUrl, '_blank');
   };
 
   const handleEmailShare = () => {
@@ -78,27 +97,21 @@ export default function Share() {
   };
 
   const handleTwitterShare = () => {
-    const text = "I just sent a real, handwritten postcard to my representative. It takes 2 minutes and actually gets read.";
+    const text = "I just sent a real postcard with Canary Cards!";
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
     window.open(twitterUrl, '_blank');
   };
 
   const handleFacebookShare = () => {
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareContent.text)}`;
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent('I just sent a real postcard with Canary Cards!')}`;
     window.open(facebookUrl, '_blank');
   };
 
   const getShareSourceMessage = () => {
-    switch (ref) {
-      case 'email':
-        return orderNumber 
-          ? `Thanks for your order #${orderNumber}! Help others get involved too.`
-          : 'Thanks for checking out Canary Cards! Help others get involved.';
-      case 'success':
-        return 'Thanks for taking action! Share with others to amplify your impact.';
-      default:
-        return 'Help others make their voices heard in democracy.';
+    if (orderNumber) {
+      return `Thanks for your order #${orderNumber}! Friends listen to friends.`;
     }
+    return 'Friends listen to friends. Show them how easy it is to send a real postcard.';
   };
 
   return (
@@ -108,11 +121,8 @@ export default function Share() {
       <div className="container mx-auto px-4 py-8 max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
-            <Heart className="w-8 h-8 text-accent-foreground" />
-          </div>
-          <h1 className="display-title mb-2">
-            Share the Power
+          <h1 className="text-4xl font-spectral font-bold text-ink-blue mb-4">
+            Share Canary Cards
           </h1>
           <p className="body-text text-muted-foreground">
             {getShareSourceMessage()}
@@ -122,49 +132,36 @@ export default function Share() {
         {/* Main Share Card */}
         <Card className="shadow-sm mb-6">
           <CardContent className="p-6">
-            <h2 className="subtitle mb-4">Spread the Word</h2>
-            <p className="body-text mb-6">
-              Every voice matters. Share Canary Cards with friends and family to help them easily contact their representatives.
-            </p>
-
-            {/* Primary Share Button */}
+            {/* Primary Native Share Button */}
             {isNativeShareAvailable ? (
               <Button 
                 onClick={handleNativeShare}
-                variant="spotlight" 
+                variant="primary" 
                 size="lg"
-                className="w-full mb-4"
+                className="w-full mb-6"
               >
                 <Share2 className="w-4 h-4 mr-2" />
-                Share with Friends
+                Share
               </Button>
             ) : (
-              <div className="space-y-3 mb-4">
-                <div className="flex gap-2">
-                  <Input
-                    value={shareUrl}
-                    readOnly
-                    className="flex-1"
-                    placeholder="Share link"
-                  />
-                  <Button
-                    onClick={handleCopyLink}
-                    variant="outline"
-                    size="lg"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
+              <Button
+                onClick={handleCopyLink}
+                variant="primary"
+                size="lg"
+                className="w-full mb-6"
+              >
+                <Copy className="w-4 h-4 mr-2" />
+                Copy Link
+              </Button>
             )}
 
-            {/* Alternative Share Methods */}
-            <div className="space-y-3">
+            {/* Fallback Share Methods */}
+            <div className="space-y-4">
               <div className="text-sm text-muted-foreground text-center">
                 Or share via:
               </div>
               
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <Button
                   onClick={handleTextShare}
                   variant="outline"
@@ -172,20 +169,29 @@ export default function Share() {
                   className="w-full"
                 >
                   <MessageSquare className="w-4 h-4 mr-2" />
-                  Text
+                  SMS
                 </Button>
                 <Button
-                  onClick={handleEmailShare}
+                  onClick={handleWhatsAppShare}
                   variant="outline"
                   size="sm"
                   className="w-full"
                 >
-                  <Mail className="w-4 h-4 mr-2" />
-                  Email
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  WhatsApp
                 </Button>
               </div>
               
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  onClick={handleMessengerShare}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  <Send className="w-4 h-4 mr-2" />
+                  Messenger
+                </Button>
                 <Button
                   onClick={handleTwitterShare}
                   variant="outline"
@@ -193,19 +199,56 @@ export default function Share() {
                   className="w-full"
                 >
                   <Twitter className="w-4 h-4 mr-2" />
-                  Twitter
+                  X
                 </Button>
+              </div>
+
+              <Button
+                onClick={handleFacebookShare}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                <Facebook className="w-4 h-4 mr-2" />
+                Facebook
+              </Button>
+            </div>
+
+            {/* Copy Link Fallback */}
+            <div className="mt-6 pt-4 border-t border-border">
+              <p className="text-sm text-muted-foreground mb-2">Or copy this link:</p>
+              <div className="flex gap-2">
+                <Input
+                  value={shareUrl}
+                  readOnly
+                  className="flex-1 text-sm"
+                />
                 <Button
-                  onClick={handleFacebookShare}
-                  variant="outline" 
+                  onClick={handleCopyLink}
+                  variant="outline"
                   size="sm"
-                  className="w-full"
                 >
-                  <Facebook className="w-4 h-4 mr-2" />
-                  Facebook
+                  <Copy className="w-4 h-4" />
                 </Button>
               </div>
             </div>
+
+            {/* QR Code */}
+            {qrCodeDataUrl && (
+              <div className="mt-6 pt-4 border-t border-border text-center">
+                <p className="text-sm text-muted-foreground mb-3">
+                  <QrCode className="w-4 h-4 inline mr-1" />
+                  Scan to share on another device:
+                </p>
+                <img 
+                  src={qrCodeDataUrl} 
+                  alt="QR code for sharing Canary Cards"
+                  className="mx-auto rounded-lg"
+                  width={150}
+                  height={150}
+                />
+              </div>
+            )}
           </CardContent>
         </Card>
 

@@ -52,7 +52,8 @@ const AppContent = () => (
       <Route path="/" element={<Index />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<AppProvider><About /></AppProvider>} />
-      <Route path="/share" element={<Share />} />
+            <Route path="/share" element={<Share />} />
+            <Route path="/share/:orderId" element={<Share />} />
       
       <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
       <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
