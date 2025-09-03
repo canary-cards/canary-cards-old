@@ -55,7 +55,6 @@ const AppContent = () => (
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<AppProvider><About /></AppProvider>} />
             <Route path="/magic-test" element={
-              <AppProvider>
                 <div style={{ 
                   minHeight: '100vh', 
                   backgroundColor: 'blue', 
@@ -65,12 +64,10 @@ const AppContent = () => (
                   color: 'white'
                 }}>
                   <h1>MAGIC TEST PAGE WORKS!</h1>
-                  <p>This is NOT using the word 'share'</p>
+                  <p>This is NOT using AppProvider</p>
                 </div>
-              </AppProvider>
             } />
             <Route path="/share" element={
-              <AppProvider>
                 <div style={{ 
                   minHeight: '100vh', 
                   backgroundColor: 'red', 
@@ -79,25 +76,9 @@ const AppContent = () => (
                   fontWeight: 'bold',
                   color: 'white'
                 }}>
-                  <h1>INLINE RED SHARE PAGE!</h1>
-                  <p>This is directly in the routing - no import issues!</p>
+                  <h1>SHARE PAGE WITHOUT APPPROVIDER!</h1>
+                  <p>Testing without context wrapper</p>
                 </div>
-              </AppProvider>
-            } />
-            <Route path="/share/:orderId" element={
-              <AppProvider>
-                <div style={{ 
-                  minHeight: '100vh', 
-                  backgroundColor: 'red', 
-                  padding: '40px',
-                  fontSize: '32px',
-                  fontWeight: 'bold',
-                  color: 'white'
-                }}>
-                  <h1>INLINE RED SHARE PAGE WITH ORDER ID!</h1>
-                  <p>This bypasses any component import issues!</p>
-                </div>
-              </AppProvider>
             } />
       
       <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
