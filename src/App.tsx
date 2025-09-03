@@ -54,8 +54,36 @@ const AppContent = () => (
       <Route path="/admin" element={<AppProvider><Admin /></AppProvider>} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<AppProvider><About /></AppProvider>} />
-            <Route path="/share" element={<AppProvider><Share /></AppProvider>} />
-            <Route path="/share/:orderId" element={<AppProvider><Share /></AppProvider>} />
+            <Route path="/share" element={
+              <AppProvider>
+                <div style={{ 
+                  minHeight: '100vh', 
+                  backgroundColor: 'red', 
+                  padding: '40px',
+                  fontSize: '32px',
+                  fontWeight: 'bold',
+                  color: 'white'
+                }}>
+                  <h1>INLINE RED SHARE PAGE!</h1>
+                  <p>This is directly in the routing - no import issues!</p>
+                </div>
+              </AppProvider>
+            } />
+            <Route path="/share/:orderId" element={
+              <AppProvider>
+                <div style={{ 
+                  minHeight: '100vh', 
+                  backgroundColor: 'red', 
+                  padding: '40px',
+                  fontSize: '32px',
+                  fontWeight: 'bold',
+                  color: 'white'
+                }}>
+                  <h1>INLINE RED SHARE PAGE WITH ORDER ID!</h1>
+                  <p>This bypasses any component import issues!</p>
+                </div>
+              </AppProvider>
+            } />
       
       <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
       <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
