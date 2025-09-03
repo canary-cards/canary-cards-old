@@ -19,21 +19,6 @@ export default function Share() {
   const ref = searchParams.get('ref') || 'direct';
   const orderNumber = orderId || searchParams.get('order') || '';
 
-  useEffect(() => {
-    // Set the share URL - use canary.cards as primary domain
-    const shareUrl = 'https://canary.cards';
-    setShareUrl(shareUrl);
-    
-    // Generate QR code
-    QRCode.toDataURL(shareUrl, { width: 200, margin: 2 })
-      .then(url => setQrCodeDataUrl(url))
-      .catch(err => console.error('QR code generation failed:', err));
-    
-    // Check if native sharing is available (mobile devices)
-    const isNativeAvailable = 'share' in navigator;
-    setIsNativeShareAvailable(isNativeAvailable);
-  }, []);
-
   const shareContent = {
     title: 'Canary Cards - Real Postcards to Representatives',
     text: 'I just sent a real postcard with Canary Cards! Friends listen to friends. Show them how easy it is to send a real postcard.',
@@ -44,12 +29,9 @@ export default function Share() {
     if (navigator.share) {
       try {
         await navigator.share(shareContent);
-        // Track successful share
         console.log('Shared successfully via native share');
       } catch (error) {
-        // User cancelled or error occurred
         console.log('Share cancelled or failed:', error);
-        // Fallback to copy
         handleCopyLink();
       }
     } else {
@@ -72,6 +54,30 @@ export default function Share() {
       });
     }
   };
+
+  useEffect(() => {
+    // Set the share URL - use canary.cards as primary domain
+    const shareUrl = 'https://canary.cards';
+    setShareUrl(shareUrl);
+    
+    // Generate QR code
+    QRCode.toDataURL(shareUrl, { width: 200, margin: 2 })
+      .then(url => setQrCodeDataUrl(url))
+      .catch(err => console.error('QR code generation failed:', err));
+    
+    // Check if native sharing is available (mobile devices)
+    const isNativeAvailable = 'share' in navigator;
+    setIsNativeShareAvailable(isNativeAvailable);
+    
+    // Auto-trigger native share if coming from email (ref=email or ref=delivery)
+    if ((ref === 'email' || ref === 'delivery') && isNativeAvailable) {
+      // Small delay to ensure page is loaded
+      setTimeout(() => {
+        handleNativeShare();
+      }, 500);
+    }
+  }, [ref]);
+
 
   const handleTextShare = () => {
     const message = `I just sent a real postcard with Canary Cards! ${shareUrl}`;
