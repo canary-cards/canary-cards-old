@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { FinalizingOrderScreen } from "./components/FinalizingOrderScreen";
 import Index from "./pages/Index";
+import Admin from "./pages/Admin";
 import Onboarding from "./pages/Onboarding";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
@@ -50,6 +51,7 @@ const AppContent = () => (
     </AppProvider>
     <Routes>
       <Route path="/" element={<Index />} />
+      <Route path="/admin" element={<Admin />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<AppProvider><About /></AppProvider>} />
             <Route path="/share" element={<Share />} />
