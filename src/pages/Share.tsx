@@ -32,44 +32,6 @@ export default function Share() {
     // Check if native sharing is available (mobile devices)
     const isNativeAvailable = 'share' in navigator;
     setIsNativeShareAvailable(isNativeAvailable);
-    
-    // Auto-trigger native share on mobile if available and came from email
-    const urlParams = new URLSearchParams(window.location.search);
-    const fromEmail = urlParams.get('ref') === 'email';
-    
-    if (isNativeAvailable && fromEmail) {
-      // Try to trigger share immediately since user just clicked email link
-      const triggerShare = async () => {
-        try {
-          await navigator.share({
-            title: 'Canary Cards - Real Postcards to Representatives',
-            text: 'I just sent a real postcard with Canary Cards! Friends listen to friends. Show them how easy it is to send a real postcard.',
-            url: shareUrl
-          });
-        } catch (error) {
-          console.log('Auto-share cancelled or failed:', error);
-        }
-      };
-      
-      // Try immediately and also on any user interaction
-      triggerShare();
-      
-      // Backup: trigger on any click/touch
-      const handleAnyInteraction = () => {
-        triggerShare();
-        document.removeEventListener('click', handleAnyInteraction);
-        document.removeEventListener('touchstart', handleAnyInteraction);
-      };
-      
-      document.addEventListener('click', handleAnyInteraction);
-      document.addEventListener('touchstart', handleAnyInteraction);
-      
-      // Cleanup
-      return () => {
-        document.removeEventListener('click', handleAnyInteraction);
-        document.removeEventListener('touchstart', handleAnyInteraction);
-      };
-    }
   }, []);
 
   const shareContent = {
@@ -153,6 +115,9 @@ export default function Share() {
     return 'Friends listen to friends. Show them how easy it is to send a real postcard.';
   };
 
+  // Check if user came from email
+  const fromEmail = ref === 'email';
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -168,30 +133,57 @@ export default function Share() {
           </p>
         </div>
 
-        {/* Main Share Card */}
-        <Card className="shadow-sm mb-6">
-          <CardContent className="p-6">
-            {/* Primary Native Share Button */}
-            {isNativeShareAvailable ? (
+        {/* Special email prompt for iOS share */}
+        {fromEmail && isNativeShareAvailable && (
+          <Card className="shadow-sm mb-6 bg-accent border-accent-foreground">
+            <CardContent className="p-6 text-center">
+              <h2 className="text-2xl font-spectral font-bold text-accent-foreground mb-3">
+                👆 Tap to Share
+              </h2>
+              <p className="body-text text-accent-foreground mb-4">
+                Tap the button below to open your iOS share menu instantly
+              </p>
               <Button 
                 onClick={handleNativeShare}
                 variant="primary" 
                 size="lg"
-                className="w-full mb-6"
+                className="w-full"
               >
                 <Share2 className="w-4 h-4 mr-2" />
-                Share
+                Open iOS Share Menu
               </Button>
-            ) : (
-              <Button
-                onClick={handleCopyLink}
-                variant="primary"
-                size="lg"
-                className="w-full mb-6"
-              >
-                <Copy className="w-4 h-4 mr-2" />
-                Copy Link
-              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Main Share Card */}
+        <Card className="shadow-sm mb-6">
+          <CardContent className="p-6">
+            {/* Primary Native Share Button */}
+            {!fromEmail && (
+              <>
+                {isNativeShareAvailable ? (
+                  <Button 
+                    onClick={handleNativeShare}
+                    variant="primary" 
+                    size="lg"
+                    className="w-full mb-6"
+                  >
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Share
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleCopyLink}
+                    variant="primary"
+                    size="lg"
+                    className="w-full mb-6"
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy Link
+                  </Button>
+                )}
+              </>
             )}
 
             {/* Fallback Share Methods */}
