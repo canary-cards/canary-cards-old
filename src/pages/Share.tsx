@@ -81,16 +81,7 @@ export default function Share() {
     setIsNativeShareAvailable(isNativeAvailable);
     
     console.log('Share page loaded with ref:', ref, 'isNativeAvailable:', isNativeAvailable);
-    
-    // Auto-trigger native share if coming from email (ref=email or ref=delivery)
-    if ((ref === 'email' || ref === 'delivery') && isNativeAvailable) {
-      console.log('Auto-triggering share for email/delivery ref');
-      // Delay to ensure page is fully loaded and user can see the action
-      setTimeout(() => {
-        handleNativeShare();
-      }, 1000); // Increased delay
-    }
-  }, []); // Remove ref dependency to avoid re-triggering
+  }, []);
 
 
   const handleTextShare = () => {
