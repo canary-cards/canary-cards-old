@@ -30,15 +30,9 @@ const AppContent = () => {
 
 const Index = () => {
   return (
-    <div>
-      {/* TEST: If you see this red banner, changes are deploying */}
-      <div style={{ backgroundColor: 'red', color: 'white', padding: '10px', textAlign: 'center', fontSize: '20px', fontWeight: 'bold' }}>
-        🔥 DEPLOYMENT TEST: Changes are working! 🔥
-      </div>
-      <AppProvider>
-        <AppContent />
-      </AppProvider>
-    </div>
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 };
 

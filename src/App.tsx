@@ -54,32 +54,8 @@ const AppContent = () => (
       <Route path="/admin" element={<AppProvider><Admin /></AppProvider>} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<AppProvider><About /></AppProvider>} />
-            <Route path="/magic-test" element={
-                <div style={{ 
-                  minHeight: '100vh', 
-                  backgroundColor: 'blue', 
-                  padding: '40px',
-                  fontSize: '32px',
-                  fontWeight: 'bold',
-                  color: 'white'
-                }}>
-                  <h1>MAGIC TEST PAGE WORKS!</h1>
-                  <p>This is NOT using AppProvider</p>
-                </div>
-            } />
-            <Route path="/share" element={
-                <div style={{ 
-                  minHeight: '100vh', 
-                  backgroundColor: 'red', 
-                  padding: '40px',
-                  fontSize: '32px',
-                  fontWeight: 'bold',
-                  color: 'white'
-                }}>
-                  <h1>SHARE PAGE WITHOUT APPPROVIDER!</h1>
-                  <p>Testing without context wrapper</p>
-                </div>
-            } />
+            <Route path="/share" element={<Share />} />
+            <Route path="/share/:orderId" element={<Share />} />
       
       <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
       <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
