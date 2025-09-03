@@ -126,52 +126,49 @@ export default function Share() {
     return 'Friends listen to friends. Show them how easy it is to send a real postcard.';
   };
 
-  // Check if user came from email
-  const fromEmail = ref === 'email';
+  // Check if user came from email or delivery
+  const isFromEmail = ref === 'email' || ref === 'delivery';
+
+  const handleScreenTap = () => {
+    if (isFromEmail && isNativeShareAvailable) {
+      handleNativeShare();
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="container mx-auto px-4 py-8 max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-spectral font-bold text-ink-blue mb-4">
-            Share Canary Cards
-          </h1>
-          <p className="body-text text-muted-foreground">
-            {getShareSourceMessage()}
-          </p>
+      {/* Full-screen tap area for email users */}
+      {isFromEmail && isNativeShareAvailable ? (
+        <div 
+          className="fixed inset-0 z-40 bg-background flex items-center justify-center cursor-pointer"
+          onClick={handleScreenTap}
+          style={{ top: '80px' }} // Account for header height
+        >
+          <div className="text-center p-8 max-w-md mx-auto">
+            <div className="text-8xl mb-8">📮</div>
+            <h1 className="text-4xl font-bold text-foreground mb-6">
+              Ready to Share!
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+              Tap anywhere on this screen to share Canary Cards with your friends
+            </p>
+            <div className="animate-bounce text-2xl mb-4">👆</div>
+            <div className="text-lg text-primary font-medium">
+              Tap anywhere to share
+            </div>
+          </div>
         </div>
-
-        {/* Special email prompt for iOS share */}
-        {fromEmail && isNativeShareAvailable && (
-          <Card className="shadow-sm mb-6 bg-accent border-accent-foreground">
-            <CardContent className="p-6 text-center">
-              <h2 className="text-2xl font-spectral font-bold text-accent-foreground mb-3">
-                👆 Tap to Share
-              </h2>
-              <p className="body-text text-accent-foreground mb-4">
-                Tap the button below to open your iOS share menu instantly
-              </p>
-              <Button 
-                onClick={handleNativeShare}
-                variant="primary" 
-                size="lg"
-                className="w-full"
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                Open iOS Share Menu
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+      ) : (
+        // Regular share page content for non-email users
+        <div className="container mx-auto px-4 py-8 max-w-md">
 
         {/* Main Share Card */}
         <Card className="shadow-sm mb-6">
           <CardContent className="p-6">
             {/* Primary Native Share Button */}
-            {!fromEmail && (
+            {!isFromEmail && (
               <>
                 {isNativeShareAvailable ? (
                   <Button 
@@ -315,7 +312,8 @@ export default function Share() {
             </Button>
           </CardContent>
         </Card>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
