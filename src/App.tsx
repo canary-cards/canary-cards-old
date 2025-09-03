@@ -54,6 +54,21 @@ const AppContent = () => (
       <Route path="/admin" element={<AppProvider><Admin /></AppProvider>} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<AppProvider><About /></AppProvider>} />
+            <Route path="/magic-test" element={
+              <AppProvider>
+                <div style={{ 
+                  minHeight: '100vh', 
+                  backgroundColor: 'blue', 
+                  padding: '40px',
+                  fontSize: '32px',
+                  fontWeight: 'bold',
+                  color: 'white'
+                }}>
+                  <h1>MAGIC TEST PAGE WORKS!</h1>
+                  <p>This is NOT using the word 'share'</p>
+                </div>
+              </AppProvider>
+            } />
             <Route path="/share" element={
               <AppProvider>
                 <div style={{ 
