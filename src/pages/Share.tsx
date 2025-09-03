@@ -18,6 +18,8 @@ export default function Share() {
 
   const ref = searchParams.get('ref') || 'direct';
   const orderNumber = orderId || searchParams.get('order') || '';
+  
+  console.log('Share page loading with ref:', ref, 'orderNumber:', orderNumber);
 
   // Set the share URL immediately
   const baseShareUrl = 'https://canary.cards';
