@@ -104,9 +104,21 @@ export function ReturnAddressScreen() {
       clearTimeout(searchTimeoutRef.current);
     }
     
+    // Show suggestions dropdown immediately with feedback
+    setShowSuggestions(true);
+    
+    // Clear previous suggestions if input is too short
+    if (value.length < 3) {
+      setAddressSuggestions([]);
+      setIsSearching(false);
+      return;
+    }
+    
+    // Fast search for 3+ characters (100ms delay)
+    setIsSearching(true);
     searchTimeoutRef.current = setTimeout(() => {
       handleAddressSearch(value);
-    }, 300);
+    }, 100);
   };
 
   const handleSuggestionClick = async (suggestion: GooglePlacesAddressPrediction) => {
@@ -278,14 +290,22 @@ export function ReturnAddressScreen() {
                   <div className="absolute top-full left-0 right-0 z-50 mt-1">
                     <Command className="rounded-xl border border-border shadow-lg bg-background">
                       <CommandList className="max-h-48">
-                         {isSearching ? (
-                          <div className="p-3 text-sm text-muted-foreground">
+                        {streetAddress.length < 3 ? (
+                          <div className="p-3 text-sm text-muted-foreground flex items-center gap-2">
+                            <MapPin className="w-4 h-4" />
+                            Keep typing to see address suggestions...
+                          </div>
+                        ) : isSearching ? (
+                          <div className="p-3 text-sm text-muted-foreground flex items-center gap-2">
+                            <div className="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"></div>
                             Searching addresses...
                           </div>
                         ) : (
                           <>
                             {addressSuggestions.length === 0 ? (
-                              <CommandEmpty>No addresses found</CommandEmpty>
+                              <div className="p-3 text-sm text-muted-foreground">
+                                No addresses found. Try typing a different address.
+                              </div>
                             ) : (
                               addressSuggestions.map((suggestion, index) => {
                                 // Remove country from description if present
@@ -298,14 +318,17 @@ export function ReturnAddressScreen() {
                                   <CommandItem
                                     key={suggestion.place_id || index}
                                     onSelect={() => handleSuggestionClick(suggestion)}
-                                    className="cursor-pointer"
+                                    className="cursor-pointer hover:bg-accent"
                                   >
-                                    <div>
-                                      <div className="font-medium text-sm">
-                                        {suggestion.structured_formatting.main_text}
-                                      </div>
-                                      <div className="text-xs text-muted-foreground">
-                                        {displayAddress.replace(suggestion.structured_formatting.main_text + ', ', '')}
+                                    <div className="flex items-start gap-2 w-full">
+                                      <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+                                      <div className="flex-1">
+                                        <div className="font-medium text-sm">
+                                          {suggestion.structured_formatting.main_text}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                          {displayAddress.replace(suggestion.structured_formatting.main_text + ', ', '')}
+                                        </div>
                                       </div>
                                     </div>
                                   </CommandItem>
