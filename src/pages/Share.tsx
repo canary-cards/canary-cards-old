@@ -75,12 +75,12 @@ export default function Share() {
 
           {/* Header */}
           <h1 className="display-title mb-6 text-primary">
-            Share Canary Cards
+            Share the Impact
           </h1>
           
           {/* Subtitle */}
           <p className="body-text mb-12 text-foreground/80">
-            Friends listen to friends. Show them how easy it is to send a real postcard.
+            Your voice mattered today. Now help others discover how easy it is to be heard by their representatives.
           </p>
 
           {/* Share Button */}
