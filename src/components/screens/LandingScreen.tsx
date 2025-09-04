@@ -120,11 +120,11 @@ export function LandingScreen() {
         {/* Mobile-First Hero Section */}
         <div className="text-center">
           {/* Hero Text */}
-          <div className="w-full px-6 pt-6 pb-2">
-            <h1 className="text-2xl md:text-3xl display-title leading-tight mb-1">
+          <div className="w-full p-6">
+            <h1 className="text-2xl md:text-3xl display-title leading-tight mb-4">
               Send a Real Postcard to Your Representative
             </h1>
-            <h2 className="subtitle text-base leading-relaxed">
+            <h2 className="subtitle text-base mb-2 leading-relaxed">
               Handwritten postcards get noticed. Emails don't.
             </h2>
           </div>
