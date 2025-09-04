@@ -118,9 +118,9 @@ export function LandingScreen() {
       <div className={`min-h-screen bg-background ${showSharedDialog ? 'pt-16' : ''}`}>
       <div className="container mx-auto px-4 max-w-2xl">        
         {/* Mobile-First Hero Section */}
-        <div className="text-center mb-2">
+        <div className="text-center">
           {/* Hero Text */}
-          <div className="w-full mb-2 p-6">
+          <div className="w-full p-6">
             <h1 className="text-2xl md:text-3xl display-title leading-tight mb-4">
               Send a Real Postcard to Your Representative
             </h1>
@@ -131,7 +131,7 @@ export function LandingScreen() {
         </div>
 
         {/* Icon between title and form */}
-        <div className="flex justify-center items-center mb-2 w-full">
+        <div className="flex justify-center items-center w-full">
           <img 
             src={getSvgUrl('zip code page icon 2.svg')} 
             alt="Zip code page icon" 
