@@ -12,6 +12,8 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [isFlipping, setIsFlipping] = useState(false);
+  const [isBouncing, setIsBouncing] = useState(false);
 
   const images = [
     { src: '/postcard_back.png', alt: 'Postcard back with handwritten message' },
@@ -49,9 +51,31 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     return () => clearInterval(interval);
   }, [currentImageIndex, isAutoPlaying]);
 
+  // Flip animation handler
+  const performFlip = () => {
+    if (isFlipping) return;
+    
+    setIsBouncing(true);
+    setIsFlipping(true);
+    
+    // Change image halfway through the flip animation
+    setTimeout(() => {
+      setCurrentImageIndex(currentImageIndex === 0 ? 1 : 0);
+    }, 250); // 250ms = half of 500ms animation
+    
+    // Reset animation states
+    setTimeout(() => {
+      setIsFlipping(false);
+    }, 500);
+    
+    setTimeout(() => {
+      setIsBouncing(false);
+    }, 200);
+  };
+
   // Handle tap interactions
   const handleTap = (event: React.MouseEvent) => {
-    if (isZoomed) return;
+    if (isZoomed || isFlipping) return;
 
     const rect = event.currentTarget.getBoundingClientRect();
     const tapX = event.clientX - rect.left;
@@ -63,17 +87,16 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
       return;
     }
 
-    if (tapX > centerX && currentImageIndex === 0) {
-      setCurrentImageIndex(1);
-    } else if (tapX <= centerX && currentImageIndex === 1) {
-      setCurrentImageIndex(0);
-    }
+    // Add bounce effect and flip
+    performFlip();
   };
 
   // Handle double tap for zoom
   const handleDoubleClick = (event: React.MouseEvent) => {
     event.preventDefault();
-    setIsZoomed(!isZoomed);
+    if (!isFlipping) {
+      setIsZoomed(!isZoomed);
+    }
   };
 
   return (
@@ -91,13 +114,21 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
         </div>
 
         {/* Postcard Images */}
-        <div className="relative overflow-hidden bg-white shadow-lg rounded-lg mb-4">
+        <div className="relative overflow-hidden bg-white shadow-lg rounded-lg mb-4" style={{ perspective: '1000px' }}>
           <div 
-            className={`relative aspect-[1.6/1] cursor-pointer transition-transform duration-300 ${
+            className={`relative aspect-[1.6/1] cursor-pointer transition-all duration-500 transform-gpu ${
               isZoomed ? 'scale-150' : 'scale-100'
+            } ${
+              isFlipping ? 'animate-[flip_0.5s_ease-in-out]' : ''
+            } ${
+              isBouncing ? 'animate-[bounce_0.2s_ease-out]' : ''
             }`}
             onClick={handleTap}
             onDoubleClick={handleDoubleClick}
+            style={{
+              transformStyle: 'preserve-3d',
+              transform: isFlipping ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            }}
           >
             <img
               src={images[currentImageIndex].src}
@@ -110,10 +141,13 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
               variant="secondary"
               onClick={(e) => {
                 e.stopPropagation();
-                setCurrentImageIndex(currentImageIndex === 0 ? 1 : 0);
+                performFlip();
               }}
-              className="absolute bottom-4 right-4 w-10 h-10 rounded-full shadow-lg hover:shadow-xl transition-shadow p-0 min-w-0"
+              className={`absolute bottom-4 right-4 w-10 h-10 rounded-full shadow-lg hover:shadow-xl transition-all p-0 min-w-0 ${
+                isFlipping ? 'scale-110 rotate-180' : 'hover:scale-105'
+              }`}
               aria-label="Flip postcard"
+              disabled={isFlipping}
             >
               <Repeat className="h-4 w-4" />
             </Button>
