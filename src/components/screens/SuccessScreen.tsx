@@ -5,13 +5,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
 import { CheckCircle, Share2, Copy, MessageSquare, Mail, Sparkles, Share as ShareIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 export function SuccessScreen() {
   const { state, dispatch } = useAppContext();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [inviteLink, setInviteLink] = useState('');
   const [showAccountCreation, setShowAccountCreation] = useState(true);
-  const [isNativeShareAvailable, setIsNativeShareAvailable] = useState(false);
 
   // Get the deployed app URL, not the Lovable editor URL
   const getAppUrl = () => {
@@ -30,10 +31,6 @@ export function SuccessScreen() {
     if (appUrl) {
       setInviteLink(`${appUrl}?invite=${uniqueId}`);
     }
-    
-    // Check if native sharing is available
-    const isNativeAvailable = 'share' in navigator && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    setIsNativeShareAvailable(isNativeAvailable);
     
     // Confetti effect
     showConfetti();
@@ -104,26 +101,9 @@ export function SuccessScreen() {
     window.open(`sms:?body=${encodeURIComponent(message)}`, '_blank');
   };
 
-  const shareContent = {
-    title: 'Canary Cards',
-    text: 'Friends listen to friends. Show them how easy it is to send a real postcard.',
-    url: inviteLink
-  };
-
-  const handleShare = async () => {
-    if (navigator.share && isNativeShareAvailable) {
-      try {
-        await navigator.share(shareContent);
-      } catch (error) {
-        if (error instanceof Error && error.name !== 'AbortError') {
-          // Fallback to clipboard if share fails (but not if user cancelled)
-          await copyInviteLink();
-        }
-      }
-    } else {
-      // Fallback to clipboard
-      await copyInviteLink();
-    }
+  const handleSharePageNavigation = () => {
+    const uniqueId = Math.random().toString(36).substring(2, 15);
+    navigate(`/share?ref=${uniqueId}&order=${uniqueId.slice(-8).toUpperCase()}`);
   };
 
   const shareViaEmail = () => {
@@ -250,20 +230,18 @@ export function SuccessScreen() {
               </div>
               
               <Button
-                onClick={handleShare}
+                onClick={handleSharePageNavigation}
                 variant="spotlight"
                 size="lg"
                 className="w-full max-w-80 mx-auto mb-4"
                 aria-label="Share Canary Cards with friends"
               >
                 <ShareIcon className="w-4 h-4 mr-2" />
-                {isNativeShareAvailable ? "Invite Others to Take Action" : "Copy Link"}
+                Invite Others to Take Action
               </Button>
               
               <p className="text-sm text-foreground/60 text-center mb-4">
-                {isNativeShareAvailable 
-                  ? "This will open your device's share menu" 
-                  : "Then share with friends and family"}
+                Share with friends and family
               </p>
               
               <div className="flex gap-2">
