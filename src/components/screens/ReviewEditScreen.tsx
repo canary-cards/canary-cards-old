@@ -126,9 +126,9 @@ ${userInfo?.fullName}`;
                     {state.postcardData.sources.map((source, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <div className="flex-1 min-w-0">
-                          <span className="text-sm text-muted-foreground leading-relaxed">
-                            {source.description}
-                          </span>
+                           <span className="text-sm text-muted-foreground leading-relaxed">
+                             {source.description.replace(/<[^>]*>/g, '')}
+                           </span>
                           {source.url && (
                             <a 
                               href={source.url} 
