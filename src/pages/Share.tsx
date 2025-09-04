@@ -1,123 +1,112 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Share as ShareIcon } from 'lucide-react';
 
 export default function Share() {
   const [searchParams] = useSearchParams();
   const [isNativeShareAvailable, setIsNativeShareAvailable] = useState(false);
+  const { toast } = useToast();
 
   const ref = searchParams.get('ref') || 'direct';
   const orderNumber = searchParams.get('order') || '';
 
-  // Check if user came from email or delivery
-  const isFromEmail = ref === 'email' || ref === 'delivery';
+  // Build referral URL
+  const baseUrl = window.location.origin;
+  const referralUrl = `${baseUrl}${ref ? `?ref=${ref}` : ''}`;
 
   const shareContent = {
-    title: 'Canary Cards - Real Postcards to Representatives',
-    text: 'I just sent a real postcard with Canary Cards! Friends listen to friends. Show them how easy it is to send a real postcard.',
-    url: 'https://canary.cards'
+    title: 'Canary Cards',
+    text: 'Friends listen to friends. Show them how easy it is to send a real postcard.',
+    url: referralUrl
   };
 
-  const handleNativeShare = async () => {
-    console.log('Attempting native share with ref:', ref);
-    if (navigator.share) {
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Link copied!",
+        description: "Share link copied to clipboard",
+      });
+    } catch (error) {
+      console.error('Failed to copy:', error);
+    }
+  };
+
+  const handleShare = async () => {
+    if (navigator.share && isNativeShareAvailable) {
       try {
         await navigator.share(shareContent);
-        console.log('Shared successfully via native share');
       } catch (error) {
-        console.log('Share cancelled or failed:', error);
+        if (error instanceof Error && error.name !== 'AbortError') {
+          // Fallback to clipboard if share fails (but not if user cancelled)
+          await copyToClipboard(referralUrl);
+        }
       }
     } else {
-      console.log('Native share not available');
+      // Fallback to clipboard
+      await copyToClipboard(referralUrl);
     }
   };
 
   useEffect(() => {
-    // Check if native sharing is available (mobile devices)
-    const isNativeAvailable = 'share' in navigator;
+    // Check if native sharing is available
+    const isNativeAvailable = 'share' in navigator && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     setIsNativeShareAvailable(isNativeAvailable);
-    
-    console.log('Share page loaded with ref:', ref, 'isNativeAvailable:', isNativeAvailable);
   }, []);
 
-  const handleScreenTap = () => {
-    if (isFromEmail && isNativeShareAvailable) {
-      handleNativeShare();
-    }
-  };
-
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FEF4E9' }}>
-      {/* Simple header */}
-      <div style={{ padding: '20px', borderBottom: '1px solid #ddd' }}>
-        <h2>Canary Cards</h2>
-      </div>
-      
-      {/* Full-screen tap area for email users */}
-      {isFromEmail && isNativeShareAvailable ? (
-        <div 
-          onClick={handleScreenTap}
-          style={{
-            position: 'fixed',
-            top: '80px',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            backgroundColor: '#FEF4E9',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            textAlign: 'center'
-          }}
-        >
-          <div style={{ maxWidth: '400px', padding: '32px' }}>
-            <div style={{ fontSize: '80px', marginBottom: '32px' }}>📮</div>
-            <h1 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2F4156', marginBottom: '24px' }}>
-              Ready to Share!
-            </h1>
-            <p style={{ fontSize: '20px', color: '#666', marginBottom: '32px', lineHeight: '1.5' }}>
-              Tap anywhere on this screen to share Canary Cards with your friends
-            </p>
-            <div style={{ fontSize: '24px', marginBottom: '16px', animation: 'bounce 2s infinite' }}>👆</div>
-            <div style={{ fontSize: '18px', color: '#2F4156', fontWeight: '600' }}>
-              Tap anywhere to share
+    <div className="min-h-screen bg-background">
+      {/* Content Container */}
+      <div className="mx-auto max-w-2xl px-4 py-12 md:py-20">
+        <div className="text-center">
+          {/* Postcard Icon */}
+          <div className="mb-8">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+              <ShareIcon className="h-10 w-10 text-primary" />
             </div>
-            <p style={{ fontSize: '14px', color: '#999', marginTop: '24px' }}>
-              This will open your device's share menu with all your apps
-            </p>
           </div>
-        </div>
-      ) : (
-        // Regular share page content for non-email users
-        <div style={{ padding: '40px', textAlign: 'center', maxWidth: '400px', margin: '0 auto' }}>
-          <h1 style={{ fontSize: '32px', fontWeight: 'bold', color: '#2F4156', marginBottom: '16px' }}>
+
+          {/* Header */}
+          <h1 className="display-title mb-6 text-primary">
             Share Canary Cards
           </h1>
-          <p style={{ fontSize: '18px', color: '#666', marginBottom: '32px' }}>
-            Help others contact their representatives easily
+          
+          {/* Subtitle */}
+          <p className="body-text mb-12 text-foreground/80">
+            Friends listen to friends. Show them how easy it is to send a real postcard.
           </p>
-          
-          <button
-            onClick={handleNativeShare}
-            style={{
-              backgroundColor: '#2F4156',
-              color: 'white',
-              padding: '16px 32px',
-              borderRadius: '8px',
-              fontSize: '18px',
-              fontWeight: '600',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            📱 Share with Friends
-          </button>
-          
-          <div style={{ marginTop: '24px', fontSize: '14px', color: '#666' }}>
-            Ref: {ref} | Order: {orderNumber}
+
+          {/* Share Button */}
+          <div className="flex justify-center">
+            <Button
+              onClick={handleShare}
+              size="lg"
+              className="button-warm w-full max-w-80 transition-all duration-200 hover:scale-105 focus:scale-105"
+              aria-label="Share Canary Cards with friends"
+            >
+              {isNativeShareAvailable ? "Share with friends" : "Copy share link"}
+            </Button>
           </div>
+
+          {/* Helper Text */}
+          <p className="mt-6 text-sm text-foreground/60">
+            {isNativeShareAvailable 
+              ? "This will open your device's share menu" 
+              : "Link will be copied to your clipboard"}
+          </p>
+
+          {/* Debug Info (only in development) */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mt-8 rounded-lg bg-muted/50 p-4 text-xs text-foreground/60">
+              <p>Ref: {ref} | Order: {orderNumber}</p>
+              <p>Share URL: {referralUrl}</p>
+              <p>Native Share: {isNativeShareAvailable ? 'Available' : 'Not Available'}</p>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
