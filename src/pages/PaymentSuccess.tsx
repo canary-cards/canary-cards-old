@@ -302,10 +302,10 @@ export default function PaymentSuccess() {
                 size="lg"
                 className="w-full"
                 onClick={() => {
-                  const shareText = "I just sent a real, handwritten postcard to my representative through Canary Cards. It takes 2 minutes and actually gets read!";
+                  const shareText = "I just sent a real postcard to my representative with Canary Cards. It only took 2 minutes — try it here: https://canary.cards/";
                   if (navigator.share) {
                     navigator.share({
-                      title: 'Canary Cards',
+                      title: 'Canary Cards — Real postcards to D.C., mailed for you',
                       text: shareText,
                       url: shareableLink
                     });
