@@ -58,10 +58,10 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     setIsBouncing(true);
     setIsFlipping(true);
     
-    // Change image halfway through the flip animation
+    // Change image when it's completely hidden (during opacity 0 phase)
     setTimeout(() => {
       setCurrentImageIndex(currentImageIndex === 0 ? 1 : 0);
-    }, 250); // 250ms = half of 500ms animation
+    }, 260); // 260ms = right in the middle of the opacity 0 phase (250-275ms)
     
     // Reset animation states
     setTimeout(() => {
