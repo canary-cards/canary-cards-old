@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
+import { Repeat } from 'lucide-react';
 
 interface PostcardHeroProps {
   className?: string;
@@ -115,7 +115,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
               className="absolute bottom-4 right-4 w-10 h-10 rounded-full shadow-lg hover:shadow-xl transition-shadow p-0 min-w-0"
               aria-label="Flip postcard"
             >
-              <RefreshCw className="h-4 w-4" />
+              <Repeat className="h-4 w-4" />
             </Button>
           </div>
         </div>
