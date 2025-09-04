@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppContext } from '../../context/AppContext';
-import { CheckCircle, Share2, Copy, MessageSquare, Mail, Sparkles } from 'lucide-react';
+import { CheckCircle, Share2, Copy, MessageSquare, Mail, Sparkles, Share as ShareIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export function SuccessScreen() {
@@ -11,6 +11,7 @@ export function SuccessScreen() {
   const { toast } = useToast();
   const [inviteLink, setInviteLink] = useState('');
   const [showAccountCreation, setShowAccountCreation] = useState(true);
+  const [isNativeShareAvailable, setIsNativeShareAvailable] = useState(false);
 
   // Get the deployed app URL, not the Lovable editor URL
   const getAppUrl = () => {
@@ -29,6 +30,10 @@ export function SuccessScreen() {
     if (appUrl) {
       setInviteLink(`${appUrl}?invite=${uniqueId}`);
     }
+    
+    // Check if native sharing is available
+    const isNativeAvailable = 'share' in navigator && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    setIsNativeShareAvailable(isNativeAvailable);
     
     // Confetti effect
     showConfetti();
@@ -97,6 +102,28 @@ export function SuccessScreen() {
   const shareViaText = () => {
     const message = `I just sent a handwritten postcard to my representative! Join me in making our voices heard: ${inviteLink}`;
     window.open(`sms:?body=${encodeURIComponent(message)}`, '_blank');
+  };
+
+  const shareContent = {
+    title: 'Canary Cards',
+    text: 'Friends listen to friends. Show them how easy it is to send a real postcard.',
+    url: inviteLink
+  };
+
+  const handleShare = async () => {
+    if (navigator.share && isNativeShareAvailable) {
+      try {
+        await navigator.share(shareContent);
+      } catch (error) {
+        if (error instanceof Error && error.name !== 'AbortError') {
+          // Fallback to clipboard if share fails (but not if user cancelled)
+          await copyInviteLink();
+        }
+      }
+    } else {
+      // Fallback to clipboard
+      await copyInviteLink();
+    }
   };
 
   const shareViaEmail = () => {
@@ -221,6 +248,23 @@ export function SuccessScreen() {
                   <Copy className="w-4 h-4" />
                 </Button>
               </div>
+              
+              <Button
+                onClick={handleShare}
+                variant="spotlight"
+                size="lg"
+                className="w-full max-w-80 mx-auto mb-4"
+                aria-label="Share Canary Cards with friends"
+              >
+                <ShareIcon className="w-4 h-4 mr-2" />
+                {isNativeShareAvailable ? "Invite Others to Take Action" : "Copy Link"}
+              </Button>
+              
+              <p className="text-sm text-foreground/60 text-center mb-4">
+                {isNativeShareAvailable 
+                  ? "This will open your device's share menu" 
+                  : "Then share with friends and family"}
+              </p>
               
               <div className="flex gap-2">
                 <Button
