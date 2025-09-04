@@ -148,7 +148,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
             
             {/* Circular Flip Button - positioned in lower right */}
             <Button 
-              variant="secondary"
+              variant="spotlight"
               size="icon"
               onClick={(e) => {
                 e.stopPropagation();
