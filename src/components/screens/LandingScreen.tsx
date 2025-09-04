@@ -131,7 +131,7 @@ export function LandingScreen() {
         </div>
 
         {/* Icon between title and form */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-2">
           <img
             src={getSvgUrl('zip code page icon 2.svg')}
             alt="Zip code page icon"
