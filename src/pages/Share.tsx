@@ -101,7 +101,7 @@ export default function Share() {
           <p className="mt-6 text-sm text-foreground/60">
             {isNativeShareAvailable 
               ? "This will open your device's share menu" 
-              : "Link will be copied to your clipboard"}
+              : "We'll copy the link so you can invite others"}
           </p>
 
           {/* Debug Info (only in development) */}
