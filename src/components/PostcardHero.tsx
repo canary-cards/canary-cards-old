@@ -77,52 +77,55 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
 
   return (
     <div className={`relative ${className}`}>
-      {/* Hero text */}
-      <Card className="text-center mb-6 p-6">
-        <h1 className="text-2xl font-bold text-primary mb-2 font-display">
-          Here's how your postcard will look.
-        </h1>
-        <p className="text-secondary font-inter">
-          This is an example — your message will be written with a ballpoint pen on a real postcard we mail for you
-        </p>
-      </Card>
+      {/* Hero Card containing everything */}
+      <Card className="p-6">
+        {/* Hero text */}
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-primary mb-2 font-display">
+            Here's how your postcard will look.
+          </h1>
+          <p className="text-secondary font-inter">
+            This is an example — your message will be written with a ballpoint pen on a real postcard we mail for you
+          </p>
+        </div>
 
-      {/* Postcard Images */}
-      <Card className="relative overflow-hidden bg-white shadow-lg">
-        <div 
-          className={`relative aspect-[1.6/1] cursor-pointer transition-transform duration-300 ${
-            isZoomed ? 'scale-150' : 'scale-100'
-          }`}
-          onClick={handleTap}
-          onDoubleClick={handleDoubleClick}
-        >
-          <img
-            src={images[currentImageIndex].src}
-            alt={images[currentImageIndex].alt}
-            className="w-full h-full object-cover"
-          />
+        {/* Postcard Images */}
+        <div className="relative overflow-hidden bg-white shadow-lg rounded-lg mb-4">
+          <div 
+            className={`relative aspect-[1.6/1] cursor-pointer transition-transform duration-300 ${
+              isZoomed ? 'scale-150' : 'scale-100'
+            }`}
+            onClick={handleTap}
+            onDoubleClick={handleDoubleClick}
+          >
+            <img
+              src={images[currentImageIndex].src}
+              alt={images[currentImageIndex].alt}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Flip Postcard Button */}
+        <div className="flex justify-center mb-4">
+          <Button 
+            variant="secondary"
+            onClick={() => setCurrentImageIndex(currentImageIndex === 0 ? 1 : 0)}
+            className="px-6"
+          >
+            Flip Postcard
+          </Button>
+        </div>
+
+        {/* Instructions for mobile */}
+        <div className="text-center text-sm text-muted-foreground">
+          {isZoomed ? (
+            <p>Double tap to zoom out</p>
+          ) : (
+            <p>Tap to control • Double tap to zoom</p>
+          )}
         </div>
       </Card>
-
-      {/* Flip Postcard Button */}
-      <div className="flex justify-center mt-4 mb-4">
-        <Button 
-          variant="secondary"
-          onClick={() => setCurrentImageIndex(currentImageIndex === 0 ? 1 : 0)}
-          className="px-6"
-        >
-          Flip Postcard
-        </Button>
-      </div>
-
-      {/* Instructions for mobile */}
-      <div className="text-center mt-4 text-sm text-muted-foreground">
-        {isZoomed ? (
-          <p>Double tap to zoom out</p>
-        ) : (
-          <p>Tap to control • Double tap to zoom</p>
-        )}
-      </div>
     </div>
   );
 }
