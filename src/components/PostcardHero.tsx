@@ -119,11 +119,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
 
         {/* Instructions for mobile */}
         <div className="text-center text-sm text-muted-foreground">
-          {isZoomed ? (
-            <p>Double tap to zoom out</p>
-          ) : (
-            <p>Tap to control • Double tap to zoom</p>
-          )}
+          <p>Flip to see what they'll read.</p>
         </div>
       </Card>
     </div>
