@@ -24,6 +24,9 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
   const startPointerRef = useRef({ x: 0, y: 0 });
   const startTranslateRef = useRef({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const frontImageRef = useRef<HTMLDivElement>(null);
+  const backImageRef = useRef<HTMLDivElement>(null);
+  const rafIdRef = useRef<number>(0);
 
   const images = [
     { src: '/lovable-uploads/923b18b9-bce0-4521-a280-f38eaec3e09c.png', alt: 'Postcard back with handwritten message' },
@@ -65,6 +68,45 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     }, 150);
   };
 
+  // GPU-optimized panning functions
+  const updateTransformImmediate = (x: number, y: number) => {
+    const frontEl = frontImageRef.current;
+    const backEl = backImageRef.current;
+    
+    if (frontEl) {
+      frontEl.style.willChange = 'transform';
+      frontEl.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${isZoomed ? ZOOM_SCALE : 1})`;
+    }
+    if (backEl) {
+      backEl.style.willChange = 'transform';
+      backEl.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${isZoomed ? ZOOM_SCALE : 1})`;
+    }
+  };
+
+  const enableTransitions = () => {
+    const frontEl = frontImageRef.current;
+    const backEl = backImageRef.current;
+    
+    if (frontEl) {
+      frontEl.style.transition = 'transform 0.3s ease-out';
+    }
+    if (backEl) {
+      backEl.style.transition = 'transform 0.3s ease-out';
+    }
+  };
+
+  const disableTransitions = () => {
+    const frontEl = frontImageRef.current;
+    const backEl = backImageRef.current;
+    
+    if (frontEl) {
+      frontEl.style.transition = 'none';
+    }
+    if (backEl) {
+      backEl.style.transition = 'none';
+    }
+  };
+
   // Helper function to clamp translation within bounds
   const clampTranslate = (x: number, y: number) => {
     if (!containerRef.current) return { x: 0, y: 0 };
@@ -101,6 +143,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
         if (!newZoomed) {
           // Reset translate when zooming out
           setTranslate({ x: 0, y: 0 });
+          updateTransformImmediate(0, 0);
         }
         return newZoomed;
       });
@@ -111,6 +154,8 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
       
       if (isZoomed) {
         // Start panning setup
+        event.preventDefault();
+        (event.target as Element).setPointerCapture(event.pointerId);
         isPanningRef.current = false;
         startPointerRef.current = { x: event.clientX, y: event.clientY };
         startTranslateRef.current = { ...translate };
@@ -136,6 +181,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
   const handlePointerMove = (event: React.PointerEvent) => {
     if (!isZoomed || isFlipping) return;
 
+    event.preventDefault();
     const deltaX = event.clientX - startPointerRef.current.x;
     const deltaY = event.clientY - startPointerRef.current.y;
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -143,6 +189,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     if (distance > PAN_THRESHOLD) {
       if (!isPanningRef.current) {
         isPanningRef.current = true;
+        disableTransitions();
         // Clear single tap timeout if we start panning
         if (singleTapTimeoutRef.current) {
           clearTimeout(singleTapTimeoutRef.current);
@@ -151,17 +198,47 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
         lastTapTimeRef.current = 0; // Clear tap timing
       }
 
-      const newTranslate = clampTranslate(
-        startTranslateRef.current.x + deltaX,
-        startTranslateRef.current.y + deltaY
-      );
-      setTranslate(newTranslate);
+      // Cancel any existing RAF
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+
+      // Use RAF for smooth panning
+      rafIdRef.current = requestAnimationFrame(() => {
+        const newTranslate = clampTranslate(
+          startTranslateRef.current.x + deltaX,
+          startTranslateRef.current.y + deltaY
+        );
+        
+        // Update DOM immediately
+        updateTransformImmediate(newTranslate.x, newTranslate.y);
+        
+        // Update state for other systems
+        setTranslate(newTranslate);
+      });
     }
   };
 
   // Handle pointer up/cancel
-  const handlePointerUp = () => {
-    isPanningRef.current = false;
+  const handlePointerUp = (event: React.PointerEvent) => {
+    if (isPanningRef.current) {
+      // Re-enable transitions after panning
+      enableTransitions();
+      isPanningRef.current = false;
+      
+      // Cancel any pending RAF
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = 0;
+      }
+      
+      // Release pointer capture
+      try {
+        (event.target as Element).releasePointerCapture(event.pointerId);
+      } catch (e) {
+        // Ignore errors if capture was already released
+      }
+    }
   };
 
   return (
@@ -215,6 +292,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
                 style={{ backfaceVisibility: 'hidden' }}
               >
                 <div
+                  ref={frontImageRef}
                   className="w-full h-full transition-transform duration-300"
                   style={{
                     transform: `translate(${translate.x}px, ${translate.y}px) scale(${isZoomed ? ZOOM_SCALE : 1})`,
@@ -240,6 +318,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
                 }}
               >
                 <div
+                  ref={backImageRef}
                   className="w-full h-full transition-transform duration-300"
                   style={{
                     transform: `translate(${translate.x}px, ${translate.y}px) scale(${isZoomed ? ZOOM_SCALE : 1})`,
