@@ -70,6 +70,11 @@ export function DraftingScreen() {
         const remainingTime = Math.max(0, 1000 - elapsedTime);
 
         setTimeout(() => {
+          // Log the data for debugging
+          console.log('🎯 DraftingScreen: Received data from edge function:', data);
+          console.log('🎯 DraftingScreen: Draft message:', data.draftMessage);
+          console.log('🎯 DraftingScreen: Sources:', data.sources);
+          
           // Update the postcard data with the drafted message
           dispatch({
             type: 'UPDATE_POSTCARD_DATA',
@@ -79,6 +84,8 @@ export function DraftingScreen() {
               sources: data.sources || []
             }
           });
+
+          console.log('🎯 DraftingScreen: Dispatched postcard data update');
 
           // Navigate to review screen (step 3)
           dispatch({ type: 'SET_STEP', payload: 3 });

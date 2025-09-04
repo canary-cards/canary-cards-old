@@ -9,6 +9,13 @@ export function ReviewEditScreen() {
     state,
     dispatch
   } = useAppContext();
+  
+  // Debug logging
+  console.log('🎯 ReviewEditScreen: Full state:', state);
+  console.log('🎯 ReviewEditScreen: PostcardData:', state.postcardData);
+  console.log('🎯 ReviewEditScreen: DraftMessage:', state.postcardData.draftMessage);
+  console.log('🎯 ReviewEditScreen: Sources:', state.postcardData.sources);
+  
   const [editedMessage, setEditedMessage] = useState(state.postcardData.draftMessage || '');
   const [isRegenerating, setIsRegenerating] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
