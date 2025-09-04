@@ -36,20 +36,22 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
       setProgress(prev => {
         const newProgress = prev + 2; // 2% every 100ms = 5 seconds total
         if (newProgress >= 100) {
-          if (currentImageIndex === 0) {
-            setCurrentImageIndex(1);
-            return 0;
-          } else {
-            setIsAutoPlaying(false);
-            return 100;
-          }
+          setCurrentImageIndex(prevIndex => {
+            if (prevIndex === 0) {
+              return 1;
+            } else {
+              setIsAutoPlaying(false);
+              return prevIndex;
+            }
+          });
+          return 0;
         }
         return newProgress;
       });
     }, 100);
 
     return () => clearInterval(interval);
-  }, [currentImageIndex, isAutoPlaying]);
+  }, [isAutoPlaying]);
 
   // Flip animation handler
   const performFlip = () => {
