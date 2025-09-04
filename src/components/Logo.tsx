@@ -7,7 +7,7 @@ interface LogoProps {
 export function Logo({ className }: LogoProps) {
   return (
     <img 
-      src="/New Brand Logo.svg" 
+      src="/postallogov1.svg" 
       alt="Canary Cards" 
       className={className}
       style={{ height: 'var(--logo-size)', width: 'auto' }}
