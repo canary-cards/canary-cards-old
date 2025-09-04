@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface PostcardHeroProps {
   className?: string;
@@ -103,22 +104,15 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
         </div>
       </Card>
 
-      {/* Progress Bar */}
-      <div className="flex gap-1 mt-4 mb-4">
-        {images.map((_, index) => (
-          <div
-            key={index}
-            className="flex-1 h-1 bg-disabled rounded-full overflow-hidden"
-          >
-            <div
-              className="h-full bg-secondary transition-all duration-100 ease-linear"
-              style={{
-                width: index === currentImageIndex ? `${progress}%` : 
-                       index < currentImageIndex ? '100%' : '0%'
-              }}
-            />
-          </div>
-        ))}
+      {/* Flip Postcard Button */}
+      <div className="flex justify-center mt-4 mb-4">
+        <Button 
+          variant="secondary"
+          onClick={() => setCurrentImageIndex(currentImageIndex === 0 ? 1 : 0)}
+          className="px-6"
+        >
+          Flip Postcard
+        </Button>
       </div>
 
       {/* Instructions for mobile */}
