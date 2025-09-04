@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FlipHorizontal } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 
 interface PostcardHeroProps {
   className?: string;
@@ -108,15 +108,14 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
             {/* Circular Flip Button - positioned in lower right */}
             <Button 
               variant="secondary"
-              size="icon"
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentImageIndex(currentImageIndex === 0 ? 1 : 0);
               }}
-              className="absolute bottom-4 right-4 w-10 h-10 rounded-full shadow-lg hover:shadow-xl transition-shadow"
+              className="absolute bottom-4 right-4 w-10 h-10 rounded-full shadow-lg hover:shadow-xl transition-shadow p-0 min-w-0"
               aria-label="Flip postcard"
             >
-              <FlipHorizontal className="h-4 w-4" />
+              <RefreshCw className="h-4 w-4" />
             </Button>
           </div>
         </div>
