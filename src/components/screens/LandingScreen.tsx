@@ -135,7 +135,7 @@ export function LandingScreen() {
           <img
             src={getSvgUrl('zip code page icon 2.svg')}
             alt="Zip code page icon"
-            className="w-full max-w-80 h-48 sm:h-56 md:h-64 object-contain pointer-events-none select-none"
+            className="w-full max-w-56 h-48 sm:h-56 md:h-64 object-contain pointer-events-none select-none"
           />
         </div>
 
