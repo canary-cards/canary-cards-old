@@ -57,6 +57,8 @@ export default function Share() {
     setIsNativeShareAvailable(isNativeAvailable);
   }, []);
 
+  console.log('Share page rendering with:', { ref, orderNumber, isNativeShareAvailable });
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
