@@ -148,7 +148,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
             
             {/* Circular Flip Button - positioned in lower right */}
             <Button 
-              variant="spotlight"
+              variant="primary"
               size="icon"
               onClick={(e) => {
                 e.stopPropagation();
@@ -160,7 +160,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
               aria-label="Flip postcard"
               disabled={isFlipping}
             >
-              <Repeat className="h-4 w-4" />
+              <Repeat className="h-4 w-4 text-accent" />
             </Button>
           </div>
         </div>
