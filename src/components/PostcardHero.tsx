@@ -51,7 +51,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
 
   // Flip animation handler
   const performFlip = () => {
-    if (isFlipping) return;
+    if (isFlipping || isZoomed) return; // Prevent flipping while zoomed
     
     setIsBouncing(true);
     setIsFlipping(true);
@@ -76,22 +76,41 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     if (frontEl) {
       frontEl.style.willChange = 'transform';
       frontEl.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${isZoomed ? ZOOM_SCALE : 1})`;
+      frontEl.style.webkitBackfaceVisibility = 'hidden';
     }
     if (backEl) {
       backEl.style.willChange = 'transform';
       backEl.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${isZoomed ? ZOOM_SCALE : 1})`;
+      backEl.style.webkitBackfaceVisibility = 'hidden';
     }
+  };
+
+  const clearImperativeStyles = () => {
+    const frontEl = frontImageRef.current;
+    const backEl = backImageRef.current;
+    
+    [frontEl, backEl].forEach(el => {
+      if (el) {
+        el.style.transform = '';
+        el.style.transition = '';
+        el.style.willChange = '';
+        el.style.webkitBackfaceVisibility = '';
+      }
+    });
   };
 
   const enableTransitions = () => {
     const frontEl = frontImageRef.current;
     const backEl = backImageRef.current;
     
-    if (frontEl) {
-      frontEl.style.transition = 'transform 0.3s ease-out';
-    }
-    if (backEl) {
-      backEl.style.transition = 'transform 0.3s ease-out';
+    if (isZoomed) {
+      // Re-enable transitions only if still zoomed
+      if (frontEl) frontEl.style.transition = 'transform 0.3s ease-out';
+      if (backEl) backEl.style.transition = 'transform 0.3s ease-out';
+    } else {
+      // Clear transitions if not zoomed
+      if (frontEl) frontEl.style.transition = '';
+      if (backEl) backEl.style.transition = '';
     }
   };
 
@@ -141,9 +160,14 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
       setIsZoomed(prev => {
         const newZoomed = !prev;
         if (!newZoomed) {
-          // Reset translate when zooming out
+          // Clean zoom-out reset
+          if (rafIdRef.current) {
+            cancelAnimationFrame(rafIdRef.current);
+            rafIdRef.current = 0;
+          }
+          isPanningRef.current = false;
           setTranslate({ x: 0, y: 0 });
-          updateTransformImmediate(0, 0);
+          clearImperativeStyles(); // Clear all imperative DOM styles
         }
         return newZoomed;
       });
@@ -295,8 +319,11 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
                   ref={frontImageRef}
                   className="w-full h-full transition-transform duration-300"
                   style={{
-                    transform: `translate(${translate.x}px, ${translate.y}px) scale(${isZoomed ? ZOOM_SCALE : 1})`,
-                    transformOrigin: 'center center'
+                    transform: isZoomed || (translate.x !== 0 || translate.y !== 0) 
+                      ? `translate3d(${translate.x}px, ${translate.y}px, 0) scale(${isZoomed ? ZOOM_SCALE : 1})`
+                      : 'none',
+                    transformOrigin: 'center center',
+                    WebkitBackfaceVisibility: 'hidden'
                   }}
                 >
                   <img
@@ -321,8 +348,11 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
                   ref={backImageRef}
                   className="w-full h-full transition-transform duration-300"
                   style={{
-                    transform: `translate(${translate.x}px, ${translate.y}px) scale(${isZoomed ? ZOOM_SCALE : 1})`,
-                    transformOrigin: 'center center'
+                    transform: isZoomed || (translate.x !== 0 || translate.y !== 0) 
+                      ? `translate3d(${translate.x}px, ${translate.y}px, 0) scale(${isZoomed ? ZOOM_SCALE : 1})`
+                      : 'none',
+                    transformOrigin: 'center center',
+                    WebkitBackfaceVisibility: 'hidden'
                   }}
                 >
                   <img
@@ -337,22 +367,24 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
             </div>
           </div>
 
-          {/* Circular Flip Button - positioned in lower right */}
-          <Button 
-            variant="primary"
-            size="icon"
-            onPointerDown={(e) => {
-              e.stopPropagation();
-              performFlip();
-            }}
-            className={`absolute bottom-4 right-4 !w-10 !h-10 !min-h-0 rounded-full shadow-lg hover:shadow-xl transition-all p-0 min-w-0 ${
-              isFlipping ? 'scale-110 rotate-180' : 'hover:scale-105'
-            }`}
-            aria-label="Flip postcard"
-            disabled={isFlipping}
-          >
-            <Repeat className="h-4 w-4 text-accent" />
-          </Button>
+          {/* Circular Flip Button - only show when not zoomed */}
+          {!isZoomed && (
+            <Button 
+              variant="primary"
+              size="icon"
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                performFlip();
+              }}
+              className={`absolute bottom-4 right-4 !w-10 !h-10 !min-h-0 rounded-full shadow-lg hover:shadow-xl transition-all p-0 min-w-0 ${
+                isFlipping ? 'scale-110 rotate-180' : 'hover:scale-105'
+              }`}
+              aria-label="Flip postcard"
+              disabled={isFlipping}
+            >
+              <Repeat className="h-4 w-4 text-accent" />
+            </Button>
+          )}
         </div>
 
         {/* Instructions for mobile */}
