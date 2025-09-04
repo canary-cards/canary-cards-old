@@ -9,11 +9,10 @@ interface PostcardHeroProps {
 
 export function PostcardHero({ className = '' }: PostcardHeroProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
+  const [lastTapTime, setLastTapTime] = useState(0);
 
   const images = [
     { src: '/lovable-uploads/923b18b9-bce0-4521-a280-f38eaec3e09c.png', alt: 'Postcard back with handwritten message' },
@@ -28,30 +27,6 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     });
   }, []);
 
-  // Auto-advance logic
-  useEffect(() => {
-    if (!isAutoPlaying) return;
-
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = prev + 2; // 2% every 100ms = 5 seconds total
-        if (newProgress >= 100) {
-          setCurrentImageIndex(prevIndex => {
-            if (prevIndex === 0) {
-              return 1;
-            } else {
-              setIsAutoPlaying(false);
-              return prevIndex;
-            }
-          });
-          return 0;
-        }
-        return newProgress;
-      });
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, [isAutoPlaying]);
 
   // Flip animation handler
   const performFlip = () => {
@@ -76,25 +51,32 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     }, 150);
   };
 
-  // Handle tap interactions
-  const handleTap = (event: React.MouseEvent) => {
-    if (isZoomed || isFlipping) return;
+  // Handle pointer interactions (mobile and desktop)
+  const handlePointerDown = (event: React.PointerEvent) => {
+    if (isFlipping) return;
 
-    const rect = event.currentTarget.getBoundingClientRect();
-    const tapX = event.clientX - rect.left;
-    const centerX = rect.width / 2;
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastTapTime;
 
-    if (isAutoPlaying) {
-      setIsAutoPlaying(false);
-      setProgress(100);
-      return;
+    if (timeDiff < 300) {
+      // Double tap - zoom
+      event.preventDefault();
+      setIsZoomed(!isZoomed);
+      setLastTapTime(0); // Reset to prevent triple tap
+    } else {
+      // Single tap - flip (but only if not zoomed)
+      setLastTapTime(currentTime);
+      if (!isZoomed) {
+        setTimeout(() => {
+          if (Date.now() - lastTapTime >= 250) {
+            performFlip();
+          }
+        }, 250);
+      }
     }
-
-    // Add bounce effect and flip
-    performFlip();
   };
 
-  // Handle double tap for zoom
+  // Handle double click for desktop
   const handleDoubleClick = (event: React.MouseEvent) => {
     event.preventDefault();
     if (!isFlipping) {
@@ -133,9 +115,9 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
             } ${
               isBouncing ? 'animate-[bounce_0.2s_ease-out]' : ''
             }`}
-            onClick={handleTap}
+            onPointerDown={handlePointerDown}
             onDoubleClick={handleDoubleClick}
-            style={{ transformStyle: 'preserve-3d' }}
+            style={{ transformStyle: 'preserve-3d', touchAction: 'manipulation' }}
           >
             <img
               src={images[currentImageIndex].src}
@@ -167,7 +149,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
 
         {/* Instructions for mobile */}
         <div className="text-center text-sm text-muted-foreground">
-          <p>Flip to see what they'll read.</p>
+          <p>Double tap to zoom in.</p>
         </div>
       </Card>
     </div>
