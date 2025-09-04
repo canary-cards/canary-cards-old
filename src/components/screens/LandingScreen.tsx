@@ -15,11 +15,13 @@ import { lookupRepresentatives } from '../../services/geocodio';
 import { MapPin, Users, Bot, PenTool, ArrowRight, Heart, Target } from 'lucide-react';
 import { Logo } from '../Logo';
 import heroImage from '@/assets/civic-hero-mobile.jpg';
+import { useSvgAssets } from '@/hooks/useSvgAssets';
 export function LandingScreen() {
   const {
     state,
     dispatch
   } = useAppContext();
+  const { getSvgUrl } = useSvgAssets();
   const [zipCode, setZipCode] = useState('');
   const [representatives, setRepresentatives] = useState<Representative[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -126,6 +128,15 @@ export function LandingScreen() {
               Handwritten postcards get noticed. Emails don't.
             </h2>
           </div>
+        </div>
+
+        {/* Icon between title and form */}
+        <div className="flex justify-center mb-6">
+          <img 
+            src={getSvgUrl('zip-code-page-icon.svg')} 
+            alt="Zip code page icon" 
+            className="w-16 h-16 md:w-20 md:h-20"
+          />
         </div>
 
         {/* Primary CTA - Zip Code Form (Above the fold) */}
