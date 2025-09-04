@@ -11,7 +11,7 @@ const ZOOM_SCALE = 2.5;
 const PAN_THRESHOLD = 6;
 
 export function PostcardHero({ className = '' }: PostcardHeroProps) {
-  const [isShowingBack, setIsShowingBack] = useState(false);
+  const [isShowingBack, setIsShowingBack] = useState(true);
   const [isZoomed, setIsZoomed] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
@@ -30,12 +30,19 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     { src: '/postcard_front.png', alt: 'Postcard front with Yosemite scenery' }
   ];
 
-  // Preload images for instant loading
+  // Preload images aggressively for instant loading
   useEffect(() => {
-    images.forEach(image => {
-      const img = new Image();
-      img.src = image.src;
+    const preloadPromises = images.map(image => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = image.src;
+      });
     });
+    
+    // Wait for all images to load
+    Promise.all(preloadPromises).catch(console.error);
   }, []);
 
 
