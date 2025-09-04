@@ -131,16 +131,16 @@ export function LandingScreen() {
         </div>
 
         {/* Icon between title and form */}
-        <div className="flex justify-center items-center mb-6 w-full">
+        <div className="flex justify-center items-center mb-4 w-full">
           <img 
             src={getSvgUrl('zip code page icon 2.svg')} 
-            alt="Zip code page icon"
+            alt="Zip code page icon" 
             className="w-72 h-72 md:w-48 md:h-48 max-w-[90vw] max-h-[90vw] mx-auto"
           />
         </div>
 
         {/* Primary CTA - Zip Code Form (Above the fold) */}
-        <Card className="mb-6 border-primary/20 shadow-sm">
+        <Card className="mb-4 border-primary/20 shadow-sm">
           <CardContent className="p-4 md:p-6">
             <form onSubmit={handleZipSubmit} className="space-y-4">
               <div className="space-y-2">
