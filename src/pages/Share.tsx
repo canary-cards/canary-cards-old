@@ -93,7 +93,7 @@ export default function Share() {
               aria-label="Share Canary Cards with friends"
             >
               <ShareIcon className="w-4 h-4 mr-2" />
-              Share with Friends
+              Invite Others to Take Action
             </Button>
           </div>
 
