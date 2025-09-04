@@ -58,19 +58,20 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     setIsBouncing(true);
     setIsFlipping(true);
     
-    // Change image when it's completely hidden (during opacity 0 phase)
+    // Change image at exactly 90 degrees (250ms into 500ms animation)
     setTimeout(() => {
       setCurrentImageIndex(currentImageIndex === 0 ? 1 : 0);
-    }, 260); // 260ms = right in the middle of the opacity 0 phase (250-275ms)
+    }, 250);
     
-    // Reset animation states
+    // Reset flip state after animation completes
     setTimeout(() => {
       setIsFlipping(false);
     }, 500);
     
+    // Reset bounce state quickly
     setTimeout(() => {
       setIsBouncing(false);
-    }, 200);
+    }, 150);
   };
 
   // Handle tap interactions
@@ -131,6 +132,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
               src={images[currentImageIndex].src}
               alt={images[currentImageIndex].alt}
               className="w-full h-full object-cover"
+              style={{ backfaceVisibility: 'hidden' }}
             />
             
             {/* Circular Flip Button - positioned in lower right */}
