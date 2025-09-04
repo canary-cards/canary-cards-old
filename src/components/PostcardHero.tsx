@@ -78,14 +78,14 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
   return (
     <div className={`relative ${className}`}>
       {/* Hero text */}
-      <div className="text-center mb-6">
+      <Card className="text-center mb-6 p-6">
         <h1 className="text-2xl font-bold text-primary mb-2 font-display">
           Here's how your postcard will look.
         </h1>
         <p className="text-secondary font-inter">
           This is an example — your message will be written with a ballpoint pen on a real postcard we mail for you
         </p>
-      </div>
+      </Card>
 
       {/* Postcard Images */}
       <Card className="relative overflow-hidden bg-white shadow-lg">
