@@ -120,7 +120,7 @@ export function LandingScreen() {
         {/* Mobile-First Hero Section */}
         <div className="text-center">
           {/* Hero Text */}
-          <div className="w-full p-6">
+          <div className="w-full p-6 pb-2">
             <h1 className="text-2xl md:text-3xl display-title leading-tight mb-4">
               Send a Real Postcard to Your Representative
             </h1>
