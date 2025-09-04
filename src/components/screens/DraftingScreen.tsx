@@ -38,7 +38,7 @@ export function DraftingScreen() {
       try {
         const { concerns, personalImpact } = state.postcardData;
         
-        if (!concerns || !personalImpact) {
+        if (!concerns && !personalImpact) {
           dispatch({ type: 'SET_ERROR', payload: 'Missing required information' });
           return;
         }
