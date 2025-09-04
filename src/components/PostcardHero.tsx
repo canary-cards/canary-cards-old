@@ -116,7 +116,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
         {/* Postcard Images */}
         <div className="relative overflow-hidden bg-white shadow-lg rounded-lg mb-4" style={{ perspective: '1000px' }}>
           <div 
-            className={`relative aspect-[1.6/1] cursor-pointer transition-all duration-500 transform-gpu ${
+            className={`relative aspect-[1.6/1] cursor-pointer transition-all duration-300 transform-gpu ${
               isZoomed ? 'scale-150' : 'scale-100'
             } ${
               isFlipping ? 'animate-[flip_0.5s_ease-in-out]' : ''
@@ -125,10 +125,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
             }`}
             onClick={handleTap}
             onDoubleClick={handleDoubleClick}
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: isFlipping ? 'rotateY(180deg)' : 'rotateY(0deg)',
-            }}
+            style={{ transformStyle: 'preserve-3d' }}
           >
             <img
               src={images[currentImageIndex].src}
