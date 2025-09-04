@@ -242,7 +242,14 @@ export function CraftMessageScreen() {
                       setConcerns(e.target.value);
                       dispatch({ 
                         type: 'UPDATE_POSTCARD_DATA', 
-                        payload: { concerns: e.target.value }
+                        payload: { 
+                          concerns: e.target.value,
+                          // Clear old generated content when user changes input
+                          originalMessage: '',
+                          draftMessage: '',
+                          finalMessage: '',
+                          sources: []
+                        }
                       });
                     }}
                     className="input-warm min-h-[60px] resize-none pr-16"
@@ -294,7 +301,14 @@ export function CraftMessageScreen() {
                       setPersonalImpact(e.target.value);
                       dispatch({ 
                         type: 'UPDATE_POSTCARD_DATA', 
-                        payload: { personalImpact: e.target.value }
+                        payload: { 
+                          personalImpact: e.target.value,
+                          // Clear old generated content when user changes input
+                          originalMessage: '',
+                          draftMessage: '',
+                          finalMessage: '',
+                          sources: []
+                        }
                       });
                     }}
                     className="input-warm min-h-[70px] resize-none pr-16"
