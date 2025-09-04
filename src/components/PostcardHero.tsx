@@ -114,6 +114,13 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
           </p>
         </div>
 
+        {/* Caption */}
+        <div className="text-center mb-3">
+          <p className="text-sm text-muted-foreground font-inter">
+            {currentImageIndex === 0 ? "Back — Your message" : "Front — Photo side"}
+          </p>
+        </div>
+
         {/* Postcard Images */}
         <div className="relative overflow-hidden bg-white shadow-lg rounded-lg mb-4" style={{ perspective: '1000px' }}>
           <div 
