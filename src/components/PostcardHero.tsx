@@ -149,11 +149,12 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
             {/* Circular Flip Button - positioned in lower right */}
             <Button 
               variant="secondary"
+              size="icon"
               onClick={(e) => {
                 e.stopPropagation();
                 performFlip();
               }}
-              className={`absolute bottom-4 right-4 w-10 h-10 rounded-full shadow-lg hover:shadow-xl transition-all p-0 min-w-0 ${
+              className={`absolute bottom-4 right-4 !w-10 !h-10 rounded-full shadow-lg hover:shadow-xl transition-all p-0 min-w-0 ${
                 isFlipping ? 'scale-110 rotate-180' : 'hover:scale-105'
               }`}
               aria-label="Flip postcard"
