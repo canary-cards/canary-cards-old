@@ -16,7 +16,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
   const [isBouncing, setIsBouncing] = useState(false);
 
   const images = [
-    { src: '/postcard_back.png', alt: 'Postcard back with handwritten message' },
+    { src: '/lovable-uploads/bd6672ed-aaa3-475f-9a32-68c7ff2a5940.png', alt: 'Postcard back with handwritten message' },
     { src: '/postcard_front.png', alt: 'Postcard front with Yosemite scenery' }
   ];
 
