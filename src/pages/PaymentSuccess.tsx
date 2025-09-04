@@ -294,18 +294,19 @@ export default function PaymentSuccess() {
               <Button 
                 variant="spotlight" 
                 size="lg"
-                className="w-full"
+                className="w-full max-w-80"
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
-                      title: 'Contact Your Representatives with Canary Cards',
-                      text: 'Make your voice heard by sending postcards to your representatives!',
+                      title: 'Canary Cards',
+                      text: 'Your voice mattered today. Now help others discover how easy it is to be heard by their representatives.',
                       url: shareableLink
                     });
                   } else {
                     copyShareableLink();
                   }
                 }}
+                aria-label="Share Canary Cards with friends"
               >
                 <Share className="w-4 h-4 mr-2" />
                 Invite Others to Take Action
