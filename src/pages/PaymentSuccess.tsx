@@ -308,7 +308,7 @@ export default function PaymentSuccess() {
                 }}
               >
                 <Share className="w-4 h-4 mr-2" />
-                Share in the group chat
+                Invite Others to Take Action
               </Button>
               
               <Button variant="secondary" size="lg" className="w-full button-warm" asChild>
