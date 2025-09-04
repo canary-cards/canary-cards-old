@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Repeat } from 'lucide-react';
@@ -12,7 +12,10 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
   const [isZoomed, setIsZoomed] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
-  const [lastTapTime, setLastTapTime] = useState(0);
+  
+  // Use refs to avoid stale closures
+  const lastTapTimeRef = useRef(0);
+  const singleTapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const images = [
     { src: '/lovable-uploads/923b18b9-bce0-4521-a280-f38eaec3e09c.png', alt: 'Postcard back with handwritten message' },
@@ -37,7 +40,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     
     // Change image at exactly 90 degrees (250ms into 500ms animation)
     setTimeout(() => {
-      setCurrentImageIndex(currentImageIndex === 0 ? 1 : 0);
+      setCurrentImageIndex(prev => prev === 0 ? 1 : 0);
     }, 250);
     
     // Reset flip state after animation completes
@@ -56,31 +59,36 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     if (isFlipping) return;
 
     const currentTime = Date.now();
-    const timeDiff = currentTime - lastTapTime;
+    const timeDiff = currentTime - lastTapTimeRef.current;
 
-    if (timeDiff < 300) {
-      // Double tap - zoom
+    if (timeDiff < 350) {
+      // Double tap detected - zoom and cancel any pending single tap
       event.preventDefault();
-      setIsZoomed(!isZoomed);
-      setLastTapTime(0); // Reset to prevent triple tap
+      if (singleTapTimeoutRef.current) {
+        clearTimeout(singleTapTimeoutRef.current);
+        singleTapTimeoutRef.current = null;
+      }
+      setIsZoomed(prev => !prev);
+      lastTapTimeRef.current = 0; // Reset to prevent triple tap
     } else {
-      // Single tap - flip (but only if not zoomed)
-      setLastTapTime(currentTime);
+      // Potential single tap - set up delayed action
+      lastTapTimeRef.current = currentTime;
+      
       if (!isZoomed) {
-        setTimeout(() => {
-          if (Date.now() - lastTapTime >= 250) {
+        // Clear any existing timeout
+        if (singleTapTimeoutRef.current) {
+          clearTimeout(singleTapTimeoutRef.current);
+        }
+        
+        // Set up delayed flip action
+        singleTapTimeoutRef.current = setTimeout(() => {
+          // Only flip if this tap wasn't followed by another tap (double tap)
+          if (Date.now() - lastTapTimeRef.current >= 300) {
             performFlip();
           }
-        }, 250);
+          singleTapTimeoutRef.current = null;
+        }, 350);
       }
-    }
-  };
-
-  // Handle double click for desktop
-  const handleDoubleClick = (event: React.MouseEvent) => {
-    event.preventDefault();
-    if (!isFlipping) {
-      setIsZoomed(!isZoomed);
     }
   };
 
@@ -116,7 +124,6 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
               isBouncing ? 'animate-[bounce_0.2s_ease-out]' : ''
             }`}
             onPointerDown={handlePointerDown}
-            onDoubleClick={handleDoubleClick}
             style={{ transformStyle: 'preserve-3d', touchAction: 'manipulation' }}
           >
             <img
@@ -132,7 +139,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
             <Button 
               variant="primary"
               size="icon"
-              onClick={(e) => {
+              onPointerDown={(e) => {
                 e.stopPropagation();
                 performFlip();
               }}
