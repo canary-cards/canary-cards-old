@@ -5,6 +5,7 @@ import { useAppContext } from '../context/AppContext';
 import { useToast } from '@/hooks/use-toast';
 import { HamburgerMenu } from './HamburgerMenu';
 import { Logo } from './Logo';
+import { ThemeToggle } from './ThemeToggle';
 
 interface HeaderProps {
   className?: string;
@@ -57,10 +58,13 @@ export function Header({ className }: HeaderProps) {
           </div>
         </button>
         
-        {/* Only show hamburger menu if NOT on onboarding page */}
-        {!location.pathname.startsWith('/onboarding') && (
-          <HamburgerMenu />
-        )}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          {/* Only show hamburger menu if NOT on onboarding page */}
+          {!location.pathname.startsWith('/onboarding') && (
+            <HamburgerMenu />
+          )}
+        </div>
       </div>
     </header>
   );
