@@ -140,6 +140,8 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
               alt={images[currentImageIndex].alt}
               className="w-full h-full object-cover"
               style={{ backfaceVisibility: 'hidden' }}
+              loading="eager"
+              fetchPriority="high"
             />
             
             {/* Circular Flip Button - positioned in lower right */}
