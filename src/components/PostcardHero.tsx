@@ -11,7 +11,7 @@ const ZOOM_SCALE = 2.5;
 const PAN_THRESHOLD = 6;
 
 export function PostcardHero({ className = '' }: PostcardHeroProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isShowingBack, setIsShowingBack] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
@@ -45,11 +45,7 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
     
     setIsBouncing(true);
     setIsFlipping(true);
-    
-    // Change image at exactly 90 degrees (250ms into 500ms animation)
-    setTimeout(() => {
-      setCurrentImageIndex(prev => prev === 0 ? 1 : 0);
-    }, 250);
+    setIsShowingBack(prev => !prev);
     
     // Reset flip state after animation completes
     setTimeout(() => {
@@ -178,65 +174,99 @@ export function PostcardHero({ className = '' }: PostcardHeroProps) {
         {/* Caption */}
         <div className="text-center mb-3">
           <p className="text-sm text-muted-foreground font-inter">
-            {currentImageIndex === 0 ? "Back — Your message" : "Front — Photo side"}
+            {isShowingBack ? "Back — Your message" : "Front — Photo side"}
           </p>
         </div>
 
         {/* Postcard Images */}
         <div className="relative overflow-hidden bg-white shadow-xl rounded-lg mb-4" style={{ perspective: '1000px' }}>
+          {/* Bounce wrapper */}
           <div 
-            ref={containerRef}
-            className={`relative aspect-[1.6/1] transition-all duration-300 transform-gpu ${
-              isFlipping ? 'animate-[flip_0.5s_ease-in-out]' : ''
-            } ${
+            className={`relative aspect-[1.6/1] ${
               isBouncing ? 'animate-[bounce_0.2s_ease-out]' : ''
-            } ${
-              isZoomed ? (isPanningRef.current ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-pointer'
             }`}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerUp}
-            style={{ 
-              transformStyle: 'preserve-3d', 
-              touchAction: isZoomed ? 'none' : 'manipulation'
-            }}
           >
-            {/* Zoom Layer */}
-            <div
-              className="w-full h-full transition-transform duration-300"
-              style={{
-                transform: `translate(${translate.x}px, ${translate.y}px) scale(${isZoomed ? ZOOM_SCALE : 1})`,
-                transformOrigin: 'center center'
-              }}
-            >
-              <img
-                src={images[currentImageIndex].src}
-                alt={images[currentImageIndex].alt}
-                className="w-full h-full object-cover"
-                style={{ backfaceVisibility: 'hidden' }}
-                loading="eager"
-                fetchPriority="high"
-              />
-            </div>
-            
-            {/* Circular Flip Button - positioned in lower right */}
-            <Button 
-              variant="primary"
-              size="icon"
-              onPointerDown={(e) => {
-                e.stopPropagation();
-                performFlip();
-              }}
-              className={`absolute bottom-4 right-4 !w-10 !h-10 !min-h-0 rounded-full shadow-lg hover:shadow-xl transition-all p-0 min-w-0 ${
-                isFlipping ? 'scale-110 rotate-180' : 'hover:scale-105'
+            {/* 3D Rotator */}
+            <div 
+              ref={containerRef}
+              className={`w-full h-full transition-transform duration-500 transform-gpu ${
+                isZoomed ? (isPanningRef.current ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-pointer'
               }`}
-              aria-label="Flip postcard"
-              disabled={isFlipping}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
+              style={{ 
+                transformStyle: 'preserve-3d',
+                transform: `rotateY(${isShowingBack ? 180 : 0}deg)`,
+                touchAction: isZoomed ? 'none' : 'manipulation'
+              }}
             >
-              <Repeat className="h-4 w-4 text-accent" />
-            </Button>
+              {/* Front Face */}
+              <div
+                className="absolute inset-0 w-full h-full"
+                style={{ backfaceVisibility: 'hidden' }}
+              >
+                <div
+                  className="w-full h-full transition-transform duration-300"
+                  style={{
+                    transform: `translate(${translate.x}px, ${translate.y}px) scale(${isZoomed ? ZOOM_SCALE : 1})`,
+                    transformOrigin: 'center center'
+                  }}
+                >
+                  <img
+                    src={images[1].src}
+                    alt={images[1].alt}
+                    className="w-full h-full object-cover"
+                    loading="eager"
+                    fetchPriority="high"
+                  />
+                </div>
+              </div>
+
+              {/* Back Face */}
+              <div
+                className="absolute inset-0 w-full h-full"
+                style={{ 
+                  backfaceVisibility: 'hidden',
+                  transform: 'rotateY(180deg)'
+                }}
+              >
+                <div
+                  className="w-full h-full transition-transform duration-300"
+                  style={{
+                    transform: `translate(${translate.x}px, ${translate.y}px) scale(${isZoomed ? ZOOM_SCALE : 1})`,
+                    transformOrigin: 'center center'
+                  }}
+                >
+                  <img
+                    src={images[0].src}
+                    alt={images[0].alt}
+                    className="w-full h-full object-cover"
+                    loading="eager"
+                    fetchPriority="high"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* Circular Flip Button - positioned in lower right */}
+          <Button 
+            variant="primary"
+            size="icon"
+            onPointerDown={(e) => {
+              e.stopPropagation();
+              performFlip();
+            }}
+            className={`absolute bottom-4 right-4 !w-10 !h-10 !min-h-0 rounded-full shadow-lg hover:shadow-xl transition-all p-0 min-w-0 ${
+              isFlipping ? 'scale-110 rotate-180' : 'hover:scale-105'
+            }`}
+            aria-label="Flip postcard"
+            disabled={isFlipping}
+          >
+            <Repeat className="h-4 w-4 text-accent" />
+          </Button>
         </div>
 
         {/* Instructions for mobile */}
