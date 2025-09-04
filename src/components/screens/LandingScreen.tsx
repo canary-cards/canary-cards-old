@@ -124,7 +124,7 @@ export function LandingScreen() {
             <h1 className="text-2xl md:text-3xl display-title leading-tight mb-4">
               Send a Real Postcard to Your Representative
             </h1>
-            <h2 className="subtitle text-base mb-2 leading-relaxed">
+            <h2 className="subtitle text-base mb-0 leading-relaxed">
               Handwritten postcards get noticed. Emails don't.
             </h2>
           </div>
