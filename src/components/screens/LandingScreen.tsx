@@ -140,7 +140,7 @@ export function LandingScreen() {
         </div>
 
         {/* Primary CTA - Zip Code Form (Above the fold) */}
-        <Card className="mb-2 border-primary/20 shadow-sm">
+        <Card className="mb-4 border-primary/20 shadow-sm">
           <CardContent className="p-4 md:p-6">
             <form onSubmit={handleZipSubmit} className="space-y-4">
               <div className="space-y-2">
