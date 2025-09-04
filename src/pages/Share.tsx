@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Share as ShareIcon } from 'lucide-react';
+import { Header } from '@/components/Header';
 
 export default function Share() {
   const [searchParams] = useSearchParams();
@@ -58,6 +59,8 @@ export default function Share() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
+      
       {/* Content Container */}
       <div className="mx-auto max-w-2xl px-4 py-12 md:py-20">
         <div className="text-center">
@@ -82,10 +85,12 @@ export default function Share() {
           <div className="flex justify-center">
             <Button
               onClick={handleShare}
+              variant="spotlight"
               size="lg"
-              className="button-warm w-full max-w-80 transition-all duration-200 hover:scale-105 focus:scale-105"
+              className="w-full max-w-80"
               aria-label="Share Canary Cards with friends"
             >
+              <ShareIcon className="w-4 h-4 mr-2" />
               {isNativeShareAvailable ? "Share with friends" : "Copy share link"}
             </Button>
           </div>
