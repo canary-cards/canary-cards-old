@@ -238,9 +238,12 @@ export function PreviewSendScreen() {
                                   </div>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                              <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
                                 <Check className="w-4 h-4 flex-shrink-0" />
-                                <span className="truncate">Auto-addressed: correct office + member name on each card</span>
+                                <span>Correct office address</span>
+                                <span className="mx-1">•</span>
+                                <Check className="w-4 h-4 flex-shrink-0" />
+                                <span>Member name + title formatted</span>
                               </div>
                             </Label>
                           </div>
