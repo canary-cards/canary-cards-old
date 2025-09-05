@@ -988,12 +988,12 @@ Must be under 295 characters. Keep core message and call to action. Return only 
       const tokensUsed = (usage.input_tokens || 0) + (usage.output_tokens || 0);
       
       if (rewritten.length > 295) {
-        rewritten = rewritten.substring(0, 292) + '...';
+        rewritten = rewritten.substring(0, 292) + ',,,';
       }
       
       return { postcard: rewritten, tokensUsed };
     } catch (error) {
-      return { postcard: longPostcard.substring(0, 292) + '...', tokensUsed: 0 };
+      return { postcard: longPostcard.substring(0, 292) + ',,,', tokensUsed: 0 };
     }
   }
 
