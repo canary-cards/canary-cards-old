@@ -21,8 +21,11 @@ export const DynamicSvg = ({
 
   if (loading) {
     return (
-      <div className={`animate-pulse bg-muted/20 rounded ${className}`} style={{ width, height }}>
-        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs opacity-50">
+      <div 
+        className={`animate-pulse bg-muted/20 rounded flex items-center justify-center ${className}`} 
+        style={{ width: width ? `${width}px` : undefined, height: height ? `${height}px` : undefined }}
+      >
+        <div className="text-muted-foreground text-xs opacity-50">
           Loading...
         </div>
       </div>
@@ -34,8 +37,11 @@ export const DynamicSvg = ({
 
   if (!src) {
     return (
-      <div className={`bg-muted/20 rounded flex items-center justify-center text-muted-foreground text-xs ${className}`} style={{ width, height }}>
-        No image
+      <div 
+        className={`bg-muted/20 rounded flex items-center justify-center text-muted-foreground text-xs ${className}`} 
+        style={{ width: width ? `${width}px` : undefined, height: height ? `${height}px` : undefined }}
+      >
+        Asset not found: {assetName}
       </div>
     );
   }
