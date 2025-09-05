@@ -8,6 +8,7 @@ const stripePromise = loadStripe('pk_test_51Rm04GLqBC9dKThjLjUe7M1Cd8oIgW3IAFBwI
 
 // Global instance tracker to prevent multiple embedded checkouts
 let globalCheckoutInstance: any = null;
+let isInitializing = false;
 
 interface EmbeddedCheckoutProps {
   clientSecret: string;
@@ -30,17 +31,31 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
       try {
         console.log('EmbeddedCheckout: Starting initialization with clientSecret:', clientSecret ? 'present' : 'missing');
         
+        // Prevent multiple simultaneous initializations
+        if (isInitializing) {
+          console.log('EmbeddedCheckout: Already initializing, aborting');
+          return;
+        }
+        isInitializing = true;
+        
         // Clean up any existing global instance first
         if (globalCheckoutInstance) {
           console.log('EmbeddedCheckout: Cleaning up existing global instance');
           try {
-            globalCheckoutInstance.unmount();
+            await globalCheckoutInstance.unmount();
             globalCheckoutInstance.destroy?.();
           } catch (error) {
             console.log('EmbeddedCheckout: Error cleaning up global instance:', error);
           }
           globalCheckoutInstance = null;
+          
+          // Wait for cleanup to complete
+          await new Promise(resolve => setTimeout(resolve, 500));
         }
+        
+        // Also clear any existing Stripe elements from DOM
+        const existingElements = document.querySelectorAll('[data-testid="embedded-checkout"]');
+        existingElements.forEach(el => el.remove());
         
         if (!clientSecret) {
           throw new Error('Client secret is missing');
@@ -81,6 +96,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         // Store in both local and global references
         setCheckout(checkoutInstance);
         globalCheckoutInstance = checkoutInstance;
+        isInitializing = false;
         setLoading(false);
         
         // Mount after state is updated and component re-renders
@@ -102,6 +118,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         
       } catch (err: any) {
         console.error('EmbeddedCheckout: Failed to initialize Stripe checkout:', err);
+        isInitializing = false;
         if (isMounted) {
           setError(`Failed to load payment form: ${err.message}`);
           setLoading(false);
@@ -124,6 +141,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
       return () => {
         clearTimeout(fallbackTimeout);
         isMounted = false;
+        isInitializing = false;
         
         // Clean up local instance
         if (checkoutInstance) {
