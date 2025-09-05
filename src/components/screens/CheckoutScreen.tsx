@@ -403,9 +403,12 @@ export function CheckoutScreen() {
 
                 {/* Panel-level reassurance */}
                 <div className="text-center pt-4">
-                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
                     <Check className="w-4 h-4 flex-shrink-0" />
-                    <span>We add the correct addresses and names automatically for you</span>
+                    <span>Correct office address</span>
+                    <span className="mx-1">•</span>
+                    <Check className="w-4 h-4 flex-shrink-0" />
+                    <span>Member name + title formatted</span>
                   </div>
                 </div>
               </div>
