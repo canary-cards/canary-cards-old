@@ -51,12 +51,11 @@ export const DynamicSvg = ({
       src={src}
       alt={alt || assetName}
       className={className}
-      width={width}
-      height={height}
       style={{ 
-        width: width ? `${width}px` : undefined, 
-        height: height ? `${height}px` : undefined,
-        objectFit: 'contain'
+        width: width ? `${width}px` : 'auto', 
+        height: height ? `${height}px` : 'auto',
+        objectFit: 'contain',
+        display: 'block'
       }}
     />
   );
