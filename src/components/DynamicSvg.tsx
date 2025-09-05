@@ -66,9 +66,11 @@ export const DynamicSvg = ({
         src={src}
         alt={alt || assetName}
         style={{ 
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
+          width: '120%',
+          height: '120%',
+          objectFit: 'contain',
+          transform: 'scale(1.2)',
+          transformOrigin: 'center',
           display: 'block'
         }}
       />
