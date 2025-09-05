@@ -34,13 +34,20 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         if (globalCheckoutInstance) {
           console.log('EmbeddedCheckout: Cleaning up existing global instance');
           try {
-            globalCheckoutInstance.unmount();
-            globalCheckoutInstance.destroy?.();
+            if (typeof globalCheckoutInstance.unmount === 'function') {
+              globalCheckoutInstance.unmount();
+            }
+            if (typeof globalCheckoutInstance.destroy === 'function') {
+              globalCheckoutInstance.destroy();
+            }
           } catch (error) {
             console.log('EmbeddedCheckout: Error cleaning up global instance:', error);
           }
           globalCheckoutInstance = null;
         }
+        
+        // Wait a bit to ensure cleanup is complete
+        await new Promise(resolve => setTimeout(resolve, 100));
         
         if (!clientSecret) {
           throw new Error('Client secret is missing');
@@ -138,8 +145,12 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         if (checkoutInstance) {
           console.log('EmbeddedCheckout: Unmounting checkout instance');
           try {
-            checkoutInstance.unmount();
-            checkoutInstance.destroy?.(); // Call destroy if available
+            if (typeof checkoutInstance.unmount === 'function') {
+              checkoutInstance.unmount();
+            }
+            if (typeof checkoutInstance.destroy === 'function') {
+              checkoutInstance.destroy();
+            }
           } catch (error) {
             console.log('EmbeddedCheckout: Error unmounting checkout:', error);
           }
@@ -150,8 +161,12 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         if (checkout && checkout !== checkoutInstance) {
           console.log('EmbeddedCheckout: Unmounting stored checkout instance');
           try {
-            checkout.unmount();
-            checkout.destroy?.(); // Call destroy if available
+            if (typeof checkout.unmount === 'function') {
+              checkout.unmount();
+            }
+            if (typeof checkout.destroy === 'function') {
+              checkout.destroy();
+            }
           } catch (error) {
             console.log('EmbeddedCheckout: Error unmounting stored checkout:', error);
           }
