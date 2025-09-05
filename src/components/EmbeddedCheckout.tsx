@@ -8,7 +8,6 @@ const stripePromise = loadStripe('pk_test_51Rm04GLqBC9dKThjLjUe7M1Cd8oIgW3IAFBwI
 
 // Global instance tracker to prevent multiple embedded checkouts
 let globalCheckoutInstance: any = null;
-let isInitializing = false;
 
 interface EmbeddedCheckoutProps {
   clientSecret: string;
@@ -31,38 +30,17 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
       try {
         console.log('EmbeddedCheckout: Starting initialization with clientSecret:', clientSecret ? 'present' : 'missing');
         
-        // Prevent multiple simultaneous initializations
-        if (isInitializing) {
-          console.log('EmbeddedCheckout: Already initializing, aborting');
-          return;
-        }
-        isInitializing = true;
-        
-        // More aggressive cleanup - remove any existing DOM elements
-        const existingElements = document.querySelectorAll('[data-testid="embedded-checkout"], .StripeElement');
-        existingElements.forEach(el => {
-          console.log('EmbeddedCheckout: Removing existing Stripe element from DOM');
-          el.remove();
-        });
-        
-        // Clean up any existing global instance
+        // Clean up any existing global instance first
         if (globalCheckoutInstance) {
           console.log('EmbeddedCheckout: Cleaning up existing global instance');
           try {
-            if (typeof globalCheckoutInstance.unmount === 'function') {
-              globalCheckoutInstance.unmount();
-            }
-            if (typeof globalCheckoutInstance.destroy === 'function') {
-              globalCheckoutInstance.destroy();
-            }
+            globalCheckoutInstance.unmount();
+            globalCheckoutInstance.destroy?.();
           } catch (error) {
             console.log('EmbeddedCheckout: Error cleaning up global instance:', error);
           }
           globalCheckoutInstance = null;
         }
-        
-        // Wait longer to ensure cleanup is complete
-        await new Promise(resolve => setTimeout(resolve, 300));
         
         if (!clientSecret) {
           throw new Error('Client secret is missing');
@@ -104,7 +82,6 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         setCheckout(checkoutInstance);
         globalCheckoutInstance = checkoutInstance;
         setLoading(false);
-        isInitializing = false;
         
         // Mount after state is updated and component re-renders
         setTimeout(() => {
@@ -115,17 +92,8 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           
           const checkoutElement = document.getElementById('embedded-checkout');
           if (checkoutElement) {
-            // Prevent autoscroll by temporarily storing scroll position
-            const scrollX = window.scrollX;
-            const scrollY = window.scrollY;
-            
             checkoutInstance.mount('#embedded-checkout');
             console.log('EmbeddedCheckout: Checkout mounted to DOM');
-            
-            // Restore scroll position after a brief delay
-            setTimeout(() => {
-              window.scrollTo(scrollX, scrollY);
-            }, 100);
           } else {
             console.error('EmbeddedCheckout: Mount element not found after render');
             setError('Failed to mount payment form');
@@ -137,7 +105,6 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         if (isMounted) {
           setError(`Failed to load payment form: ${err.message}`);
           setLoading(false);
-          isInitializing = false;
         }
       }
     };
@@ -157,18 +124,13 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
       return () => {
         clearTimeout(fallbackTimeout);
         isMounted = false;
-        isInitializing = false;
         
         // Clean up local instance
         if (checkoutInstance) {
           console.log('EmbeddedCheckout: Unmounting checkout instance');
           try {
-            if (typeof checkoutInstance.unmount === 'function') {
-              checkoutInstance.unmount();
-            }
-            if (typeof checkoutInstance.destroy === 'function') {
-              checkoutInstance.destroy();
-            }
+            checkoutInstance.unmount();
+            checkoutInstance.destroy?.(); // Call destroy if available
           } catch (error) {
             console.log('EmbeddedCheckout: Error unmounting checkout:', error);
           }
@@ -179,12 +141,8 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
         if (checkout && checkout !== checkoutInstance) {
           console.log('EmbeddedCheckout: Unmounting stored checkout instance');
           try {
-            if (typeof checkout.unmount === 'function') {
-              checkout.unmount();
-            }
-            if (typeof checkout.destroy === 'function') {
-              checkout.destroy();
-            }
+            checkout.unmount();
+            checkout.destroy?.(); // Call destroy if available
           } catch (error) {
             console.log('EmbeddedCheckout: Error unmounting stored checkout:', error);
           }
