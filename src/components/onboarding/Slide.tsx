@@ -32,7 +32,7 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, 
               }`}
               style={{ 
                 willChange: 'opacity, transform',
-                transform: index === currentSlide && currentSlide === 1 ? 'scale(0.75)' : undefined
+                transform: index === currentSlide && currentSlide === 1 ? 'scale(0.85)' : undefined
               }}
             >
               <DynamicSvg 
