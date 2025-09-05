@@ -973,15 +973,13 @@ Keep core message, personal impact, and call to action. Return only the shortene
         
       } catch (error) {
         console.log(`   ❌ Shortening attempt ${attempt} failed: ${error}`);
-        // If this was our last attempt, fall back to truncation with API failure indicator
-        if (attempt === maxRetries) {
-          return { postcard: currentPostcard.substring(0, 287) + ',,,', tokensUsed: totalTokens };
-        }
+        // For immediate API failures, return with ",,," 
+        return { postcard: currentPostcard.substring(0, 287) + ',,,', tokensUsed: totalTokens };
       }
     }
     
-    // If we exhausted all attempts but no API failures (just still too long), use "..."
-    console.log(`   ⚠️ All shortening attempts succeeded but still over limit, truncating to ${targetLength} chars`);
+    // If we exhausted all attempts, use "..."
+    console.log(`   ⚠️ All ${maxRetries} shortening attempts exhausted, truncating to ${targetLength} chars`);
     return { postcard: currentPostcard.substring(0, 287) + '...', tokensUsed: totalTokens };
   }
 
