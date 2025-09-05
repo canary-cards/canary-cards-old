@@ -27,6 +27,11 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
     let isMounted = true;
     let checkoutInstance: any = null;
 
+    // Prevent auto-scroll restoration
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
     const initializeCheckout = async () => {
       try {
         console.log('EmbeddedCheckout: Starting initialization with clientSecret:', clientSecret ? 'present' : 'missing');
@@ -108,8 +113,18 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           
           const checkoutElement = document.getElementById('embedded-checkout');
           if (checkoutElement) {
+            // Store current scroll position before mounting
+            const currentScrollY = window.scrollY;
+            
             checkoutInstance.mount('#embedded-checkout');
             console.log('EmbeddedCheckout: Checkout mounted to DOM');
+            
+            // Restore scroll position after mounting to prevent auto-scroll
+            setTimeout(() => {
+              if (window.scrollY !== currentScrollY) {
+                window.scrollTo(0, currentScrollY);
+              }
+            }, 100);
           } else {
             console.error('EmbeddedCheckout: Mount element not found after render');
             setError('Failed to mount payment form');
@@ -225,7 +240,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ scrollBehavior: 'auto' }}>
       <Card className="card-warm">
         <CardContent className="p-6">
           <div className="text-center mb-6">
@@ -240,7 +255,8 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           {/* Stripe Embedded Checkout will mount here */}
           <div 
             id="embedded-checkout" 
-            className="min-h-[500px] w-full"
+            className="min-h-[500px] w-full overflow-y-auto"
+            style={{ scrollBehavior: 'auto' }}
           />
           
           <div className="mt-6 pt-4 border-t">
