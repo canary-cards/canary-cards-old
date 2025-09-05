@@ -47,16 +47,33 @@ export const DynamicSvg = ({
   }
 
   return (
-    <img
-      src={src}
-      alt={alt || assetName}
-      className={className}
+    <div
       style={{ 
         width: width ? `${width}px` : 'auto', 
         height: height ? `${height}px` : 'auto',
-        objectFit: 'contain',
-        display: 'block'
+        minWidth: width ? `${width}px` : 'auto',
+        minHeight: height ? `${height}px` : 'auto',
+        maxWidth: width ? `${width}px` : 'auto',
+        maxHeight: height ? `${height}px` : 'auto',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden'
       }}
-    />
+      className={className}
+    >
+      <img
+        src={src}
+        alt={alt || assetName}
+        style={{ 
+          maxWidth: '100%',
+          maxHeight: '100%',
+          width: 'auto',
+          height: 'auto',
+          objectFit: 'contain',
+          display: 'block'
+        }}
+      />
+    </div>
   );
 };
