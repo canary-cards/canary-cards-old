@@ -13,6 +13,8 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentReturn from "./pages/PaymentReturn";
 import PaymentRefunded from "./pages/PaymentRefunded";
 import Share from "./pages/Share";
+import { InviteCodeScreen } from "./components/screens/InviteCodeScreen";
+import { PreviewSendScreen } from "./components/screens/PreviewSendScreen";
 import { useEffect, useState } from "react";
 
 import { AppProvider, useAppContext } from "./context/AppContext";
@@ -56,6 +58,10 @@ const AppContent = () => (
       <Route path="/payment-return" element={<PaymentReturn />} />
       <Route path="/payment-success" element={<PaymentSuccess />} />
       <Route path="/payment-refunded" element={<PaymentRefunded />} />
+      
+      {/* Temporary routes for review */}
+      <Route path="/invite-code" element={<InviteCodeScreen />} />
+      <Route path="/preview-send" element={<PreviewSendScreen />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
