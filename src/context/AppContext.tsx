@@ -13,8 +13,27 @@ type AppAction =
   | { type: 'SET_PAYMENT_LOADING'; payload: boolean };
 
 const initialState: AppState = {
-  currentStep: 1, // Start at landing screen instead of 0
-  postcardData: {},
+  currentStep: 5, // Temporarily set to 5 to show PreviewSendScreen
+  postcardData: {
+    userInfo: {
+      fullName: "John Doe",
+      streetAddress: "123 Main St",
+      city: "San Francisco", 
+      state: "CA",
+      zipCode: "94102"
+    },
+    representative: {
+      id: "1",
+      name: "Nancy Pelosi",
+      city: "San Francisco",
+      state: "CA",
+      party: "Democratic",
+      type: "representative",
+      photo: "",
+      address: "450 Golden Gate Ave"
+    },
+    finalMessage: "Dear Representative, I am writing to express my concerns about the current state of our democracy and urge you to take action on important issues affecting our community. As your constituent, I believe it's crucial that you hear from the people you represent. Thank you for your service."
+  },
   isLoading: false,
   error: null,
   isRestoring: false, // Start with false since we no longer auto-restore
