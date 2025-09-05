@@ -29,7 +29,7 @@ const slides = [
     subtitle: "Indistinguishable from human handwriting. Authentic and personal.",
     finePrint: "Written by a robot holding a blue ballpoint. Authentic & affordable",
     iconPlaceholder: "ICON / REAL INK HANDWRITING",
-    assetName: "Onboarding Icon 3",
+    assetName: "Onboarding icon 3 new",
     imageAlt: "Real handwriting with ink and pen"
   },
   {
