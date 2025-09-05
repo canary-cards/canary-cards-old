@@ -27,6 +27,9 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
     let isMounted = true;
     let checkoutInstance: any = null;
 
+    // Force scroll to top when component mounts
+    window.scrollTo(0, 0);
+
     // Prevent auto-scroll restoration
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
@@ -245,11 +248,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           {/* Stripe Embedded Checkout will mount here */}
           <div 
             id="embedded-checkout" 
-            className="w-full"
-            style={{ 
-              height: '600px', // Fixed height to prevent layout shifts
-              overflow: 'hidden' // Prevent internal scrolling from affecting page
-            }}
+            className="min-h-[500px] w-full"
           />
           
           <div className="mt-6 pt-4 border-t">
