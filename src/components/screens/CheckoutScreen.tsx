@@ -10,7 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { BottomSheet, BottomSheetContent, BottomSheetHeader, BottomSheetTitle } from '@/components/ui/bottom-sheet';
 import { useAppContext } from '../../context/AppContext';
 import { EmbeddedCheckout } from '../EmbeddedCheckout';
-import { ArrowLeft, Shield, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { ArrowLeft, Shield, ChevronDown, ChevronUp, Check, MapPin, IdCard } from 'lucide-react';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
@@ -401,11 +401,11 @@ export function CheckoutScreen() {
                 {/* Panel-level reassurance */}
                 <div className="text-center pt-4">
                   <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
-                    <Check className="w-4 h-4 flex-shrink-0" />
-                    <span>Correct office address</span>
+                    <MapPin className="w-4 h-4 flex-shrink-0" />
+                    <span>Auto-addressed</span>
                     <span className="mx-1">•</span>
-                    <Check className="w-4 h-4 flex-shrink-0" />
-                    <span>Member name + title formatted</span>
+                    <IdCard className="w-4 h-4 flex-shrink-0" />
+                    <span>Name + title</span>
                   </div>
                 </div>
               </div>
