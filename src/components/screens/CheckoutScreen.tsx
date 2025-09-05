@@ -10,7 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { BottomSheet, BottomSheetContent, BottomSheetHeader, BottomSheetTitle } from '@/components/ui/bottom-sheet';
 import { useAppContext } from '../../context/AppContext';
 import { EmbeddedCheckout } from '../EmbeddedCheckout';
-import { ArrowLeft, Shield, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Shield, ChevronDown, ChevronUp, Check } from 'lucide-react';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
@@ -374,7 +374,10 @@ export function CheckoutScreen() {
                       </div>
                     </div>
                     
-                    
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                      <Check className="w-4 h-4 flex-shrink-0" />
+                      <span className="truncate">Auto-addressed: correct office + member name on each card</span>
+                    </div>
                     
                     <p className="text-sm text-muted-foreground">
                       Your message lands on every federal office that represents you.
@@ -394,6 +397,14 @@ export function CheckoutScreen() {
 
                 {/* Validation Error */}
                 {validationError && <p className="text-sm text-destructive">{validationError}</p>}
+
+                {/* Panel-level reassurance */}
+                <div className="text-center pt-4">
+                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                    <Check className="w-4 h-4 flex-shrink-0" />
+                    <span>We add the correct addresses and names automatically for you</span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
