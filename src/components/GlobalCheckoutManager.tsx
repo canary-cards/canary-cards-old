@@ -72,8 +72,8 @@ export const GlobalCheckoutManager: React.FC<GlobalCheckoutManagerProps> = ({ ch
 
   if (checkoutState.isVisible && checkoutState.clientSecret) {
     return (
-      <div className="min-h-screen bg-background" style={{ scrollBehavior: 'auto' }}>
-        <div className="container mx-auto px-4 pb-8 max-w-2xl">
+      <div className="min-h-screen bg-background overflow-y-auto" style={{ scrollBehavior: 'auto' }}>
+        <div className="container mx-auto px-4 py-8 max-w-2xl">
           <EmbeddedCheckout 
             clientSecret={checkoutState.clientSecret}
             onBack={handleBack}
