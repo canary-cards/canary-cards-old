@@ -21,11 +21,8 @@ export const DynamicSvg = ({
 
   if (loading) {
     return (
-      <div 
-        className={`animate-pulse bg-muted/20 rounded flex items-center justify-center ${className}`} 
-        style={{ width: width ? `${width}px` : undefined, height: height ? `${height}px` : undefined }}
-      >
-        <div className="text-muted-foreground text-xs opacity-50">
+      <div className={`animate-pulse bg-muted rounded ${className}`} style={{ width, height }}>
+        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
           Loading...
         </div>
       </div>
@@ -37,43 +34,19 @@ export const DynamicSvg = ({
 
   if (!src) {
     return (
-      <div 
-        className={`bg-muted/20 rounded flex items-center justify-center text-muted-foreground text-xs ${className}`} 
-        style={{ width: width ? `${width}px` : undefined, height: height ? `${height}px` : undefined }}
-      >
-        Asset not found: {assetName}
+      <div className={`bg-muted rounded flex items-center justify-center text-muted-foreground text-sm ${className}`} style={{ width, height }}>
+        No image
       </div>
     );
   }
 
   return (
-    <div
-      style={{ 
-        width: width ? `${width}px` : 'auto', 
-        height: height ? `${height}px` : 'auto',
-        minWidth: width ? `${width}px` : 'auto',
-        minHeight: height ? `${height}px` : 'auto',
-        maxWidth: width ? `${width}px` : 'auto',
-        maxHeight: height ? `${height}px` : 'auto',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden'
-      }}
+    <img
+      src={src}
+      alt={alt || assetName}
       className={className}
-    >
-      <img
-        src={src}
-        alt={alt || assetName}
-        style={{ 
-          width: '120%',
-          height: '120%',
-          objectFit: 'contain',
-          transform: 'scale(1.2)',
-          transformOrigin: 'center',
-          display: 'block'
-        }}
-      />
-    </div>
+      width={width}
+      height={height}
+    />
   );
 };

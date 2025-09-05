@@ -17,25 +17,21 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, 
     <div className="h-full flex flex-col">
       {/* Top half - Icon placeholder */}
       <div className="flex-1 flex items-center justify-center px-6 py-4">
-        <div className={`aspect-[1/1.1] flex items-center justify-center relative transition-[width] duration-200 ease-in-out ${currentSlide === 3 ? 'w-5/6' : 'w-2/3'} min-h-0`}>
+        <div className={`aspect-[1/1.1] flex items-center justify-center relative transition-[width] duration-200 ease-in-out ${currentSlide === 3 ? 'w-5/6' : 'w-2/3'}`}>
           {/* Render all SVGs at once for smooth transitions */}
           {allAssets.map((asset, index) => (
             <div
               key={index}
-              className={`absolute inset-0 w-full h-full flex items-center justify-center transition-[opacity,transform] duration-200 ease-in-out motion-reduce:transition-none motion-reduce:transform-none pointer-events-none select-none ${
+              className={`absolute inset-0 w-full h-full transition-[opacity,transform] duration-200 ease-in-out motion-reduce:transition-none motion-reduce:transform-none pointer-events-none select-none ${
                 index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               }`}
               style={{ willChange: 'opacity, transform' }}
             >
-              <div className="w-48 h-48 flex items-center justify-center shrink-0 mx-auto">
-                <DynamicSvg 
-                  assetName={asset.assetName}
-                  alt={asset.alt}
-                  className="block"
-                  width={192}
-                  height={192}
-                />
-              </div>
+              <DynamicSvg 
+                assetName={asset.assetName}
+                alt={asset.alt}
+                className="w-full h-full object-contain"
+              />
             </div>
           ))}
           {!assetName && (
