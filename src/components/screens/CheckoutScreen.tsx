@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { BottomSheet, BottomSheetContent, BottomSheetHeader, BottomSheetTitle } from '@/components/ui/bottom-sheet';
 import { useAppContext } from '../../context/AppContext';
-import { EmbeddedCheckout } from '../EmbeddedCheckout';
+import { showGlobalCheckout } from '../GlobalCheckoutManager';
 import { ArrowLeft, Shield, ChevronDown, ChevronUp } from 'lucide-react';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
@@ -36,8 +36,6 @@ export function CheckoutScreen() {
   const [showMixMatch, setShowMixMatch] = useState(false);
   const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(false); // Closed by default on mobile
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [validationError, setValidationError] = useState('');
   const rep = state.postcardData.representative;
   const userInfo = state.postcardData.userInfo;
@@ -189,9 +187,15 @@ export function CheckoutScreen() {
       };
       localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 
-      // Show embedded checkout
-      setClientSecret(data.client_secret);
-      setShowCheckout(true);
+      // Show global checkout
+      showGlobalCheckout({
+        clientSecret: data.client_secret,
+        sendOption,
+        amount: getTotalPrice(),
+        onBack: () => {
+          // No need to reset states as global manager handles this
+        }
+      });
     } catch (error) {
       console.error('Payment error:', error);
       setEmailError('Payment failed. Please try again.');
@@ -199,10 +203,7 @@ export function CheckoutScreen() {
       setIsProcessing(false);
     }
   };
-  const handleBackFromCheckout = () => {
-    setShowCheckout(false);
-    setClientSecret(null);
-  };
+  
   const goBack = () => {
     dispatch({
       type: 'SET_STEP',
@@ -210,14 +211,6 @@ export function CheckoutScreen() {
     }); // Go back to review card screen
   };
 
-  // Show embedded checkout on separate screen if client secret is available
-  if (showCheckout && clientSecret) {
-    return <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 pb-8 max-w-2xl">
-          <EmbeddedCheckout clientSecret={clientSecret} onBack={handleBackFromCheckout} sendOption={getSendOption()} amount={getTotalPrice()} />
-        </div>
-      </div>;
-  }
   return <>
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pb-24 max-w-2xl">

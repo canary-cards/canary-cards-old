@@ -16,6 +16,7 @@ import Share from "./pages/Share";
 import { useEffect, useState } from "react";
 
 import { AppProvider, useAppContext } from "./context/AppContext";
+import { GlobalCheckoutManager } from "./components/GlobalCheckoutManager";
 
 const queryClient = new QueryClient();
 
@@ -48,19 +49,21 @@ const AppContent = () => (
     <AppProvider>
       <PaymentLoadingDetector />
     </AppProvider>
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/about" element={<AppProvider><About /></AppProvider>} />
-      <Route path="/share" element={<AppProvider><Share /></AppProvider>} />
-      <Route path="/share/:orderId" element={<AppProvider><Share /></AppProvider>} />
-      
-      <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
-      <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
-      <Route path="/payment-refunded" element={<AppProvider><PaymentRefunded /></AppProvider>} />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <GlobalCheckoutManager>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/about" element={<AppProvider><About /></AppProvider>} />
+        <Route path="/share" element={<AppProvider><Share /></AppProvider>} />
+        <Route path="/share/:orderId" element={<AppProvider><Share /></AppProvider>} />
+        
+        <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
+        <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
+        <Route path="/payment-refunded" element={<AppProvider><PaymentRefunded /></AppProvider>} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </GlobalCheckoutManager>
   </>
 );
 

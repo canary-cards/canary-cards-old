@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAppContext } from '../../context/AppContext';
-import { EmbeddedCheckout } from '../EmbeddedCheckout';
+import { showGlobalCheckout } from '../GlobalCheckoutManager';
 import { ArrowLeft, Mail, CreditCard, Shield, Clock, Heart, Users, Zap } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
@@ -24,8 +24,6 @@ export function PreviewSendScreen() {
   const [emailError, setEmailError] = useState('');
   const [senators, setSenators] = useState<Representative[]>([]);
   const [loadingSenators, setLoadingSenators] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const singlePrice = getTotalPriceDollars('single');
   const triplePrice = getTotalPriceDollars('triple');
   const savings = (singlePrice * 3) - triplePrice;
@@ -153,9 +151,15 @@ export function PreviewSendScreen() {
       // Store to localStorage as backup
       localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
 
-      // Show embedded checkout
-      setClientSecret(data.client_secret);
-      setShowCheckout(true);
+      // Show global checkout
+      showGlobalCheckout({
+        clientSecret: data.client_secret,
+        sendOption,
+        amount: sendOption === 'single' ? singlePrice : triplePrice,
+        onBack: () => {
+          // No need to reset states as global manager handles this
+        }
+      });
     } catch (error) {
       console.error('Payment error:', error);
       setEmailError('Payment failed. Please try again.');
@@ -164,10 +168,7 @@ export function PreviewSendScreen() {
     }
   };
 
-  const handleBackFromCheckout = () => {
-    setShowCheckout(false);
-    setClientSecret(null);
-  };
+  
   const goBack = () => {
     dispatch({
       type: 'SET_STEP',
@@ -190,22 +191,6 @@ export function PreviewSendScreen() {
   };
 
   const displayMessage = replacePlaceholders(finalMessage);
-
-  // Show embedded checkout on separate screen if client secret is available
-  if (showCheckout && clientSecret) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 pb-8 max-w-2xl">
-          <EmbeddedCheckout 
-            clientSecret={clientSecret}
-            onBack={handleBackFromCheckout}
-            sendOption={sendOption}
-            amount={sendOption === 'single' ? singlePrice : triplePrice}
-          />
-        </div>
-      </div>
-    );
-  }
 
   return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pb-8 max-w-2xl">
