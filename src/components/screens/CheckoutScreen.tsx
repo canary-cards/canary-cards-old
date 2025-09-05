@@ -212,13 +212,15 @@ export function CheckoutScreen() {
     }); // Go back to review card screen
   };
 
+  // Scroll to top when showing checkout
+  useEffect(() => {
+    if (showCheckout && clientSecret) {
+      window.scrollTo(0, 0);
+    }
+  }, [showCheckout, clientSecret]);
+
   // Show embedded checkout on separate screen if client secret is available
   if (showCheckout && clientSecret) {
-    // Ensure page starts at top when checkout loads
-    React.useEffect(() => {
-      window.scrollTo(0, 0);
-    }, []);
-    
     return <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pb-8 max-w-2xl">
           <EmbeddedCheckout clientSecret={clientSecret} onBack={handleBackFromCheckout} sendOption={getSendOption()} amount={getTotalPrice()} />
