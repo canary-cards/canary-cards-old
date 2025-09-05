@@ -49,7 +49,7 @@ export function CivicPostcardApp() {
   return (
     <div className="civic-postcard-app">
       {/* Header - show on all pages */}
-      <Header />
+      <Header isDark={state.currentStep === 7} />
       
       {/* Standard spacing after header */}
       <div className="pt-3">

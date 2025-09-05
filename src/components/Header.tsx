@@ -8,9 +8,10 @@ import { Logo } from './Logo';
 
 interface HeaderProps {
   className?: string;
+  isDark?: boolean;
 }
 
-export function Header({ className }: HeaderProps) {
+export function Header({ className, isDark = false }: HeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { dispatch } = useAppContext();
@@ -39,7 +40,7 @@ export function Header({ className }: HeaderProps) {
   };
 
   return (
-    <header className={`h-14 md:h-16 bg-background border-b border-[#E8DECF] ${className || ''}`}>
+    <header className={`h-14 md:h-16 ${isDark ? 'bg-primary border-background/20' : 'bg-background border-[#E8DECF]'} border-b ${className || ''}`}>
       <div className="flex items-center justify-between px-4 h-full">
         <button 
           onClick={handleLogoClick}
@@ -48,10 +49,10 @@ export function Header({ className }: HeaderProps) {
         >
           <Logo className="h-8" />
           <div className="hidden md:flex flex-col text-left">
-            <span className="font-semibold text-primary text-left" style={{ fontFamily: 'Spectral', fontWeight: 600 }}>
+            <span className={`font-semibold text-left ${isDark ? 'text-background' : 'text-primary'}`} style={{ fontFamily: 'Spectral', fontWeight: 600 }}>
               Canary Cards
             </span>
-            <span className="text-sm text-muted-foreground hidden sm:block text-left">
+            <span className={`text-sm hidden sm:block text-left ${isDark ? 'text-background/80' : 'text-muted-foreground'}`}>
               Real postcards. Real impact.
             </span>
           </div>
@@ -59,7 +60,7 @@ export function Header({ className }: HeaderProps) {
         
         {/* Only show hamburger menu if NOT on onboarding page */}
         {!location.pathname.startsWith('/onboarding') && (
-          <HamburgerMenu />
+          <HamburgerMenu isDark={isDark} />
         )}
       </div>
     </header>

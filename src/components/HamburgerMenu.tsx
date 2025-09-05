@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 
-export function HamburgerMenu() {
+export function HamburgerMenu({ isDark = false }: { isDark?: boolean }) {
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
@@ -39,7 +39,7 @@ export function HamburgerMenu() {
           aria-expanded={open}
           aria-label="Open menu"
         >
-          <Menu className="h-5 w-5 text-primary" />
+          <Menu className={`h-5 w-5 ${isDark ? 'text-background' : 'text-primary'}`} />
         </Button>
       </SheetTrigger>
       <SheetContent 
