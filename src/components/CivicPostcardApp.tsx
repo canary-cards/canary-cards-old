@@ -47,12 +47,12 @@ export function CivicPostcardApp() {
   };
 
   return (
-    <div className="civic-postcard-app">
+    <div className={`civic-postcard-app ${state.currentStep === 7 ? 'bg-primary' : ''}`}>
       {/* Header - show on all pages */}
       <Header isDark={state.currentStep === 7} />
       
       {/* Standard spacing after header */}
-      <div className="pt-3">
+      <div className={`pt-3 ${state.currentStep === 7 ? 'bg-primary' : ''}`}>
         {/* Progress bar - show on all screens after onboarding, except drafting screen */}
         {state.currentStep !== 7 && (
           <div className="px-4 pb-4">
@@ -61,7 +61,7 @@ export function CivicPostcardApp() {
         )}
         
         {/* Content */}
-        <div>
+        <div className={state.currentStep === 7 ? 'bg-primary' : ''}>
           {renderCurrentScreen()}
         </div>
       </div>
