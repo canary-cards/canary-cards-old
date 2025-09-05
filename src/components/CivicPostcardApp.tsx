@@ -53,10 +53,12 @@ export function CivicPostcardApp() {
       
       {/* Standard spacing after header */}
       <div className="pt-6">
-        {/* Progress bar - show on all screens after onboarding */}
-        <div className="px-4 pb-4">
-          <ProgressIndicator currentStep={state.currentStep} totalSteps={7} />
-        </div>
+        {/* Progress bar - for steps 2-6 and 8 (exclude drafting step 7) */}
+        {state.currentStep > 1 && state.currentStep <= 6 || state.currentStep === 8 && (
+          <div className="px-4 pb-4">
+            <ProgressIndicator currentStep={state.currentStep} totalSteps={7} />
+          </div>
+        )}
         
         {/* Content */}
         <div>
