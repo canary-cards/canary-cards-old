@@ -109,16 +109,16 @@ export function DraftingScreen() {
   }, [state.postcardData, dispatch, startTime]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="min-h-screen flex items-center justify-center bg-primary px-4">
       <div className="text-center space-y-8 max-w-md mx-auto">
         <div className="flex items-center justify-center space-x-3">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-          <h1 className="text-2xl font-semibold text-foreground">
+          <Loader2 className="h-6 w-6 animate-spin text-background" />
+          <h1 className="text-2xl font-semibold text-background">
             Drafting your postcard
           </h1>
         </div>
         
-        <p className="text-lg text-muted-foreground">
+        <p className="text-lg text-background/80">
           {draftingMessages[currentMessageIndex]}
         </p>
       </div>
