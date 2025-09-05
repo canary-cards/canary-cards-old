@@ -27,11 +27,11 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, 
               }`}
               style={{ willChange: 'opacity, transform' }}
             >
-              <div className="w-[80%] h-[80%] flex items-center justify-center">
+              <div className="w-full h-full max-w-[200px] max-h-[200px] mx-auto">
                 <DynamicSvg 
                   assetName={asset.assetName}
                   alt={asset.alt}
-                  className="max-w-full max-h-full w-auto h-auto"
+                  className="w-full h-full"
                 />
               </div>
             </div>
