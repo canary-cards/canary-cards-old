@@ -1,32 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAppContext } from '../../context/AppContext';
-import { showGlobalCheckout } from '../GlobalCheckoutManager';
-import { ArrowLeft, Mail, CreditCard, Shield, Clock, Heart, Users, Zap } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { ArrowLeft, ArrowRight, Mail, Clock, Heart, Users, Zap } from 'lucide-react';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
 import { getTotalPriceDollars } from '@/lib/pricing';
+
 export function PreviewSendScreen() {
-  const {
-    state,
-    dispatch
-  } = useAppContext();
+  const { state, dispatch } = useAppContext();
   const [sendOption, setSendOption] = useState<'single' | 'triple'>('single');
-  const [email, setEmail] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [emailError, setEmailError] = useState('');
   const [senators, setSenators] = useState<Representative[]>([]);
   const [loadingSenators, setLoadingSenators] = useState(false);
+  
   const singlePrice = getTotalPriceDollars('single');
   const triplePrice = getTotalPriceDollars('triple');
-  const savings = (singlePrice * 3) - triplePrice;
   const rep = state.postcardData.representative;
   const userInfo = state.postcardData.userInfo;
   const finalMessage = state.postcardData.finalMessage;
@@ -37,9 +29,7 @@ export function PreviewSendScreen() {
       if (userInfo?.zipCode) {
         setLoadingSenators(true);
         try {
-          const {
-            senators: stateSenators
-          } = await lookupRepresentativesAndSenators(userInfo.zipCode);
+          const { senators: stateSenators } = await lookupRepresentativesAndSenators(userInfo.zipCode);
           setSenators(stateSenators);
         } catch (error) {
           console.error('Failed to fetch senators:', error);
@@ -50,134 +40,22 @@ export function PreviewSendScreen() {
     };
     fetchSenatorsFromZip();
   }, [userInfo?.zipCode]);
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-  const handleEmailChange = (value: string) => {
-    setEmail(value);
-    if (emailError && validateEmail(value)) {
-      setEmailError('');
-    }
-  };
-  const handlePayment = async () => {
-    console.log('=== PAYMENT FLOW DEBUG START ===');
-    console.log('Payment button clicked!');
-    console.log('Current app state:', state);
-    console.log('PostcardData:', state.postcardData);
-    console.log('UserInfo from state:', userInfo);
-    console.log('UserInfo fullName:', userInfo?.fullName);
-    console.log('Send option:', sendOption);
-    console.log('Email:', email);
-    
-    if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email address');
-      console.log('Email validation failed:', email);
-      return;
-    }
-    
-    setIsProcessing(true);
-    setEmailError('');
-    
-    const paymentData = { sendOption, email, fullName: userInfo?.fullName };
-    console.log('Calling create-payment with:', paymentData);
-    console.log('Supabase client:', supabase);
-    
-    try {
-      console.log('Making API call to create-payment...');
-      
-      // Call Stripe payment function
-      const {
-        data,
-        error
-      } = await supabase.functions.invoke('create-payment', {
-        body: paymentData
-      });
-      
-      console.log('=== API RESPONSE ===');
-      console.log('Response data:', data);
-      console.log('Response error:', error);
-      console.log('Response type:', typeof data);
-      
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
-      }
-      
-      if (!data) {
-        console.error('No data returned from create-payment');
-        throw new Error('No response data from payment service');
-      }
-      
-      if (!data.client_secret) {
-        console.error('No client_secret in response:', data);
-        throw new Error('Invalid payment session response');
-      }
 
-      // Store complete data ensuring all required fields are present
-      const completePostcardData = {
-        userInfo: {
-          fullName: state.postcardData.userInfo?.fullName,
-          streetAddress: state.postcardData.userInfo?.streetAddress,
-          city: state.postcardData.userInfo?.city,
-          state: state.postcardData.userInfo?.state,
-          zipCode: state.postcardData.userInfo?.zipCode,
-        },
-        representative: {
-          id: state.postcardData.representative?.id,
-          name: state.postcardData.representative?.name,
-          address: state.postcardData.representative?.address,
-          city: state.postcardData.representative?.city,
-          state: state.postcardData.representative?.state,
-          party: state.postcardData.representative?.party,
-          type: state.postcardData.representative?.type,
-          photo: state.postcardData.representative?.photo,
-        },
-        finalMessage: state.postcardData.finalMessage,
-        senators: sendOption === 'triple' ? senators : [],
-        sendOption,
-        email
-      };
-      
-      console.log('=== STORING COMPLETE POSTCARD DATA ===');
-      console.log('Complete data being stored:', JSON.stringify(completePostcardData, null, 2));
-      
-      // Update AppContext with complete data
-      dispatch({
-        type: 'UPDATE_POSTCARD_DATA',
-        payload: completePostcardData
-      });
-
-      // Store to localStorage as backup
-      localStorage.setItem('postcardData', JSON.stringify(completePostcardData));
-
-      // Show global checkout
-      showGlobalCheckout({
-        clientSecret: data.client_secret,
-        sendOption,
-        amount: sendOption === 'single' ? singlePrice : triplePrice,
-        onBack: () => {
-          // No need to reset states as global manager handles this
-        }
-      });
-    } catch (error) {
-      console.error('Payment error:', error);
-      setEmailError('Payment failed. Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  
-  const goBack = () => {
+  const goToCheckout = () => {
+    // Update state with selected send option and senators before going to checkout
     dispatch({
-      type: 'SET_STEP',
-      payload: 4
+      type: 'UPDATE_POSTCARD_DATA',
+      payload: {
+        sendOption,
+        senators: sendOption === 'triple' ? senators : []
+      }
     });
+    dispatch({ type: 'SET_STEP', payload: 6 }); // Go to checkout screen
   };
 
-  // All representatives for display
-  const allReps = rep ? [rep, ...senators] : senators;
+  const goBack = () => {
+    dispatch({ type: 'SET_STEP', payload: 4 });
+  };
 
   // Replace placeholders in the message with actual user data
   const replacePlaceholders = (message: string) => {
@@ -192,7 +70,8 @@ export function PreviewSendScreen() {
 
   const displayMessage = replacePlaceholders(finalMessage);
 
-  return <div className="min-h-screen bg-background">
+  return (
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pb-8 max-w-2xl">
         <Card className="card-warm">
           <CardContent className="p-8">
@@ -249,20 +128,27 @@ export function PreviewSendScreen() {
                 
                 <div className="grid grid-cols-3 gap-2">
                   {/* House Representative */}
-                  {rep && <Card className="bg-card border-secondary">
+                  {rep && (
+                    <Card className="bg-card border-secondary">
                       <CardContent className="p-2 text-center">
                         <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-muted">
-                          {rep.photo ? <img src={rep.photo} alt={rep.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
+                          {rep.photo ? (
+                            <img src={rep.photo} alt={rep.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
                               {rep.name.split(' ').map(n => n[0]).join('')}
-                            </div>}
+                            </div>
+                          )}
                         </div>
                         <h4 className="font-medium text-xs text-primary leading-tight mb-1">{rep.name}</h4>
                         <p className="text-xs text-muted-foreground">House</p>
                       </CardContent>
-                    </Card>}
+                    </Card>
+                  )}
                   
                   {/* Senators */}
-                  {loadingSenators ? <>
+                  {loadingSenators ? (
+                    <>
                       <Card className="bg-gradient-to-br from-muted/20 to-muted/40">
                         <CardContent className="p-2 text-center">
                           <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 animate-pulse" />
@@ -277,17 +163,26 @@ export function PreviewSendScreen() {
                           <div className="h-3 bg-muted rounded w-12 mx-auto animate-pulse" />
                         </CardContent>
                       </Card>
-                    </> : senators.slice(0, 2).map(senator => <Card key={senator.id} className="bg-card border-secondary">
+                    </>
+                  ) : (
+                    senators.slice(0, 2).map(senator => (
+                      <Card key={senator.id} className="bg-card border-secondary">
                         <CardContent className="p-2 text-center">
                           <div className="w-12 h-12 mx-auto mb-2 rounded-lg overflow-hidden bg-muted">
-                            {senator.photo ? <img src={senator.photo} alt={senator.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
+                            {senator.photo ? (
+                              <img src={senator.photo} alt={senator.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-primary text-xs font-medium">
                                 {senator.name.split(' ').map(n => n[0]).join('')}
-                              </div>}
+                              </div>
+                            )}
                           </div>
                           <h4 className="font-medium text-xs text-primary leading-tight mb-1">{senator.name}</h4>
                           <p className="text-xs text-muted-foreground">Senate</p>
                         </CardContent>
-                      </Card>)}
+                      </Card>
+                    ))
+                  )}
                 </div>
               </div>
 
@@ -352,35 +247,11 @@ export function PreviewSendScreen() {
                 </RadioGroup>
               </div>
 
-              {/* Email Input */}
-              <div className="space-y-2">
-                <Label htmlFor="email">Email for tracking details</Label>
-                <Input id="email" type="email" placeholder="your@email.com" value={email} onChange={e => handleEmailChange(e.target.value)} className="input-warm" />
-                {emailError && <p className="text-sm text-destructive">{emailError}</p>}
-              </div>
-
-              {/* Security & Delivery Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center space-x-2 text-muted-foreground">
-                  <Shield className="w-4 h-4" />
-                  <span>Secure payment processing</span>
-                </div>
-                <div className="flex items-center space-x-2 text-muted-foreground">
-                  <Clock className="w-4 h-4" />
-                  <span>Sent within 3 business days</span>
-                </div>
-              </div>
-
-              {/* Payment Button */}
+              {/* Continue Button */}
               <div className="space-y-4">
-                <Button onClick={handlePayment} disabled={!email || !validateEmail(email) || isProcessing} variant="spotlight" className="w-full h-12 sm:h-14 button-warm text-sm sm:text-base md:text-lg">
-                  {isProcessing ? <>
-                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2 sm:mr-3" />
-                      <span className="truncate">Loading checkout...</span>
-                    </> : <>
-                      <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
-                      <span className="truncate">Checkout - ${sendOption === 'single' ? singlePrice : triplePrice}</span>
-                    </>}
+                <Button onClick={goToCheckout} variant="spotlight" className="w-full h-12 sm:h-14 button-warm text-sm sm:text-base md:text-lg">
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
+                  <span className="truncate">Continue to Checkout - ${sendOption === 'single' ? singlePrice : triplePrice}</span>
                 </Button>
                 
                 <div className="text-center">
@@ -388,14 +259,6 @@ export function PreviewSendScreen() {
                     <Heart className="w-4 h-4 inline mr-1" />
                     Who knew saving democracy could be so easy?
                   </p>
-                  <div className="flex justify-center items-center gap-3 text-muted-foreground">
-                    <img src="/128px-Apple_Pay_logo.svg.png" alt="Apple Pay" className="h-4" />
-                    <img src="/128px-Google_Pay_Logo.svg.png" alt="Google Pay" className="h-5" />
-                    <div className="flex items-center gap-1">
-                      <Shield className="w-4 h-4" />
-                      <span className="text-sm leading-5">Secure checkout with Stripe</span>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -409,5 +272,6 @@ export function PreviewSendScreen() {
           </CardContent>
         </Card>
       </div>
-    </div>;
+    </div>
+  );
 }
