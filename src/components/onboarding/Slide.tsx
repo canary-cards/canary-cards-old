@@ -17,7 +17,12 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, 
     <div className="h-full flex flex-col">
       {/* Top half - Icon placeholder */}
       <div className="flex-1 flex items-center justify-center px-6 py-4">
-        <div className="flex items-center justify-center relative w-full h-full">
+        <div 
+          className="flex items-center justify-center relative aspect-square"
+          style={{
+            width: 'clamp(240px, 35vw, 400px)',
+          }}
+        >
           {/* Render all SVGs at once for smooth transitions */}
           {allAssets.map((asset, index) => (
             <div
@@ -30,7 +35,7 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, 
               <DynamicSvg 
                 assetName={asset.assetName}
                 alt={asset.alt}
-                className="w-full h-full"
+                className="w-full h-full object-contain"
               />
             </div>
           ))}
