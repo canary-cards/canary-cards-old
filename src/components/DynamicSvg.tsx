@@ -41,21 +41,17 @@ export const DynamicSvg = ({
   }
 
   return (
-    <div 
-      className={`flex items-center justify-center ${className}`}
-      style={{ width, height }}
-    >
-      <img
-        src={src}
-        alt={alt || assetName}
-        className="max-w-full max-h-full w-auto h-auto object-contain"
-        style={{ 
-          maxWidth: '100%', 
-          maxHeight: '100%',
-          width: 'auto',
-          height: 'auto'
-        }}
-      />
-    </div>
+    <img
+      src={src}
+      alt={alt || assetName}
+      className={className}
+      width={width}
+      height={height}
+      style={{ 
+        width: width ? `${width}px` : undefined, 
+        height: height ? `${height}px` : undefined,
+        objectFit: 'contain'
+      }}
+    />
   );
 };
