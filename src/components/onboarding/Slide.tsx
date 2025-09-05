@@ -17,7 +17,7 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, 
     <div className="h-full flex flex-col">
       {/* Top half - Icon placeholder */}
       <div className="flex-1 flex items-center justify-center px-6 py-4">
-        <div className={`aspect-[1/1.1] flex items-center justify-center relative transition-[width] duration-200 ease-in-out ${currentSlide === 3 ? 'w-5/6' : 'w-2/3'}`}>
+        <div className={`aspect-[1/1.1] flex items-center justify-center relative transition-[width] duration-200 ease-in-out ${currentSlide === 3 ? 'w-5/6' : 'w-2/3'} min-h-0`}>
           {/* Render all SVGs at once for smooth transitions */}
           {allAssets.map((asset, index) => (
             <div
@@ -31,8 +31,6 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, 
                 assetName={asset.assetName}
                 alt={asset.alt}
                 className="w-full h-full object-contain"
-                width={300}
-                height={330}
               />
             </div>
           ))}
