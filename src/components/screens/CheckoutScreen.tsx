@@ -376,10 +376,7 @@ export function CheckoutScreen() {
                     
                     <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
                       <Check className="w-3.5 h-3.5 flex-shrink-0" />
-                      <span>Correct office address</span>
-                      <span className="mx-1">•</span>
-                      <Check className="w-3.5 h-3.5 flex-shrink-0" />
-                      <span>Member name + title formatted</span>
+                      <span>Auto-addressed and correct name</span>
                     </div>
                     
                     <p className="text-sm text-muted-foreground">
