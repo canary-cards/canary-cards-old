@@ -92,8 +92,17 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           
           const checkoutElement = document.getElementById('embedded-checkout');
           if (checkoutElement) {
+            // Prevent autoscroll by temporarily storing scroll position
+            const scrollX = window.scrollX;
+            const scrollY = window.scrollY;
+            
             checkoutInstance.mount('#embedded-checkout');
             console.log('EmbeddedCheckout: Checkout mounted to DOM');
+            
+            // Restore scroll position after a brief delay
+            setTimeout(() => {
+              window.scrollTo(scrollX, scrollY);
+            }, 100);
           } else {
             console.error('EmbeddedCheckout: Mount element not found after render');
             setError('Failed to mount payment form');
