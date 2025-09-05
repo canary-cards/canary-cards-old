@@ -923,37 +923,66 @@ Make the message personal, urgent, and actionable within the character limit.`;
   }
 
   private async shortenPostcard(longPostcard: string): Promise<{postcard: string, tokensUsed: number}> {
-    const shortenPrompt = `SHORTEN TO 270-290 CHARACTERS:
+    let currentPostcard = longPostcard;
+    let totalTokens = 0;
+    const maxRetries = 3;
+    const targetLength = 290;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      console.log(`   🔄 Shortening attempt ${attempt}/${maxRetries} (current: ${currentPostcard.length} chars)`);
+      
+      const shortenPrompt = `SHORTEN TO UNDER ${targetLength} CHARACTERS:
 
-"${longPostcard}"
+"${currentPostcard}"
 
+Current length: ${currentPostcard.length} characters. Must be under ${targetLength} characters.
 Keep core message, personal impact, and call to action. Return only the shortened postcard.`;
 
-    try {
-      const response = await this.apiManager.makeAnthropicRequestWithCycling({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 150,
-        temperature: 0.1,
-        messages: [{ role: 'user', content: shortenPrompt }]
-      });
+      try {
+        const response = await this.apiManager.makeAnthropicRequestWithCycling({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 150,
+          temperature: 0.1,
+          messages: [{ role: 'user', content: shortenPrompt }]
+        });
 
-      const responseData = await response.json();
-      
-      let shortened = longPostcard;
-      for (const item of responseData.content || []) {
-        if (item.type === 'text' && item.text) {
-          shortened = item.text;
-          break;
+        const responseData = await response.json();
+        
+        let shortened = currentPostcard;
+        for (const item of responseData.content || []) {
+          if (item.type === 'text' && item.text) {
+            shortened = item.text.trim();
+            break;
+          }
+        }
+        
+        const usage = responseData.usage || {};
+        const tokensUsed = (usage.input_tokens || 0) + (usage.output_tokens || 0);
+        totalTokens += tokensUsed;
+        
+        console.log(`   📏 Attempt ${attempt} result: ${shortened.length} chars`);
+        
+        // If we're now under the target length, return success
+        if (shortened.length <= targetLength) {
+          console.log(`   ✅ Successfully shortened to ${shortened.length} chars in ${attempt} attempt(s)`);
+          return { postcard: shortened, tokensUsed: totalTokens };
+        }
+        
+        // Update current postcard for next attempt
+        currentPostcard = shortened;
+        
+      } catch (error) {
+        console.log(`   ❌ Shortening attempt ${attempt} failed: ${error}`);
+        // If this was our last attempt, fall back to truncation
+        if (attempt === maxRetries) {
+          return { postcard: currentPostcard.substring(0, 287) + ',,,', tokensUsed: totalTokens };
         }
       }
-      
-      const usage = responseData.usage || {};
-      const tokensUsed = (usage.input_tokens || 0) + (usage.output_tokens || 0);
-      
-      return { postcard: shortened, tokensUsed };
-    } catch (error) {
-      return { postcard: longPostcard, tokensUsed: 0 };
     }
+    
+    // If we exhausted all attempts and still too long, truncate
+    console.log(`   ⚠️ All shortening attempts failed, truncating to ${targetLength} chars`);
+    return { postcard: currentPostcard.substring(0, 287) + ',,,', tokensUsed: totalTokens };
   }
 
   private async rewritePostcardUnder295(longPostcard: string, coreTheme: string, representative: any): Promise<{postcard: string, tokensUsed: number}> {
