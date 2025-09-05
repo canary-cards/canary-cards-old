@@ -14,14 +14,6 @@ import PaymentReturn from "./pages/PaymentReturn";
 import PaymentRefunded from "./pages/PaymentRefunded";
 import Share from "./pages/Share";
 import { PreviewSendScreen } from "./components/screens/PreviewSendScreen";
-import { LandingScreen } from "./components/screens/LandingScreen";
-import { CraftMessageScreen } from "./components/screens/CraftMessageScreen";
-import { ReviewEditScreen } from "./components/screens/ReviewEditScreen";
-import { ReturnAddressScreen } from "./components/screens/ReturnAddressScreen";
-import { ReviewCardScreen } from "./components/screens/ReviewCardScreen";
-import { CheckoutScreen } from "./components/screens/CheckoutScreen";
-import { DraftingScreen } from "./components/screens/DraftingScreen";
-import { SuccessScreen } from "./components/screens/SuccessScreen";
 import { useEffect, useState } from "react";
 
 import { AppProvider, useAppContext } from "./context/AppContext";
@@ -65,17 +57,6 @@ const AppContent = () => (
       <Route path="/payment-return" element={<PaymentReturn />} />
       <Route path="/payment-success" element={<PaymentSuccess />} />
       <Route path="/payment-refunded" element={<PaymentRefunded />} />
-      
-      
-      {/* Direct routes for flow steps - for review purposes */}
-      <Route path="/step-1-landing" element={<LandingScreen />} />
-      <Route path="/step-2-craft-message" element={<CraftMessageScreen />} />
-      <Route path="/step-3-review-edit" element={<ReviewEditScreen />} />
-      <Route path="/step-4-return-address" element={<ReturnAddressScreen />} />
-      <Route path="/step-5-review-card" element={<ReviewCardScreen />} />
-      <Route path="/step-6-checkout" element={<CheckoutScreen />} />
-      <Route path="/step-7-drafting" element={<DraftingScreen />} />
-      <Route path="/step-8-success" element={<SuccessScreen />} />
       
       {/* Temporary routes for review */}
       <Route path="/preview-send" element={<PreviewSendScreen />} />
