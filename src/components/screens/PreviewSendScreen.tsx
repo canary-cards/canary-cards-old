@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAppContext } from '../../context/AppContext';
-import { ArrowLeft, ArrowRight, Mail, Clock, Heart, Users, Zap } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Mail, Clock, Heart, Users, Zap, Check } from 'lucide-react';
 import { lookupRepresentativesAndSenators } from '@/services/geocodio';
 import { Representative } from '@/types';
 import { getTotalPriceDollars } from '@/lib/pricing';
@@ -238,6 +238,10 @@ export function PreviewSendScreen() {
                                   </div>
                                 </div>
                               </div>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                                <Check className="w-4 h-4 flex-shrink-0" />
+                                <span className="truncate">Auto-addressed: correct office + member name on each card</span>
+                              </div>
                             </Label>
                           </div>
                         </div>
@@ -245,6 +249,14 @@ export function PreviewSendScreen() {
                     </Card>
                   </div>
                 </RadioGroup>
+              </div>
+
+              {/* Panel-level reassurance */}
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                  <Check className="w-4 h-4 flex-shrink-0" />
+                  <span>We add the correct addresses and names automatically for you</span>
+                </div>
               </div>
 
               {/* Continue Button */}
