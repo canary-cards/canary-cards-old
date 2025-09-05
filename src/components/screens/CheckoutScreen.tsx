@@ -121,6 +121,19 @@ export function CheckoutScreen() {
     setValidationError('');
     return true;
   };
+
+  const getCheckoutButtonText = (): string => {
+    const count = getSelectedCount();
+    const total = getTotalPrice();
+    
+    if (selection === 'rep-only') {
+      return `Send my postcard — $${total}`;
+    } else if (selection === 'all-three') {
+      return `Send all three — $${total}`;
+    } else {
+      return `Send to ${count} office${count === 1 ? '' : 's'} — $${total}`;
+    }
+  };
   const getSelectedSenators = () => {
     const selected = getSelectedRecipients();
     const result: Representative[] = [];
@@ -501,7 +514,7 @@ export function CheckoutScreen() {
               {isProcessing ? <>
                   <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin mr-2" />
                   <span>Loading...</span>
-                </> : <span>Checkout — ${getTotalPrice()}</span>}
+                </> : <span>{getCheckoutButtonText()}</span>}
             </Button>
             
             {/* Payment Options and Security */}
