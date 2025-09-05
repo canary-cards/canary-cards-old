@@ -374,8 +374,8 @@ export function CheckoutScreen() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                      <Check className="w-4 h-4 flex-shrink-0" />
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="truncate">Auto-addressed: correct office + member name on each card</span>
                     </div>
                     
