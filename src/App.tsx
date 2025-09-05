@@ -44,24 +44,22 @@ const PaymentLoadingDetector = () => {
 };
 
 const AppContent = () => (
-  <>
-    <AppProvider>
-      <PaymentLoadingDetector />
-    </AppProvider>
+  <AppProvider>
+    <PaymentLoadingDetector />
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/about" element={<AppProvider><About /></AppProvider>} />
-      <Route path="/share" element={<AppProvider><Share /></AppProvider>} />
-      <Route path="/share/:orderId" element={<AppProvider><Share /></AppProvider>} />
+      <Route path="/about" element={<About />} />
+      <Route path="/share" element={<Share />} />
+      <Route path="/share/:orderId" element={<Share />} />
       
-      <Route path="/payment-return" element={<AppProvider><PaymentReturn /></AppProvider>} />
-      <Route path="/payment-success" element={<AppProvider><PaymentSuccess /></AppProvider>} />
-      <Route path="/payment-refunded" element={<AppProvider><PaymentRefunded /></AppProvider>} />
+      <Route path="/payment-return" element={<PaymentReturn />} />
+      <Route path="/payment-success" element={<PaymentSuccess />} />
+      <Route path="/payment-refunded" element={<PaymentRefunded />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
-  </>
+  </AppProvider>
 );
 
 const App = () => (
