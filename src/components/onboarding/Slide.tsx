@@ -31,6 +31,8 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, 
                 assetName={asset.assetName}
                 alt={asset.alt}
                 className="w-full h-full object-contain"
+                width={300}
+                height={330}
               />
             </div>
           ))}

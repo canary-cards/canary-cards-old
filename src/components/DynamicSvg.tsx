@@ -21,8 +21,11 @@ export const DynamicSvg = ({
 
   if (loading) {
     return (
-      <div className={`animate-pulse bg-muted rounded ${className}`} style={{ width, height }}>
-        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
+      <div 
+        className={`animate-pulse bg-muted/20 rounded ${className}`} 
+        style={{ width: width || 'auto', height: height || 'auto' }}
+      >
+        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs opacity-50">
           Loading...
         </div>
       </div>
@@ -34,7 +37,10 @@ export const DynamicSvg = ({
 
   if (!src) {
     return (
-      <div className={`bg-muted rounded flex items-center justify-center text-muted-foreground text-sm ${className}`} style={{ width, height }}>
+      <div 
+        className={`bg-muted/20 rounded flex items-center justify-center text-muted-foreground text-xs ${className}`} 
+        style={{ width: width || 'auto', height: height || 'auto' }}
+      >
         No image
       </div>
     );
@@ -47,6 +53,11 @@ export const DynamicSvg = ({
       className={className}
       width={width}
       height={height}
+      style={{ 
+        width: width || 'auto', 
+        height: height || 'auto',
+        objectFit: 'contain'
+      }}
     />
   );
 };
