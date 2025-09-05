@@ -22,16 +22,18 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, 
           {allAssets.map((asset, index) => (
             <div
               key={index}
-              className={`absolute inset-0 w-full h-full transition-[opacity,transform] duration-200 ease-in-out motion-reduce:transition-none motion-reduce:transform-none pointer-events-none select-none ${
+              className={`absolute inset-0 w-full h-full flex items-center justify-center transition-[opacity,transform] duration-200 ease-in-out motion-reduce:transition-none motion-reduce:transform-none pointer-events-none select-none ${
                 index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               }`}
               style={{ willChange: 'opacity, transform' }}
             >
-              <DynamicSvg 
-                assetName={asset.assetName}
-                alt={asset.alt}
-                className="w-full h-full object-contain"
-              />
+              <div className="w-[80%] h-[80%] flex items-center justify-center">
+                <DynamicSvg 
+                  assetName={asset.assetName}
+                  alt={asset.alt}
+                  className="max-w-full max-h-full w-auto h-auto"
+                />
+              </div>
             </div>
           ))}
           {!assetName && (
