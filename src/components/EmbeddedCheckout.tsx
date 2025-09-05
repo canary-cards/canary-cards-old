@@ -240,7 +240,7 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           {/* Stripe Embedded Checkout will mount here */}
           <div 
             id="embedded-checkout" 
-            className="min-h-[500px] overflow-auto w-full"
+            className="min-h-[500px] w-full"
           />
           
           <div className="mt-6 pt-4 border-t">
