@@ -973,16 +973,16 @@ Keep core message, personal impact, and call to action. Return only the shortene
         
       } catch (error) {
         console.log(`   ❌ Shortening attempt ${attempt} failed: ${error}`);
-        // If this was our last attempt, fall back to truncation
+        // If this was our last attempt, fall back to truncation with API failure indicator
         if (attempt === maxRetries) {
           return { postcard: currentPostcard.substring(0, 287) + ',,,', tokensUsed: totalTokens };
         }
       }
     }
     
-    // If we exhausted all attempts and still too long, truncate
-    console.log(`   ⚠️ All shortening attempts failed, truncating to ${targetLength} chars`);
-    return { postcard: currentPostcard.substring(0, 287) + ',,,', tokensUsed: totalTokens };
+    // If we exhausted all attempts but no API failures (just still too long), use "..."
+    console.log(`   ⚠️ All shortening attempts succeeded but still over limit, truncating to ${targetLength} chars`);
+    return { postcard: currentPostcard.substring(0, 287) + '...', tokensUsed: totalTokens };
   }
 
   private async rewritePostcardUnder295(longPostcard: string, coreTheme: string, representative: any): Promise<{postcard: string, tokensUsed: number}> {
