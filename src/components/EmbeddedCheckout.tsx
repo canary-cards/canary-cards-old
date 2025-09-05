@@ -113,6 +113,18 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
           
           const checkoutElement = document.getElementById('embedded-checkout');
           if (checkoutElement) {
+            // Store current scroll position
+            const initialScrollY = window.scrollY;
+            
+            // Prevent any scroll changes during mounting
+            const preventScroll = (e: Event) => {
+              window.scrollTo(0, initialScrollY);
+            };
+            
+            // Add scroll prevention
+            window.addEventListener('scroll', preventScroll, { passive: false });
+            document.addEventListener('scroll', preventScroll, { passive: false });
+            
             // Disable auto-focus to prevent scroll jumping
             const originalFocus = HTMLElement.prototype.focus;
             let focusDisabled = true;
@@ -126,11 +138,13 @@ export function EmbeddedCheckout({ clientSecret, onBack, sendOption, amount }: E
             checkoutInstance.mount('#embedded-checkout');
             console.log('EmbeddedCheckout: Checkout mounted to DOM');
             
-            // Re-enable focus after a delay
+            // Clean up and re-enable after mounting is complete
             setTimeout(() => {
+              window.removeEventListener('scroll', preventScroll);
+              document.removeEventListener('scroll', preventScroll);
               HTMLElement.prototype.focus = originalFocus;
               focusDisabled = false;
-            }, 1000);
+            }, 2000); // 2 seconds should be enough for Stripe to fully load
           } else {
             console.error('EmbeddedCheckout: Mount element not found after render');
             setError('Failed to mount payment form');
