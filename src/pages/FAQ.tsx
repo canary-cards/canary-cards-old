@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 export default function FAQ() {
   const faqs = [
     {
-      question: "What does the postcard look like?",
+      question: "What will my postcard look like?",
       answer: "A sturdy 5x7 postcard on glossy stock. Real words, real ink, mailed to your representative."
     },
     {
@@ -45,20 +45,23 @@ export default function FAQ() {
           </Card>
 
           {/* FAQ Items */}
-          <div className="space-y-6">
-            {faqs.map((faq, index) => (
-              <Card key={index} className="card-warm">
-                <CardContent className="p-6 space-y-3">
-                  <h2 className="eyebrow normal-case text-primary">
-                    {faq.question}
-                  </h2>
-                  <p className="body-text">
-                    {faq.answer}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <Card className="card-warm">
+            <CardContent className="p-8 space-y-2">
+              <h2 className="eyebrow text-secondary">Why postcards matter</h2>
+              <div className="space-y-6">
+                {faqs.map((faq, index) => (
+                  <div key={index} className="space-y-3">
+                    <h3 className="eyebrow normal-case text-primary">
+                      {faq.question}
+                    </h3>
+                    <p className="body-text">
+                      {faq.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>

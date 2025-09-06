@@ -55,7 +55,7 @@ export function HamburgerMenu({ isDark = false }: { isDark?: boolean }) {
         >
           <div className="px-4 md:px-5 lg:px-6 pt-4 pb-2 border-b border-[#E8DECF]">
             <h2 id="menu-title" className="subtitle text-secondary">
-              Menu
+              Canary Cards
             </h2>
           </div>
           
@@ -66,38 +66,27 @@ export function HamburgerMenu({ isDark = false }: { isDark?: boolean }) {
                 onClick={() => setOpen(false)}
                 className="block py-3 body-text hover:bg-[#FEF4E9] focus:outline-none focus:ring-2 focus:ring-primary rounded-[var(--radius)] motion-safe:transition-colors motion-safe:duration-200 min-h-[44px] flex items-center"
               >
-                <div>
-                  <div className="text-primary">About Canary</div>
-                  <div className="field-label text-muted-foreground mt-1">
-                    Real postcards. Real impact.
-                  </div>
-                </div>
+                <div className="text-primary">About Canary</div>
               </Link>
+              
+              <div className="border-b border-[#E8DECF] my-2"></div>
               
               <Link
                 to="/faq"
                 onClick={() => setOpen(false)}
                 className="block py-3 body-text hover:bg-[#FEF4E9] focus:outline-none focus:ring-2 focus:ring-primary rounded-[var(--radius)] motion-safe:transition-colors motion-safe:duration-200 min-h-[44px] flex items-center"
               >
-                <div>
-                  <div className="text-primary">FAQ</div>
-                  <div className="field-label text-muted-foreground mt-1">
-                    Frequently asked questions
-                  </div>
-                </div>
+                <div className="text-primary">FAQ</div>
               </Link>
+              
+              <div className="border-b border-[#E8DECF] my-2"></div>
               
               <Link
                 to="/contact"
                 onClick={() => setOpen(false)}
                 className="block py-3 body-text hover:bg-[#FEF4E9] focus:outline-none focus:ring-2 focus:ring-primary rounded-[var(--radius)] motion-safe:transition-colors motion-safe:duration-200 min-h-[44px] flex items-center"
               >
-                <div>
-                  <div className="text-primary">Contact Us</div>
-                  <div className="field-label text-muted-foreground mt-1">
-                    Get in touch with us
-                  </div>
-                </div>
+                <div className="text-primary">Contact Us</div>
               </Link>
             </div>
           </nav>
