@@ -28,15 +28,17 @@ export default function ContactUs() {
                 <div className="space-y-6">
                   <div className="space-y-3">
                     <h3 className="eyebrow normal-case text-primary">
-                      Questions, ideas, or feedback?
+                      Questions, ideas, or feedback
                     </h3>
                     <p className="body-text">
                       Reach out anytime — we read every message, even if it takes a couple of days to reply.
                     </p>
                   </div>
-                  <p className="body-text">
-                    <strong>📧 <a href="mailto:hello@canary.cards" className="text-primary underline decoration-primary hover:no-underline">hello@canary.cards</a></strong>
-                  </p>
+                  <div className="pt-4">
+                    <p className="body-text">
+                      <strong>📧 <a href="mailto:hello@canary.cards" className="text-primary underline decoration-primary hover:no-underline">hello@canary.cards</a></strong>
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>
