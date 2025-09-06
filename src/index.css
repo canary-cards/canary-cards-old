@@ -262,14 +262,14 @@ All colors MUST be HSL.
     }
   }
 
-  /* Writing progress bar animation */
+  /* Writing progress bar animation - synced with 2s message timing */
   .writing-progress {
-    animation: writing-fill 3s ease-in-out infinite;
+    animation: writing-fill 2s ease-out forwards;
   }
 
   @keyframes writing-fill {
     0% { width: 0%; }
-    50% { width: 70%; }
+    90% { width: 85%; }
     100% { width: 100%; }
   }
 
@@ -289,15 +289,15 @@ All colors MUST be HSL.
     }
   }
 
-  /* Typewriter effect */
+  /* Typewriter effect with slower, more natural cursor */
   .typewriter-text {
     border-right: 2px solid hsl(var(--accent));
-    animation: typewriter-cursor 1s infinite, scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: typewriter-cursor 1.8s infinite, scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   @keyframes typewriter-cursor {
-    0%, 50% { border-color: hsl(var(--accent)); }
-    51%, 100% { border-color: transparent; }
+    0%, 55% { border-color: hsl(var(--accent)); }
+    56%, 100% { border-color: transparent; }
   }
 
   /* Hamburger menu responsive widths - higher specificity override */
