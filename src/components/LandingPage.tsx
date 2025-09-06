@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from './ui/button';
 import { useAppContext } from '../context/AppContext';
 import { Search, User, ShoppingBag } from 'lucide-react';
+import { Logo } from './Logo';
 
 export function LandingPage() {
   const { dispatch } = useAppContext();
@@ -24,9 +25,7 @@ export function LandingPage() {
           
           {/* Centered Logo */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
-            <div className="w-8 h-8 bg-foreground rounded-sm flex items-center justify-center">
-              <div className="w-4 h-4 bg-background rounded-sm"></div>
-            </div>
+            <Logo className="h-8" />
           </div>
           
           <div className="flex items-center space-x-4">
