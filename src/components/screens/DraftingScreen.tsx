@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { supabase } from '../../integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
-import { OnboardingIcon2 } from '../icons';
+import { DynamicSvg } from '../DynamicSvg';
 
 const draftingMessages = [
   "Polishing your message…",
@@ -135,7 +135,9 @@ export function DraftingScreen() {
     <div className="h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] flex items-center justify-center bg-primary px-4">
       <div className="text-center space-y-8 max-w-md mx-auto">
         <div className="flex flex-col items-center justify-center space-y-6">
-          <OnboardingIcon2 
+          <DynamicSvg 
+            assetName="onboarding-icon-2-v4"
+            alt="Canary research process"
             className="w-32 h-32 sm:w-48 sm:h-48 md:w-54 md:h-54 lg:w-60 lg:h-60 pen-nib-glow"
           />
           <div className="flex items-center justify-center space-x-3">

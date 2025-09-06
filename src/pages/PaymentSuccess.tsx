@@ -7,7 +7,7 @@ import { CheckCircle, Share, Mail, ChevronDown, ChevronUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Header } from '@/components/Header';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { OnboardingIcon3 } from '@/components/icons';
+import { useSvgAssets } from '@/hooks/useSvgAssets';
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
@@ -15,7 +15,7 @@ export default function PaymentSuccess() {
   const [shareableLink, setShareableLink] = useState('');
   const [isOrderDetailsOpen, setIsOrderDetailsOpen] = useState(false);
   const { toast } = useToast();
-  // PaymentSuccess component logic
+  const { getSvgUrl } = useSvgAssets();
 
   // Get representative data from localStorage
   const getRepresentativeData = () => {
@@ -220,8 +220,10 @@ export default function PaymentSuccess() {
 
         {/* Robot arm icon - positioned with minimal spacing */}
         <div className="flex justify-center my-1">
-          <OnboardingIcon3 
-            className="w-full max-w-80 h-48 sm:h-56 md:h-64"
+          <img 
+            src={getSvgUrl('Onboarding icon 3 new.svg')} 
+            alt="Robot arm" 
+            className="w-full max-w-80 h-48 sm:h-56 md:h-64" 
           />
         </div>
 
