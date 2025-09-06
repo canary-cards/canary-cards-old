@@ -73,6 +73,19 @@ export function HamburgerMenu({ isDark = false }: { isDark?: boolean }) {
                   </div>
                 </div>
               </Link>
+              
+              <Link
+                to="/faq"
+                onClick={() => setOpen(false)}
+                className="block py-3 body-text hover:bg-[#FEF4E9] focus:outline-none focus:ring-2 focus:ring-primary rounded-[var(--radius)] motion-safe:transition-colors motion-safe:duration-200 min-h-[44px] flex items-center"
+              >
+                <div>
+                  <div className="text-primary">FAQ</div>
+                  <div className="field-label text-muted-foreground mt-1">
+                    Frequently asked questions
+                  </div>
+                </div>
+              </Link>
             </div>
           </nav>
         </div>

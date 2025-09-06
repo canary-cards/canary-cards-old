@@ -8,6 +8,7 @@ import { FinalizingOrderScreen } from "./components/FinalizingOrderScreen";
 import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
 import About from "./pages/About";
+import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentReturn from "./pages/PaymentReturn";
@@ -51,6 +52,7 @@ const AppContent = () => (
       <Route path="/" element={<Index />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<About />} />
+      <Route path="/faq" element={<FAQ />} />
       <Route path="/share" element={<Share />} />
       <Route path="/share/:orderId" element={<Share />} />
       
