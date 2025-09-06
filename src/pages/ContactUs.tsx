@@ -22,6 +22,9 @@ export default function ContactUs() {
             <CardContent className="p-8 space-y-8">
               <div className="space-y-4">
                 <h2 className="eyebrow-lowercase text-secondary">Get in touch</h2>
+                <p className="body-text">
+                  We'd love to hear from you.
+                </p>
                 <div className="space-y-6">
                   <div className="space-y-3">
                     <h3 className="eyebrow normal-case text-primary">
