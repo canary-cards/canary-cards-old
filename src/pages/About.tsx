@@ -20,7 +20,7 @@ export default function About() {
           {/* Story Card */}
           <Card className="card-warm">
             <CardContent className="p-8 space-y-4">
-              <h2 className="eyebrow text-secondary">Why we built this</h2>
+              <h2 className="eyebrow-lowercase text-secondary">Why we built this</h2>
               <p className="body-text">
                 We built Canary Cards because we were frustrated, too.
               </p>
@@ -33,7 +33,7 @@ export default function About() {
           {/* Solution Card */}
           <Card className="card-warm">
             <CardContent className="p-8 space-y-4">
-              <h2 className="eyebrow text-secondary">Why this works</h2>
+              <h2 className="eyebrow-lowercase text-secondary">Why this works</h2>
               <p className="body-text">
                 Postcards cut through. A real card lands on your representative's desk, where emails and petitions usually don't.
               </p>

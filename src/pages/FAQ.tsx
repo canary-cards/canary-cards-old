@@ -23,7 +23,7 @@ export default function FAQ() {
             <CardContent className="p-8 space-y-8">
               {/* About the postcard */}
               <div className="space-y-4">
-                <h2 className="eyebrow text-secondary">About the postcard</h2>
+                <h2 className="eyebrow-lowercase text-secondary">About the postcard</h2>
                 <div className="space-y-6">
                   <div className="space-y-3">
                     <h3 className="eyebrow normal-case text-primary">
@@ -46,7 +46,7 @@ export default function FAQ() {
 
               {/* Why it works */}
               <div className="space-y-4">
-                <h2 className="eyebrow text-secondary">Why it works</h2>
+                <h2 className="eyebrow-lowercase text-secondary">Why it works</h2>
                 <div className="space-y-3">
                   <h3 className="eyebrow normal-case text-primary">
                     Do postcards really make a difference?
@@ -59,7 +59,7 @@ export default function FAQ() {
 
               {/* How it works */}
               <div className="space-y-4">
-                <h2 className="eyebrow text-secondary">How it works</h2>
+                <h2 className="eyebrow-lowercase text-secondary">How it works</h2>
                 <div className="space-y-6">
                   <div className="space-y-3">
                     <h3 className="eyebrow normal-case text-primary">
@@ -82,7 +82,7 @@ export default function FAQ() {
 
               {/* Non-partisan promise */}
               <div className="space-y-4">
-                <h2 className="eyebrow text-secondary">Non-partisan promise</h2>
+                <h2 className="eyebrow-lowercase text-secondary">Non-partisan promise</h2>
                 <div className="space-y-3">
                   <h3 className="eyebrow normal-case text-primary">
                     Is Canary partisan?

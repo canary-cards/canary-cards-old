@@ -20,7 +20,7 @@ export default function ContactUs() {
           {/* Contact Content */}
           <Card className="card-warm">
             <CardContent className="p-8 space-y-4">
-              <h2 className="eyebrow text-secondary">Get in touch</h2>
+              <h2 className="eyebrow-lowercase text-secondary">Get in touch</h2>
               <p className="body-text">
                 We'd love to hear from you.
               </p>
