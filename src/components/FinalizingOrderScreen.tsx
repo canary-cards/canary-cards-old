@@ -28,16 +28,14 @@ export const FinalizingOrderScreen = ({ status, onRetry }: FinalizingOrderScreen
         <div className="text-center space-y-6 max-w-md">
         {status === 'loading' && (
           <div className="space-y-4">
-            <div className="flex items-center justify-center space-x-2">
+            <h1 className="display-title text-primary flex items-center justify-center gap-2">
               {!showCheck ? (
                 <Lock className="h-6 w-6 text-primary transition-all duration-300" />
               ) : (
                 <Check className="h-6 w-6 text-primary animate-scale-in" />
               )}
-              {!showCheck && <Loader2 className="h-5 w-5 animate-spin text-primary" />}
-            </div>
-            <h1 className="display-title text-primary">
               Finalizing your order…
+              {!showCheck && <Loader2 className="h-5 w-5 animate-spin text-primary ml-1" />}
             </h1>
             <p className="subtitle text-muted-foreground">
               Your postcard details are on their way to be written and mailed.
