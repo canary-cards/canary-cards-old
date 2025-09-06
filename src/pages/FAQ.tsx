@@ -10,7 +10,7 @@ export default function FAQ() {
     },
     {
       question: "Is it really handwritten?",
-      answer: "The robots use real pens, with natural variations in letter shape and spacing — indistinguishable from human handwriting"
+      answer: "Yes. Our robots use real pens, with natural variations in letter shape and spacing — indistinguishable from human handwriting"
     },
     {
       question: "Do postcards actually matter?",
