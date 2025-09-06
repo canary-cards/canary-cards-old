@@ -24,9 +24,9 @@ export default function ContactUs() {
               <p className="body-text">
                 We'd love to hear from you.
               </p>
-              <p className="body-text">
+              <h3 className="eyebrow normal-case text-primary">
                 Questions, ideas, or feedback? Reach out anytime.
-              </p>
+              </h3>
               <p className="body-text">
                 We read every message, even if it takes a couple of days to reply.
               </p>
