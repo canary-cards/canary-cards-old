@@ -17,10 +17,24 @@ export function CivicPostcardApp() {
   const { state } = useAppContext();
   
   console.log('🎯 CivicPostcardApp rendering - currentStep:', state.currentStep);
-
+  
   // Scroll to top when step changes
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, [state.currentStep]);
+
+  // Handle body background for drafting screen
+  useEffect(() => {
+    if (state.currentStep === 7) {
+      document.body.style.backgroundColor = 'hsl(var(--primary))';
+    } else {
+      document.body.style.backgroundColor = '';
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.backgroundColor = '';
+    };
   }, [state.currentStep]);
 
   const renderCurrentScreen = () => {
