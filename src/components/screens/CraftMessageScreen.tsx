@@ -387,7 +387,7 @@ export function CraftMessageScreen() {
                   onClick={handleSkipAI}
                   className="flex-1 button-warm h-10"
                 >
-                  Skip AI
+                  Write it myself
                 </Button>
               </div>
             </div>
