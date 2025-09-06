@@ -47,7 +47,7 @@ export function Header({ className, isDark = false }: HeaderProps) {
           className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
           aria-label="Go to home"
         >
-          <Logo className="h-12" />
+          <Logo className="h-10" />
           <div className="hidden md:flex flex-col text-left">
             <span className={`font-semibold text-left ${isDark ? 'text-background' : 'text-primary'}`} style={{ fontFamily: 'Spectral', fontWeight: 600 }}>
               Canary Cards
