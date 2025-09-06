@@ -41,55 +41,56 @@ export default function FAQ() {
             </CardContent>
           </Card>
 
-          {/* Why it works */}
+          {/* Why it works, How it works, and Non-partisan promise */}
           <Card className="card-warm">
-            <CardContent className="p-8 space-y-4">
-              <h2 className="eyebrow text-secondary">Why it works</h2>
-              <div className="space-y-3">
-                <h3 className="eyebrow normal-case text-primary">
-                  Do postcards really make a difference?
-                </h3>
-                <p className="body-text">
-                  Yes. Research shows postcards bypass long mail screening, arrive faster than letters, and get prioritized over mass emails. Congressional staff pay closer attention to constituent mail.
-                </p>
+            <CardContent className="p-8 space-y-8">
+              {/* Why it works */}
+              <div className="space-y-4">
+                <h2 className="eyebrow text-secondary">Why it works</h2>
+                <div className="space-y-3">
+                  <h3 className="eyebrow normal-case text-primary">
+                    Do postcards really make a difference?
+                  </h3>
+                  <p className="body-text">
+                    Yes. Research shows postcards bypass long mail screening, arrive faster than letters, and get prioritized over mass emails. Congressional staff pay closer attention to constituent mail.
+                  </p>
+                </div>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* How it works */}
-          <Card className="card-warm">
-            <CardContent className="p-8 space-y-4">
-              <h2 className="eyebrow text-secondary">How it works</h2>
-              <div className="space-y-3">
-                <h3 className="eyebrow normal-case text-primary">
-                  How do the robots work?
-                </h3>
-                <p className="body-text">
-                  We send your message to robots that hold real pens and write each card uniquely. Then we drop it in the mail.
-                </p>
+              {/* How it works */}
+              <div className="space-y-4">
+                <h2 className="eyebrow text-secondary">How it works</h2>
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <h3 className="eyebrow normal-case text-primary">
+                      How do the robots work?
+                    </h3>
+                    <p className="body-text">
+                      We send your message to robots that hold real pens and write each card uniquely. Then we drop it in the mail.
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="eyebrow normal-case text-primary">
+                      Will I know when my card is sent?
+                    </h3>
+                    <p className="body-text">
+                      Yes. You'll get a confirmation email once your card has been mailed.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-3">
-                <h3 className="eyebrow normal-case text-primary">
-                  Will I know when my card is sent?
-                </h3>
-                <p className="body-text">
-                  Yes. You'll get a confirmation email once your card has been mailed.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
 
-          {/* Non-partisan promise */}
-          <Card className="card-warm">
-            <CardContent className="p-8 space-y-4">
-              <h2 className="eyebrow text-secondary">Non-partisan promise</h2>
-              <div className="space-y-3">
-                <h3 className="eyebrow normal-case text-primary">
-                  Is Canary partisan?
-                </h3>
-                <p className="body-text">
-                  No. Canary is proudly non-partisan. It works for anyone who wants their voice heard.
-                </p>
+              {/* Non-partisan promise */}
+              <div className="space-y-4">
+                <h2 className="eyebrow text-secondary">Non-partisan promise</h2>
+                <div className="space-y-3">
+                  <h3 className="eyebrow normal-case text-primary">
+                    Is Canary partisan?
+                  </h3>
+                  <p className="body-text">
+                    No. Canary is proudly non-partisan. It works for anyone who wants their voice heard.
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
