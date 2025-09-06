@@ -11,15 +11,15 @@ export const FinalizingOrderScreen = ({ status, onRetry }: FinalizingOrderScreen
   const [showCheck, setShowCheck] = useState(false);
 
   useEffect(() => {
-    if (status === 'loading') {
-      // Show checkmark after 2 seconds
+    if (status === 'loading' && !showCheck) {
+      // Show checkmark after 2 seconds, but only if we haven't shown it yet
       const timer = setTimeout(() => {
         setShowCheck(true);
       }, 2000);
       
       return () => clearTimeout(timer);
     }
-  }, [status]);
+  }, [status, showCheck]);
 
   return (
     <div className="min-h-screen bg-background">
