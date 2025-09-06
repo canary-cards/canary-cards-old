@@ -15,7 +15,7 @@ export const FinalizingOrderScreen = ({ status, onRetry }: FinalizingOrderScreen
       // Show checkmark after 2 seconds, but only if we haven't shown it yet
       const timer = setTimeout(() => {
         setShowCheck(true);
-      }, 2000);
+      }, 2750);
       
       return () => clearTimeout(timer);
     }
