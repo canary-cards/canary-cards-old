@@ -12,7 +12,6 @@ export function Logo({ className }: LogoProps) {
       fallbackSrc="/postallogov1.svg"
       alt="Canary Cards" 
       className={className}
-      height={52} // Matches --logo-size (3.25rem = 52px)
     />
   );
 }
