@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 export default function FAQ() {
   const faqs = [
     {
-      question: "What does the card look like?",
+      question: "What does the postcard look like?",
       answer: "A sturdy 5x7 postcard on glossy stock. Real words, real ink, mailed to your representative."
     },
     {
