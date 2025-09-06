@@ -1,5 +1,5 @@
 import React from 'react';
-import { DynamicSvg } from './DynamicSvg';
+import { Logo as LogoIcon } from './icons';
 
 interface LogoProps {
   className?: string;
@@ -7,11 +7,6 @@ interface LogoProps {
 
 export function Logo({ className }: LogoProps) {
   return (
-    <DynamicSvg 
-      assetName="New Logo v4.svg"
-      fallbackSrc="/postallogov1.svg"
-      alt="Canary Cards" 
-      className={className}
-    />
+    <LogoIcon className={className} />
   );
 }

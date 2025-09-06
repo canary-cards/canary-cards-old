@@ -1,5 +1,5 @@
 import React from 'react';
-import { DynamicSvg } from '../DynamicSvg';
+import { OnboardingIcon1, OnboardingIcon2, OnboardingIcon3, OnboardingIcon4 } from '../icons';
 
 interface SlideProps {
   title: string;
@@ -13,6 +13,22 @@ interface SlideProps {
 }
 
 export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, imageAlt, currentSlide, allAssets }: SlideProps) {
+  // Map asset names to icon components
+  const getIconComponent = (assetName: string) => {
+    switch (assetName) {
+      case 'onboarding-icon-1-v4':
+        return OnboardingIcon1;
+      case 'onboarding-icon-2-v4':
+        return OnboardingIcon2;
+      case 'onboarding-icon-3-v4':
+        return OnboardingIcon3;
+      case 'onboarding-icon-4-v4':
+        return OnboardingIcon4;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="h-full flex flex-col">
       {/* Top half - Icon placeholder */}
@@ -24,24 +40,31 @@ export function Slide({ title, subtitle, finePrint, iconPlaceholder, assetName, 
           }}
         >
           {/* Render all SVGs at once for smooth transitions */}
-          {allAssets.map((asset, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 w-full h-full transition-[opacity,transform] duration-200 ease-in-out motion-reduce:transition-none motion-reduce:transform-none pointer-events-none select-none ${
-                index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-              }`}
-              style={{ 
-                willChange: 'opacity, transform',
-                transform: index === currentSlide && currentSlide === 1 ? 'scale(0.85)' : undefined
-              }}
-            >
-              <DynamicSvg 
-                assetName={asset.assetName}
-                alt={asset.alt}
-                className="w-full h-full object-contain"
-              />
-            </div>
-          ))}
+          {allAssets.map((asset, index) => {
+            const IconComponent = getIconComponent(asset.assetName);
+            return (
+              <div
+                key={index}
+                className={`absolute inset-0 w-full h-full transition-[opacity,transform] duration-200 ease-in-out motion-reduce:transition-none motion-reduce:transform-none pointer-events-none select-none ${
+                  index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                }`}
+                style={{ 
+                  willChange: 'opacity, transform',
+                  transform: index === currentSlide && currentSlide === 1 ? 'scale(0.85)' : undefined
+                }}
+              >
+                {IconComponent ? (
+                  <IconComponent 
+                    className={`w-full h-full object-contain ${currentSlide === 1 ? 'pen-nib-glow' : ''}`}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-muted rounded text-muted-foreground text-sm">
+                    {asset.alt}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           {!assetName && (
             <span className="text-xs font-medium text-muted-foreground text-center px-2">
               {iconPlaceholder}
