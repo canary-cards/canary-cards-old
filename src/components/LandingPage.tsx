@@ -25,7 +25,7 @@ export function LandingPage() {
           
           {/* Centered Logo */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
-            <Logo className="h-8" />
+            <Logo className="h-12" />
           </div>
           
           <div className="flex items-center space-x-4">
