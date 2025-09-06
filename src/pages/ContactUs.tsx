@@ -19,17 +19,17 @@ export default function ContactUs() {
 
           {/* Contact Content */}
           <Card className="card-warm">
-            <CardContent className="p-8 text-center space-y-6">
-              <h2 className="eyebrow normal-case text-primary">
+            <CardContent className="p-8 space-y-4">
+              <p className="body-text">
                 We'd love to hear from you.
-              </h2>
+              </p>
               <p className="body-text">
                 Have a question, idea, or problem? Reach out anytime.
               </p>
-              <div className="text-xl font-medium text-primary">
-                📧 hello@canary.cards
-              </div>
-              <p className="body-text text-muted-foreground">
+              <p className="body-text">
+                <strong>📧 hello@canary.cards</strong>
+              </p>
+              <p className="body-text">
                 We read every message, even if it takes a couple of days to reply.
               </p>
             </CardContent>
