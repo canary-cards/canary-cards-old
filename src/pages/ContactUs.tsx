@@ -28,7 +28,7 @@ export default function ContactUs() {
                 <div className="space-y-6">
                   <div className="space-y-3">
                     <h3 className="eyebrow normal-case text-primary">
-                      Questions, ideas, or feedback
+                      Questions, ideas, or feedback?
                     </h3>
                     <p className="body-text">
                       Reach out anytime — we read every message, even if it takes a couple of days to reply.
