@@ -18,32 +18,32 @@ export default function FAQ() {
             </CardContent>
           </Card>
 
-          {/* About the postcard */}
-          <Card className="card-warm">
-            <CardContent className="p-8 space-y-4">
-              <h2 className="eyebrow text-secondary">About the postcard</h2>
-              <div className="space-y-3">
-                <h3 className="eyebrow normal-case text-primary">
-                  What does my postcard look like?
-                </h3>
-                <p className="body-text">
-                  A sturdy 5×7 postcard on glossy stock. Real words, real ink, mailed to your representative.
-                </p>
-              </div>
-              <div className="space-y-3">
-                <h3 className="eyebrow normal-case text-primary">
-                  Is it really handwritten?
-                </h3>
-                <p className="body-text">
-                  Yes. Robots use real pens with natural variations in pressure, spacing, and letter forms — indistinguishable from human handwriting.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Why it works, How it works, and Non-partisan promise */}
+          {/* All FAQ Content */}
           <Card className="card-warm">
             <CardContent className="p-8 space-y-8">
+              {/* About the postcard */}
+              <div className="space-y-4">
+                <h2 className="eyebrow text-secondary">About the postcard</h2>
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <h3 className="eyebrow normal-case text-primary">
+                      What does my postcard look like?
+                    </h3>
+                    <p className="body-text">
+                      A sturdy 5×7 postcard on glossy stock. Real words, real ink, mailed to your representative.
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="eyebrow normal-case text-primary">
+                      Is it really handwritten?
+                    </h3>
+                    <p className="body-text">
+                      Yes. Robots use real pens with natural variations in pressure, spacing, and letter forms — indistinguishable from human handwriting.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {/* Why it works */}
               <div className="space-y-4">
                 <h2 className="eyebrow text-secondary">Why it works</h2>
