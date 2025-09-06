@@ -30,11 +30,9 @@ export default function ContactUs() {
               <p className="body-text">
                 We read every message, even if it takes a couple of days to reply.
               </p>
-              <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/10">
-                <p className="body-text text-center">
-                  <strong>📧 <a href="mailto:hello@canary.cards" className="text-primary underline decoration-accent hover:no-underline">hello@canary.cards</a></strong>
-                </p>
-              </div>
+              <p className="body-text">
+                <strong>📧 <a href="mailto:hello@canary.cards" className="text-primary underline decoration-accent hover:no-underline">hello@canary.cards</a></strong>
+              </p>
             </CardContent>
           </Card>
         </div>
