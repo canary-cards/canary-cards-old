@@ -37,7 +37,7 @@ export function DraftingScreen() {
         setCurrentMessageIndex((prev) => {
           if (prev < draftingMessages.length - 1) {
             setShowTypewriter(false);
-            setTimeout(() => setShowTypewriter(true), 100);
+            setTimeout(() => setShowTypewriter(true), 400); // Increased delay for smoother transition
             return prev + 1;
           }
           return prev; // Stay on last message
@@ -147,10 +147,10 @@ export function DraftingScreen() {
           </div>
         </div>
         
-        {/* Typewriter message with scale-in animation */}
+        {/* Typewriter message with smooth transition */}
         <div className="h-8 flex items-center justify-center">
           {currentMessageIndex >= 0 && (
-            <p className={`text-lg text-background/80 transition-all duration-300 ${
+            <p className={`text-lg text-background/80 transition-all duration-500 ease-in-out ${
               showTypewriter ? 'animate-scale-in typewriter-text' : 'opacity-0 scale-95'
             }`}>
               {draftingMessages[currentMessageIndex]}
