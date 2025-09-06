@@ -1,5 +1,6 @@
 import { Loader2, Lock, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { Header } from './Header';
 
 interface FinalizingOrderScreenProps {
   status: 'loading' | 'error';
@@ -21,8 +22,10 @@ export const FinalizingOrderScreen = ({ status, onRetry }: FinalizingOrderScreen
   }, [status]);
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="text-center space-y-6 max-w-md">
+    <div className="min-h-screen bg-background">
+      <Header />
+      <div className="flex items-center justify-center p-4 min-h-[calc(100vh-80px)]">
+        <div className="text-center space-y-6 max-w-md">
         {status === 'loading' && (
           <div className="space-y-4">
             <div className="flex items-center justify-center space-x-2">
@@ -61,6 +64,7 @@ export const FinalizingOrderScreen = ({ status, onRetry }: FinalizingOrderScreen
             )}
           </div>
         )}
+        </div>
       </div>
     </div>
   );
