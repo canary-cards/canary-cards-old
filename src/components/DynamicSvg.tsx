@@ -21,10 +21,13 @@ export const DynamicSvg = ({
 
   if (loading) {
     return (
-      <div className={`animate-pulse bg-muted rounded ${className}`} style={{ width, height }}>
-        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
-          Loading...
-        </div>
+      <div 
+        className={`relative overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 rounded ${className}`} 
+        style={{ width, height }}
+      >
+        {/* Skeleton shape that mimics icon appearance */}
+        <div className="absolute inset-2 bg-gradient-to-br from-muted to-muted/80 rounded animate-pulse" />
+        <div className="absolute inset-4 bg-gradient-to-tr from-muted/60 to-muted/40 rounded-full animate-pulse delay-75" />
       </div>
     );
   }
@@ -47,6 +50,9 @@ export const DynamicSvg = ({
       className={className}
       width={width}
       height={height}
+      loading="eager"
+      decoding="async"
+      style={{ contentVisibility: 'auto' }}
     />
   );
 };

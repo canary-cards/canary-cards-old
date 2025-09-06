@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+// Cache for SVG URLs to avoid repeated API calls
+const urlCache = new Map<string, string>();
+
 export const useDynamicSvg = (assetName: string) => {
   const [svgUrl, setSvgUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -11,6 +14,13 @@ export const useDynamicSvg = (assetName: string) => {
       try {
         setLoading(true);
         setError(null);
+
+        // Check cache first for instant loading
+        if (urlCache.has(assetName)) {
+          setSvgUrl(urlCache.get(assetName)!);
+          setLoading(false);
+          return;
+        }
 
         // First, get the asset metadata from the database
         const { data: asset, error: dbError } = await supabase
@@ -33,6 +43,8 @@ export const useDynamicSvg = (assetName: string) => {
           .from('svg-assets')
           .getPublicUrl(asset.file_path);
 
+        // Cache the URL for future use
+        urlCache.set(assetName, data.publicUrl);
         setSvgUrl(data.publicUrl);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load SVG asset');
