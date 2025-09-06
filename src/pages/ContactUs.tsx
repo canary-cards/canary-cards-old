@@ -24,15 +24,19 @@ export default function ContactUs() {
               <p className="body-text">
                 We'd love to hear from you.
               </p>
-              <p className="body-text">
-                Questions, ideas, or feedback? Reach out anytime.
-              </p>
-              <p className="body-text">
-                <strong>📧 <a href="mailto:hello@canary.cards" className="text-primary underline hover:no-underline">hello@canary.cards</a></strong>
-              </p>
-              <p className="body-text">
-                We read every message, even if it takes a couple of days to reply.
-              </p>
+              <div className="space-y-3 mt-6">
+                <h3 className="eyebrow normal-case text-primary">
+                  Questions, ideas, or feedback?
+                </h3>
+                <p className="body-text">
+                  Reach out anytime — we read every message, even if it takes a couple of days to reply.
+                </p>
+              </div>
+              <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/10">
+                <p className="body-text text-center">
+                  <strong>📧 <a href="mailto:hello@canary.cards" className="text-primary underline decoration-accent hover:no-underline">hello@canary.cards</a></strong>
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>
