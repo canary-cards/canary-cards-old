@@ -54,9 +54,15 @@ export function HamburgerMenu({ isDark = false }: { isDark?: boolean }) {
           aria-labelledby="menu-title"
         >
           <div className="px-4 md:px-5 lg:px-6 pt-4 pb-2 border-b border-[#E8DECF]">
-            <h2 id="menu-title" className="subtitle text-secondary">
-              Canary Cards
-            </h2>
+            <Link 
+              to="/" 
+              onClick={() => setOpen(false)}
+              className="block hover:opacity-80 transition-opacity"
+            >
+              <h2 id="menu-title" className="subtitle text-secondary">
+                Canary Cards
+              </h2>
+            </Link>
           </div>
           
           <nav className="flex-1 px-4 md:px-5 lg:px-6 py-2">
