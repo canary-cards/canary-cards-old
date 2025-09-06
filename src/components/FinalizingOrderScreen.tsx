@@ -1,4 +1,5 @@
-import { Loader2 } from 'lucide-react';
+import { Loader2, Lock, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface FinalizingOrderScreenProps {
   status: 'loading' | 'error';
@@ -6,17 +7,37 @@ interface FinalizingOrderScreenProps {
 }
 
 export const FinalizingOrderScreen = ({ status, onRetry }: FinalizingOrderScreenProps) => {
+  const [showCheck, setShowCheck] = useState(false);
+
+  useEffect(() => {
+    if (status === 'loading') {
+      // Show checkmark after 2 seconds
+      const timer = setTimeout(() => {
+        setShowCheck(true);
+      }, 2000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="text-center space-y-6 max-w-md">
         {status === 'loading' && (
           <div className="space-y-4">
-            <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto" />
-            <h1 className="display-title">
+            <div className="flex items-center justify-center space-x-2">
+              {!showCheck ? (
+                <Lock className="h-6 w-6 text-primary transition-all duration-300" />
+              ) : (
+                <Check className="h-6 w-6 text-primary animate-scale-in" />
+              )}
+              {!showCheck && <Loader2 className="h-5 w-5 animate-spin text-primary" />}
+            </div>
+            <h1 className="display-title text-primary">
               Finalizing your order…
             </h1>
-            <p className="subtitle text-lg">
-              We're securely sending your postcard details to be written and mailed.
+            <p className="subtitle text-muted-foreground">
+              Your postcard details are on their way to be written and mailed.
             </p>
           </div>
         )}
