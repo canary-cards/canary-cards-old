@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
+import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentReturn from "./pages/PaymentReturn";
@@ -53,6 +54,7 @@ const AppContent = () => (
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/about" element={<About />} />
       <Route path="/faq" element={<FAQ />} />
+      <Route path="/contact" element={<ContactUs />} />
       <Route path="/share" element={<Share />} />
       <Route path="/share/:orderId" element={<Share />} />
       
