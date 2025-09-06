@@ -26,7 +26,7 @@ export default function ContactUs() {
                   We'd love to hear from you.
                 </p>
                 <div className="space-y-6">
-                  <div className="space-y-3">
+                  <div className="space-y-3 pt-2">
                     <h3 className="eyebrow normal-case text-primary">
                       Questions, ideas, or feedback?
                     </h3>
