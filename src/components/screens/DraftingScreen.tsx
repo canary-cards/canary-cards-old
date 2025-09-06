@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { supabase } from '../../integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
+import { DynamicSvg } from '../DynamicSvg';
 
 const draftingMessages = [
   "Analyzing your concerns…",
@@ -111,11 +112,18 @@ export function DraftingScreen() {
   return (
     <div className="h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] flex items-center justify-center bg-primary px-4">
       <div className="text-center space-y-8 max-w-md mx-auto">
-        <div className="flex items-center justify-center space-x-3">
-          <Loader2 className="h-6 w-6 animate-spin text-background" />
-          <h1 className="text-2xl font-semibold text-background">
-            Drafting your postcard
-          </h1>
+        <div className="flex flex-col items-center justify-center space-y-6">
+          <DynamicSvg 
+            assetName="onboarding-icon-2-v4"
+            alt="Canary research process"
+            className="w-24 h-24"
+          />
+          <div className="flex items-center justify-center space-x-3">
+            <Loader2 className="h-6 w-6 animate-spin text-background" />
+            <h1 className="text-2xl font-semibold text-background">
+              Drafting your postcard
+            </h1>
+          </div>
         </div>
         
         <p className="text-lg text-background/80">
