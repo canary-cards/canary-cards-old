@@ -16,6 +16,7 @@ const draftingMessages = [
 export function DraftingScreen() {
   const { state, dispatch } = useAppContext();
   const [currentMessageIndex, setCurrentMessageIndex] = useState(-1); // Start at -1 to show initial delay
+  const [displayedMessageIndex, setDisplayedMessageIndex] = useState(-1); // What message is actually shown
   const [startTime] = useState(Date.now());
   const [showTypewriter, setShowTypewriter] = useState(false);
 
@@ -24,6 +25,7 @@ export function DraftingScreen() {
     // Initial 1.5s delay before showing first message
     const initialDelay = setTimeout(() => {
       setCurrentMessageIndex(0);
+      setDisplayedMessageIndex(0);
       setShowTypewriter(true);
     }, 1500);
 
@@ -36,8 +38,13 @@ export function DraftingScreen() {
       const interval = setInterval(() => {
         setCurrentMessageIndex((prev) => {
           if (prev < draftingMessages.length - 1) {
+            // First fade out current message
             setShowTypewriter(false);
-            setTimeout(() => setShowTypewriter(true), 400); // Increased delay for smoother transition
+            // Then update the displayed message and fade in
+            setTimeout(() => {
+              setDisplayedMessageIndex(prev + 1);
+              setShowTypewriter(true);
+            }, 300); // Half the transition duration for smooth crossfade
             return prev + 1;
           }
           return prev; // Stay on last message
@@ -149,11 +156,11 @@ export function DraftingScreen() {
         
         {/* Typewriter message with smooth transition */}
         <div className="h-8 flex items-center justify-center">
-          {currentMessageIndex >= 0 && (
-            <p className={`text-lg text-background/80 transition-all duration-500 ease-in-out ${
+          {displayedMessageIndex >= 0 && (
+            <p className={`text-lg text-background/80 transition-all duration-300 ease-in-out ${
               showTypewriter ? 'animate-scale-in typewriter-text' : 'opacity-0 scale-95'
             }`}>
-              {draftingMessages[currentMessageIndex]}
+              {draftingMessages[displayedMessageIndex]}
             </p>
           )}
         </div>
