@@ -116,7 +116,7 @@ export function DraftingScreen() {
           <DynamicSvg 
             assetName="onboarding-icon-2-v4"
             alt="Canary research process"
-            className="w-32 h-32"
+            className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-36 lg:h-36"
           />
           <div className="flex items-center justify-center space-x-3">
             <Loader2 className="h-6 w-6 animate-spin text-background" />
