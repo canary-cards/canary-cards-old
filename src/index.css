@@ -245,6 +245,23 @@ All colors MUST be HSL.
     100% { box-shadow: 0 0 0 0 hsl(var(--destructive) / 0); }
   }
 
+  /* Pen nib glow animation for canary icon */
+  .pen-nib-glow {
+    filter: drop-shadow(0 0 8px hsl(var(--accent))) drop-shadow(0 0 12px hsl(var(--accent))) drop-shadow(0 0 16px hsl(var(--accent)));
+    animation: pen-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pen-glow {
+    0%, 100% {
+      filter: drop-shadow(0 0 4px hsl(var(--accent))) drop-shadow(0 0 8px hsl(var(--accent))) drop-shadow(0 0 12px hsl(var(--accent)));
+      opacity: 0.8;
+    }
+    50% {
+      filter: drop-shadow(0 0 12px hsl(var(--accent))) drop-shadow(0 0 20px hsl(var(--accent))) drop-shadow(0 0 28px hsl(var(--accent)));
+      opacity: 1;
+    }
+  }
+
   /* Hamburger menu responsive widths - higher specificity override */
   [data-hamburger-menu="true"] {
     width: min(92vw, 360px) !important;
