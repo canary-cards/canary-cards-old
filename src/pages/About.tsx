@@ -33,12 +33,12 @@ export default function About() {
           {/* Solution Card */}
           <Card className="card-warm">
             <CardContent className="p-8 space-y-4">
-              <h2 className="eyebrow text-secondary">Why postcards matter</h2>
+              <h2 className="eyebrow text-secondary">Why this works</h2>
               <p className="body-text">
-                But postcards still matter. A real card lands on your representative's desk, where emails and petitions usually don't.
+                Postcards cut through. A real card lands on your representative's desk, where emails and petitions usually don't.
               </p>
               <p className="body-text">
-                In under two minutes, you write. We handle the rest. Non-partisan, no extra steps — just your voice, delivered.
+                In under two minutes, you write. We handle the rest — non-partisan, no extra steps, just your voice delivered.
               </p>
             </CardContent>
           </Card>
