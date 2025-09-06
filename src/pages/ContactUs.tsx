@@ -27,7 +27,7 @@ export default function ContactUs() {
                 Have a question, idea, or problem? Reach out anytime.
               </p>
               <p className="body-text">
-                <strong>📧 <a href="mailto:hello@canary.cards" className="hover:underline">hello@canary.cards</a></strong>
+                <strong>📧 <a href="mailto:hello@canary.cards" className="text-primary underline hover:no-underline">hello@canary.cards</a></strong>
               </p>
               <p className="body-text">
                 We read every message, even if it takes a couple of days to reply.
