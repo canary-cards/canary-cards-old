@@ -5,33 +5,48 @@ import { Loader2 } from 'lucide-react';
 import { DynamicSvg } from '../DynamicSvg';
 
 const draftingMessages = [
-  "Analyzing your concerns…",
+  "Polishing your message…",
+  "Fitting onto a postcard…",
   "Matching with bills in Congress…",
   "Highlighting local impact…",
-  "Weaving in your story...",
   "Optimizing for influence…",
-  "Fitting onto a postcard…",
   "Completing draft — amplifying your voice..."
 ];
 
 export function DraftingScreen() {
   const { state, dispatch } = useAppContext();
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(-1); // Start at -1 to show initial delay
   const [startTime] = useState(Date.now());
+  const [showTypewriter, setShowTypewriter] = useState(false);
 
-  // Rotate messages every 1.5 seconds, but stop at the last message
+  // Initial delay then start rotating messages
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentMessageIndex((prev) => {
-        if (prev < draftingMessages.length - 1) {
-          return prev + 1;
-        }
-        return prev; // Stay on last message
-      });
-    }, 1750);
+    // Initial 1.5s delay before showing first message
+    const initialDelay = setTimeout(() => {
+      setCurrentMessageIndex(0);
+      setShowTypewriter(true);
+    }, 1500);
 
-    return () => clearInterval(interval);
+    return () => clearTimeout(initialDelay);
   }, []);
+
+  // Rotate messages every 2 seconds after the initial delay
+  useEffect(() => {
+    if (currentMessageIndex >= 0) {
+      const interval = setInterval(() => {
+        setCurrentMessageIndex((prev) => {
+          if (prev < draftingMessages.length - 1) {
+            setShowTypewriter(false);
+            setTimeout(() => setShowTypewriter(true), 100);
+            return prev + 1;
+          }
+          return prev; // Stay on last message
+        });
+      }, 2000);
+
+      return () => clearInterval(interval);
+    }
+  }, [currentMessageIndex]);
 
   // Handle the actual drafting process
   useEffect(() => {
@@ -119,16 +134,26 @@ export function DraftingScreen() {
             className="w-32 h-32 sm:w-48 sm:h-48 md:w-54 md:h-54 lg:w-60 lg:h-60 pen-nib-glow"
           />
           <div className="flex items-center justify-center space-x-3">
-            <Loader2 className="h-6 w-6 animate-spin text-background" />
+            {/* Progress writing bar instead of spinner */}
+            <div className="w-8 h-1 bg-background/20 rounded-full overflow-hidden">
+              <div className="h-full bg-accent rounded-full animate-pulse-gentle writing-progress"></div>
+            </div>
             <h1 className="text-2xl font-semibold text-background">
               Drafting your postcard
             </h1>
           </div>
         </div>
         
-        <p className="text-lg text-background/80">
-          {draftingMessages[currentMessageIndex]}
-        </p>
+        {/* Typewriter message with scale-in animation */}
+        <div className="h-8 flex items-center justify-center">
+          {currentMessageIndex >= 0 && (
+            <p className={`text-lg text-background/80 transition-all duration-300 ${
+              showTypewriter ? 'animate-scale-in typewriter-text' : 'opacity-0 scale-95'
+            }`}>
+              {draftingMessages[currentMessageIndex]}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
