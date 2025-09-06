@@ -3,32 +3,6 @@ import { Header } from '@/components/Header';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function FAQ() {
-  const faqs = [
-    {
-      question: "What will my postcard look like?",
-      answer: "A sturdy 5x7 postcard on glossy stock. Real words, real ink, mailed to your representative."
-    },
-    {
-      question: "Is it really handwritten?",
-      answer: "Yes. The robots use real pens, with natural variations in letter shape and spacing — indistinguishable from human handwriting"
-    },
-    {
-      question: "Do postcards actually matter?",
-      answer: "Research shows postcards bypass long mail screening, arrive faster than letters, and get prioritized over mass emails. Congressional staff pay attention to constituent mail."
-    },
-    {
-      question: "How do the robots work?",
-      answer: "We connect your message to robots that hold real pens and write each card uniquely. Then we drop it in the mail."
-    },
-    {
-      question: "Will I know when my card is sent?",
-      answer: "Yes. You'll get a confirmation email once your card has been mailed."
-    },
-    {
-      question: "Is this only for one political side?",
-      answer: "No. Canary is proudly non-partisan. It works for anyone who wants their voice heard."
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -44,21 +18,78 @@ export default function FAQ() {
             </CardContent>
           </Card>
 
-          {/* FAQ Items */}
+          {/* About the postcard */}
           <Card className="card-warm">
-            <CardContent className="p-8 space-y-2">
-              <h2 className="eyebrow text-secondary">Why postcards matter</h2>
-              <div className="space-y-6">
-                {faqs.map((faq, index) => (
-                  <div key={index} className="space-y-3">
-                    <h3 className="eyebrow normal-case text-primary">
-                      {faq.question}
-                    </h3>
-                    <p className="body-text">
-                      {faq.answer}
-                    </p>
-                  </div>
-                ))}
+            <CardContent className="p-8 space-y-4">
+              <h2 className="eyebrow text-secondary">About the postcard</h2>
+              <div className="space-y-3">
+                <h3 className="eyebrow normal-case text-primary">
+                  What does my postcard look like?
+                </h3>
+                <p className="body-text">
+                  A sturdy 5×7 postcard on glossy stock. Real words, real ink, mailed to your representative.
+                </p>
+              </div>
+              <div className="space-y-3">
+                <h3 className="eyebrow normal-case text-primary">
+                  Is it really handwritten?
+                </h3>
+                <p className="body-text">
+                  Yes. Robots use real pens with natural variations in pressure, spacing, and letter forms — indistinguishable from human handwriting.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Why it works */}
+          <Card className="card-warm">
+            <CardContent className="p-8 space-y-4">
+              <h2 className="eyebrow text-secondary">Why it works</h2>
+              <div className="space-y-3">
+                <h3 className="eyebrow normal-case text-primary">
+                  Do postcards really make a difference?
+                </h3>
+                <p className="body-text">
+                  Yes. Research shows postcards bypass long mail screening, arrive faster than letters, and get prioritized over mass emails. Congressional staff pay closer attention to constituent mail.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* How it works */}
+          <Card className="card-warm">
+            <CardContent className="p-8 space-y-4">
+              <h2 className="eyebrow text-secondary">How it works</h2>
+              <div className="space-y-3">
+                <h3 className="eyebrow normal-case text-primary">
+                  How do the robots work?
+                </h3>
+                <p className="body-text">
+                  We send your message to robots that hold real pens and write each card uniquely. Then we drop it in the mail.
+                </p>
+              </div>
+              <div className="space-y-3">
+                <h3 className="eyebrow normal-case text-primary">
+                  Will I know when my card is sent?
+                </h3>
+                <p className="body-text">
+                  Yes. You'll get a confirmation email once your card has been mailed.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Non-partisan promise */}
+          <Card className="card-warm">
+            <CardContent className="p-8 space-y-4">
+              <h2 className="eyebrow text-secondary">Non-partisan promise</h2>
+              <div className="space-y-3">
+                <h3 className="eyebrow normal-case text-primary">
+                  Is Canary partisan?
+                </h3>
+                <p className="body-text">
+                  No. Canary is proudly non-partisan. It works for anyone who wants their voice heard.
+                </p>
               </div>
             </CardContent>
           </Card>
