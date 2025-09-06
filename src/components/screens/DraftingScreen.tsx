@@ -115,8 +115,8 @@ export function DraftingScreen() {
         <div className="flex flex-col items-center justify-center space-y-6">
           <DynamicSvg 
             assetName="onboarding-icon-2-v4"
-            alt="Canary writing your postcard"
-            className="w-32 h-32 sm:w-48 sm:h-48 md:w-54 md:h-54 lg:w-60 lg:h-60 canary-scribble"
+            alt="Canary research process"
+            className="w-32 h-32 sm:w-48 sm:h-48 md:w-54 md:h-54 lg:w-60 lg:h-60"
           />
           <div className="flex items-center justify-center space-x-3">
             <Loader2 className="h-6 w-6 animate-spin text-background" />

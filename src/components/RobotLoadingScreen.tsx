@@ -12,14 +12,14 @@ export const RobotLoadingScreen = ({ status, message, onRetry }: RobotLoadingScr
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 flex items-center justify-center p-4">
       <div className="text-center space-y-8 max-w-md">
-        {/* Animated Canary Icon */}
+        {/* Static Icon */}
         <div className="flex justify-center">
           {status === 'loading' && (
             <div className="w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center border-4 border-primary/20">
               <img 
                 src="/smallonboarding2.svg" 
-                alt="Canary writing your postcard" 
-                className="w-20 h-20 canary-scribble" 
+                alt="Processing" 
+                className="w-20 h-20" 
               />
             </div>
           )}
