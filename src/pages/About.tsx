@@ -14,7 +14,7 @@ export default function About() {
             <h1 className="display-title text-center">About</h1>
             
             <div className="space-y-6 max-w-3xl mx-auto">
-              <p className="body-text text-lg">
+              <p className="body-text">
                 We built Canary Cards because we were frustrated, too.
               </p>
               
@@ -26,7 +26,7 @@ export default function About() {
                 But postcards still matter. A real card lands on your representative's desk, where emails and petitions usually don't.
               </p>
               
-              <p className="body-text text-lg">
+              <p className="body-text">
                 So we made the part that counts simple: in under two minutes, you write, and we handle the rest. Non-partisan, no extra steps — just your voice, delivered.
               </p>
             </div>
