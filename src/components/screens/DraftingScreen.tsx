@@ -78,13 +78,21 @@ export function DraftingScreen() {
 
         if (error) {
           console.error('Error drafting message:', error);
-          dispatch({ type: 'SET_ERROR', payload: 'Failed to draft message' });
+          dispatch({ type: 'SET_ERROR', payload: 'Failed to draft message. Please try again.' });
+          // Navigate to craft message screen to retry
+          setTimeout(() => {
+            dispatch({ type: 'SET_STEP', payload: 2 });
+          }, 2000);
           return;
         }
 
         if (!data?.draftMessage) {
           console.error('No draft message in response:', data);
-          dispatch({ type: 'SET_ERROR', payload: 'No draft message received from AI' });
+          dispatch({ type: 'SET_ERROR', payload: 'AI service temporarily unavailable. Please try again.' });
+          // Navigate to craft message screen to retry
+          setTimeout(() => {
+            dispatch({ type: 'SET_STEP', payload: 2 });
+          }, 2000);
           return;
         }
 
