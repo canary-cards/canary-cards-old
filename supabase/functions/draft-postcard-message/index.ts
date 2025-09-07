@@ -342,6 +342,26 @@ class GuardianApi {
       return `climate change environment disasters funding United States federal`;
     } else if (concernLower.includes('social security')) {
       return `Social Security benefits seniors retirement USA federal`;
+    } else if (concernLower.includes('immigration') || concernLower.includes('ice')) {
+      return `immigration ICE deportation border policy United States federal`;
+    } else if (concernLower.includes('healthcare') || concernLower.includes('medicare')) {
+      return `healthcare Medicare for All prescription drugs costs United States`;
+    } else if (concernLower.includes('gun') || concernLower.includes('firearm')) {
+      return `gun control violence firearms safety legislation United States Congress`;
+    } else if (concernLower.includes('abortion') || concernLower.includes('reproductive')) {
+      return `abortion reproductive rights Roe Wade healthcare United States`;
+    } else if (concernLower.includes('lgbtq') || concernLower.includes('transgender')) {
+      return `LGBTQ transgender rights equality discrimination United States federal`;
+    } else if (concernLower.includes('wealth') || concernLower.includes('inequality')) {
+      return `wealth inequality tax rich billionaire corporations United States`;
+    } else if (concernLower.includes('union') || concernLower.includes('labor')) {
+      return `labor unions workers rights wages United States federal`;
+    } else if (concernLower.includes('police') || concernLower.includes('criminal justice')) {
+      return `police reform criminal justice accountability United States federal`;
+    } else if (concernLower.includes('voting') || concernLower.includes('election')) {
+      return `voting rights election access democracy United States federal`;
+    } else if (concernLower.includes('minimum wage')) {
+      return `minimum wage workers income federal United States Congress`;
     } else {
       return `${concern} policy legislation Congress United States federal government`;
     }
