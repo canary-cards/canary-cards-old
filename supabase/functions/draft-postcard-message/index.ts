@@ -833,7 +833,7 @@ Make the message personal, urgent, and actionable within the character limit.`;
   ): RelevantSource[] {
     const sources: RelevantSource[] = [];
     
-    // Parse congress bill usage
+    // Parse congress bill usage - keep all relevant bills as before
     congressBills.forEach((bill, i) => {
       const pattern = new RegExp(`CONGRESS_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
@@ -849,12 +849,13 @@ Make the message personal, urgent, and actionable within the character limit.`;
       }
     });
     
-    // Parse Guardian article usage
+    // Parse Guardian article usage and collect relevant ones
+    const relevantGuardianArticles: RelevantSource[] = [];
     guardianArticles.forEach((article, i) => {
       const pattern = new RegExp(`GUARDIAN_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
       if (match && match[1].toUpperCase() === 'USED') {
-        sources.push({
+        relevantGuardianArticles.push({
           type: 'guardian',
           title: article.title,
           url: article.webUrl,
@@ -865,12 +866,13 @@ Make the message personal, urgent, and actionable within the character limit.`;
       }
     });
     
-    // Parse NYT article usage
+    // Parse NYT article usage and collect relevant ones
+    const relevantNYTArticles: RelevantSource[] = [];
     nytArticles.forEach((article, i) => {
       const pattern = new RegExp(`NYT_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
       if (match && match[1].toUpperCase() === 'USED') {
-        sources.push({
+        relevantNYTArticles.push({
           type: 'nyt',
           title: article.headline,
           url: article.web_url,
@@ -881,8 +883,44 @@ Make the message personal, urgent, and actionable within the character limit.`;
       }
     });
     
-    console.log(`   📋 Identified ${sources.length} relevant sources`);
+    // Apply new selection logic for news articles (max 2 total)
+    const selectedNewsArticles = this.selectNewsArticles(relevantGuardianArticles, relevantNYTArticles);
+    sources.push(...selectedNewsArticles);
+    
+    console.log(`   📋 Selected ${sources.length} sources (${sources.filter(s => s.type === 'congress').length} bills, ${selectedNewsArticles.length} news articles)`);
     return sources;
+  }
+
+  private selectNewsArticles(guardianArticles: RelevantSource[], nytArticles: RelevantSource[]): RelevantSource[] {
+    const maxNewsArticles = 2;
+    const selectedArticles: RelevantSource[] = [];
+    
+    // If both organizations have relevant articles, select one from each
+    if (guardianArticles.length > 0 && nytArticles.length > 0) {
+      // Take the first (most relevant) from each organization
+      selectedArticles.push(guardianArticles[0]);
+      selectedArticles.push(nytArticles[0]);
+      console.log(`   📰 Selected 1 Guardian + 1 NYT article (both had relevant content)`);
+    } 
+    // If only Guardian has relevant articles, take up to 2
+    else if (guardianArticles.length > 0) {
+      const articlesToTake = Math.min(maxNewsArticles, guardianArticles.length);
+      selectedArticles.push(...guardianArticles.slice(0, articlesToTake));
+      console.log(`   📰 Selected ${articlesToTake} Guardian article(s) (only Guardian had relevant content)`);
+    }
+    // If only NYT has relevant articles, take up to 2
+    else if (nytArticles.length > 0) {
+      const articlesToTake = Math.min(maxNewsArticles, nytArticles.length);
+      selectedArticles.push(...nytArticles.slice(0, articlesToTake));
+      console.log(`   📰 Selected ${articlesToTake} NYT article(s) (only NYT had relevant content)`);
+    }
+    // If neither has relevant articles
+    else {
+      console.log(`   📰 No relevant news articles found from either source`);
+    }
+    
+    return selectedArticles;
+  }
   }
 
   private async shortenPostcard(longPostcard: string): Promise<{postcard: string, tokensUsed: number}> {
