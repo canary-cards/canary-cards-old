@@ -15,95 +15,37 @@ interface ApiKeyConfig {
 }
 
 class ApiKeyManager {
-  private keys: ApiKeyConfig[] = [];
-  private currentKeyIndex = 0;
-  private rateLimitDelay: number;
-  private keyReuseDelay = 60000; // 60 seconds between reusing same key
-  private maxRequestsPerMinute = 50; // Conservative limit
-  private initialized = false;
-
-  constructor() {
-    this.rateLimitDelay = parseInt(Deno.env.get('RATE_LIMIT_DELAY_MS') || '1500');
-  }
+  private apiKey: string | null = null;
 
   public async initialize(): Promise<void> {
-    if (!this.initialized) {
-      await this.loadApiKeys();
-      this.initialized = true;
+    if (!this.apiKey) {
+      await this.loadApiKey();
     }
   }
 
-  private async loadApiKeys() {
+  private async loadApiKey() {
     // Load environment variables
     const env = await load();
     
-    // Extract Anthropic API keys
-    const keyPatterns = [
-      'ANTHROPIC_API_KEY_1',
-      'ANTHROPIC_API_KEY_2', 
-      'ANTHROPIC_API_KEY_3',
-      'ANTHROPIC_API_KEY_4',
-      'ANTHROPIC_API_KEY_5',
-      'anthropickey' // Legacy support
-    ];
-
-    for (const pattern of keyPatterns) {
-      const key = env[pattern] || Deno.env.get(pattern);
-      if (key && key.trim()) {
-        this.keys.push({
-          key: key.trim(),
-          lastUsed: 0,
-          requestCount: 0,
-          rateLimitResetTime: 0,
-          isBlocked: false
-        });
-      }
-    }
-
-    console.log(`🔑 Loaded ${this.keys.length} API keys for rotation`);
+    // Only use ANTHROPIC_API_KEY_1
+    const key = env['ANTHROPIC_API_KEY_1'] || Deno.env.get('ANTHROPIC_API_KEY_1');
     
-    if (this.keys.length === 0) {
-      throw new Error('No Anthropic API keys found. Please set ANTHROPIC_API_KEY_1 in .env file.');
+    if (!key || !key.trim()) {
+      throw new Error('ANTHROPIC_API_KEY_1 not found. Please set this secret.');
     }
+    
+    this.apiKey = key.trim();
+    console.log(`🔑 Using API key ${this.apiKey.slice(-8)}`);
   }
 
   public async getNextKeyWithDelay(): Promise<string> {
     await this.initialize();
     
-    const now = Date.now();
-    
-    // Reset blocked keys after rate limit period
-    this.keys.forEach(keyConfig => {
-      if (keyConfig.isBlocked && now > keyConfig.rateLimitResetTime) {
-        keyConfig.isBlocked = false;
-        keyConfig.requestCount = 0;
-        console.log(`🟢 API key ${keyConfig.key.slice(-8)} unblocked`);
-      }
-    });
-
-    const keyConfig = this.keys[this.currentKeyIndex];
-    
-    if (!keyConfig) {
-      throw new Error('No API keys available');
+    if (!this.apiKey) {
+      throw new Error('No API key available');
     }
-
-    // Check if we need to wait before reusing this key
-    const timeSinceLastUse = now - keyConfig.lastUsed;
-    if (keyConfig.requestCount > 0 && timeSinceLastUse < this.keyReuseDelay) {
-      const waitTime = this.keyReuseDelay - timeSinceLastUse;
-      console.log(`⏳ Waiting ${Math.round(waitTime/1000)}s before reusing key ${keyConfig.key.slice(-8)}`);
-      await new Promise(resolve => setTimeout(resolve, waitTime));
-    }
-
-    keyConfig.lastUsed = Date.now();
-    keyConfig.requestCount++;
     
-    console.log(`🔑 Using API key ${keyConfig.key.slice(-8)} (request #${keyConfig.requestCount})`);
-    
-    // Move to next key for next request
-    this.currentKeyIndex = (this.currentKeyIndex + 1) % this.keys.length;
-    
-    return keyConfig.key;
+    return this.apiKey;
   }
 
   public async makeAnthropicRequestWithCycling(payload: any): Promise<Response> {
