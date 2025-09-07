@@ -342,8 +342,6 @@ class GuardianApi {
       return `climate change environment disasters funding United States federal`;
     } else if (concernLower.includes('social security')) {
       return `Social Security benefits seniors retirement USA federal`;
-    } else if (concernLower.includes('immigration') || concernLower.includes('ice')) {
-      return `immigration ICE deportation border policy United States federal`;
     } else {
       return `${concern} policy legislation Congress United States federal government`;
     }
