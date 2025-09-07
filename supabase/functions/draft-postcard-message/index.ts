@@ -811,14 +811,14 @@ Make the message personal, urgent, and actionable within the character limit.`;
     guardianArticles: GuardianArticle[], 
     nytArticles: NYTArticle[]
   ): RelevantSource[] {
-    const sources: RelevantSource[] = [];
+    const allSources: RelevantSource[] = [];
     
-    // Parse congress bill usage
+    // Parse congress bill usage - include all relevant bills
     congressBills.forEach((bill, i) => {
       const pattern = new RegExp(`CONGRESS_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
       if (match && match[1].toUpperCase() === 'USED') {
-        sources.push({
+        allSources.push({
           type: 'congress',
           title: `H.R. ${bill.number} - ${bill.title}`,
           url: bill.url,
@@ -830,11 +830,12 @@ Make the message personal, urgent, and actionable within the character limit.`;
     });
     
     // Parse Guardian article usage
+    const guardianSources: RelevantSource[] = [];
     guardianArticles.forEach((article, i) => {
       const pattern = new RegExp(`GUARDIAN_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
       if (match && match[1].toUpperCase() === 'USED') {
-        sources.push({
+        guardianSources.push({
           type: 'guardian',
           title: article.title,
           url: article.webUrl,
@@ -846,11 +847,12 @@ Make the message personal, urgent, and actionable within the character limit.`;
     });
     
     // Parse NYT article usage
+    const nytSources: RelevantSource[] = [];
     nytArticles.forEach((article, i) => {
       const pattern = new RegExp(`NYT_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
       if (match && match[1].toUpperCase() === 'USED') {
-        sources.push({
+        nytSources.push({
           type: 'nyt',
           title: article.headline,
           url: article.web_url,
@@ -861,8 +863,26 @@ Make the message personal, urgent, and actionable within the character limit.`;
       }
     });
     
-    console.log(`   📋 Identified ${sources.length} relevant sources`);
-    return sources;
+    // Apply news article limits: max 2 total, preferring one from each if both have relevant articles
+    let selectedNewsSources: RelevantSource[] = [];
+    
+    if (guardianSources.length > 0 && nytSources.length > 0) {
+      // Both have relevant articles - select one from each
+      selectedNewsSources.push(guardianSources[0]);
+      selectedNewsSources.push(nytSources[0]);
+    } else if (guardianSources.length > 0) {
+      // Only Guardian has relevant articles - take up to 2
+      selectedNewsSources = guardianSources.slice(0, 2);
+    } else if (nytSources.length > 0) {
+      // Only NYT has relevant articles - take up to 2
+      selectedNewsSources = nytSources.slice(0, 2);
+    }
+    
+    // Combine congress bills with limited news sources
+    const finalSources = [...allSources.filter(s => s.type === 'congress'), ...selectedNewsSources];
+    
+    console.log(`   📋 Identified ${finalSources.length} relevant sources (${allSources.filter(s => s.type === 'congress').length} bills, ${selectedNewsSources.length} news)`);
+    return finalSources;
   }
 
   private async shortenPostcard(longPostcard: string): Promise<{postcard: string, tokensUsed: number}> {
