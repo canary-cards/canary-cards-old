@@ -288,13 +288,14 @@ class GuardianApi {
         'api-key': this.apiKey,
         'q': query,
         'section': 'us-news',
+        'tag': 'us-news/us-politics|us-news/us-congress|us-news/biden-administration|us-news/trump-administration',
         'show-fields': 'headline,standfirst,bodyText',
         'order-by': 'newest',
         'page-size': String(pageSize),
         'from-date': fromDate
       });
 
-      console.log(`   🇬🇧 Guardian API query: "${query}"`);
+      console.log(`   🇺🇸 Guardian US API query: "${query}"`);
       
       const response = await fetch(url);
       
@@ -332,17 +333,19 @@ class GuardianApi {
     const concernLower = concern.toLowerCase();
     
     if (concernLower.includes('housing speculation')) {
-      return `housing speculation rent prices corporate landlords`;
+      return `housing speculation rent prices corporate landlords USA America`;
     } else if (concernLower.includes('housing')) {
-      return `housing rent prices affordability crisis`;
+      return `housing rent prices affordability crisis United States America`;
     } else if (concernLower.includes('student loan')) {
-      return `student loan debt forgiveness education costs`;
+      return `student loan debt forgiveness education costs USA federal`;
     } else if (concernLower.includes('climate')) {
-      return `climate change environment disasters funding`;
+      return `climate change environment disasters funding United States federal`;
     } else if (concernLower.includes('social security')) {
-      return `Social Security benefits seniors retirement`;
+      return `Social Security benefits seniors retirement USA federal`;
+    } else if (concernLower.includes('immigration') || concernLower.includes('ice')) {
+      return `immigration ICE deportation border policy United States federal`;
     } else {
-      return `${concern} policy legislation Congress`;
+      return `${concern} policy legislation Congress United States federal government`;
     }
   }
 
