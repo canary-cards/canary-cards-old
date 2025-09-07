@@ -288,7 +288,7 @@ class GuardianApi {
         'api-key': this.apiKey,
         'q': query,
         'section': 'us-news',
-        'tag': 'us-news/us-politics|us-news/us-congress|us-news/biden-administration|us-news/trump-administration',
+        'tag': 'us-news/us-politics|us-news/us-congress|us-news/trump-administration',
         'show-fields': 'headline,standfirst,bodyText',
         'order-by': 'newest',
         'page-size': String(pageSize),
@@ -342,26 +342,6 @@ class GuardianApi {
       return `climate change environment disasters funding United States federal`;
     } else if (concernLower.includes('social security')) {
       return `Social Security benefits seniors retirement USA federal`;
-    } else if (concernLower.includes('immigration') || concernLower.includes('ice')) {
-      return `immigration ICE deportation border policy United States federal`;
-    } else if (concernLower.includes('healthcare') || concernLower.includes('medicare')) {
-      return `healthcare Medicare for All prescription drugs costs United States`;
-    } else if (concernLower.includes('gun') || concernLower.includes('firearm')) {
-      return `gun control violence firearms safety legislation United States Congress`;
-    } else if (concernLower.includes('abortion') || concernLower.includes('reproductive')) {
-      return `abortion reproductive rights Roe Wade healthcare United States`;
-    } else if (concernLower.includes('lgbtq') || concernLower.includes('transgender')) {
-      return `LGBTQ transgender rights equality discrimination United States federal`;
-    } else if (concernLower.includes('wealth') || concernLower.includes('inequality')) {
-      return `wealth inequality tax rich billionaire corporations United States`;
-    } else if (concernLower.includes('union') || concernLower.includes('labor')) {
-      return `labor unions workers rights wages United States federal`;
-    } else if (concernLower.includes('police') || concernLower.includes('criminal justice')) {
-      return `police reform criminal justice accountability United States federal`;
-    } else if (concernLower.includes('voting') || concernLower.includes('election')) {
-      return `voting rights election access democracy United States federal`;
-    } else if (concernLower.includes('minimum wage')) {
-      return `minimum wage workers income federal United States Congress`;
     } else {
       return `${concern} policy legislation Congress United States federal government`;
     }
@@ -833,7 +813,7 @@ Make the message personal, urgent, and actionable within the character limit.`;
   ): RelevantSource[] {
     const sources: RelevantSource[] = [];
     
-    // Parse congress bill usage - keep all relevant bills as before
+    // Parse congress bill usage
     congressBills.forEach((bill, i) => {
       const pattern = new RegExp(`CONGRESS_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
@@ -849,13 +829,12 @@ Make the message personal, urgent, and actionable within the character limit.`;
       }
     });
     
-    // Parse Guardian article usage and collect relevant ones
-    const relevantGuardianArticles: RelevantSource[] = [];
+    // Parse Guardian article usage
     guardianArticles.forEach((article, i) => {
       const pattern = new RegExp(`GUARDIAN_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
       if (match && match[1].toUpperCase() === 'USED') {
-        relevantGuardianArticles.push({
+        sources.push({
           type: 'guardian',
           title: article.title,
           url: article.webUrl,
@@ -866,13 +845,12 @@ Make the message personal, urgent, and actionable within the character limit.`;
       }
     });
     
-    // Parse NYT article usage and collect relevant ones
-    const relevantNYTArticles: RelevantSource[] = [];
+    // Parse NYT article usage
     nytArticles.forEach((article, i) => {
       const pattern = new RegExp(`NYT_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
       if (match && match[1].toUpperCase() === 'USED') {
-        relevantNYTArticles.push({
+        sources.push({
           type: 'nyt',
           title: article.headline,
           url: article.web_url,
@@ -883,44 +861,8 @@ Make the message personal, urgent, and actionable within the character limit.`;
       }
     });
     
-    // Apply new selection logic for news articles (max 2 total)
-    const selectedNewsArticles = this.selectNewsArticles(relevantGuardianArticles, relevantNYTArticles);
-    sources.push(...selectedNewsArticles);
-    
-    console.log(`   📋 Selected ${sources.length} sources (${sources.filter(s => s.type === 'congress').length} bills, ${selectedNewsArticles.length} news articles)`);
+    console.log(`   📋 Identified ${sources.length} relevant sources`);
     return sources;
-  }
-
-  private selectNewsArticles(guardianArticles: RelevantSource[], nytArticles: RelevantSource[]): RelevantSource[] {
-    const maxNewsArticles = 2;
-    const selectedArticles: RelevantSource[] = [];
-    
-    // If both organizations have relevant articles, select one from each
-    if (guardianArticles.length > 0 && nytArticles.length > 0) {
-      // Take the first (most relevant) from each organization
-      selectedArticles.push(guardianArticles[0]);
-      selectedArticles.push(nytArticles[0]);
-      console.log(`   📰 Selected 1 Guardian + 1 NYT article (both had relevant content)`);
-    } 
-    // If only Guardian has relevant articles, take up to 2
-    else if (guardianArticles.length > 0) {
-      const articlesToTake = Math.min(maxNewsArticles, guardianArticles.length);
-      selectedArticles.push(...guardianArticles.slice(0, articlesToTake));
-      console.log(`   📰 Selected ${articlesToTake} Guardian article(s) (only Guardian had relevant content)`);
-    }
-    // If only NYT has relevant articles, take up to 2
-    else if (nytArticles.length > 0) {
-      const articlesToTake = Math.min(maxNewsArticles, nytArticles.length);
-      selectedArticles.push(...nytArticles.slice(0, articlesToTake));
-      console.log(`   📰 Selected ${articlesToTake} NYT article(s) (only NYT had relevant content)`);
-    }
-    // If neither has relevant articles
-    else {
-      console.log(`   📰 No relevant news articles found from either source`);
-    }
-    
-    return selectedArticles;
-  }
   }
 
   private async shortenPostcard(longPostcard: string): Promise<{postcard: string, tokensUsed: number}> {
