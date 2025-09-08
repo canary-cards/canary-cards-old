@@ -1037,11 +1037,8 @@ Keep core message, personal impact, and call to action. Return only the shortene
         
       } catch (error) {
         console.log(`   ❌ Shortening attempt ${attempt} failed: ${error}`);
-        // For API failures, try simple truncation with better ending
-        const truncated = currentPostcard.substring(0, 285).trim();
-        const lastSpace = truncated.lastIndexOf(' ');
-        const cleanTruncated = lastSpace > 250 ? truncated.substring(0, lastSpace) : truncated;
-        return { postcard: cleanTruncated + '...', tokensUsed: totalTokens };
+        // For immediate API failures, return with ",,," 
+        return { postcard: currentPostcard.substring(0, 287) + ',,,', tokensUsed: totalTokens };
       }
     }
     
@@ -1082,19 +1079,12 @@ Must be under 295 characters. Keep core message and call to action. Return only 
       const tokensUsed = (usage.input_tokens || 0) + (usage.output_tokens || 0);
       
       if (rewritten.length > 295) {
-        // Smart truncation instead of ",,,"
-        const truncated = rewritten.substring(0, 285).trim();
-        const lastSpace = truncated.lastIndexOf(' ');
-        rewritten = lastSpace > 250 ? truncated.substring(0, lastSpace) + '...' : truncated + '...';
+        rewritten = rewritten.substring(0, 292) + '...';
       }
       
       return { postcard: rewritten, tokensUsed };
     } catch (error) {
-      // Better fallback instead of ",,,"
-      const truncated = longPostcard.substring(0, 285).trim();
-      const lastSpace = truncated.lastIndexOf(' ');
-      const cleanTruncated = lastSpace > 250 ? truncated.substring(0, lastSpace) : truncated;
-      return { postcard: cleanTruncated + '...', tokensUsed: 0 };
+      return { postcard: longPostcard.substring(0, 292) + ',,,', tokensUsed: 0 };
     }
   }
 
