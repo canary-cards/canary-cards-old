@@ -813,21 +813,26 @@ Make the message personal, urgent, and actionable within the character limit.`;
   ): RelevantSource[] {
     const allSources: RelevantSource[] = [];
     
-    // Parse congress bill usage - only include bills in public discourse
+    // Parse congress bill usage - only include noteworthy legislation
     congressBills.forEach((bill, i) => {
       const pattern = new RegExp(`CONGRESS_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
       if (match && match[1].toUpperCase() === 'USED') {
-        // Only include bills that are likely to be in public discourse
-        // Check if the bill has significant media attention or recent activity
-        const isInPublicDiscourse = bill.latestAction && 
-          (bill.latestAction.includes('Passed') || 
-           bill.latestAction.includes('Introduced') ||
-           bill.latestAction.includes('Committee') ||
-           bill.latestAction.includes('Floor') ||
-           bill.latestAction.includes('Vote'));
-           
-        if (isInPublicDiscourse) {
+        // Filter for noteworthy bills by title characteristics
+        const title = bill.title.toLowerCase();
+        
+        // Exclude technical amendments and minor changes
+        const excludeKeywords = ['amendment', 'technical', 'clarification', 'correction', 'modification', 'redesignation', 'conforming'];
+        const isExcluded = excludeKeywords.some(keyword => title.includes(keyword));
+        
+        // Include bills with impactful keywords
+        const includeKeywords = ['act', 'reform', 'protection', 'investment', 'security', 'safety', 'healthcare', 'infrastructure', 'education', 'climate', 'energy'];
+        const hasImpactfulKeywords = includeKeywords.some(keyword => title.includes(keyword));
+        
+        // Only include if not excluded and (has impactful keywords OR is reasonably short and broad)
+        const isNoteworthyBill = !isExcluded && (hasImpactfulKeywords || bill.title.length < 100);
+        
+        if (isNoteworthyBill) {
           allSources.push({
             type: 'congress',
             title: `H.R. ${bill.number} - ${bill.title}`,
