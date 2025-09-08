@@ -881,8 +881,15 @@ Make the message personal, urgent, and actionable within the character limit.`;
     // Combine congress bills with limited news sources
     const finalSources = [...allSources.filter(s => s.type === 'congress'), ...selectedNewsSources];
     
+    // Convert to UI-expected format (description, url, dataPointCount)
+    const uiSources = finalSources.map(source => ({
+      description: source.title, // Use title as description for UI
+      url: source.url,
+      dataPointCount: source.relevanceScore
+    }));
+    
     console.log(`   📋 Identified ${finalSources.length} relevant sources (${allSources.filter(s => s.type === 'congress').length} bills, ${selectedNewsSources.length} news)`);
-    return finalSources;
+    return uiSources;
   }
 
   private async shortenPostcard(longPostcard: string): Promise<{postcard: string, tokensUsed: number}> {
