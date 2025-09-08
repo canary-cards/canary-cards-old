@@ -813,19 +813,30 @@ Make the message personal, urgent, and actionable within the character limit.`;
   ): RelevantSource[] {
     const allSources: RelevantSource[] = [];
     
-    // Parse congress bill usage - include all relevant bills
+    // Parse congress bill usage - only include bills in public discourse
     congressBills.forEach((bill, i) => {
       const pattern = new RegExp(`CONGRESS_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
       if (match && match[1].toUpperCase() === 'USED') {
-        allSources.push({
-          type: 'congress',
-          title: `H.R. ${bill.number} - ${bill.title}`,
-          url: bill.url,
-          description: bill.title,
-          relevanceScore: 10,
-          relevanceReason: match[2] || 'Referenced in postcard'
-        });
+        // Only include bills that are likely to be in public discourse
+        // Check if the bill has significant media attention or recent activity
+        const isInPublicDiscourse = bill.latestAction && 
+          (bill.latestAction.includes('Passed') || 
+           bill.latestAction.includes('Introduced') ||
+           bill.latestAction.includes('Committee') ||
+           bill.latestAction.includes('Floor') ||
+           bill.latestAction.includes('Vote'));
+           
+        if (isInPublicDiscourse) {
+          allSources.push({
+            type: 'congress',
+            title: `H.R. ${bill.number} - ${bill.title}`,
+            url: bill.url,
+            description: bill.title,
+            relevanceScore: 10,
+            relevanceReason: match[2] || 'Referenced in postcard'
+          });
+        }
       }
     });
     
