@@ -966,40 +966,100 @@ Make the message personal, urgent, and actionable within the character limit.`;
     const postcardLower = postcardText.toLowerCase();
     const keyTerms = this.extractKeyTerms(postcardLower);
     
+    // Extract the main concern/topic from the postcard
+    const topicTerms = this.extractTopicTerms(postcardLower);
+    
     return sources.map(source => {
       let score = 0;
       const titleLower = source.title.toLowerCase();
       const descriptionLower = source.description.toLowerCase();
+      const combinedText = `${titleLower} ${descriptionLower}`;
       
-      // Score based on key term matches
+      // MAJOR BONUS: Core topic alignment (weight heavily)
+      topicTerms.forEach(term => {
+        if (titleLower.includes(term)) score += 8; // Strong weight for topic in title
+        if (descriptionLower.includes(term)) score += 5; // Medium weight for topic in description
+      });
+      
+      // MEDIUM BONUS: Key term matches from postcard content
       keyTerms.forEach(term => {
         if (titleLower.includes(term)) score += 3;
         if (descriptionLower.includes(term)) score += 2;
       });
       
-      // Bonus for recent/timely articles (articles with "recent", "today", "this week", etc.)
-      const timelinessTerms = ['recent', 'today', 'this week', 'latest', 'new', 'breaking', 'just', 'now'];
-      timelinessTerms.forEach(term => {
-        if (titleLower.includes(term) || descriptionLower.includes(term)) score += 1;
-      });
+      // CONTEXTUAL RELEVANCE: Look for action/impact words
+      const impactTerms = ['families', 'communities', 'arrested', 'operations', 'enforcement', 'tactics', 'reform', 'policy', 'impact', 'affect', 'harm', 'protect', 'safety', 'security'];
+      const impactMatches = impactTerms.filter(term => combinedText.includes(term)).length;
+      score += impactMatches * 2;
       
-      // Bonus for impact/action terms
-      const impactTerms = ['families', 'communities', 'arrested', 'operations', 'enforcement', 'tactics', 'reform', 'policy'];
-      impactTerms.forEach(term => {
-        if (titleLower.includes(term) || descriptionLower.includes(term)) score += 1;
-      });
+      // TIMELINESS BONUS: Recent/relevant timeframe
+      const timelinessTerms = ['recent', 'today', 'this week', 'latest', 'new', 'breaking', 'current', '2024', '2025'];
+      const timelinessMatches = timelinessTerms.filter(term => combinedText.includes(term)).length;
+      score += timelinessMatches;
       
-      // Penalize overly broad/generic articles
-      const genericTerms = ['news roundup', 'at a glance', 'updates', 'headlines'];
-      genericTerms.forEach(term => {
-        if (titleLower.includes(term)) score -= 2;
-      });
+      // QUALITY INDICATORS: Depth and specificity
+      if (source.description.length > 100) score += 2; // Prefer articles with substantial descriptions
+      if (titleLower.includes('analysis') || titleLower.includes('investigation')) score += 3; // Prefer in-depth pieces
+      
+      // PENALTIES: Reduce score for irrelevant or low-quality content
+      const genericTerms = ['news roundup', 'at a glance', 'updates', 'headlines', 'brief', 'roundup'];
+      const genericMatches = genericTerms.filter(term => titleLower.includes(term)).length;
+      score -= genericMatches * 3;
+      
+      // PENALTY: Overly short or uninformative descriptions
+      if (source.description.length < 50) score -= 2;
+      
+      // PENALTY: Articles that seem completely off-topic (no matches at all)
+      const hasAnyRelevance = topicTerms.some(term => combinedText.includes(term)) || 
+                            keyTerms.some(term => combinedText.includes(term));
+      if (!hasAnyRelevance) score -= 5;
+      
+      console.log(`   📊 Source "${source.title.substring(0, 50)}..." scored ${score} points`);
       
       return {
         ...source,
         relevanceScore: Math.max(0, score) // Ensure non-negative score
       };
     }).sort((a, b) => b.relevanceScore - a.relevanceScore);
+  }
+
+  private extractTopicTerms(postcardText: string): string[] {
+    // Extract main topic/concern terms that should be heavily weighted
+    const topicPatterns = [
+      /immigration?/g,
+      /ice\s+raids?/g,
+      /deportation/g,
+      /border/g,
+      /asylum/g,
+      /refugee/g,
+      /healthcare?/g,
+      /climate/g,
+      /environment/g,
+      /economy/g,
+      /education/g,
+      /infrastructure/g,
+      /housing/g,
+      /veterans?/g,
+      /social\s+security/g,
+      /medicare/g,
+      /medicaid/g,
+      /taxes?/g,
+      /energy/g,
+      /gun\s+control/g,
+      /abortion/g,
+      /voting\s+rights/g
+    ];
+    
+    const foundTopics: string[] = [];
+    topicPatterns.forEach(pattern => {
+      const matches = postcardText.match(pattern);
+      if (matches) {
+        foundTopics.push(...matches.map(m => m.toLowerCase().trim()));
+      }
+    });
+    
+    return [...new Set(foundTopics)]; // Remove duplicates
+  }
   }
 
   private extractKeyTerms(postcardText: string): string[] {
