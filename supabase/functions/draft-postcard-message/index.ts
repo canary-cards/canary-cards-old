@@ -16,6 +16,7 @@ interface ApiKeyConfig {
 
 class ApiKeyManager {
   private apiKey: string | null = null;
+  private shorteningApiKey: string | null = null;
 
   public async initialize(): Promise<void> {
     if (!this.apiKey) {
@@ -27,7 +28,7 @@ class ApiKeyManager {
     // Load environment variables
     const env = await load();
     
-    // Only use ANTHROPIC_API_KEY_1
+    // Main API key for general requests
     const key = env['ANTHROPIC_API_KEY_1'] || Deno.env.get('ANTHROPIC_API_KEY_1');
     
     if (!key || !key.trim()) {
@@ -35,7 +36,18 @@ class ApiKeyManager {
     }
     
     this.apiKey = key.trim();
-    console.log(`🔑 Using API key ${this.apiKey.slice(-8)}`);
+    console.log(`🔑 Using main API key ${this.apiKey.slice(-8)}`);
+
+    // Separate API key for shortening operations
+    const shorteningKey = env['ANTHROPIC_API_KEY_2'] || Deno.env.get('ANTHROPIC_API_KEY_2');
+    
+    if (shorteningKey && shorteningKey.trim()) {
+      this.shorteningApiKey = shorteningKey.trim();
+      console.log(`✂️ Using shortening API key ${this.shorteningApiKey.slice(-8)}`);
+    } else {
+      console.log(`⚠️ ANTHROPIC_API_KEY_2 not found, using main key for shortening`);
+      this.shorteningApiKey = this.apiKey;
+    }
   }
 
   public async getNextKeyWithDelay(): Promise<string> {
@@ -48,9 +60,19 @@ class ApiKeyManager {
     return this.apiKey;
   }
 
-  public async makeAnthropicRequestWithCycling(payload: any): Promise<Response> {
+  public async getShorteningKey(): Promise<string> {
+    await this.initialize();
+    
+    if (!this.shorteningApiKey) {
+      throw new Error('No shortening API key available');
+    }
+    
+    return this.shorteningApiKey;
+  }
+
+  public async makeAnthropicRequestWithCycling(payload: any, useShortening: boolean = false): Promise<Response> {
     try {
-      const apiKey = await this.getNextKeyWithDelay();
+      const apiKey = useShortening ? await this.getShorteningKey() : await this.getNextKeyWithDelay();
       
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -1008,7 +1030,7 @@ Keep core message, personal impact, and call to action. Return only the shortene
           max_tokens: 150,
           temperature: 0.1,
           messages: [{ role: 'user', content: shortenPrompt }]
-        });
+        }, true); // Use shortening API key
 
         const responseData = await response.json();
         
@@ -1063,7 +1085,7 @@ Must be under 295 characters. Keep core message and call to action. Return only 
         max_tokens: 200,
         temperature: 0.1,
         messages: [{ role: 'user', content: rewritePrompt }]
-      });
+      }, true); // Use shortening API key
 
       const responseData = await response.json();
       
