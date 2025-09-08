@@ -19,12 +19,14 @@ class ApiKeyManager {
   private shorteningApiKey: string | null = null;
 
   public async initialize(): Promise<void> {
+    console.log('🔄 Initializing API Key Manager...');
     if (!this.apiKey) {
       await this.loadApiKey();
     }
   }
 
   private async loadApiKey() {
+    console.log('🔐 Loading API keys...');
     // Load environment variables
     const env = await load();
     
@@ -32,6 +34,7 @@ class ApiKeyManager {
     const key = env['ANTHROPIC_API_KEY_1'] || Deno.env.get('ANTHROPIC_API_KEY_1');
     
     if (!key || !key.trim()) {
+      console.error('❌ ANTHROPIC_API_KEY_1 not found!');
       throw new Error('ANTHROPIC_API_KEY_1 not found. Please set this secret.');
     }
     
@@ -819,8 +822,10 @@ Make the message personal, urgent, and actionable within the character limit.`;
       
     } catch (error) {
       console.log(`   ❌ Postcard generation failed: ${error}`);
+      console.log(`   ❌ Error details: ${JSON.stringify(error)}`);
+      console.log(`   ❌ Error stack: ${error.stack}`);
       return {
-        postcard: 'Failed to generate postcard',
+        postcard: `Failed to generate postcard: ${error.message}`,
         relevantSources: [],
         tokensUsed: 0
       };
@@ -1230,8 +1235,11 @@ serve(async (req) => {
     
   } catch (error) {
     console.error('Error in function:', error);
+    console.error('Error details:', JSON.stringify(error));
+    console.error('Error stack:', error.stack);
     return new Response(JSON.stringify({
-      error: `Generation failed: ${error.message}`
+      draftMessage: `Generation failed: ${error.message}`,
+      sources: []
     }), {
       status: 500,
       headers: {
