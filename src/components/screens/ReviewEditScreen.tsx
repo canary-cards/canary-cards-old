@@ -17,6 +17,13 @@ export function ReviewEditScreen() {
   console.log('🎯 ReviewEditScreen: Sources:', state.postcardData.sources);
   
   const [editedMessage, setEditedMessage] = useState(state.postcardData.draftMessage || '');
+  
+  // Update editedMessage when draftMessage changes
+  React.useEffect(() => {
+    if (state.postcardData.draftMessage && !editedMessage) {
+      setEditedMessage(state.postcardData.draftMessage);
+    }
+  }, [state.postcardData.draftMessage, editedMessage]);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const charCount = editedMessage.length;
