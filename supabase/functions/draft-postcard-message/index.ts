@@ -846,7 +846,7 @@ Make the message personal, urgent, and actionable within the character limit.`;
     });
     
     // Parse Guardian article usage
-    const guardianSources: RelevantSource[] = [];
+    let guardianSources: RelevantSource[] = [];
     guardianArticles.forEach((article, i) => {
       const pattern = new RegExp(`GUARDIAN_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
@@ -863,7 +863,7 @@ Make the message personal, urgent, and actionable within the character limit.`;
     });
     
     // Parse NYT article usage
-    const nytSources: RelevantSource[] = [];
+    let nytSources: RelevantSource[] = [];
     nytArticles.forEach((article, i) => {
       const pattern = new RegExp(`NYT_${i + 1}:\\s*(USED|NOT_USED)\\s*(.*)`, 'i');
       const match = responseText.match(pattern);
@@ -879,19 +879,45 @@ Make the message personal, urgent, and actionable within the character limit.`;
       }
     });
     
+    // FALLBACK: If no sources were explicitly marked as USED, intelligently select the most relevant ones
+    if (guardianSources.length === 0 && nytSources.length === 0) {
+      console.log(`   🔍 No explicit source usage found, applying intelligent selection...`);
+      
+      // Rank Guardian articles by relevance
+      guardianSources = this.rankNewsSources(guardianArticles.map(article => ({
+        type: 'guardian' as const,
+        title: article.title,
+        url: article.webUrl,
+        description: article.fields?.standfirst || article.title,
+        relevanceScore: 0, // Will be calculated
+        relevanceReason: 'Intelligent selection'
+      })), responseText).slice(0, 2);
+      
+      // Rank NYT articles by relevance  
+      nytSources = this.rankNewsSources(nytArticles.map(article => ({
+        type: 'nyt' as const,
+        title: article.headline,
+        url: article.web_url,
+        description: article.abstract,
+        relevanceScore: 0, // Will be calculated
+        relevanceReason: 'Intelligent selection'
+      })), responseText).slice(0, 2);
+    }
+    
     // Apply news article limits: max 2 total, preferring one from each if both have relevant articles
     let selectedNewsSources: RelevantSource[] = [];
     
     if (guardianSources.length > 0 && nytSources.length > 0) {
-      // Both have relevant articles - select one from each
-      selectedNewsSources.push(guardianSources[0]);
-      selectedNewsSources.push(nytSources[0]);
+      // Both have relevant articles - select one from each, prioritizing by relevance score
+      const topGuardian = guardianSources.sort((a, b) => b.relevanceScore - a.relevanceScore)[0];
+      const topNYT = nytSources.sort((a, b) => b.relevanceScore - a.relevanceScore)[0];
+      selectedNewsSources.push(topGuardian, topNYT);
     } else if (guardianSources.length > 0) {
-      // Only Guardian has relevant articles - take up to 2
-      selectedNewsSources = guardianSources.slice(0, 2);
+      // Only Guardian has relevant articles - take up to 2, sorted by relevance
+      selectedNewsSources = guardianSources.sort((a, b) => b.relevanceScore - a.relevanceScore).slice(0, 2);
     } else if (nytSources.length > 0) {
-      // Only NYT has relevant articles - take up to 2
-      selectedNewsSources = nytSources.slice(0, 2);
+      // Only NYT has relevant articles - take up to 2, sorted by relevance
+      selectedNewsSources = nytSources.sort((a, b) => b.relevanceScore - a.relevanceScore).slice(0, 2);
     }
     
     // Combine congress bills with limited news sources
@@ -899,13 +925,65 @@ Make the message personal, urgent, and actionable within the character limit.`;
     
     // Convert to UI-expected format (description, url, dataPointCount)
     const uiSources = finalSources.map(source => ({
-      description: source.title, // Use title as description for UI
+      description: source.description, // Use description instead of title for better context
       url: source.url,
       dataPointCount: source.relevanceScore
     }));
     
     console.log(`   📋 Identified ${finalSources.length} relevant sources (${allSources.filter(s => s.type === 'congress').length} bills, ${selectedNewsSources.length} news)`);
     return uiSources;
+  }
+
+  private rankNewsSources(sources: RelevantSource[], postcardText: string): RelevantSource[] {
+    // Extract key terms from the postcard to help rank relevance
+    const postcardLower = postcardText.toLowerCase();
+    const keyTerms = this.extractKeyTerms(postcardLower);
+    
+    return sources.map(source => {
+      let score = 0;
+      const titleLower = source.title.toLowerCase();
+      const descriptionLower = source.description.toLowerCase();
+      
+      // Score based on key term matches
+      keyTerms.forEach(term => {
+        if (titleLower.includes(term)) score += 3;
+        if (descriptionLower.includes(term)) score += 2;
+      });
+      
+      // Bonus for recent/timely articles (articles with "recent", "today", "this week", etc.)
+      const timelinessTerms = ['recent', 'today', 'this week', 'latest', 'new', 'breaking', 'just', 'now'];
+      timelinessTerms.forEach(term => {
+        if (titleLower.includes(term) || descriptionLower.includes(term)) score += 1;
+      });
+      
+      // Bonus for impact/action terms
+      const impactTerms = ['families', 'communities', 'arrested', 'operations', 'enforcement', 'tactics', 'reform', 'policy'];
+      impactTerms.forEach(term => {
+        if (titleLower.includes(term) || descriptionLower.includes(term)) score += 1;
+      });
+      
+      // Penalize overly broad/generic articles
+      const genericTerms = ['news roundup', 'at a glance', 'updates', 'headlines'];
+      genericTerms.forEach(term => {
+        if (titleLower.includes(term)) score -= 2;
+      });
+      
+      return {
+        ...source,
+        relevanceScore: Math.max(0, score) // Ensure non-negative score
+      };
+    }).sort((a, b) => b.relevanceScore - a.relevanceScore);
+  }
+
+  private extractKeyTerms(postcardText: string): string[] {
+    // Extract meaningful terms from the postcard text
+    const commonWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them']);
+    
+    return postcardText
+      .split(/\s+/)
+      .map(word => word.replace(/[^\w]/g, '').toLowerCase())
+      .filter(word => word.length > 2 && !commonWords.has(word))
+      .slice(0, 10); // Take top 10 meaningful terms
   }
 
   private async shortenPostcard(longPostcard: string): Promise<{postcard: string, tokensUsed: number}> {
